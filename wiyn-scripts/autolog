@@ -1,6 +1,6 @@
 #!/usr/bin/wish
 
-load $env(NESI_DIR)/lib/libfitstcl.so
+load $env(NESSI_DIR)/lib/libfitstcl.so
 
 #  Header item specifications
 #
@@ -226,12 +226,12 @@ proc nextlog { w } {
  global afterid font1 binpath
  global homedir_entry LogQueued
 
- set binpath /data1/observer
+ set binpath $env(HOME)
  set path [$homedir_entry get]
  set did [exec date +%y-%m-%d]
 
 # set psfile "[$homedir_entry get]/autolog_page$pagecount-$did.ps"
- set psfile "/data1/observer/autolog/autolog_page$pagecount-$did.ps"
+ set psfile "$binpath/autolog/autolog_page$pagecount-$did.ps"
  set newfile $oldfile
  update
  if {[catch {eval exec "ls -t [glob $path/*.fits] | head -1"} result] == 0} {
@@ -265,7 +265,7 @@ global yoff entrycount oldfile pagecount header oldheader
  global homedir_entry 
   parse_header $newfile
   set did [exec date +%y-%m-%d]
-  set psfile "/data1/observer/autolog/autolog_page$pagecount-$did.ps"
+  set psfile "$binpath/autolog/autolog_page$pagecount-$did.ps"
 
    if {$entrycount < 11} {
      set w .t$pagecount.canvas
@@ -290,7 +290,7 @@ proc newpage {} {
  set did [exec date +%y-%m-%d]
  incr pagecount
 # set psfile "[$homedir_entry get]/autolog_page$pagecount-$did.ps"
- set psfile "/data1/observer/autolog/autolog_page$pagecount-$did.ps"
+ set psfile "$binpath/autolog/autolog_page$pagecount-$did.ps"
  $pausebutton configure -command "pause_log .t$pagecount"
  set bigfont -adobe-times-bold-r-normal--24-240-75-75-p-132-iso8859-1
  set medfont -adobe-times-bold-r-normal--18-180-75-75-p-99-iso8859-1
@@ -532,7 +532,7 @@ proc resume_log {win} {
 
 
 #  Header item specifications
- exec mkdir -p /data1/observer/autolog
+exec mkdir -p $env(HOME)/autolog
 
 #  Beginning of main program
 
@@ -564,7 +564,7 @@ proc resume_log {win} {
  set f2 [frame $f.2]
  set f3 [frame $f.3]
  set homedir [lindex $argv 0]
- if {$homedir == ""} {set homedir "/data1/observer/"}
+ if {$homedir == ""} {set homedir "$env(HOME)/autolog/"}
  set homedir_label [label $f1.hdl -text "Image directory:" -pady 10] 
  set homedir_entry [entry $f1.hde -width 30 -font $font2]
  $homedir_entry insert 0 $homedir
