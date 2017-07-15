@@ -1,0 +1,6 @@
+#!/bin/sh
+swig -c++ -tcl  -v -o tcl_andorWrap.cpp ./andorWrap.i
+g++ -c -fPIC tcl_andorWrap.cpp -fpic -DLINUX -DWall -g -I./include
+g++ -shared -o andorWrap.so tcl_andorWrap.o lib/libandor.so.2 lib/libUSBI2C.so.2
+
+
