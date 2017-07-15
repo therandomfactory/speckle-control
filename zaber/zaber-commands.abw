@@ -1,0 +1,1113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE abiword PUBLIC "-//ABISOURCE//DTD AWML 1.0 Strict//EN" "http://www.abisource.com/awml.dtd">
+<abiword template="false" xmlns:ct="http://www.abisource.com/changetracking.dtd" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:math="http://www.w3.org/1998/Math/MathML" xid-max="1082" xmlns:dc="http://purl.org/dc/elements/1.1/" styles="unlocked" fileformat="1.0" xmlns:svg="http://www.w3.org/2000/svg" xmlns:awml="http://www.abisource.com/awml.dtd" xmlns="http://www.abisource.com/awml.dtd" xmlns:xlink="http://www.w3.org/1999/xlink" version="0.99.2" xml:space="preserve" props="dom-dir:ltr; document-footnote-restart-section:0; document-endnote-type:numeric; document-endnote-place-enddoc:1; document-endnote-initial:1; lang:en-US; document-endnote-restart-section:0; document-footnote-restart-page:0; document-footnote-type:numeric; document-footnote-initial:1; document-endnote-place-endsection:0">
+<!-- ======================================================================== -->
+<!-- This file is an AbiWord document.                                        -->
+<!-- AbiWord is a free, Open Source word processor.                           -->
+<!-- More information about AbiWord is available at http://www.abisource.com/ -->
+<!-- You should not edit this file by hand.                                   -->
+<!-- ======================================================================== -->
+
+<metadata>
+<m key="abiword.date_last_changed">Sat Jul  8 14:06:31 2017
+</m>
+<m key="abiword.generator">AbiWord</m>
+<m key="dc.creator">rfactory</m>
+<m key="dc.date">Sat Jul  8 14:06:31 2017
+</m>
+<m key="dc.format">application/x-abiword</m>
+</metadata>
+<rdf>
+</rdf>
+<history version="1" edit-time="100" last-saved="1499547991" uid="1516fff2-6421-11e7-97f6-ac0a73bb725c">
+<version id="1" started="1499547991" uid="50f55adc-6421-11e7-97f6-ac0a73bb725c" auto="0" top-xid="1082"/>
+</history>
+<styles>
+<s type="P" name="Normal" followedby="Current Settings" props="font-family:Times New Roman; margin-top:0pt; color:000000; margin-left:0pt; text-position:normal; widows:2; font-style:normal; text-indent:0in; font-variant:normal; font-weight:normal; margin-right:0pt; font-size:12pt; text-decoration:none; margin-bottom:0pt; line-height:1.0; bgcolor:transparent; text-align:left; font-stretch:normal"/>
+<s type="P" name="Heading 3" basedon="Normal" followedby="Normal" props="keep-with-next:1; margin-top:22pt; font-weight:bold; margin-bottom:3pt; font-family:Liberation Sans; font-size:12pt"/>
+</styles>
+<pagesize pagetype="Letter" orientation="portrait" width="8.500000" height="11.000000" units="in" page-scale="1.000000"/>
+<section xid="1081" props="page-margin-footer:0.5in; page-margin-header:0.5in">
+<p style="Normal" xid="1082"><c>﻿</c></p>
+<p style="Normal" xid="1"><c></c></p>
+<table xid="2">
+<cell xid="3" props="bot-attach:1; left-attach:0; right-attach:1; top-attach:0">
+<p xid="4"><c>Command </c></p>
+</cell>
+<cell xid="6" props="bot-attach:1; left-attach:1; right-attach:2; top-attach:0">
+<p xid="7"><c>Scope </c></p>
+</cell>
+<cell xid="9" props="bot-attach:1; left-attach:2; right-attach:3; top-attach:0">
+<p xid="10"><c>Parameter(s) </c></p>
+</cell>
+<cell xid="12" props="bot-attach:1; left-attach:3; right-attach:4; top-attach:0">
+<p xid="13"><c>Returns </c></p>
+</cell>
+<cell xid="15" props="bot-attach:1; left-attach:4; right-attach:5; top-attach:0">
+<p xid="16"><c>Firmware Versions </c></p>
+</cell>
+<cell xid="18" props="bot-attach:1; left-attach:5; right-attach:6; top-attach:0">
+<p xid="19"><c>Description </c></p>
+</cell>
+<cell xid="21" props="bot-attach:2; left-attach:0; right-attach:1; top-attach:1">
+<p xid="22"><c>estop </c></p>
+</cell>
+<cell xid="24" props="bot-attach:2; left-attach:1; right-attach:2; top-attach:1">
+<p xid="25"><c>Axis </c></p>
+</cell>
+<cell xid="27" props="bot-attach:2; left-attach:2; right-attach:3; top-attach:1">
+<p xid="28"><c></c></p>
+</cell>
+<cell xid="30" props="bot-attach:2; left-attach:3; right-attach:4; top-attach:1">
+<p xid="31"><c>0 </c></p>
+</cell>
+<cell xid="33" props="bot-attach:2; left-attach:4; right-attach:5; top-attach:1">
+<p xid="34"><c>6.06+ </c></p>
+</cell>
+<cell xid="36" props="bot-attach:2; left-attach:5; right-attach:6; top-attach:1">
+<p xid="37"><c>Instantly stops motorized movement. </c></p>
+</cell>
+<cell xid="39" props="bot-attach:3; left-attach:0; right-attach:1; top-attach:2">
+<p xid="40"><c>get </c></p>
+</cell>
+<cell xid="42" props="bot-attach:3; left-attach:1; right-attach:2; top-attach:2">
+<p xid="43"><c>Device and Axis </c></p>
+</cell>
+<cell xid="45" props="bot-attach:3; left-attach:2; right-attach:3; top-attach:2">
+<p xid="46"><c>setting </c></p>
+</cell>
+<cell xid="48" props="bot-attach:3; left-attach:3; right-attach:4; top-attach:2">
+<p xid="49"><c>value </c></p>
+</cell>
+<cell xid="51" props="bot-attach:3; left-attach:4; right-attach:5; top-attach:2">
+<p xid="52"><c>6.06+ </c></p>
+</cell>
+<cell xid="54" props="bot-attach:3; left-attach:5; right-attach:6; top-attach:2">
+<p xid="55"><c>Retrieves the current value of the device or axis setting. </c></p>
+</cell>
+<cell xid="57" props="bot-attach:4; left-attach:0; right-attach:1; top-attach:3">
+<p xid="58"><c>help </c></p>
+</cell>
+<cell xid="60" props="bot-attach:4; left-attach:1; right-attach:2; top-attach:3">
+<p xid="61"><c>Device </c></p>
+</cell>
+<cell xid="63" props="bot-attach:4; left-attach:2; right-attach:3; top-attach:3">
+<p xid="64"><c>commands<br/>reply<br/>warnflags<br/>enums<br/>command ...<br/>enum </c></p>
+</cell>
+<cell xid="66" props="bot-attach:4; left-attach:3; right-attach:4; top-attach:3">
+<p xid="67"><c>0 </c></p>
+</cell>
+<cell xid="69" props="bot-attach:4; left-attach:4; right-attach:5; top-attach:3">
+<p xid="70"><c>6.06+ </c></p>
+</cell>
+<cell xid="72" props="bot-attach:4; left-attach:5; right-attach:6; top-attach:3">
+<p xid="73"><c>Displays the help information for the system. </c></p>
+</cell>
+<cell xid="75" props="bot-attach:5; left-attach:0; right-attach:1; top-attach:4">
+<p xid="76"><c>home </c></p>
+</cell>
+<cell xid="78" props="bot-attach:5; left-attach:1; right-attach:2; top-attach:4">
+<p xid="79"><c>Axis </c></p>
+</cell>
+<cell xid="81" props="bot-attach:5; left-attach:2; right-attach:3; top-attach:4">
+<p xid="82"><c></c></p>
+</cell>
+<cell xid="84" props="bot-attach:5; left-attach:3; right-attach:4; top-attach:4">
+<p xid="85"><c>0 </c></p>
+</cell>
+<cell xid="87" props="bot-attach:5; left-attach:4; right-attach:5; top-attach:4">
+<p xid="88"><c>6.06+ </c></p>
+</cell>
+<cell xid="90" props="bot-attach:5; left-attach:5; right-attach:6; top-attach:4">
+<p xid="91"><c>Moves the axis to the home position. </c></p>
+</cell>
+<cell xid="93" props="bot-attach:6; left-attach:0; right-attach:1; top-attach:5">
+<p xid="94"><c>move </c></p>
+</cell>
+<cell xid="96" props="bot-attach:6; left-attach:1; right-attach:2; top-attach:5">
+<p xid="97"><c>Axis </c></p>
+</cell>
+<cell xid="99" props="bot-attach:6; left-attach:2; right-attach:3; top-attach:5">
+<p xid="100"></p>
+<p style="Normal" xid="101"><c>abs|rel|vel value<br/>min|max<br/>stored number<br/>index number (6.21+)<br/>sin amplitude period [count] (6.22+)<br/>sin stop (6.22+) </c></p>
+</cell>
+<cell xid="103" props="bot-attach:6; left-attach:3; right-attach:4; top-attach:5">
+<p xid="104"><c>0 </c></p>
+</cell>
+<cell xid="106" props="bot-attach:6; left-attach:4; right-attach:5; top-attach:5">
+<p xid="107"><c>6.06+ </c></p>
+</cell>
+<cell xid="109" props="bot-attach:6; left-attach:5; right-attach:6; top-attach:5">
+<p xid="110"><c>Moves the axis to various positions along its travel. </c></p>
+</cell>
+<cell xid="112" props="bot-attach:7; left-attach:0; right-attach:1; top-attach:6">
+<p xid="113"><c>renumber </c></p>
+</cell>
+<cell xid="115" props="bot-attach:7; left-attach:1; right-attach:2; top-attach:6">
+<p xid="116"><c>Device </c></p>
+</cell>
+<cell xid="118" props="bot-attach:7; left-attach:2; right-attach:3; top-attach:6">
+<p xid="119"><c>value </c></p>
+</cell>
+<cell xid="121" props="bot-attach:7; left-attach:3; right-attach:4; top-attach:6">
+<p xid="122"><c>0 </c></p>
+</cell>
+<cell xid="124" props="bot-attach:7; left-attach:4; right-attach:5; top-attach:6">
+<p xid="125"><c>6.06+ </c></p>
+</cell>
+<cell xid="127" props="bot-attach:7; left-attach:5; right-attach:6; top-attach:6">
+<p xid="128"><c>Renumbers all devices in the chain. </c></p>
+</cell>
+<cell xid="130" props="bot-attach:8; left-attach:0; right-attach:1; top-attach:7">
+<p xid="131"><c>set </c></p>
+</cell>
+<cell xid="133" props="bot-attach:8; left-attach:1; right-attach:2; top-attach:7">
+<p xid="134"><c>Device and Axis </c></p>
+</cell>
+<cell xid="136" props="bot-attach:8; left-attach:2; right-attach:3; top-attach:7">
+<p xid="137"><c>setting value </c></p>
+</cell>
+<cell xid="139" props="bot-attach:8; left-attach:3; right-attach:4; top-attach:7">
+<p xid="140"><c>0 </c></p>
+</cell>
+<cell xid="142" props="bot-attach:8; left-attach:4; right-attach:5; top-attach:7">
+<p xid="143"><c>6.06+ </c></p>
+</cell>
+<cell xid="145" props="bot-attach:8; left-attach:5; right-attach:6; top-attach:7">
+<p xid="146"><c>Sets the device or axis setting setting to the value. </c></p>
+</cell>
+<cell xid="148" props="bot-attach:9; left-attach:0; right-attach:1; top-attach:8">
+<p xid="149"><c>stop </c></p>
+</cell>
+<cell xid="151" props="bot-attach:9; left-attach:1; right-attach:2; top-attach:8">
+<p xid="152"><c>Axis </c></p>
+</cell>
+<cell xid="154" props="bot-attach:9; left-attach:2; right-attach:3; top-attach:8">
+<p xid="155"><c></c></p>
+</cell>
+<cell xid="157" props="bot-attach:9; left-attach:3; right-attach:4; top-attach:8">
+<p xid="158"><c>0 </c></p>
+</cell>
+<cell xid="160" props="bot-attach:9; left-attach:4; right-attach:5; top-attach:8">
+<p xid="161"><c>6.06+ </c></p>
+</cell>
+<cell xid="163" props="bot-attach:9; left-attach:5; right-attach:6; top-attach:8">
+<p xid="164"><c>Decelerates the axis and brings it to a halt. </c></p>
+</cell>
+<cell xid="166" props="bot-attach:10; left-attach:0; right-attach:1; top-attach:9">
+<p xid="167"><c>stream </c></p>
+</cell>
+<cell xid="169" props="bot-attach:10; left-attach:1; right-attach:2; top-attach:9">
+<p xid="170"><c>Device </c></p>
+</cell>
+<cell xid="172" props="bot-attach:10; left-attach:2; right-attach:3; top-attach:9">
+<p xid="173"><c>Refer to the documentation </c></p>
+</cell>
+<cell xid="175" props="bot-attach:10; left-attach:3; right-attach:4; top-attach:9">
+<p xid="176"><c>Refer to the documentation </c></p>
+</cell>
+<cell xid="178" props="bot-attach:10; left-attach:4; right-attach:5; top-attach:9">
+<p xid="179"><c>6.12+ </c></p>
+</cell>
+<cell xid="181" props="bot-attach:10; left-attach:5; right-attach:6; top-attach:9">
+<p xid="182"><c>Performs an action related to streamed, interpolated motion. </c></p>
+</cell>
+<cell xid="184" props="bot-attach:11; left-attach:0; right-attach:1; top-attach:10">
+<p xid="185"><c>system reset </c></p>
+</cell>
+<cell xid="187" props="bot-attach:11; left-attach:1; right-attach:2; top-attach:10">
+<p xid="188"><c>Device </c></p>
+</cell>
+<cell xid="190" props="bot-attach:11; left-attach:2; right-attach:3; top-attach:10">
+<p xid="191"><c></c></p>
+</cell>
+<cell xid="193" props="bot-attach:11; left-attach:3; right-attach:4; top-attach:10">
+<p xid="194"><c>0 </c></p>
+</cell>
+<cell xid="196" props="bot-attach:11; left-attach:4; right-attach:5; top-attach:10">
+<p xid="197"><c>6.06+ </c></p>
+</cell>
+<cell xid="199" props="bot-attach:11; left-attach:5; right-attach:6; top-attach:10">
+<p xid="200"><c>Resets the device, as it would appear after power up. </c></p>
+</cell>
+<cell xid="202" props="bot-attach:12; left-attach:0; right-attach:1; top-attach:11">
+<p xid="203"><c>system restore </c></p>
+</cell>
+<cell xid="205" props="bot-attach:12; left-attach:1; right-attach:2; top-attach:11">
+<p xid="206"><c>Device </c></p>
+</cell>
+<cell xid="208" props="bot-attach:12; left-attach:2; right-attach:3; top-attach:11">
+<p xid="209"><c></c></p>
+</cell>
+<cell xid="211" props="bot-attach:12; left-attach:3; right-attach:4; top-attach:11">
+<p xid="212"><c>0 </c></p>
+</cell>
+<cell xid="214" props="bot-attach:12; left-attach:4; right-attach:5; top-attach:11">
+<p xid="215"><c>6.06+ </c></p>
+</cell>
+<cell xid="217" props="bot-attach:12; left-attach:5; right-attach:6; top-attach:11">
+<p xid="218"><c>Restores common device settings to their default values. </c></p>
+</cell>
+<cell xid="220" props="bot-attach:13; left-attach:0; right-attach:1; top-attach:12">
+<p xid="221"><c>tools echo </c></p>
+</cell>
+<cell xid="223" props="bot-attach:13; left-attach:1; right-attach:2; top-attach:12">
+<p xid="224"><c>Device </c></p>
+</cell>
+<cell xid="226" props="bot-attach:13; left-attach:2; right-attach:3; top-attach:12">
+<p xid="227"><c>(message)<br/> </c></p>
+</cell>
+<cell xid="229" props="bot-attach:13; left-attach:3; right-attach:4; top-attach:12">
+<p xid="230"><c>0 </c></p>
+</cell>
+<cell xid="232" props="bot-attach:13; left-attach:4; right-attach:5; top-attach:12">
+<p xid="233"><c>6.06+ </c></p>
+</cell>
+<cell xid="235" props="bot-attach:13; left-attach:5; right-attach:6; top-attach:12">
+<p xid="236"><c>Echoes the provided message (if any) back to the user. </c></p>
+</cell>
+<cell xid="238" props="bot-attach:14; left-attach:0; right-attach:1; top-attach:13">
+<p xid="239"><c>tools gotolimit </c></p>
+</cell>
+<cell xid="241" props="bot-attach:14; left-attach:1; right-attach:2; top-attach:13">
+<p xid="242"><c>Axis </c></p>
+</cell>
+<cell xid="244" props="bot-attach:14; left-attach:2; right-attach:3; top-attach:13">
+<p xid="245"><c>limit dir action update </c></p>
+</cell>
+<cell xid="247" props="bot-attach:14; left-attach:3; right-attach:4; top-attach:13">
+<p xid="248"><c>0 </c></p>
+</cell>
+<cell xid="250" props="bot-attach:14; left-attach:4; right-attach:5; top-attach:13">
+<p xid="251"><c>6.06+ </c></p>
+</cell>
+<cell xid="253" props="bot-attach:14; left-attach:5; right-attach:6; top-attach:13">
+<p xid="254"><c>Moves the axis to a limit sensor and performs the provided actions. </c></p>
+</cell>
+<cell xid="256" props="bot-attach:15; left-attach:0; right-attach:1; top-attach:14">
+<p xid="257"><c>tools parking </c></p>
+</cell>
+<cell xid="259" props="bot-attach:15; left-attach:1; right-attach:2; top-attach:14">
+<p xid="260"><c>Device </c></p>
+</cell>
+<cell xid="262" props="bot-attach:15; left-attach:2; right-attach:3; top-attach:14">
+<p xid="263"></p>
+<p style="Normal" xid="264"><c>state|park|unpark<br/> </c></p>
+</cell>
+<cell xid="266" props="bot-attach:15; left-attach:3; right-attach:4; top-attach:14">
+<p xid="267"></p>
+<p style="Normal" xid="268"><c>0|1 </c></p>
+</cell>
+<cell xid="270" props="bot-attach:15; left-attach:4; right-attach:5; top-attach:14">
+<p xid="271"><c>6.06+ </c></p>
+</cell>
+<cell xid="273" props="bot-attach:15; left-attach:5; right-attach:6; top-attach:14">
+<p xid="274"><c>Parking allows the device to be turned off and used at a later time without first having to home. </c></p>
+</cell>
+<cell xid="276" props="bot-attach:16; left-attach:0; right-attach:1; top-attach:15">
+<p xid="277"><c>tools setcomm </c></p>
+</cell>
+<cell xid="279" props="bot-attach:16; left-attach:1; right-attach:2; top-attach:15">
+<p xid="280"><c>Device </c></p>
+</cell>
+<cell xid="282" props="bot-attach:16; left-attach:2; right-attach:3; top-attach:15">
+<p xid="283"><c>rs232baud protocol </c></p>
+</cell>
+<cell xid="285" props="bot-attach:16; left-attach:3; right-attach:4; top-attach:15">
+<p xid="286"><c>0 </c></p>
+</cell>
+<cell xid="288" props="bot-attach:16; left-attach:4; right-attach:5; top-attach:15">
+<p xid="289"><c>6.06+ </c></p>
+</cell>
+<cell xid="291" props="bot-attach:16; left-attach:5; right-attach:6; top-attach:15">
+<p xid="292"><c>Sets RS232 baud rate and communication protocol for RS232 and USB. </c></p>
+</cell>
+<cell xid="294" props="bot-attach:17; left-attach:0; right-attach:1; top-attach:16">
+<p xid="295"><c>tools storepos </c></p>
+</cell>
+<cell xid="297" props="bot-attach:17; left-attach:1; right-attach:2; top-attach:16">
+<p xid="298"><c>Axis </c></p>
+</cell>
+<cell xid="300" props="bot-attach:17; left-attach:2; right-attach:3; top-attach:16">
+<p xid="301"></p>
+<p style="Normal" xid="302"><c>number [position|current]<br/> </c></p>
+</cell>
+<cell xid="304" props="bot-attach:17; left-attach:3; right-attach:4; top-attach:16">
+<p xid="305"></p>
+<p style="Normal" xid="306"><c>0|position </c></p>
+</cell>
+<cell xid="308" props="bot-attach:17; left-attach:4; right-attach:5; top-attach:16">
+<p xid="309"><c>6.06+ </c></p>
+</cell>
+<cell xid="311" props="bot-attach:17; left-attach:5; right-attach:6; top-attach:16">
+<p xid="312"><c>Stores a number of positions for easy movement. </c></p>
+</cell>
+<cell xid="314" props="bot-attach:18; left-attach:0; right-attach:1; top-attach:17">
+<p xid="315"><c>trigger </c></p>
+</cell>
+<cell xid="317" props="bot-attach:18; left-attach:1; right-attach:2; top-attach:17">
+<p xid="318"><c>Device </c></p>
+</cell>
+<cell xid="320" props="bot-attach:18; left-attach:2; right-attach:3; top-attach:17">
+<p xid="321"><c>Refer to the documentation </c></p>
+</cell>
+<cell xid="323" props="bot-attach:18; left-attach:3; right-attach:4; top-attach:17">
+<p xid="324"><c>0 </c></p>
+</cell>
+<cell xid="326" props="bot-attach:18; left-attach:4; right-attach:5; top-attach:17">
+<p xid="327"><c>6.06+ </c></p>
+</cell>
+<cell xid="329" props="bot-attach:18; left-attach:5; right-attach:6; top-attach:17">
+<p xid="330"><c>Configures actions to be performed on the device when a certain condition is met. </c></p>
+</cell>
+<cell xid="332" props="bot-attach:19; left-attach:0; right-attach:1; top-attach:18">
+<p xid="333"><c>warnings </c></p>
+</cell>
+<cell xid="335" props="bot-attach:19; left-attach:1; right-attach:2; top-attach:18">
+<p xid="336"><c>Axis </c></p>
+</cell>
+<cell xid="338" props="bot-attach:19; left-attach:2; right-attach:3; top-attach:18">
+<p xid="339"><c>[clear]<br/> </c></p>
+</cell>
+<cell xid="341" props="bot-attach:19; left-attach:3; right-attach:4; top-attach:18">
+<p xid="342"><c>0 </c></p>
+</cell>
+<cell xid="344" props="bot-attach:19; left-attach:4; right-attach:5; top-attach:18">
+<p xid="345"><c>6.06+ </c></p>
+</cell>
+<cell xid="347" props="bot-attach:19; left-attach:5; right-attach:6; top-attach:18">
+<p xid="348"><c>Displays the active device and axis warnings, optionally clearing them if applicable. </c></p>
+</cell>
+</table>
+<p style="Normal" xid="351"><c></c></p>
+<p style="Normal" xid="352"><c></c></p>
+<p style="Normal" xid="353"><c>﻿</c></p>
+<p style="Normal" xid="354"><c>Quick Device Settings</c></p>
+<p style="Normal" xid="355"><c>The settings listed below can be inspected and modified with the get and set commands described above. </c></p>
+<table xid="356">
+<cell xid="357" props="bot-attach:1; left-attach:0; right-attach:1; top-attach:0">
+<p xid="358"><c>Setting </c></p>
+</cell>
+<cell xid="360" props="bot-attach:1; left-attach:1; right-attach:2; top-attach:0">
+<p xid="361"><c>Scope </c></p>
+</cell>
+<cell xid="363" props="bot-attach:1; left-attach:2; right-attach:3; top-attach:0">
+<p xid="364"><c>Writable </c></p>
+</cell>
+<cell xid="366" props="bot-attach:1; left-attach:3; right-attach:4; top-attach:0">
+<p xid="367"><c>Firmware Versions </c></p>
+</cell>
+<cell xid="369" props="bot-attach:1; left-attach:4; right-attach:5; top-attach:0">
+<p xid="370"><c>Description </c></p>
+</cell>
+<cell xid="372" props="bot-attach:2; left-attach:0; right-attach:1; top-attach:1">
+<p xid="373"><c>accel </c></p>
+</cell>
+<cell xid="375" props="bot-attach:2; left-attach:1; right-attach:2; top-attach:1">
+<p xid="376"><c>Axis </c></p>
+</cell>
+<cell xid="378" props="bot-attach:2; left-attach:2; right-attach:3; top-attach:1">
+<p xid="379"><c>Yes </c></p>
+</cell>
+<cell xid="381" props="bot-attach:2; left-attach:3; right-attach:4; top-attach:1">
+<p xid="382"><c>6.06+ </c></p>
+</cell>
+<cell xid="384" props="bot-attach:2; left-attach:4; right-attach:5; top-attach:1">
+<p xid="385"><c>Sets the acceleration used to modify the speed. </c></p>
+</cell>
+<cell xid="387" props="bot-attach:3; left-attach:0; right-attach:1; top-attach:2">
+<p xid="388"><c>comm.address </c></p>
+</cell>
+<cell xid="390" props="bot-attach:3; left-attach:1; right-attach:2; top-attach:2">
+<p xid="391"><c>Device </c></p>
+</cell>
+<cell xid="393" props="bot-attach:3; left-attach:2; right-attach:3; top-attach:2">
+<p xid="394"><c>Yes </c></p>
+</cell>
+<cell xid="396" props="bot-attach:3; left-attach:3; right-attach:4; top-attach:2">
+<p xid="397"><c>6.06+ </c></p>
+</cell>
+<cell xid="399" props="bot-attach:3; left-attach:4; right-attach:5; top-attach:2">
+<p xid="400"><c>The device address. </c></p>
+</cell>
+<cell xid="402" props="bot-attach:4; left-attach:0; right-attach:1; top-attach:3">
+<p xid="403"><c>comm.alert </c></p>
+</cell>
+<cell xid="405" props="bot-attach:4; left-attach:1; right-attach:2; top-attach:3">
+<p xid="406"><c>Device </c></p>
+</cell>
+<cell xid="408" props="bot-attach:4; left-attach:2; right-attach:3; top-attach:3">
+<p xid="409"><c>Yes </c></p>
+</cell>
+<cell xid="411" props="bot-attach:4; left-attach:3; right-attach:4; top-attach:3">
+<p xid="412"><c>6.06+ </c></p>
+</cell>
+<cell xid="414" props="bot-attach:4; left-attach:4; right-attach:5; top-attach:3">
+<p xid="415"><c>The device will send alert messages when this setting is 1. </c></p>
+</cell>
+<cell xid="417" props="bot-attach:5; left-attach:0; right-attach:1; top-attach:4">
+<p xid="418"><c>comm.checksum </c></p>
+</cell>
+<cell xid="420" props="bot-attach:5; left-attach:1; right-attach:2; top-attach:4">
+<p xid="421"><c>Device </c></p>
+</cell>
+<cell xid="423" props="bot-attach:5; left-attach:2; right-attach:3; top-attach:4">
+<p xid="424"><c>Yes </c></p>
+</cell>
+<cell xid="426" props="bot-attach:5; left-attach:3; right-attach:4; top-attach:4">
+<p xid="427"><c>6.06+ </c></p>
+</cell>
+<cell xid="429" props="bot-attach:5; left-attach:4; right-attach:5; top-attach:4">
+<p xid="430"><c>The device includes checksums in its messages if this setting is set to 1. </c></p>
+</cell>
+<cell xid="432" props="bot-attach:6; left-attach:0; right-attach:1; top-attach:5">
+<p xid="433"><c>comm.protocol </c></p>
+</cell>
+<cell xid="435" props="bot-attach:6; left-attach:1; right-attach:2; top-attach:5">
+<p xid="436"><c>Device </c></p>
+</cell>
+<cell xid="438" props="bot-attach:6; left-attach:2; right-attach:3; top-attach:5">
+<p xid="439"><c>Yes </c></p>
+</cell>
+<cell xid="441" props="bot-attach:6; left-attach:3; right-attach:4; top-attach:5">
+<p xid="442"><c>6.06+ </c></p>
+</cell>
+<cell xid="444" props="bot-attach:6; left-attach:4; right-attach:5; top-attach:5">
+<p xid="445"><c>The communications protocol used by the device on the current interface. </c></p>
+</cell>
+<cell xid="447" props="bot-attach:7; left-attach:0; right-attach:1; top-attach:6">
+<p xid="448"><c>comm.rs232.baud </c></p>
+</cell>
+<cell xid="450" props="bot-attach:7; left-attach:1; right-attach:2; top-attach:6">
+<p xid="451"><c>Device </c></p>
+</cell>
+<cell xid="453" props="bot-attach:7; left-attach:2; right-attach:3; top-attach:6">
+<p xid="454"><c>Yes </c></p>
+</cell>
+<cell xid="456" props="bot-attach:7; left-attach:3; right-attach:4; top-attach:6">
+<p xid="457"><c>6.06+ </c></p>
+</cell>
+<cell xid="459" props="bot-attach:7; left-attach:4; right-attach:5; top-attach:6">
+<p xid="460"><c>The baud rate used by RS232 Prev and Next interfaces. </c></p>
+</cell>
+<cell xid="462" props="bot-attach:8; left-attach:0; right-attach:1; top-attach:7">
+<p xid="463"><c>comm.rs232.protocol </c></p>
+</cell>
+<cell xid="465" props="bot-attach:8; left-attach:1; right-attach:2; top-attach:7">
+<p xid="466"><c>Device </c></p>
+</cell>
+<cell xid="468" props="bot-attach:8; left-attach:2; right-attach:3; top-attach:7">
+<p xid="469"><c>Yes </c></p>
+</cell>
+<cell xid="471" props="bot-attach:8; left-attach:3; right-attach:4; top-attach:7">
+<p xid="472"><c>6.09+ </c></p>
+</cell>
+<cell xid="474" props="bot-attach:8; left-attach:4; right-attach:5; top-attach:7">
+<p xid="475"><c>The protocol used by RS232 Prev and Next interfaces. </c></p>
+</cell>
+<cell xid="477" props="bot-attach:9; left-attach:0; right-attach:1; top-attach:8">
+<p xid="478"><c>deviceid </c></p>
+</cell>
+<cell xid="480" props="bot-attach:9; left-attach:1; right-attach:2; top-attach:8">
+<p xid="481"><c>Device </c></p>
+</cell>
+<cell xid="483" props="bot-attach:9; left-attach:2; right-attach:3; top-attach:8">
+<p xid="484"><c>No </c></p>
+</cell>
+<cell xid="486" props="bot-attach:9; left-attach:3; right-attach:4; top-attach:8">
+<p xid="487"><c>6.06+ </c></p>
+</cell>
+<cell xid="489" props="bot-attach:9; left-attach:4; right-attach:5; top-attach:8">
+<p xid="490"><c>The device ID for the unit. </c></p>
+</cell>
+<cell xid="492" props="bot-attach:10; left-attach:0; right-attach:1; top-attach:9">
+<p xid="493"><c>driver.current.hold </c></p>
+</cell>
+<cell xid="495" props="bot-attach:10; left-attach:1; right-attach:2; top-attach:9">
+<p xid="496"><c>Axis </c></p>
+</cell>
+<cell xid="498" props="bot-attach:10; left-attach:2; right-attach:3; top-attach:9">
+<p xid="499"><c>Yes </c></p>
+</cell>
+<cell xid="501" props="bot-attach:10; left-attach:3; right-attach:4; top-attach:9">
+<p xid="502"><c>6.06+ </c></p>
+</cell>
+<cell xid="504" props="bot-attach:10; left-attach:4; right-attach:5; top-attach:9">
+<p xid="505"><c>Current used to hold the motor in position, in 20 mA DC increments. </c></p>
+</cell>
+<cell xid="507" props="bot-attach:11; left-attach:0; right-attach:1; top-attach:10">
+<p xid="508"><c>driver.current.max </c></p>
+</cell>
+<cell xid="510" props="bot-attach:11; left-attach:1; right-attach:2; top-attach:10">
+<p xid="511"><c>Axis </c></p>
+</cell>
+<cell xid="513" props="bot-attach:11; left-attach:2; right-attach:3; top-attach:10">
+<p xid="514"><c>No </c></p>
+</cell>
+<cell xid="516" props="bot-attach:11; left-attach:3; right-attach:4; top-attach:10">
+<p xid="517"><c>6.16+ </c></p>
+</cell>
+<cell xid="519" props="bot-attach:11; left-attach:4; right-attach:5; top-attach:10">
+<p xid="520"><c>Maximum legal value of driver.current.hold and driver.current.run. </c></p>
+</cell>
+<cell xid="522" props="bot-attach:12; left-attach:0; right-attach:1; top-attach:11">
+<p xid="523"><c>driver.current.run </c></p>
+</cell>
+<cell xid="525" props="bot-attach:12; left-attach:1; right-attach:2; top-attach:11">
+<p xid="526"><c>Axis </c></p>
+</cell>
+<cell xid="528" props="bot-attach:12; left-attach:2; right-attach:3; top-attach:11">
+<p xid="529"><c>Yes </c></p>
+</cell>
+<cell xid="531" props="bot-attach:12; left-attach:3; right-attach:4; top-attach:11">
+<p xid="532"><c>6.06+ </c></p>
+</cell>
+<cell xid="534" props="bot-attach:12; left-attach:4; right-attach:5; top-attach:11">
+<p xid="535"><c>Current used to drive the motor, in 14.1 mA RMS (20 mA peak) increments. </c></p>
+</cell>
+<cell xid="537" props="bot-attach:13; left-attach:0; right-attach:1; top-attach:12">
+<p xid="538"><c>driver.temperature </c></p>
+</cell>
+<cell xid="540" props="bot-attach:13; left-attach:1; right-attach:2; top-attach:12">
+<p xid="541"><c>Axis </c></p>
+</cell>
+<cell xid="543" props="bot-attach:13; left-attach:2; right-attach:3; top-attach:12">
+<p xid="544"><c>No </c></p>
+</cell>
+<cell xid="546" props="bot-attach:13; left-attach:3; right-attach:4; top-attach:12">
+<p xid="547"><c>6.06+ </c></p>
+</cell>
+<cell xid="549" props="bot-attach:13; left-attach:4; right-attach:5; top-attach:12">
+<p xid="550"><c>The current temperature of the axis driver, in degrees Celsius. </c></p>
+</cell>
+<cell xid="552" props="bot-attach:14; left-attach:0; right-attach:1; top-attach:13">
+<p xid="553"><c>knob.dir </c></p>
+</cell>
+<cell xid="555" props="bot-attach:14; left-attach:1; right-attach:2; top-attach:13">
+<p xid="556"><c>Axis </c></p>
+</cell>
+<cell xid="558" props="bot-attach:14; left-attach:2; right-attach:3; top-attach:13">
+<p xid="559"><c>Yes </c></p>
+</cell>
+<cell xid="561" props="bot-attach:14; left-attach:3; right-attach:4; top-attach:13">
+<p xid="562"><c>6.06+ </c></p>
+</cell>
+<cell xid="564" props="bot-attach:14; left-attach:4; right-attach:5; top-attach:13">
+<p xid="565"><c>Sets the movement direction for the knob. </c></p>
+</cell>
+<cell xid="567" props="bot-attach:15; left-attach:0; right-attach:1; top-attach:14">
+<p xid="568"><c>knob.distance </c></p>
+</cell>
+<cell xid="570" props="bot-attach:15; left-attach:1; right-attach:2; top-attach:14">
+<p xid="571"><c>Axis </c></p>
+</cell>
+<cell xid="573" props="bot-attach:15; left-attach:2; right-attach:3; top-attach:14">
+<p xid="574"><c>Yes </c></p>
+</cell>
+<cell xid="576" props="bot-attach:15; left-attach:3; right-attach:4; top-attach:14">
+<p xid="577"><c>6.06+ </c></p>
+</cell>
+<cell xid="579" props="bot-attach:15; left-attach:4; right-attach:5; top-attach:14">
+<p xid="580"><c>Sets how far the device moves with each step of the knob in displacement mode, in units of microsteps. </c></p>
+</cell>
+<cell xid="582" props="bot-attach:16; left-attach:0; right-attach:1; top-attach:15">
+<p xid="583"><c>knob.enable </c></p>
+</cell>
+<cell xid="585" props="bot-attach:16; left-attach:1; right-attach:2; top-attach:15">
+<p xid="586"><c>Axis </c></p>
+</cell>
+<cell xid="588" props="bot-attach:16; left-attach:2; right-attach:3; top-attach:15">
+<p xid="589"><c>Yes </c></p>
+</cell>
+<cell xid="591" props="bot-attach:16; left-attach:3; right-attach:4; top-attach:15">
+<p xid="592"><c>6.06+ </c></p>
+</cell>
+<cell xid="594" props="bot-attach:16; left-attach:4; right-attach:5; top-attach:15">
+<p xid="595"><c>Disable the use of the knob when set to 0. </c></p>
+</cell>
+<cell xid="597" props="bot-attach:17; left-attach:0; right-attach:1; top-attach:16">
+<p xid="598"><c>knob.maxspeed </c></p>
+</cell>
+<cell xid="600" props="bot-attach:17; left-attach:1; right-attach:2; top-attach:16">
+<p xid="601"><c>Axis </c></p>
+</cell>
+<cell xid="603" props="bot-attach:17; left-attach:2; right-attach:3; top-attach:16">
+<p xid="604"><c>Yes </c></p>
+</cell>
+<cell xid="606" props="bot-attach:17; left-attach:3; right-attach:4; top-attach:16">
+<p xid="607"><c>6.06+ </c></p>
+</cell>
+<cell xid="609" props="bot-attach:17; left-attach:4; right-attach:5; top-attach:16">
+<p xid="610"><c>The maximum speed that can be reached using the knob in velocity mode. </c></p>
+</cell>
+<cell xid="612" props="bot-attach:18; left-attach:0; right-attach:1; top-attach:17">
+<p xid="613"><c>knob.mode </c></p>
+</cell>
+<cell xid="615" props="bot-attach:18; left-attach:1; right-attach:2; top-attach:17">
+<p xid="616"><c>Axis </c></p>
+</cell>
+<cell xid="618" props="bot-attach:18; left-attach:2; right-attach:3; top-attach:17">
+<p xid="619"><c>Yes </c></p>
+</cell>
+<cell xid="621" props="bot-attach:18; left-attach:3; right-attach:4; top-attach:17">
+<p xid="622"><c>6.06+ </c></p>
+</cell>
+<cell xid="624" props="bot-attach:18; left-attach:4; right-attach:5; top-attach:17">
+<p xid="625"><c>Sets the mode of the manual control knob. </c></p>
+</cell>
+<cell xid="627" props="bot-attach:19; left-attach:0; right-attach:1; top-attach:18">
+<p xid="628"><c>knob.speedprofile </c></p>
+</cell>
+<cell xid="630" props="bot-attach:19; left-attach:1; right-attach:2; top-attach:18">
+<p xid="631"><c>Axis </c></p>
+</cell>
+<cell xid="633" props="bot-attach:19; left-attach:2; right-attach:3; top-attach:18">
+<p xid="634"><c>Yes </c></p>
+</cell>
+<cell xid="636" props="bot-attach:19; left-attach:3; right-attach:4; top-attach:18">
+<p xid="637"><c>6.06+ </c></p>
+</cell>
+<cell xid="639" props="bot-attach:19; left-attach:4; right-attach:5; top-attach:18">
+<p xid="640"><c>Sets the profile to be used per increment when in velocity mode. </c></p>
+</cell>
+<cell xid="642" props="bot-attach:20; left-attach:0; right-attach:1; top-attach:19">
+<p xid="643"><c>limit.approach.maxspeed </c></p>
+</cell>
+<cell xid="645" props="bot-attach:20; left-attach:1; right-attach:2; top-attach:19">
+<p xid="646"><c>Axis </c></p>
+</cell>
+<cell xid="648" props="bot-attach:20; left-attach:2; right-attach:3; top-attach:19">
+<p xid="649"><c>Yes </c></p>
+</cell>
+<cell xid="651" props="bot-attach:20; left-attach:3; right-attach:4; top-attach:19">
+<p xid="652"><c>6.06+ </c></p>
+</cell>
+<cell xid="654" props="bot-attach:20; left-attach:4; right-attach:5; top-attach:19">
+<p xid="655"><c>Maximum speed used when approaching a limit sensor. </c></p>
+</cell>
+<cell xid="657" props="bot-attach:21; left-attach:0; right-attach:1; top-attach:20">
+<p xid="658"><c>limit.cycle.dist </c></p>
+</cell>
+<cell xid="660" props="bot-attach:21; left-attach:1; right-attach:2; top-attach:20">
+<p xid="661"><c>Axis </c></p>
+</cell>
+<cell xid="663" props="bot-attach:21; left-attach:2; right-attach:3; top-attach:20">
+<p xid="664"><c>Yes </c></p>
+</cell>
+<cell xid="666" props="bot-attach:21; left-attach:3; right-attach:4; top-attach:20">
+<p xid="667"><c>6.20+ </c></p>
+</cell>
+<cell xid="669" props="bot-attach:21; left-attach:4; right-attach:5; top-attach:20">
+<p xid="670"><c>The length of one full rotation. </c></p>
+</cell>
+<cell xid="672" props="bot-attach:22; left-attach:0; right-attach:1; top-attach:21">
+<p xid="673"><c>limit.detect.decelonly </c></p>
+</cell>
+<cell xid="675" props="bot-attach:22; left-attach:1; right-attach:2; top-attach:21">
+<p xid="676"><c>Axis </c></p>
+</cell>
+<cell xid="678" props="bot-attach:22; left-attach:2; right-attach:3; top-attach:21">
+<p xid="679"><c>Yes </c></p>
+</cell>
+<cell xid="681" props="bot-attach:22; left-attach:3; right-attach:4; top-attach:21">
+<p xid="682"><c>6.06+ </c></p>
+</cell>
+<cell xid="684" props="bot-attach:22; left-attach:4; right-attach:5; top-attach:21">
+<p xid="685"><c>Deceleration used when stopping after a limit sensor has triggered. </c></p>
+</cell>
+<cell xid="687" props="bot-attach:23; left-attach:0; right-attach:1; top-attach:22">
+<p xid="688"><c>limit.detect.maxspeed </c></p>
+</cell>
+<cell xid="690" props="bot-attach:23; left-attach:1; right-attach:2; top-attach:22">
+<p xid="691"><c>Axis </c></p>
+</cell>
+<cell xid="693" props="bot-attach:23; left-attach:2; right-attach:3; top-attach:22">
+<p xid="694"><c>Yes </c></p>
+</cell>
+<cell xid="696" props="bot-attach:23; left-attach:3; right-attach:4; top-attach:22">
+<p xid="697"><c>6.06+ </c></p>
+</cell>
+<cell xid="699" props="bot-attach:23; left-attach:4; right-attach:5; top-attach:22">
+<p xid="700"><c>Maximum speed used when moving away from a limit sensor. </c></p>
+</cell>
+<cell xid="702" props="bot-attach:24; left-attach:0; right-attach:1; top-attach:23">
+<p xid="703"><c>limit.home.action </c></p>
+</cell>
+<cell xid="705" props="bot-attach:24; left-attach:1; right-attach:2; top-attach:23">
+<p xid="706"><c>Axis </c></p>
+</cell>
+<cell xid="708" props="bot-attach:24; left-attach:2; right-attach:3; top-attach:23">
+<p xid="709"><c>Yes </c></p>
+</cell>
+<cell xid="711" props="bot-attach:24; left-attach:3; right-attach:4; top-attach:23">
+<p xid="712"><c>6.06+ </c></p>
+</cell>
+<cell xid="714" props="bot-attach:24; left-attach:4; right-attach:5; top-attach:23">
+<p xid="715"><c>Automatic limit switch action. </c></p>
+</cell>
+<cell xid="717" props="bot-attach:25; left-attach:0; right-attach:1; top-attach:24">
+<p xid="718"><c>limit.home.pos </c></p>
+</cell>
+<cell xid="720" props="bot-attach:25; left-attach:1; right-attach:2; top-attach:24">
+<p xid="721"><c>Axis </c></p>
+</cell>
+<cell xid="723" props="bot-attach:25; left-attach:2; right-attach:3; top-attach:24">
+<p xid="724"><c>Yes </c></p>
+</cell>
+<cell xid="726" props="bot-attach:25; left-attach:3; right-attach:4; top-attach:24">
+<p xid="727"><c>6.06+ </c></p>
+</cell>
+<cell xid="729" props="bot-attach:25; left-attach:4; right-attach:5; top-attach:24">
+<p xid="730"><c>The updated position of the sensor, when triggered. </c></p>
+</cell>
+<cell xid="732" props="bot-attach:26; left-attach:0; right-attach:1; top-attach:25">
+<p xid="733"><c>limit.home.posupdate </c></p>
+</cell>
+<cell xid="735" props="bot-attach:26; left-attach:1; right-attach:2; top-attach:25">
+<p xid="736"><c>Axis </c></p>
+</cell>
+<cell xid="738" props="bot-attach:26; left-attach:2; right-attach:3; top-attach:25">
+<p xid="739"><c>Yes </c></p>
+</cell>
+<cell xid="741" props="bot-attach:26; left-attach:3; right-attach:4; top-attach:25">
+<p xid="742"><c>6.06+ </c></p>
+</cell>
+<cell xid="744" props="bot-attach:26; left-attach:4; right-attach:5; top-attach:25">
+<p xid="745"><c>Position update to occur when sensor is triggered. </c></p>
+</cell>
+<cell xid="747" props="bot-attach:27; left-attach:0; right-attach:1; top-attach:26">
+<p xid="748"><c>limit.home.preset </c></p>
+</cell>
+<cell xid="750" props="bot-attach:27; left-attach:1; right-attach:2; top-attach:26">
+<p xid="751"><c>Axis </c></p>
+</cell>
+<cell xid="753" props="bot-attach:27; left-attach:2; right-attach:3; top-attach:26">
+<p xid="754"><c>Yes </c></p>
+</cell>
+<cell xid="756" props="bot-attach:27; left-attach:3; right-attach:4; top-attach:26">
+<p xid="757"><c>6.06+ </c></p>
+</cell>
+<cell xid="759" props="bot-attach:27; left-attach:4; right-attach:5; top-attach:26">
+<p xid="760"><c>The default position of the home sensor. </c></p>
+</cell>
+<cell xid="762" props="bot-attach:28; left-attach:0; right-attach:1; top-attach:27">
+<p xid="763"><c>limit.home.state </c></p>
+</cell>
+<cell xid="765" props="bot-attach:28; left-attach:1; right-attach:2; top-attach:27">
+<p xid="766"><c>Axis </c></p>
+</cell>
+<cell xid="768" props="bot-attach:28; left-attach:2; right-attach:3; top-attach:27">
+<p xid="769"><c>No </c></p>
+</cell>
+<cell xid="771" props="bot-attach:28; left-attach:3; right-attach:4; top-attach:27">
+<p xid="772"><c>6.06+ </c></p>
+</cell>
+<cell xid="774" props="bot-attach:28; left-attach:4; right-attach:5; top-attach:27">
+<p xid="775"><c>The state of the home sensor. </c></p>
+</cell>
+<cell xid="777" props="bot-attach:29; left-attach:0; right-attach:1; top-attach:28">
+<p xid="778"><c>limit.home.triggered </c></p>
+</cell>
+<cell xid="780" props="bot-attach:29; left-attach:1; right-attach:2; top-attach:28">
+<p xid="781"><c>Axis </c></p>
+</cell>
+<cell xid="783" props="bot-attach:29; left-attach:2; right-attach:3; top-attach:28">
+<p xid="784"><c>No </c></p>
+</cell>
+<cell xid="786" props="bot-attach:29; left-attach:3; right-attach:4; top-attach:28">
+<p xid="787"><c>6.06+ </c></p>
+</cell>
+<cell xid="789" props="bot-attach:29; left-attach:4; right-attach:5; top-attach:28">
+<p xid="790"><c>Whether the home sensor has been triggered previously. </c></p>
+</cell>
+<cell xid="792" props="bot-attach:30; left-attach:0; right-attach:1; top-attach:29">
+<p xid="793"><c>limit.max </c></p>
+</cell>
+<cell xid="795" props="bot-attach:30; left-attach:1; right-attach:2; top-attach:29">
+<p xid="796"><c>Axis </c></p>
+</cell>
+<cell xid="798" props="bot-attach:30; left-attach:2; right-attach:3; top-attach:29">
+<p xid="799"><c>Yes </c></p>
+</cell>
+<cell xid="801" props="bot-attach:30; left-attach:3; right-attach:4; top-attach:29">
+<p xid="802"><c>6.06+ </c></p>
+</cell>
+<cell xid="804" props="bot-attach:30; left-attach:4; right-attach:5; top-attach:29">
+<p xid="805"><c>The maximum position the device can move to, measured in microsteps. </c></p>
+</cell>
+<cell xid="807" props="bot-attach:31; left-attach:0; right-attach:1; top-attach:30">
+<p xid="808"><c>limit.min </c></p>
+</cell>
+<cell xid="810" props="bot-attach:31; left-attach:1; right-attach:2; top-attach:30">
+<p xid="811"><c>Axis </c></p>
+</cell>
+<cell xid="813" props="bot-attach:31; left-attach:2; right-attach:3; top-attach:30">
+<p xid="814"><c>Yes </c></p>
+</cell>
+<cell xid="816" props="bot-attach:31; left-attach:3; right-attach:4; top-attach:30">
+<p xid="817"><c>6.06+ </c></p>
+</cell>
+<cell xid="819" props="bot-attach:31; left-attach:4; right-attach:5; top-attach:30">
+<p xid="820"><c>The minimum position the device can move to, measured in microsteps. </c></p>
+</cell>
+<cell xid="822" props="bot-attach:32; left-attach:0; right-attach:1; top-attach:31">
+<p xid="823"><c>limit.start.pos </c></p>
+</cell>
+<cell xid="825" props="bot-attach:32; left-attach:1; right-attach:2; top-attach:31">
+<p xid="826"><c>Axis </c></p>
+</cell>
+<cell xid="828" props="bot-attach:32; left-attach:2; right-attach:3; top-attach:31">
+<p xid="829"><c>Yes </c></p>
+</cell>
+<cell xid="831" props="bot-attach:32; left-attach:3; right-attach:4; top-attach:31">
+<p xid="832"><c>6.19+ </c></p>
+</cell>
+<cell xid="834" props="bot-attach:32; left-attach:4; right-attach:5; top-attach:31">
+<p xid="835"><c>Start up position of the axis. </c></p>
+</cell>
+<cell xid="837" props="bot-attach:33; left-attach:0; right-attach:1; top-attach:32">
+<p xid="838"><c>maxspeed </c></p>
+</cell>
+<cell xid="840" props="bot-attach:33; left-attach:1; right-attach:2; top-attach:32">
+<p xid="841"><c>Axis </c></p>
+</cell>
+<cell xid="843" props="bot-attach:33; left-attach:2; right-attach:3; top-attach:32">
+<p xid="844"><c>Yes </c></p>
+</cell>
+<cell xid="846" props="bot-attach:33; left-attach:3; right-attach:4; top-attach:32">
+<p xid="847"><c>6.06+ </c></p>
+</cell>
+<cell xid="849" props="bot-attach:33; left-attach:4; right-attach:5; top-attach:32">
+<p xid="850"><c>The maximum speed the device moves at. </c></p>
+</cell>
+<cell xid="852" props="bot-attach:34; left-attach:0; right-attach:1; top-attach:33">
+<p xid="853"><c>motion.accelonly </c></p>
+</cell>
+<cell xid="855" props="bot-attach:34; left-attach:1; right-attach:2; top-attach:33">
+<p xid="856"><c>Axis </c></p>
+</cell>
+<cell xid="858" props="bot-attach:34; left-attach:2; right-attach:3; top-attach:33">
+<p xid="859"><c>Yes </c></p>
+</cell>
+<cell xid="861" props="bot-attach:34; left-attach:3; right-attach:4; top-attach:33">
+<p xid="862"><c>6.06+ </c></p>
+</cell>
+<cell xid="864" props="bot-attach:34; left-attach:4; right-attach:5; top-attach:33">
+<p xid="865"><c>Sets the acceleration used to increase the speed. </c></p>
+</cell>
+<cell xid="867" props="bot-attach:35; left-attach:0; right-attach:1; top-attach:34">
+<p xid="868"><c>motion.decelonly </c></p>
+</cell>
+<cell xid="870" props="bot-attach:35; left-attach:1; right-attach:2; top-attach:34">
+<p xid="871"><c>Axis </c></p>
+</cell>
+<cell xid="873" props="bot-attach:35; left-attach:2; right-attach:3; top-attach:34">
+<p xid="874"><c>Yes </c></p>
+</cell>
+<cell xid="876" props="bot-attach:35; left-attach:3; right-attach:4; top-attach:34">
+<p xid="877"><c>6.06+ </c></p>
+</cell>
+<cell xid="879" props="bot-attach:35; left-attach:4; right-attach:5; top-attach:34">
+<p xid="880"><c>Sets the deceleration used when decreasing the speed. </c></p>
+</cell>
+<cell xid="882" props="bot-attach:36; left-attach:0; right-attach:1; top-attach:35">
+<p xid="883"><c>motion.index.dist </c></p>
+</cell>
+<cell xid="885" props="bot-attach:36; left-attach:1; right-attach:2; top-attach:35">
+<p xid="886"><c>Axis </c></p>
+</cell>
+<cell xid="888" props="bot-attach:36; left-attach:2; right-attach:3; top-attach:35">
+<p xid="889"><c>Yes </c></p>
+</cell>
+<cell xid="891" props="bot-attach:36; left-attach:3; right-attach:4; top-attach:35">
+<p xid="892"><c>6.21+ </c></p>
+</cell>
+<cell xid="894" props="bot-attach:36; left-attach:4; right-attach:5; top-attach:35">
+<p xid="895"><c>The distance between consecutive index positions. </c></p>
+</cell>
+<cell xid="897" props="bot-attach:37; left-attach:0; right-attach:1; top-attach:36">
+<p xid="898"><c>motion.index.num </c></p>
+</cell>
+<cell xid="900" props="bot-attach:37; left-attach:1; right-attach:2; top-attach:36">
+<p xid="901"><c>Axis </c></p>
+</cell>
+<cell xid="903" props="bot-attach:37; left-attach:2; right-attach:3; top-attach:36">
+<p xid="904"><c>No </c></p>
+</cell>
+<cell xid="906" props="bot-attach:37; left-attach:3; right-attach:4; top-attach:36">
+<p xid="907"><c>6.22+ </c></p>
+</cell>
+<cell xid="909" props="bot-attach:37; left-attach:4; right-attach:5; top-attach:36">
+<p xid="910"><c>The current index number. </c></p>
+</cell>
+<cell xid="912" props="bot-attach:38; left-attach:0; right-attach:1; top-attach:37">
+<p xid="913"><c>pos </c></p>
+</cell>
+<cell xid="915" props="bot-attach:38; left-attach:1; right-attach:2; top-attach:37">
+<p xid="916"><c>Axis </c></p>
+</cell>
+<cell xid="918" props="bot-attach:38; left-attach:2; right-attach:3; top-attach:37">
+<p xid="919"><c>Yes </c></p>
+</cell>
+<cell xid="921" props="bot-attach:38; left-attach:3; right-attach:4; top-attach:37">
+<p xid="922"><c>6.06+ </c></p>
+</cell>
+<cell xid="924" props="bot-attach:38; left-attach:4; right-attach:5; top-attach:37">
+<p xid="925"><c>The current absolute position of the device. </c></p>
+</cell>
+<cell xid="927" props="bot-attach:39; left-attach:0; right-attach:1; top-attach:38">
+<p xid="928"><c>resolution </c></p>
+</cell>
+<cell xid="930" props="bot-attach:39; left-attach:1; right-attach:2; top-attach:38">
+<p xid="931"><c>Axis </c></p>
+</cell>
+<cell xid="933" props="bot-attach:39; left-attach:2; right-attach:3; top-attach:38">
+<p xid="934"><c>Yes </c></p>
+</cell>
+<cell xid="936" props="bot-attach:39; left-attach:3; right-attach:4; top-attach:38">
+<p xid="937"><c>6.06+ </c></p>
+</cell>
+<cell xid="939" props="bot-attach:39; left-attach:4; right-attach:5; top-attach:38">
+<p xid="940"><c>Microstep resolution </c></p>
+</cell>
+<cell xid="942" props="bot-attach:40; left-attach:0; right-attach:1; top-attach:39">
+<p xid="943"><c>stream.numbufs </c></p>
+</cell>
+<cell xid="945" props="bot-attach:40; left-attach:1; right-attach:2; top-attach:39">
+<p xid="946"><c>Device </c></p>
+</cell>
+<cell xid="948" props="bot-attach:40; left-attach:2; right-attach:3; top-attach:39">
+<p xid="949"><c>No </c></p>
+</cell>
+<cell xid="951" props="bot-attach:40; left-attach:3; right-attach:4; top-attach:39">
+<p xid="952"><c>6.14+ </c></p>
+</cell>
+<cell xid="954" props="bot-attach:40; left-attach:4; right-attach:5; top-attach:39">
+<p xid="955"><c>The number of stream buffers provided in the device. </c></p>
+</cell>
+<cell xid="957" props="bot-attach:41; left-attach:0; right-attach:1; top-attach:40">
+<p xid="958"><c>stream.numstreams </c></p>
+</cell>
+<cell xid="960" props="bot-attach:41; left-attach:1; right-attach:2; top-attach:40">
+<p xid="961"><c>Device </c></p>
+</cell>
+<cell xid="963" props="bot-attach:41; left-attach:2; right-attach:3; top-attach:40">
+<p xid="964"><c>No </c></p>
+</cell>
+<cell xid="966" props="bot-attach:41; left-attach:3; right-attach:4; top-attach:40">
+<p xid="967"><c>6.14+ </c></p>
+</cell>
+<cell xid="969" props="bot-attach:41; left-attach:4; right-attach:5; top-attach:40">
+<p xid="970"><c>The number of streams provided in the device. </c></p>
+</cell>
+<cell xid="972" props="bot-attach:42; left-attach:0; right-attach:1; top-attach:41">
+<p xid="973"><c>system.access </c></p>
+</cell>
+<cell xid="975" props="bot-attach:42; left-attach:1; right-attach:2; top-attach:41">
+<p xid="976"><c>Device </c></p>
+</cell>
+<cell xid="978" props="bot-attach:42; left-attach:2; right-attach:3; top-attach:41">
+<p xid="979"><c>Yes </c></p>
+</cell>
+<cell xid="981" props="bot-attach:42; left-attach:3; right-attach:4; top-attach:41">
+<p xid="982"><c>6.06+ </c></p>
+</cell>
+<cell xid="984" props="bot-attach:42; left-attach:4; right-attach:5; top-attach:41">
+<p xid="985"><c>Sets the access level of the user. </c></p>
+</cell>
+<cell xid="987" props="bot-attach:43; left-attach:0; right-attach:1; top-attach:42">
+<p xid="988"><c>system.axiscount </c></p>
+</cell>
+<cell xid="990" props="bot-attach:43; left-attach:1; right-attach:2; top-attach:42">
+<p xid="991"><c>Device </c></p>
+</cell>
+<cell xid="993" props="bot-attach:43; left-attach:2; right-attach:3; top-attach:42">
+<p xid="994"><c>No </c></p>
+</cell>
+<cell xid="996" props="bot-attach:43; left-attach:3; right-attach:4; top-attach:42">
+<p xid="997"><c>6.06+ </c></p>
+</cell>
+<cell xid="999" props="bot-attach:43; left-attach:4; right-attach:5; top-attach:42">
+<p xid="1000"><c>The number of axes in the device. </c></p>
+</cell>
+<cell xid="1002" props="bot-attach:44; left-attach:0; right-attach:1; top-attach:43">
+<p xid="1003"><c>system.led.enable </c></p>
+</cell>
+<cell xid="1005" props="bot-attach:44; left-attach:1; right-attach:2; top-attach:43">
+<p xid="1006"><c>Device </c></p>
+</cell>
+<cell xid="1008" props="bot-attach:44; left-attach:2; right-attach:3; top-attach:43">
+<p xid="1009"><c>Yes </c></p>
+</cell>
+<cell xid="1011" props="bot-attach:44; left-attach:3; right-attach:4; top-attach:43">
+<p xid="1012"><c>6.06+ </c></p>
+</cell>
+<cell xid="1014" props="bot-attach:44; left-attach:4; right-attach:5; top-attach:43">
+<p xid="1015"><c>Enables the front panel LEDs. </c></p>
+</cell>
+<cell xid="1017" props="bot-attach:45; left-attach:0; right-attach:1; top-attach:44">
+<p xid="1018"><c>system.serial </c></p>
+</cell>
+<cell xid="1020" props="bot-attach:45; left-attach:1; right-attach:2; top-attach:44">
+<p xid="1021"><c>Device </c></p>
+</cell>
+<cell xid="1023" props="bot-attach:45; left-attach:2; right-attach:3; top-attach:44">
+<p xid="1024"><c>No </c></p>
+</cell>
+<cell xid="1026" props="bot-attach:45; left-attach:3; right-attach:4; top-attach:44">
+<p xid="1027"><c>6.15+ </c></p>
+</cell>
+<cell xid="1029" props="bot-attach:45; left-attach:4; right-attach:5; top-attach:44">
+<p xid="1030"><c>The serial number of the device. </c></p>
+</cell>
+<cell xid="1032" props="bot-attach:46; left-attach:0; right-attach:1; top-attach:45">
+<p xid="1033"><c>system.voltage </c></p>
+</cell>
+<cell xid="1035" props="bot-attach:46; left-attach:1; right-attach:2; top-attach:45">
+<p xid="1036"><c>Device </c></p>
+</cell>
+<cell xid="1038" props="bot-attach:46; left-attach:2; right-attach:3; top-attach:45">
+<p xid="1039"><c>No </c></p>
+</cell>
+<cell xid="1041" props="bot-attach:46; left-attach:3; right-attach:4; top-attach:45">
+<p xid="1042"><c>6.06+ </c></p>
+</cell>
+<cell xid="1044" props="bot-attach:46; left-attach:4; right-attach:5; top-attach:45">
+<p xid="1045"><c>The voltage being applied to the device. </c></p>
+</cell>
+<cell xid="1047" props="bot-attach:47; left-attach:0; right-attach:1; top-attach:46">
+<p xid="1048"><c>version </c></p>
+</cell>
+<cell xid="1050" props="bot-attach:47; left-attach:1; right-attach:2; top-attach:46">
+<p xid="1051"><c>Device </c></p>
+</cell>
+<cell xid="1053" props="bot-attach:47; left-attach:2; right-attach:3; top-attach:46">
+<p xid="1054"><c>No </c></p>
+</cell>
+<cell xid="1056" props="bot-attach:47; left-attach:3; right-attach:4; top-attach:46">
+<p xid="1057"><c>6.06+ </c></p>
+</cell>
+<cell xid="1059" props="bot-attach:47; left-attach:4; right-attach:5; top-attach:46">
+<p xid="1060"><c>The firmware version of the device. </c></p>
+</cell>
+<cell xid="1062" props="bot-attach:48; left-attach:0; right-attach:1; top-attach:47">
+<p xid="1063"><c>version.build </c></p>
+</cell>
+<cell xid="1065" props="bot-attach:48; left-attach:1; right-attach:2; top-attach:47">
+<p xid="1066"><c>Device </c></p>
+</cell>
+<cell xid="1068" props="bot-attach:48; left-attach:2; right-attach:3; top-attach:47">
+<p xid="1069"><c>No </c></p>
+</cell>
+<cell xid="1071" props="bot-attach:48; left-attach:3; right-attach:4; top-attach:47">
+<p xid="1072"><c>6.17+ </c></p>
+</cell>
+<cell xid="1074" props="bot-attach:48; left-attach:4; right-attach:5; top-attach:47">
+<p xid="1075"><c>The build number of the device’s firmware. </c></p>
+</cell>
+</table>
+<p style="Heading 3" xid="1078"><c></c></p>
+<p style="Normal" xid="1079"><c></c></p>
+<p style="Normal" xid="1080"><c></c></p>
+</section>
+</abiword>
