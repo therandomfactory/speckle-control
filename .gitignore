@@ -1,0 +1,7 @@
+# ignore thee files
+*.log
+*.so
+*.so.*
+*.o
+*.a
+
