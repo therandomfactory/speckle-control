@@ -1,0 +1,39 @@
+
+
+proc searchusno { ra dec mmax mmin} {
+global gTEL
+   set cra [join [split $ra :] "%3A"]
+   set cdec  [string trim [join [split $dec :] "%3A"] "+"]
+   set cmd "http://www.noao.edu/cgi-bin/usno/usno2\?search=yes\&ra=$cra\&dec=$cdec\&width=20\&mmax=$mmax\&mmin=$mmin"
+   set res [split [exec lynx -dump $cmd] \n]
+   set ores ""
+   foreach o $res {
+      if { [llength [split [lindex $o 0] :]] == 3 } {
+         set ores "$ores \n $o"
+      }
+   }
+   return "$ores"
+}
+
+proc usnofind { xmax ymax radius scale mmax mmin rot ra dec ep } {
+   set  rra [hms_to_radians $ra]
+   set  rdec [dms_to_radians $dec]
+   set radius [expr sqrt($xmax*$xmax + $ymax*$ymax)]
+   set res [split [searchusno $ra $dec $mmax $mmin] \n]
+   set output ""
+   set nnn 1
+   foreach obj $res {
+     if { [string trim $obj] != "" } {
+       set ora [hms_to_radians [lindex $obj 0]]
+       set odec [dms_to_radians [lindex $obj 1]]
+       set deltara [expr ($ora-$rra)*180./3.1415926535*3600./$scale]
+       set deltadec [expr ($odec-$rdec)*180./3.1415926535*3600./$scale]
+       set  o "USNO [format %5.5d $nnn] [format %6.1f $deltara] [format %6.1f $deltadec] [split [lindex $obj 0] :] [split [lindex $obj 1] :] 2000.0 [lindex $obj 2]"
+       set output "$output\n $o"
+       incr nnn 1
+    }
+   }
+   return $output
+}
+
+ 
