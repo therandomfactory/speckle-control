@@ -1,0 +1,20 @@
+#!/usr/bin/tclsh
+
+
+set FWHEELS(A,port)		/dev/ttyUSB1
+set FWHEELS(A,1)		"Red-I"
+set FWHEELS(A,2)		"Red-Z"
+set FWHEELS(A,3)		"Red-716"
+set FWHEELS(A,4)		"Red-832"
+set FWHEELS(A,5)		"clear"
+set FWHEELS(A,6)		"block"
+
+set FWHEELS(B,port)		/dev/ttyUSB2
+set FWHEELS(B,1)		"Blue-U"
+set FWHEELS(B,2)		"Blue-G"
+set FWHEELS(B,3)		"Blue-R"
+set FWHEELS(B,4)		"Blue-467"
+set FWHEELS(B,5)		"Blue-562"
+set FWHEELS(B,6)		"clear"
+
+
