@@ -5,16 +5,13 @@
 # License, v. 2.1. If a copy of the GPL was not distributed with this file,
 # You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 #
-# Copyright(c) 2017 The Random Factory (www.randomfactopry.com) 
+# Copyright(c) 2017 The Random Factory (www.randomfactory.com) 
 #
 #
 
 
 set NESSI_DIR $env(NESSI_DIR)
 
-set ZABERS(A,port) /dev/ttyACM0
-set ZABERS(B,port) /dev/ttyACM1
-set ZABERS(rotator,port) /dev/ttyUSB1
 
 
 proc loadZaberConfig { fname } {
@@ -22,30 +19,39 @@ global NESSI_DIR ZABERS
    if { [file exists $NESSI_DIR/$fname] == 0 } {
      errordialog "Zaber configuration file $NESSI_DIR/$fname\n does not exist"
    } else {
-     set i 0
-     set fin [open $NESSI_DIR/$fname]
-     while { [gets $fin rec] > -1 } {
-         incr i 1
-         set ZABERS([lindex $rec 0],device) $i
-         set ZABERS($i,name) [lindex $rec 0]
-         set ZABERS($i,unit1) [lindex $rec 1]
-         set ZABERS($i,unit2) [lindex $rec 2]
-         set ZABERS($i,aliuOut) [lrange $rec 3 4]
-         set ZABERS($i,dichroicOut) [lindex $rec 5 6]
-         set ZABERS($i,aliuIn) [lrange $rec 7 8]
-         set ZABERS($i,dichroicIn) [lindex $rec 8 9]
-     }
-     close $fin
+     source $NESSI_DIR/zabersConfiguration
+     set NESCONFIG(zaberChange) 0
    }
 }
 
-proc saveZaberConfig { fcfg } {
+proc saveZaberConfig { fname } {
+global NESSI_DIR ZABERS
+   set fcfg [open $NESSI_DIR/$fname w]
+   puts $fcfg  "#!/usr/bin/tclsh
+   echoZaberConfig $fcfg
+   close $fcfg
+   set NESCONFIG(zaberChange) 0
+   debuglog "Saved Zaber configuration in $NESSI_DIR/$fname"
+}
+
+proc logZaberConfig { } {
+global FLOG
+  echoZaberConfig $FLOG
+}
+
+proc echoZaberConfig { fcfg } {
 global ZABERS
-   puts $fcfg  "# Zaber stage configuration parameters"
-   foreach i "1 2" {
-     foreach p "name unit1 unit2 aliuOut dichroicOut aliuIn dichroicIn" {
+   puts $fcfg  "# Zaber stage configuration parameters
+set ZABERS(port) $ZABERS(port)
+"
+   foreach i "A B " {
+     foreach p "device speckle wide home engineer" {
          puts $fcfg "set ZABERS($i,$p) \"$ZABERS($i,$p)\""
      }
+     puts $fcfg ""
+   }
+   foreach p "device in out home" {  
+     puts $fcfg "set ZABERS(rotator,$p) \"$ZABERS(rotator,$p)\""
    }
 }
 
@@ -53,21 +59,22 @@ global ZABERS
 proc zaberConnect { name } {
 global ZABERS
    set handle -1
-   if { $name == "JOUFLU_A" } {set handle [za_connect $ZABERS(A,port) ] }
-   if { $name == "JOUFLU_B" } {set handle [za_connect $ZABERS(B,port) ] }
-   if { $name == "Rotator"  } {set handle [za_connect $ZABERS(Rotator,port) ] }
+   set handle [za_connect $ZABERS(port) ]
    if { $handle < 0 } {
      errordialog "Failed to connect to Zaber $name"
+   } else {
+     debuglog "Zabers connected to port $ZABERS(port) - OK"
+     set ZABERS(handle) $handle
    }
-   set ZABERS($name,handle) $handle
    return $handle
 }
 
 proc zaberParseResponse { name } {
 global ZABERS
-  if { $ZABERS($name,handle) > 0 } {
-     set result [za_receive $ZABERS($name,handle) ]
+  if { $ZABERS(handle) > 0 } {
+     set result [za_receive $ZABERS(handle) ]
      set ZABERS($name,[lindex $result 1]) "lrange $result 2 end]
+     debuglog "Zaber response : $result"
   } else {
      errordialog "Zaber handle not valid in zaberParseResponse - $name"
   }
@@ -103,6 +110,13 @@ global ZABERS
      errordialog "Zaber handle not valid in zaberLed - $handle"
   }
 }
+
+proc zaberGoto { device pos } {
+global ZABERS
+  set newp $ZABERS($device,$pos)
+  set res [zaberSetPos $device $newp]
+}
+
 
 proc zaberHelp { } {
 global ZABERS

@@ -1,0 +1,20 @@
+#!/usr/bin/tclsh
+
+set ZABERS(port) /dev/ttyUSB0
+
+set ZABERS(A,device)       1
+set ZABERS(A,speckle)	1000
+set ZABERS(A,wide)     -1000
+set ZABERS(A,home)     -3000
+set ZABERS(A,engineer) -5000
+
+set ZABERS(B,device)       2
+set ZABERS(B,speckle)	1000
+set ZABERS(B,wide)     -1000
+set ZABERS(B,home)     -3000
+set ZABERS(B,engineer) -5000
+
+set ZABERS(rotator,device) 3
+set ZABERS(rotator,in)  1000
+set ZABERS(rotator,out) 5000
+set ZABERS(rotator,home)   0
