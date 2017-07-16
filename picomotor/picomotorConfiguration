@@ -1,0 +1,19 @@
+#!/usr/bin/tclsh
+
+
+set PICOS(A,ip) 	        192.168.0.1
+set PICOS(A,in)			1000
+set PICOS(A,out)       		-1000
+set PICOS(A,home)      		-3000
+set PICOS(A,engineer)  		-5000
+set PICOS(A,velocity)       		10.0
+set PICOS(A,acceleration)      		10.0
+
+set PICOS(B,ip)         	192.168.0.2
+set PICOS(B,in)	       		1000
+set PICOS(B,out)      		-1000
+set PICOS(B,home)     		-3000
+set PICOS(B,engineer) 		-5000
+set PICOS(B,velocity)  		10.0
+set PICOS(B,acceleration)       10.0
+
