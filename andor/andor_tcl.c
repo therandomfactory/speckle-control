@@ -246,7 +246,7 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
 
   /* Check number of arguments provided and return an error if necessary */
   if (argc < 12) {
-     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," hbin vbin hstart hend vstart vend preamp_gain vertical_speed ccd_horizontal_speed em_horizontal_speed \"", (char *)NULL);
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," camnum hbin vbin hstart hend vstart vend preamp_gain vertical_speed ccd_horizontal_speed em_horizontal_speed \"", (char *)NULL);
      return TCL_ERROR;
   }
 
