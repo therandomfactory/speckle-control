@@ -12,6 +12,21 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <stdint.h>
+#include "andor_tcl.h"
+
+int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorSetupCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+
+
+/*
+int tcl_andorSetTemperature(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorCooler(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+ */
+
+int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 
 static char export_script[]={ " \
 	namespace eval ::andor:: { \
@@ -24,7 +39,7 @@ static int doTest1(void)
 
   /*  'x' is temporary check of library load  */
 
-  fprintf(stderr, "andor Version %s x2\n", andorGetVersion());
+  fprintf(stderr, "andor Version 1.0\n");
 
   return TCL_OK;
 }
@@ -42,7 +57,7 @@ static int cmdTest1(ClientData data, Tcl_Interp *interp,
 }
 
 /*  package code  */
-int andor_Init(Tcl_Interp *interp)
+int Andortclinit_Init(Tcl_Interp *interp)
 {
 
   printf("andor_Init\n");
@@ -56,7 +71,17 @@ int andor_Init(Tcl_Interp *interp)
   Tcl_CreateObjCommand(interp, "andor::test1", (Tcl_ObjCmdProc *)cmdTest1,
                        (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
 
-  andorAppInit(interp);
+  Tcl_CreateCommand(interp, "andorConnect", (Tcl_CmdProc *) tcl_andorInit, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorConfigure", (Tcl_CmdProc *) tcl_andorConfigure, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorSetupCamera", (Tcl_CmdProc *) tcl_andorSetupCamera, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorIdle", (Tcl_CmdProc *) tcl_andorIdle, NULL, NULL);
+/*
+  Tcl_CreateCommand(interp, "andorSetTemperature", (Tcl_CmdProc *) tcl_andorSetTemperature, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorCooler", (Tcl_CmdProc *) tcl_andorCooler, NULL, NULL);
+ */
+  Tcl_CreateCommand(interp, "andorSetProperty", (Tcl_CmdProc *) tcl_andorSetProperty, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorGetProperty", (Tcl_CmdProc *) tcl_andorGetProperty, NULL, NULL);
+  tcl_andorInitCmds(interp);
 
   return TCL_OK;
 }
@@ -78,14 +103,6 @@ andor_setup andorSetup[2];
 
 
 
-int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorSetupCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorSetTemperature(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorCooler(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 
 
 
@@ -95,6 +112,7 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
   int status=-1;
   int ivalue = 0;
   int fvalue = 0.0;
+  int cameraId;
 
   /* Check number of arguments provided and return an error if necessary */
   if (argc < 4) {
@@ -125,6 +143,7 @@ int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
   int status=-1;
   int ivalue = 0;
   float fvalue = 0.0;
+  int cameraId;
   float SensorTemp,TargetTemp,AmbientTemp,CoolerVolts,temperature;
   int precision,mintemp,maxtemp;
 
@@ -139,7 +158,7 @@ int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
   if (strcmp(argv[1],"temperature") == 0) {
      status = GetTemperatureF(&temperature);
      status = GetTemperatureRange(&mintemp,&maxtemp);
-     status = GetTemperaturePrecision(&,);
+     status = GetTemperaturePrecision(&precision);
      status = GetTemperatureStatus(&SensorTemp,&TargetTemp,&AmbientTemp,&CoolerVolts);
      sprintf(result,"%f %d %d %d %f %f %f %f",temperature,mintemp,maxtemp,precision,SensorTemp,TargetTemp,AmbientTemp,CoolerVolts);
      Tcl_SetResult(interp,result,TCL_STATIC);
@@ -193,8 +212,8 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
 
   SetCurrentCamera(cameraA);
   status = Initialize("/usr/local/etc/andor");
-  sleep(2)
-  andor_set_shutter(ANDOR_SHUTTER_CLOSE);
+  sleep(2);
+/*  andor_set_shutter(ANDOR_SHUTTER_CLOSE); */
   if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to initialize camera A - %d",status);
      Tcl_SetResult(interp,result,TCL_STATIC);
@@ -203,8 +222,8 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
 
   SetCurrentCamera(cameraB);
   status = Initialize("/usr/local/etc/andor");
-  sleep(2)
-  andor_set_shutter(ANDOR_SHUTTER_CLOSE);
+  sleep(2);
+/*  andor_set_shutter(ANDOR_SHUTTER_CLOSE); */
   if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to initialize camera B - %d",status);
      Tcl_SetResult(interp,result,TCL_STATIC);
@@ -218,10 +237,10 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
 int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
   int status=-1;
-  int cameraId;
+  int cameraId,i,j,num_hspeeds;
   int hbin,vbin,hstart,hend,vstart,vend,preamp_gain,vertical_speed;
   int ccd_horizontal_speed,em_horizontal_speed,speed,num_ad;
-
+  float fspeed;
 
   if (result==NULL) {result = malloc(256);}
 
@@ -254,17 +273,20 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
      return TCL_ERROR;
   }
 
-  status = GetDetector(andorSetup[cameraId].width, andorSetup[cameraId].height);
-  status = GetTemperatureRange(andorSetup[cameraId].minimum_temperature, andorSetup[cameraId].maximum_temperature);
-  status = GetNumberPreAmpGains(andorSetup[cameraId].num_preamp_gains);
-  status = GetNumberVSSpeeds(andorSetup[cameraId].num_vertical_speeds)
+  status = GetDetector(&andorSetup[cameraId].width, &andorSetup[cameraId].height);
+  status = GetTemperatureRange(&andorSetup[cameraId].minimum_temperature, &andorSetup[cameraId].maximum_temperature);
+  status = GetNumberPreAmpGains(&andorSetup[cameraId].num_preamp_gains);
+  status = GetNumberVSSpeeds(&andorSetup[cameraId].num_vertical_speeds);
+/*
   for(j = 0; j < ANDOR_NUM_AMPLIFIERS; j++) {
-     status = GetNumberHSSpeeds(0, j, andorSetup[cameraId].num_horizontal_speeds[j] )
+     status = GetNumberHSSpeeds(0, j, &andorSetup[cameraId].num_horizontal_speeds[j]);
+     num_hspeeds = andorSetup[cameraId].num_horizontal_speeds[j];
      for (i=0; i<num_hspeeds; i++) {
-	andor_get_horizontal_speed(j, i, &speed);
+	andor_get_horizontal_speed(j, i, &fspeed);
      }
   }
-  status = GetEMGainRange(andorSetup[cameraId].minimum_em_gain, andorSetup[cameraId].maximum_em_gain);
+ */
+  status = GetEMGainRange(&andorSetup[cameraId].minimum_em_gain, &andorSetup[cameraId].maximum_em_gain);
   status = GetNumberADChannels(&num_ad);
 
   andorSetup[cameraId].amplifier = DFT_ANDOR_AMPLIFIER;
@@ -274,12 +296,12 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
   andorSetup[cameraId].horizontal_speed_index[ANDOR_EMCCD] = em_horizontal_speed;
   andorSetup[cameraId].vertical_speed_index = vertical_speed;
   andorSetup[cameraId].preamp_gain_index = preamp_gain;
-  andorSetup[cameraId]->image.vbin =   vbin;
-  andorSetup[cameraId]->image.hbin =   hbin;
-  andorSetup[cameraId]->image.hstart = hstart;
-  andorSetup[cameraId]->image.hend =   hend;
-  andorSetup[cameraId]->image.vstart = vstart;
-  andorSetup[cameraId]->image.vend =   vend;
+  andorSetup[cameraId].image.vbin =   vbin;
+  andorSetup[cameraId].image.hbin =   hbin;
+  andorSetup[cameraId].image.hstart = hstart;
+  andorSetup[cameraId].image.hend =   hend;
+  andorSetup[cameraId].image.vstart = vstart;
+  andorSetup[cameraId].image.vend =   vend;
 
 
   andorSetup[cameraId].exposure_time = DFT_ANDOR_EXPOSURE_TIME;
@@ -297,7 +319,7 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
 int tcl_andorSetupCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
   int status=-1;
-  int cameraId,index,speed;
+  int cameraId,index,speed,ccdMode,type;
   float fspeed;
 
   /* Check number of arguments provided and return an error if necessary */
@@ -331,19 +353,19 @@ int tcl_andorSetupCamera(ClientData clientData, Tcl_Interp *interp, int argc, ch
   status = SetEMCCDGain(andorSetup[cameraId].em_gain);
   if (ccdMode == ANDOR_EMCCD) {
     status = SetHSSpeed(ANDOR_EMCCD,andorSetup[cameraId].horizontal_speed_index[ANDOR_EMCCD]);
-    status = GetHSSpeed(0, ANDOR_EMCCD, &index, &speed)
+    status = GetHSSpeed(0, ANDOR_EMCCD, index, &fspeed);
     andorSetup[cameraId].horizontal_speed_index[ANDOR_EMCCD] = index;
   } else {
     status = SetHSSpeed(ANDOR_CCD,andorSetup[cameraId].horizontal_speed_index[ANDOR_CCD]);
-    status = GetHSSpeed(0, ANDOR_CCD, &index, &speed)
+    status = GetHSSpeed(0, ANDOR_CCD, index, &fspeed);
     andorSetup[cameraId].horizontal_speed_index[ANDOR_CCD] = index;
   }
   andorSetup[cameraId].horizontal_speed[type] = speed;
 
   status = SetVSSpeed(andorSetup[cameraId].vertical_speed_index);
-  GetVSSpeed(andorSetup[cameraId].vertical_speed_index, andorSetup[cameraId].vertical_speed);
+  GetVSSpeed(andorSetup[cameraId].vertical_speed_index, &andorSetup[cameraId].vertical_speed);
   status = SetPreAmpGain(andorSetup[cameraId].preamp_gain_index);
-  GetPreAmpGain(andorSetup[cameraId].preamp_gain_index, andorSetup[cameraId].preamp_gain);
+  GetPreAmpGain(andorSetup[cameraId].preamp_gain_index, &andorSetup[cameraId].preamp_gain);
 
   status = SetReadMode(ANDOR_READMODE_IMAGE);
   status = SetAcquisitionMode(5);
@@ -392,17 +414,17 @@ int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
   StartAcquisition();
   sleep(1);
   AbortAcquisition();
-  status = GetEMGainRange(andorSetup[cameraId].minimum_em_gain, andorSetup[cameraId].maximum_em_gain);
+  status = GetEMGainRange(&andorSetup[cameraId].minimum_em_gain, &andorSetup[cameraId].maximum_em_gain);
   if (andorSetup[cameraId].amplifier == ANDOR_EMCCD) {
      status = SetIsolatedCropMode(1, andorSetup[cameraId].height, andorSetup[cameraId].width, 
-                                     andorSetup[cameraId].vbin, andorSetup[cameraId].hbin);
+                                     andorSetup[cameraId].image.vbin, andorSetup[cameraId].image.hbin);
 
   }
   status = SetExposureTime(andorSetup[cameraId].exposure_time);
-  status = SetKineticCycleTime(0.0)
+  status = SetKineticCycleTime(0.0) ;
   andorSetup[cameraId].acquisition_mode = ANDOR_ACQMODE_RUN_TILL_ABORT;
   status = SetAcquisitionMode(andorSetup[cameraId].acquisition_mode);
-  status = setFrameTransferMode(1) 
+  status = SetFrameTransferMode(1) ;
  
 
   return TCL_OK;

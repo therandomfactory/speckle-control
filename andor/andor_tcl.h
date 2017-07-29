@@ -2,16 +2,14 @@
 #ifndef __ANDOR_TCL__
 #define __ANDOR_TCL__
 
-#include <atmcdLXd.h>
-#include <cliserv.h>
+#include "atmcdLXd.h"
 #include <sys/time.h>
 #include <pthread.h>
-#include <fitsio.h>
 #include <time.h>
 #include <math.h>
 //#include <clock.h>
 #include <stdint.h>
-
+#include <stdbool.h>
 #define PIXMULT			20
 
 /* Camera Defaults */
@@ -71,7 +69,6 @@
 
 
 extern bool verbose;
-extern struct s_wfs_andor_setup andor_setup;
 //NJS
 #ifdef u32
 extern at_u32 *image_data;
@@ -92,17 +89,16 @@ extern float **sum_frame;
 extern int sum_frame_num;
 extern float data_threshold; /* For data in terms of STDDEV of dark frame. */
 
-#ifdef LOCAL_DEF
-struct andor_image {
+typedef struct {
         int hbin;       /* Number of pixels binned horizontally */
         int vbin;       /* NUmber of pixels binned vertically */
         int hstart;     /* Start column (1 is first, inclusive) */
         int hend;       /* End column (1 is first, inclusive) */
         int vstart;     /* Start column (1 is first, inclusive) */
         int vend;       /* Start column (1 is first, inclusive) */
-                   };
+} andor_image;
 
-struct andor_setup {
+typedef struct {
         float exposure_time;    /* Exp time in seconds */
         float temperature;      /* Current temperature */
         float cam_frames_per_second; /* FPS for camera */
@@ -114,7 +110,7 @@ struct andor_setup {
         float vertical_speed;   /* Current Vertical Speed */
         float horizontal_speed[ANDOR_NUM_AMPLIFIERS];
                                 /* Current Horizontal Speed */
-        struct andor_image image; /* Readout area for the chip */
+        andor_image image; /* Readout area for the chip */
         int read_mode;          /* One of the readmodes */
         int acquisition_mode;   /* One of the acqmodes */
         int width;              /* Of the full detector */
@@ -143,23 +139,22 @@ struct andor_setup {
                                   /* Number of vertical speeds possible */
         int horizontal_speed_index[ANDOR_NUM_AMPLIFIERS];
                                /* Current vertical speed index */
-                   };
-#endif
+} andor_setup;
 
 /* Globals */
 
 
-int andor_open(int iSelectedCamera, struct s_wfs_andor_image image,
+int andor_open(int iSelectedCamera, andor_image image,
                int preamp_gain, int vertical_speed, int ccd_horizontal_speed,
                 int em_horizontal_speed);
-int andor_setup_camera(struct s_wfs_andor_setup setup);
+int andor_setup_camera(andor_setup setup);
 int andor_close(void);
 int andor_send_setup(void);
 int andor_set_acqmode(int acqmode);
 int andor_set_exptime(float exptime);
 int andor_set_shutter(int exptime);
 int andor_set_shutter(int exptime);
-int andor_set_image(struct s_wfs_andor_image image);
+int andor_set_image(andor_image image);
 int andor_set_crop_mode(int heigth, int width, int vbin, int hbin);
 int andor_set_amplifier(int amplifier);
 int andor_start_acquisition(void);
@@ -197,11 +192,14 @@ void unlock_usb_mutex(void);
 /* wfs_data.c */
 
 void process_data(long time_stamp);
+/*
 int message_wfs_take_background(struct smessage *message);
 int message_wfs_reset_background(struct smessage *message);
 int message_wfs_set_threshold(struct smessage *message);
 int message_wfs_set_num_frames(struct smessage *message);
 int message_wfs_save_data(struct smessage *message);
+ */
+
 void complete_data_record(void);
 
 #endif
