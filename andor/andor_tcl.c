@@ -18,6 +18,22 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
 int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorSetupCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorStartAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorGetStatus(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorSetCropMode(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorWaitForData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorWaitForIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorStartUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorStopUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorStartUsb(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorStopUsb(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/*void *andor_usb_thread(void *arg); */
+int tcl_andorLockUsbMutex(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorUnlockUsbMutex(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+
 
 
 /*
@@ -79,8 +95,22 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorSetTemperature", (Tcl_CmdProc *) tcl_andorSetTemperature, NULL, NULL);
   Tcl_CreateCommand(interp, "andorCooler", (Tcl_CmdProc *) tcl_andorCooler, NULL, NULL);
  */
-  Tcl_CreateCommand(interp, "andorSetProperty", (Tcl_CmdProc *) tcl_andorSetProperty, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetProperty", (Tcl_CmdProc *) tcl_andorGetProperty, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorSetProperty", (Tcl_CmdProc *) tcl_andorSetProperty, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorStartAcq", (Tcl_CmdProc *) tcl_andorStartAcquisition, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorAbortAcq", (Tcl_CmdProc *) tcl_andorAbortAcquisition, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorGetStatus", (Tcl_CmdProc *) tcl_andorGetStatus, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorGetData", (Tcl_CmdProc *) tcl_andorGetAcquiredData, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorGetFrame", (Tcl_CmdProc *) tcl_andorGetOldestFrame, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorSetCropMode", (Tcl_CmdProc *) tcl_andorSetCropMode, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorWaitForData", (Tcl_CmdProc *) tcl_andorWaitForData, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorWaitForIdle", (Tcl_CmdProc *) tcl_andorWaitForIdle, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorStartUsbThread", (Tcl_CmdProc *) tcl_andorStartUsbThread, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorStopUsbThread", (Tcl_CmdProc *) tcl_andorStopUsbThread, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorStartUsb", (Tcl_CmdProc *) tcl_andorStartUsb, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorStopUsb", (Tcl_CmdProc *) tcl_andorStopUsb, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorLockUsbMutex", (Tcl_CmdProc *) tcl_andorLockUsbMutex, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorUnlockUsbMutex", (Tcl_CmdProc *) tcl_andorUnlockUsbMutex, NULL, NULL);
   tcl_andorInitCmds(interp);
 
   return TCL_OK;
@@ -97,6 +127,7 @@ char *result=NULL;
 static at_32 cameraA;
 static at_32 cameraB;
 static at_32 numCameras;
+int currentCamera=NULL;
 andor_setup andorSetup[2];
 #define CAMERA_A 0
 #define CAMERA_B 1
@@ -213,7 +244,7 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
   SetCurrentCamera(cameraA);
   status = Initialize("/usr/local/etc/andor");
   sleep(2);
-/*  andor_set_shutter(ANDOR_SHUTTER_CLOSE); */
+  status = SetShutter(1, ANDOR_SHUTTER_CLOSE, 50, 50);
   if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to initialize camera A - %d",status);
      Tcl_SetResult(interp,result,TCL_STATIC);
@@ -223,7 +254,7 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
   SetCurrentCamera(cameraB);
   status = Initialize("/usr/local/etc/andor");
   sleep(2);
-/*  andor_set_shutter(ANDOR_SHUTTER_CLOSE); */
+  status = SetShutter(1, ANDOR_SHUTTER_CLOSE, 50, 50);
   if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to initialize camera B - %d",status);
      Tcl_SetResult(interp,result,TCL_STATIC);
@@ -393,7 +424,7 @@ int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
   }
 
   sscanf(argv[1],"%d",&cameraId);
-  sscanf(argv[1],"%d",&ccdMode);
+  sscanf(argv[2],"%d",&ccdMode);
 
   if ( cameraId == 0 ) {
      status = SetCurrentCamera(cameraA);
@@ -429,5 +460,250 @@ int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
 
   return TCL_OK;
 }
+
+
+int tcl_andorStartAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = PrepareAcquisition();
+  status = StartAcquisition();
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select start acquisition %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = AbortAcquisition();
+
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select abort acquisition %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+int tcl_andorGetStatus(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  GetStatus(&status);
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select get status %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  sprintf(result,"%d",status);
+  Tcl_SetResult(interp,result,TCL_STATIC);
+  return TCL_OK;
+}
+
+
+int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = GetAcquiredData16(image_data, andorSetup[currentCamera].npix);
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to get acquired data %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = GetOldestImage16(image_data, andorSetup[currentCamera].npix);
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to get oldest frame %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+
+int tcl_andorSetCropMode(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=-1;
+  int height,width,vbin,hbin;
+
+ 
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 5) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  height width vbin hbin\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+
+  sscanf(argv[1],"%d",&height);
+  sscanf(argv[2],"%d",&width);
+  sscanf(argv[3],"%d",&vbin);
+  sscanf(argv[4],"%d",&hbin);
+  status = SetIsolatedCropMode(1, height, width, vbin, hbin);
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to set crop mode %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+
+}
+
+
+
+int tcl_andorWaitForData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=-1;
+  int timeout;
+  time_t start;
+
+ 
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 2) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  timeout\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+  sscanf(argv[1],"%d",&timeout);
+ 
+  start = time(NULL);
+  do {
+     GetStatus(&status);
+     if (time(NULL) > start + timeout)
+       return TCL_ERROR;
+  } while (status == DRV_ACQUIRING);
+
+  return TCL_OK;
+
+}
+
+
+
+int tcl_andorWaitForIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=-1;
+  int timeout;
+  time_t start;
+
+ 
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 2) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  timeout\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+  sscanf(argv[1],"%d",&timeout);
+  start = time(NULL);
+  do {
+     GetStatus(&status);
+     if (time(NULL) > start + timeout)
+       return TCL_ERROR;
+  } while (status == DRV_IDLE);
+
+  return TCL_OK;
+}
+
+
+#ifdef TCL_USB_THREAD
+
+int tcl_andorStartUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = andor_start_usb_thread();
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to start usb thread %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+int tcl_andorStopUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = andor_stop_usb_thread();
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to stop usb thread %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+int tcl_andorStartUsb(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = andor_start_usb();
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to start usb %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+int tcl_andorStopUsb(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = andor_stop_usb();
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to stop usb %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+
+int tcl_LockUsbMutex(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = andor_lock_usb_mutex();
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to lock usb mutex %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+int tcl_UnlockUsbMutex(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = andor_unlock_usb_mutex();
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to unlock usb mutex %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+#endif 
+
+
 
 
