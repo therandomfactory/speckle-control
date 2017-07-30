@@ -1,0 +1,5 @@
+gcc -c -fPIC andor.c -fpic -DLINUX -DWall -g -I./include -I. -I.. -I../../include
+gcc -c -fPIC andor_server.c -fpic -DLINUX -DWall -g -I./include -I. -I.. -I../../include
+gcc -c -fPIC andor_usb_data.c -fpic -DLINUX -DWall -g -I./include -I. -I.. -I../../include
+gcc -o andorServer andor.o  andor_server.o  andor_usb_data.o   ../../lib/libandor.so.2 ../../lib/libUSBI2C.so.2 -lpthread -lm
+
