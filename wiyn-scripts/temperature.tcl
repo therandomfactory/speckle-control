@@ -8,9 +8,9 @@
 #  Procedure  : get_temp
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -44,9 +44,9 @@ global CAMERAS
 #  Procedure  : setpoint
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -145,9 +145,9 @@ global CAMERAS
 #  Procedure  : monitortemp
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -204,9 +204,9 @@ global TEMPS AVGTEMPS STATUS RAWTEMP CAMSTATUS ALTA NOBLT
 #  Procedure  : plottemp
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -251,9 +251,9 @@ set TEMPCNTR 1
 #  Procedure  : setminmax
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -303,9 +303,9 @@ set PI 3.14159265359
 #  Procedure  : tlabel
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -357,9 +357,9 @@ global PI
 #  Procedure  : waitfortemp
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :

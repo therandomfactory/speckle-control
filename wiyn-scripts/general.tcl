@@ -13,9 +13,9 @@
 #  Procedure  : showstatus
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -52,9 +52,9 @@ global NESSIGUI
 #  Procedure  : choosedir
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -102,9 +102,9 @@ global CALS CATALOGS SCOPE
 #  Procedure  : inspectapi
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -166,9 +166,9 @@ global CCAPIR CCAPIW
 #  Procedure  : printcamdata
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -203,9 +203,9 @@ global CAMERAS CAMSTATUS
 #  Procedure  : refreshcamdata
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -281,9 +281,9 @@ set CAMPROPERTIES "GetAvailableMemory GetCameraMode GetCcdAdc12BitGain GetCcdAdc
 #  Procedure  : showconfig
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -337,9 +337,9 @@ proc confirmaction { msg } {
 #  Procedure  : savestate
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -390,9 +390,9 @@ global CONFIG SCOPE ACQREGION LASTBIN OBSPARS env
 #  Procedure  : toggle
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -426,9 +426,9 @@ proc toggle { win } {
 #  Procedure  : pastelocation
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -468,9 +468,9 @@ global SITES
 #  Procedure  : watchconfig
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -549,9 +549,9 @@ global CONFIG CAMERAS CCAPI CCAPIW CCDID LASTBIN APOGEEGUI ALTA
 #  Procedure  : watchscope
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -591,7 +591,7 @@ global SCOPE OBSPARS
 #  Procedure  : fanmode
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 1.0
 #  Date       : Feb-21-2004
 #  Copyright  : The Random Factory, Tucson AZ
@@ -628,7 +628,7 @@ global CAMERAS DEBUG
 #  Procedure  : fanmode
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 1.0
 #  Date       : Feb-21-2004
 #  Copyright  : The Random Factory, Tucson AZ
@@ -677,7 +677,7 @@ global CAMERAS DEBUG
 #  Procedure  : altamode
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 1.0
 #  Date       : Feb-21-2004
 #  Copyright  : The Random Factory, Tucson AZ

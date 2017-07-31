@@ -7,9 +7,9 @@
 #  Procedure  : getDSS
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -51,9 +51,9 @@ proc getDSS {name ra dec xsize ysize } {
 #  Procedure  : checkDisplay
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -86,9 +86,9 @@ proc checkDisplay { } {
 #  Procedure  : getGSC
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -136,9 +136,9 @@ proc getGSC { ra dec xsize ysize } {
 #  Procedure  : locateObjs
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -173,9 +173,9 @@ proc locateObjs { } {
 #  Procedure  : getRegion
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -213,9 +213,9 @@ proc getRegion { } {
 #  Procedure  : autoIdentify
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :

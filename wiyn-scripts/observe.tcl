@@ -15,9 +15,9 @@
 #  Procedure  : snapshot
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -67,9 +67,9 @@ global STATUS CFG CAMERAS DEBUG SCOPE ALTA
 #  Procedure  : testgeometry
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -114,9 +114,9 @@ global CONFIG CAMERAS ALTA
 #  Procedure  : snapsleep
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -208,9 +208,9 @@ global CAMERA tcl_platform
 #  Procedure  : waitforimage
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -313,9 +313,9 @@ global CAMERAS STATUS DEBUG SCOPE ALTA REMAINING tcl_platform
 #  Procedure  : obstodisk
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -416,9 +416,9 @@ global CAMERAS STATUS SCOPE DEBUG ALTA REMAINING CONFIG CAMSTATUS
 #  Procedure  : saveandshow
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -490,9 +490,9 @@ global CAMERAS STATUS SCOPE DEBUG
 #  Procedure  : grabimage
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -546,9 +546,9 @@ global STATUS CAMERAS DEBUG SCOPE
 #  Procedure  : displayimage
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -579,9 +579,9 @@ proc displayimage { name } {
 #  Procedure  : abortsequence
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -617,9 +617,9 @@ global STATUS
 #  Procedure  : continuousmode
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -727,9 +727,9 @@ set STATUS(last) [expr [clock clicks]/1000000.]
 #  Procedure  : observe
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -764,9 +764,9 @@ global SCOPE
 #  Procedure  : setfullframe
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -804,9 +804,9 @@ global SCOPE CONFIG
 #  Procedure  : acquisitionmode
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -861,9 +861,9 @@ global ACQREGION CONFIG
 #  Procedure  : countdown
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -919,9 +919,9 @@ global FRAME STATUS REMAINING
 #  Procedure  : startsequence
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -990,9 +990,9 @@ global STATUS
 #  Procedure  : driftscan
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -1053,9 +1053,9 @@ global CAMERAS SCOPE DEBUG ALTA
 #  Procedure  : driftcalib
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -1090,9 +1090,9 @@ global SCOPE
 #  Procedure  : driftcalc
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -1129,9 +1129,9 @@ global SCOPE CAMSTATUS
 #  Procedure  : focustest
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :
@@ -1205,9 +1205,9 @@ global CAMERAS DEBUG CAMSTATUS
 #  Procedure  : timedobstodisk
 #
 #---------------------------------------------------------------------------
-#  Author     : Dave Mills (djm@randomfactory.com)
+#  Author     : Dave Mills (randomfactory@gmail.com)
 #  Version    : 0.9
-#  Date       : Aug-04-2003
+#  Date       : Aug-01-2017
 #  Copyright  : The Random Factory, Tucson AZ
 #  License    : GNU GPL
 #  Changes    :

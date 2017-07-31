@@ -15,7 +15,7 @@ set SEQNUM 1
 if { [info exists env(TELESCOPE)] } {
      set TOMPG $env(TELESCOPE)
 } else {
-     helperDialog "Monsoon Diagnostics" "Telescope environment not defined" "HELP EXIT" notelescope.html
+     helperDialog "NESSI Diagnostics" "Telescope environment not defined" "HELP EXIT" notelescope.html
 }
 
 
@@ -95,7 +95,7 @@ global TOMPG HEADERS ACTIVE
      kpno_09m  { set type tcs-36 }
      kpno_2m   { set type tcs-2m }
      kpno_4m   { set type tcs-4m }
-     wiyn      { set type tcs-wiyn }
+     wiyn      { set type wiyn-nessi }
   }
   foreach i $HEADERS($type) {
      set stream [join [lrange [split $i "."] 0 1] "."]
@@ -110,7 +110,7 @@ global TELEMETRY PDEBUG HEADERS TOMPG FITSKEY FITSTXT SEQNUM ACTIVE
 global FROMSTARTEXP CACHETELEMETRY
   set fhead ""
   nessiTelemetryUpdate
-  set type wiyn-quota
+  set type wiyn-nessi
   set fhead "[fitshdrrecord HDR_REV string {3.00 18-Feb-2008} Header-Rev ]\n" 
   foreach i $HEADERS($type) {
      if { $PDEBUG > 1 } {debuglog "processing $i"}
@@ -386,6 +386,15 @@ global TELEMETRY CACHETELEMETRY
 }
 
 
+proc getFocus { } {
+    set posa [lindex [wiyn info oss.secondary.posa] 0]
+    set posb [lindex [wiyn info oss.secondary.posb] 0]
+    set posc [lindex [wiyn info oss.secondary.posc] 0]
+    set current -99990.
+    catch {set  current [expr  ($posa+$posc)/2.0/8.0 ]}
+    return $current
+}
+
 
 proc dummytest { } {
 global TELEMETRY
@@ -404,10 +413,18 @@ global TELEMETRY
 #
 #  Initialisation code from here onwards....
 #
+set NESSI_DIR $env(NESSI_DIR)
+load /usr/local/gwc/lib/libnames.so
+load /usr/local/gwc/lib/libmsg.so
+load /usr/local/gwc/lib/libgwc.so
+connect wiyn tkxpak
 
-source $NESSI_DIR/headerSpecials.tcl
-loadstreamdefs $NESSI_DIR/telem-$TOMPG.conf
-loadhdrdefs $NESSI_DIR/headers.conf
+###load /usr/local/gui/lib/libxtcs.so
+load $NESSI_DIR/lib/libfitstcl.so
+
+source $NESSI_DIR/wiyn-scripts/headerSpecials.tcl
+loadstreamdefs $NESSI_DIR/wiyn-scripts/telem-$TOMPG.conf
+loadhdrdefs $NESSI_DIR/wiyn-scripts/headers.conf
 activatestreams
 subscribestreams
 
@@ -427,4 +444,7 @@ foreach i "LSTHDR ELMAP AZMAP TRACK EPOCH TARGRA
 proc dummyappendHeader { args } {
     puts stdout "appendHeader is commented out!!!!"
 }
+
+after 5000 cachetelemetry
+
 
