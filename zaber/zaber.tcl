@@ -59,7 +59,11 @@ set ZABERS(port) $ZABERS(port)
 proc zaberConnect { name } {
 global ZABERS
    set handle -1
-   set handle [za_connect $ZABERS(port) ]
+   if { [info exists ZABERS(sim)] } {
+      set handle 1
+   } else {
+      set handle [za_connect $ZABERS(port) ]
+   }
    if { $handle < 0 } {
      errordialog "Failed to connect to Zaber $name"
    } else {
@@ -133,6 +137,30 @@ Supported commands :
 "
 }
 
+
+set simzaber 0
+if { [info exists env(NESSI_SIM)] } {
+   set simdev [split $env(NESSI_SIM) ,]
+   if { [lsearch $simdev zaber] > -1 } {
+       set simzaber 1
+   }
+}
+
+if { $simzaber } {
+     proc za_send { handle cmd } {
+        global ZABERS
+        set ZABERS(sim) $cmd
+     }
+     proc za_receive { handle } {
+        global ZABERS
+        set cmd $ZABERS(sim)
+        set dev [string trim [lindex $cmd 0] "/"]
+        set res [lrange $cmd 1 end]
+        return "$dev $res"
+     }
+} else {
+   load $env(NESSI_DIR)/lib/libzaber.so
+}
 
 
 
