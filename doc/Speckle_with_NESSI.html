@@ -1,0 +1,325 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<style>
+table, th, td {
+border: 1px solid black;
+}
+</style>
+<style>@media print {#ghostery-purple-box {display:none !important}}</style></head>
+<body>
+
+<br>
+<center><h1><font color="blue">Speckle Imaging at WIYN Using NESSI</font></h1></center>
+
+<br><br>
+
+<center><h2>Overview</h2></center>
+
+<p>The following is a guide to the capabilities of speckle imaging
+at WIYN and to preparing a speckle observing program using NESSI.  Speckle
+observations using NESSI at WIYN are currently carried out in queue
+mode, which operates ~2 times per semester and applied for through
+the NN-Explore program at NOAO.  Speckle queue PI's receive a set of
+reduced data products in the month or so following the observations. For
+questions not answered here (or if this document is unclear), contact
+the support scientist,
+
+<br></p><center><b>Mark Everett (everett@noao.edu)</b>.</center>
+
+<br>
+<p>Speckle imaging using the NN-Explore Exoplanet Stellar Speckle
+Imager (NESSI) at WIYN provides observers with diffraction-limited
+resolutions within small (few arcsec wide) fields.  The two electron
+multiplying CCDs (EMCCDs) of NESSI operate simultaneously through
+a pair of filters (out of a current choice of 4 specialized speckle
+filters).  A common use of speckle imaging has been to detect and
+provide relative photometry and astrometry for binary and higher-order
+multiple stars.  The relative astrometry, brightnesses and colors from
+NESSI data help characterize the components and may be used to measure
+visual binary orbits or relative proper motions.  At WIYN, speckle
+imaging should reach sensitivities to detect companions at least 3-5
+magnitudes fainter than a target star depending on brightness,
+exposure time and conditions.  Typically, the time spent integrating 
+on a speckle target is 1-20 minutes.
+
+</p><p>A standard speckle observing method and data reduction pipeline has
+been developed over the years at WIYN and other telescopes using
+NESSI's predecessor instrument, DSSI.  This procedure was employed
+during the 2016B speckle queue observations using NESSI.  Once a
+target has been acquired, data are taken by reading a subsection of
+the full array (for NESSI the window is 256x256 pixels or 4.6x4.6
+arcsec, although the speckle imaging works best at separations inside
+of ~1.5 arcsec).  Normally the window is centered on the target of
+interest.  Images are taken in sets of 1000 frames apiece where each
+frame is a 40 millisecond exposure (and each image set requires a
+little less than 1 minute
+to complete).  To achieve deeper imaging or for faint
+targets and poor conditions, multiple image sets are taken.
+
+</p><p>In addition to science targets, at least one bright point source star
+in close proximity on the sky is observed using the same techniques.
+This point source standard accounts for the shifting PSF as a function
+of mount coordinates, airmass and focus.
+
+<br><br>
+</p><center><h2>Speckle Data</h2></center>
+
+<p>Data reduction is done using a custom software pipeline run by the
+speckle team.  Successful proposers to the speckle queue will receive
+4 basic pipeline products for each target in each filter.  The
+products were developed as part of projects to detect
+previously-unresolved secondary stars or fore- or background sources
+near stars of interest and to acquire temporal astrometric
+measurements for measuring binary star orbits.  These data products
+are probably applicable to a wider variety of programs:
+
+</p><ol>
+<li> A reconstructed image at or near the telescope diffraction limit,
+centered on the target star.  Sources detected within the field will
+show up as bright objects against a noise background (sky,
+effectively).
+</li><li> An evaluation based on visual inspection of each image (and in
+Fourier domain its power spectrum) to determine if there are multiple
+sources detected.  When multiple objects are present, their relative
+astrometry and photometry are measured.
+</li><li> An estimate of the background sensitivity or the minimum
+magnitude difference relative to the target star any undetected
+sources in the field would have as a function of separation from the
+target star.  This may be called a contrast curve.  It is based on
+noise statistics in the reconstructed image as measured in a set of
+concentric annuli of various radii centered on the target star.  The
+product consists of a table listing background limiting magnitude vs.
+angular separation.
+</li><li> A plot (PDF), showing the background limiting magnitude vs. 
+angular separation. 
+</li></ol>
+
+<p><a href="https://www.noao.edu/noao/staff/everett/nessi/Speckle_dataproducts.html">See example data products here.</a>
+
+</p><p>Users can ask for the raw data, although this will often be quite
+large (~100GB/night) and hasn't been requested by most users.
+
+<br><br>
+</p><center><h2>Speckle Performance</h2></center>
+
+<p>The effectiveness of speckle imaging is strongly dependent on
+observing conditions, especially seeing.  As a rough guide, NESSI
+should be able to operate effectively on stars of V or R magnitude as
+faint as 14 under reasonably good conditions.  In excellent
+conditions, stars of V=14.5 are observable.  
+
+</p><p>Note that the magnitudes above refer to a "central" target star,
+around which fainter companions may be detected.  Faint companions may
+be detected down to a background limit, which depends on the seeing
+and typically rises in its magnitude difference relative to the
+central star with increasing angular separation.  A contrast curve
+reaching 5 magnitudes fainter than the central star is achievable for
+stars brighter than V=12.  For fainter stars, longer integrations are
+used.  Even so, the resulting images are typically less deep.
+
+</p><p>The field-of-view for speckle imaging is limited by the angular size of
+the atmosphere's isoplanatic patch.  Speckle patterns of stars
+separated by more than ~1 arcsec become uncorrelated, lowering the
+sensitivity to detect and measure their relative properties.  For this
+reason, DSSI was operated in a 128x128 pixel window (2.8x2.8 arcsec).
+For NESSI, which has a somewhat smaller pixel scale, our current plan
+is to cover this same field-of-view by observing with a 256x256 pixel
+window and provide data products for the inner 2.8x2.8 arcsec box.  As
+our software gets refined for the new instrument, these details may
+change.
+
+</p><p>Speckle interferometry delivers imaging at or near the telescope
+diffraction limit.  The diffraction limit in each speckle filter is
+listed in the table below.  Note, however, that these numbers are not
+necessarily indicative of the filter choices that will yield the
+best-resolved images!  Our ability to construct speckle images with
+small inner working angles, push for relatively deep background limits
+inside of a few tenths of arcseconds, and resolve (for example) close
+binaries, depends on closely matching the PSF of science targets to
+point source standards.  Generally, the worse seeing and greater
+differential atmospheric diffraction at shorter wavelengths renders
+speckle in the bluer filters more difficult and the image quality may
+be adversely affected.  For these reasons, the red filters often yield
+effectively superior angular resolution.  For similar reasons, targets
+that can be observed at low airmass at WIYN will work best.
+
+<br><br>
+</p><center><h2>Number of Image Sets to Acquire Per Target</h2></center>
+
+<p>The performance of speckle imaging is quite sensitive to
+conditions like seeing, so there are no strict rules to follow for
+determining the ideal number of image sets to acquire on a target of
+given brightness.
+
+</p><p>Observers targeting stars fainter than V=13 should plan on
+acquiring multiple image sets and those observing brighter stars may
+also benefit from taking multiple sets.  This will depend on how they
+balance better contrast depth/image quality vs. number of targets
+visited.  Multiple image sets per star can also help under less than
+optimal observing conditions and, given the several minutes needed to
+set up observing of each new target, many users may want to devote
+comparable time to exposures.
+
+</p><p>Each image set requires 1 minute of telescope time.  Acquiring a
+target with a short slew requires 3 minutes and with a long slew, 5
+minutes.  Since a science target requires a point source observation,
+additional time is needed for that (about 4 minutes).  Refer to the guide
+on estimating observing time for more information.
+
+</p><p>Note that we have found the signal-to-noise ratio for detecting
+secondary sources in speckle images does not grow as rapidly with
+exposure time as it would in traditional CCD imaging (ie. with the
+square root of time).  Proposers may not expect to achieve the same
+contrast limits on faint stars as bright ones (5 magnitudes may be
+achievable on 12th magnitude stars and 3 magnitudes on 14th magnitude
+stars.)  The table below only suggests numbers of image sets to take
+for various magnitude stars:
+
+</p><p></p><center><table>
+<tbody><tr>
+<th>V or R</th>
+<th># image sets</th>
+</tr>
+<tr><td><center>&lt;12</center></td>       <td><center>1-3</center></td>   </tr>
+<tr><td>12-12.5</td>                    <td><center>3</center></td>     </tr>
+<tr><td>12.5-13</td>                    <td><center>5</center></td>     </tr>
+<tr><td>13-13.5</td>                    <td><center>7</center></td>     </tr>
+<tr><td><center>&gt;13.5</center></td>     <td><center>9</center></td>     </tr>
+</tbody></table></center>
+
+<br><br>
+<center><h2>Estimating Observing Time</h2></center>
+
+<p>To prepare an observing proposal, you should estimate the time
+needed to carry out the observations.  Use the
+<a href="https://www.noao.edu/noao/staff/everett/nessi/observing_time.pdf">guide to estimating observing time
+(PDF)</a> for help with that.
+
+</p><p>If you're unsure how to estimate your observing time or the guide
+doesn't seem to apply to your project, contact the support scientist
+for help.
+
+<br><br>
+</p><center><h2>Filter Transmission &amp; Efficiency Curves</h2></center>
+
+<p>NESSI uses a dichroic beamsplitter to separate the incoming light (at
+686nm) into blue and red channels before focusing on the two identical
+cameras, which operate simultaneously.  The speckle filter choice will
+be one of 467nm or 562nm paired with one of 716nm or 832nm.  NESSI's
+SDSS filters are also listed below (although not used for speckle imaging).
+Data are in nanometers and fractional efficiencies as quoted by the
+manufacturer.
+
+</p><p></p><center><table>
+<tbody><tr>
+<th>Name</th>
+<th>c. wave</th>
+<th>FWHM</th>
+<th>diffraction limit</th>
+<th>data</th>
+</tr>
+<tr>
+<th></th>
+<th>(nm)</th>
+<th>(nm)</th>
+<th>(arcsec FWHM)</th>
+<th></th>
+</tr>
+<tr><td>467</td>      <td>467.1</td>        <td>44.0</td>	  <td>0.034</td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_467.dat">nessi_467.dat</a></td></tr>
+<tr><td>562</td>      <td>562.3</td>        <td>43.6</td>	  <td>0.040</td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_562.dat">nessi_562.dat</a></td></tr>
+<tr><td>716</td>      <td>716.0</td>        <td>51.5</td>	  <td>0.051</td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_716.dat">nessi_716.dat</a></td></tr>
+<tr><td>832</td>      <td>832.0</td>        <td>40.4</td>	  <td>0.060</td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_832.dat">nessi_832.dat</a></td></tr>
+<tr><td>u</td>      <td>354.3</td>        <td>32.7</td>	          <td></td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_u.dat">nessi_u.dat</a></td></tr>
+<tr><td>g</td>      <td>480.0</td>        <td>151.1</td>	  <td></td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_g.dat">nessi_g.dat</a></td></tr>
+<tr><td>r</td>      <td>620.0</td>        <td>143.5</td>	  <td></td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_r.dat">nessi_r.dat</a></td></tr>
+<tr><td>i</td>      <td>765.4</td>        <td>146.4</td>	  <td></td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_i.dat">nessi_i.dat</a></td></tr>
+<tr><td>z</td>      <td>943.3</td>        <td>242.7</td>	  <td></td>  
+<td><a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_z.dat">nessi_z.dat</a></td></tr>
+</tbody></table></center>
+
+<p></p><center><img src="Speckle_with_NESSI_files/NESSI_filters.jpg"></center>
+
+<p>The quantum efficiency curve for NESSI's
+EMCCDs <a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_QE.dat">is available</a> along with
+the dichroic <a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_dichroic.dat">transmission/reflection</a> curve
+and Andor's <a href="https://www.noao.edu/noao/staff/everett/nessi/nessi_dewarwindow.dat">BB-VS-NR (wedged) dewar window</a> transmission.
+
+<br><br>
+</p><center><h2>Coordinates List</h2></center>
+
+<p>In addition to the usual information included in observing
+proposals, proposers to the speckle queue must submit a coordinate
+list sufficient to carry out the program.  The coordinate list can be
+altered and resubmitted close to the observing date if the nature of
+the program warrants it and new objects are in keeping with the
+proposal's science.  In some cases, where target lists have been
+submitted with your proposal, we may take those coordinates as a
+starting point and check with PIs to make sure they are finalized and
+whether there are special instructions.  The speckle coordinate lists
+are <b>not</b> submitted to the Kitt Peak Coordinate Cache system (which
+the speckle program does not use), but rather are plain text format
+files which can be emailed to the support scientist, Mark Everett.
+
+</p><p>In addition to science targets, point source standards will need to
+be observed.  <b>It is likely easiest for the speckle queue team to
+pick good point sources for you, which we will do if you don't provide
+them.</b>  In any case, an estimate for the time required to carry out
+your observing program should include the time needed to observe the
+point source standards.  The best point source standards are HR stars
+of 5-6th V magnitude within 5 degrees of each science target, and
+which are thought to be single.  For efficient slewing, the science
+target and its associated point source should both lie either north or
+south of 31.96 degrees declination, the zenith at WIYN.
+
+</p><p>During a typical night, nearby science targets from different queue
+proposals will be observed sequentially and may share
+a single point source standard observation for their calibration.
+
+</p><p><b>Your coordinate list should be provided at least a few weeks
+prior to the observing run.</b>  You may be contacted by the support
+scientist to ensure that we have your list and additional instructions
+to carry out your program.
+
+</p><p>A proper coordinate list should include a target name, RA &amp; DEC
+(equinox and epoch 2000), a V or R magnitude measurement or estimate,
+and any significant proper motions in RA and DEC.  Note that with the
+small speckle field-of-view, it is important for us to correctly
+identify your targets!  To that end, it can be helpful if the
+target name is identifiable to the observer using SIMBAD or other
+online sources of information such as Exofop, that in certain crowded
+fields finding charts could be helpful and that proper motions are
+needed only if they are rather large (e.g., target moved more than a
+few arcsec since 2000).  If you have a priority order or ranking for
+your targets, or special instructions for different targets, it would
+be helpful if you indicate these things in your coordinates list.
+
+</p><p>A example coordinate list of 3 objects listing RA, DEC, Vmag, pmRA
+and pmDEC in milliarcsec/year respectively (if you use a comparable
+format, e.g., hexidecimal coordinates, it will be helpful):
+
+</p><pre>HIP 1	     00:00:00.22 +01:05:20.4 9.08 -4.55 -1.19
+HIP 40617    08 17 31.65 +08 51 58.7 6.3
+BD+71 889A   18:20:45.43 +71:20:16.1 4.22 -5.03 37.86
+</pre>
+
+<br><br>
+<center><h2>References</h2></center>
+
+<p>A description of DSSI at WIYN, including a description of our data
+products, applicable to NESSI as well, may be found in Howell et
+al. (2011).
+
+</p><p>
+<br>
+Howell et al. 2011 http://adsabs.harvard.edu/abs/2011AJ....142...19H
+
+
+</p><div id="ghostery-purple-box" class="ghostery-bottom ghostery-right ghostery-none ghostery-collapsed"><div id="ghostery-box"><div id="ghostery-count" style="background: transparent none repeat scroll 0% 0%; color: rgb(255, 255, 255);">0</div><div id="ghostery-pb-icons-container"><span id="ghostery-breaking-tracker" class="ghostery-pb-tracker" title="Broken Page Trackers" style="background: transparent url(&quot;moz-extension://26dc11b1-319b-4236-a52b-b23731ac74bb/app/images/purple_box/breaking-icon.svg&quot;) repeat scroll 0% 0%; opacity: 0.5;"></span><span id="ghostery-slow-tracker" class="ghostery-pb-tracker" title="Slow Trackers" style="background: transparent url(&quot;moz-extension://26dc11b1-319b-4236-a52b-b23731ac74bb/app/images/purple_box/slow-icon.svg&quot;) repeat scroll 0% 0%; opacity: 0.5;"></span><span id="ghostery-non-secure-tracker" class="ghostery-pb-tracker" title="Non-secure Trackers" style="background: transparent url(&quot;moz-extension://26dc11b1-319b-4236-a52b-b23731ac74bb/app/images/purple_box/non-secure-icon.svg&quot;) repeat scroll 0% 0%; opacity: 0.5;"></span></div><div id="ghostery-title">Looking</div><div id="ghostery-minimize"><span id="ghostery-minimize-icon"></span></div><span id="ghostery-close" style="background: transparent url(&quot;moz-extension://26dc11b1-319b-4236-a52b-b23731ac74bb/app/images/purple_box/collapse.svg&quot;) repeat scroll 0% 0%;"></span></div><div id="ghostery-pb-background"><div id="ghostery-trackerList"></div></div></div></body></html>
