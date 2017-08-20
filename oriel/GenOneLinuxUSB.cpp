@@ -15,8 +15,10 @@
 
 const int32_t INTERFACE_NUM = 0x0;
 const uint32_t TIMEOUT = 10000;  
-const uint16_t FW_VENDOR = 0x1234;
-const uint16_t FW_PRODUCT = 0x5678;
+const uint16_t FW_VENDOR = 0x104d;
+const uint16_t FW_PRODUCT = 0x1011;
+static int ep_in_addr  = 0x81;
+static int ep_out_addr = 0x02;
 
 //////////////////////////// 
 // CTOR
@@ -105,6 +107,7 @@ bool GenOneLinuxUSB::OpenDeviceHandle(const uint16_t DeviceNum,
 	const int32_t count = libusb_get_device_list(m_Context, &devs);
 
 	bool result = false;
+        int found=0;
 	int32_t i=0;
 	for(; i < count; ++i)
 	{
@@ -119,8 +122,9 @@ bool GenOneLinuxUSB::OpenDeviceHandle(const uint16_t DeviceNum,
 		//are we an apogee device
 		if( desc.idVendor == FW_VENDOR && desc.idProduct == FW_PRODUCT )
 		{
+                        found++;
 			const uint16_t num = libusb_get_device_address(devs[i]);
-			if( num == DeviceNum)
+			if( found == DeviceNum)
 			{
 				//we found the device we want try to open
 				//handle to it
@@ -161,64 +165,6 @@ bool GenOneLinuxUSB::OpenDeviceHandle(const uint16_t DeviceNum,
 
 
 
-////////////////////////////
-// APN      USB        REQUEST      IN
-void GenOneLinuxUSB::UsbRequestIn(uint8_t RequestCode,
-		uint16_t	Index, uint16_t	Value,
-		uint8_t * ioBuf, uint32_t BufSzInBytes)
-{
-	const int32_t result = libusb_control_transfer(
-				m_Device,
-				LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-				RequestCode,
-				Value,
-				Index,
-				ioBuf,
-				BufSzInBytes,
-				TIMEOUT);
-
-	if( result < 0 )
-	{
-        m_IoError = true;
-		std::stringstream err;
-		err << "UsbRequestIn failed with error ";
-		err << result << ".  ";
-		err << "RequestCode = " << std::hex << static_cast<int32_t>(RequestCode);
-		err << " : Index = " << Index << " : Value = " << Value;
-	}
-
-    m_IoError = false;
-}
-
-////////////////////////////
-// APN      USB        REQUEST      OUT
-void GenOneLinuxUSB::UsbRequestOut(uint8_t RequestCode,
-		uint16_t Index, uint16_t Value,
-		const uint8_t * ioBuf, uint32_t BufSzInBytes)
-{
-	const int32_t result = libusb_control_transfer(
-					m_Device,
-					LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-					RequestCode,
-					Value,
-					Index,
-					const_cast<uint8_t*>(ioBuf),
-					BufSzInBytes,
-					TIMEOUT);
-
-	if( result < 0 )
-	{
-            m_IoError = true;
-		    std::stringstream err;
-		    err << "UsbRequestOut failed with error ";
-		    err << result << ".  ";
-		    err << "RequestCode = " << std::hex << static_cast<int32_t>(RequestCode);
-		    err << " : Index = " << Index << " : Value = " << Value;
-	}
-
-    m_IoError = false;
-}
-
 //////////////////////////// 
 //      IS     ERROR
 bool GenOneLinuxUSB::IsError()
@@ -228,4 +174,39 @@ bool GenOneLinuxUSB::IsError()
     // m_ReadImgError
     return ( m_IoError ? true : false );
 }
+
+
+void GenOneLinuxUSB::write_cmd(unsigned char *cmd)
+{
+    /* To send a char to the device simply initiate a bulk_transfer to the
+     * Endpoint with address ep_out_addr.
+     */
+    int actual_length;
+    actual_length = strlen(cmd);
+    if (libusb_bulk_transfer(m_Device, ep_out_addr, cmd, actual_length,
+                             &actual_length, 0) < 0) {
+        fprintf(stderr, "Error while sending char\n");
+    }
+}
+
+int GenOneLinuxUSB::read_result(unsigned char *data, int size)
+{
+    /* To receive characters from the device initiate a bulk_transfer to the
+     * Endpoint with address ep_in_addr.
+     */
+    int actual_length;
+    int rc = libusb_bulk_transfer(m_Device, ep_in_addr, data, size, &actual_length,
+                                  1000);
+    if (rc == LIBUSB_ERROR_TIMEOUT) {
+        printf("timeout (%d)\n", actual_length);
+        return -1;
+    } else if (rc < 0) {
+        fprintf(stderr, "Error while waiting for char\n");
+        return -1;
+    }
+
+    return actual_length;
+}
+
+
 
