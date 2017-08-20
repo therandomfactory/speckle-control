@@ -12,7 +12,7 @@
 
 set NESSI_DIR $env(NESSI_DIR)
 
-
+source ../util/common.tcl
 
 proc loadZaberConfig { fname } {
 global NESSI_DIR ZABERS
@@ -39,19 +39,27 @@ global FLOG
   echoZaberConfig $FLOG
 }
 
-proc echoZaberConfig { fcfg } {
+proc echoZaberConfig { {fcfg stdout} } {
 global ZABERS
    puts $fcfg  "# Zaber stage configuration parameters
 set ZABERS(port) $ZABERS(port)
 "
    foreach i "A B " {
-     foreach p "device speckle wide home engineer" {
+     foreach p "device speckle wide" {
          puts $fcfg "set ZABERS($i,$p) \"$ZABERS($i,$p)\""
      }
      puts $fcfg ""
    }
-   foreach p "device in out home" {  
-     puts $fcfg "set ZABERS(rotator,$p) \"$ZABERS(rotator,$p)\""
+   foreach p "device speckle wide" {  
+     puts $fcfg "set ZABERS(input,$p) \"$ZABERS(input,$p)\""
+   }
+}
+
+proc zaberPrintProperties { {fd stdout} } {
+global ZABERS ZPROPERTIES
+   puts $fd "Property		A	B	input"
+   foreach p [split $ZPROPERTIES \n] {
+       puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)"
    }
 }
 
@@ -62,8 +70,10 @@ global ZABERS
    if { [info exists ZABERS(sim)] } {
       set handle 1
    } else {
-      set handle [za_connect $ZABERS(port) ]
-   }
+      set handle [open $ZABERS(port) RDWR]
+      fconfigure $handle -buffering none -blocking 0
+      fileevent $handle readable [list zaberReader $handle]
+    }
    if { $handle < 0 } {
      errordialog "Failed to connect to Zaber $name"
    } else {
@@ -73,52 +83,115 @@ global ZABERS
    return $handle
 }
 
-proc zaberParseResponse { name } {
+proc zaberDisconnect { } {
 global ZABERS
+   close $ZABERS(handle)
+}
+
+
+
+proc zaberCommand { name cmd } {
+global ZABERS ZPROP ZNAME ZSIMPROP
   if { $ZABERS(handle) > 0 } {
-     set result [za_receive $ZABERS(handle) ]
-     set ZABERS($name,[lindex $result 1]) "lrange $result 2 end]
-     debuglog "Zaber response : $result"
+     set ZPROP none
+     set ZNAME $name
+     set ZSIMPROP ""
+     if { [lindex $cmd 0] == "get" || [lindex $cmd 0] == "set" } {
+         set ZPROP [lindex $cmd 1]
+     }
+     if { [lindex $cmd 0] == "move" } { set ZPROP pos }
+     if { [info exists ZABERS(sim)] && [lindex $cmd 0] == "set" } {
+        set ZSIMPROP [lindex $cmd 2]
+     } else {
+       set result [puts $ZABERS(handle) "/$ZABERS($name,device) $cmd"]
+     }
   } else {
-     errordialog "Zaber handle not valid in zaberParseResponse - $name"
+     errordialog "Zaber handle not valid in zaberCommand - $handle"
   }
 }
 
-
-proc zaberSetPos  { name axis pos } {
-global ZABERS
-  if { $ZABERS($name,$handle)  > 0 } {
-     set result [za_send $handle "/$device $axis set pos $pos"]
-     after 100 "zaberParseResponse $handle"
+proc zaberReader { fd } {
+global ZABERS ZPROP ZNAME ZSIMPROP
+  if { [info exists ZABERS(sim)] && $ZSIMPROP != "" } {
+    set ZABERS($ZNAME,$ZPROP) $ZSIMPROP
   } else {
-     errordialog "Zaber handle not valid in zaberSetPos - $handle"
+    if { ![eof $fh] } {
+      set res [gets $fh]
+      debuglog "zaber : $res"
+      if { [lindex $res 2] == "OK" } {
+        set ZABERS($ZNAME,$ZPROP) "[lindex $res 5]"
+      }
+    }
   }
 }
 
-proc zaberSetDevice { handle cmd setting value } {
-global ZABERS
-  if { $handle > 0 } {
-     set result [za_send $handle "/$cmd $setting $value"]
-     after 100 "zaberParseResponse $handle"
-  } else {
-     errordialog "Zaber handle not valid in zaberSetDevice - $handle"
-  }
+proc zaberGetProperties { name } {
+global ZABERS ZPROPERTIES
+   foreach p [split $ZPROPERTIES \n] {
+       zaberCommand $name "get $p"
+       after 100
+       update
+   }
 }
 
-proc zaberLed { handle state } {
-global ZABERS
-  if { $handle > 0 } {
-     set result [za_send $handle "/set system.led.enable $state"]
-     after 100 "zaberParseResponse $handle"
-  } else {
-     errordialog "Zaber handle not valid in zaberLed - $handle"
-  }
+set ZPROPERTIES "system.serial
+deviceid
+system.axiscount
+version
+version.build
+system.voltage
+system.access
+comm.rs232.baud
+comm.protocol
+comm.rs232.protocol
+stream.numbufs
+stream.numstreams
+comm.checksum
+comm.alert
+comm.address
+system.led.enable
+accel
+driver.temperature
+pos
+limit.min
+limit.max
+limit.home.pos
+motion.index.dist
+motion.accelonly
+motion.decelonly
+maxspeed
+driver.current.run
+driver.current.hold
+driver.current.max
+resolution"
+
+
+
+proc zaberSetPos  { name pos } {
+   zaberCommand $name  "set pos $pos"
 }
 
-proc zaberGoto { device pos } {
+proc zaberSetProperty { name property value } {
+   zaberCommand $name "set $property $value"
+}
+ 
+proc zaberLed { name state } {
+   zaberSetProperty system.led.enable $state
+}
+
+proc zaberGoto { name pos } {
 global ZABERS
-  set newp $ZABERS($device,$pos)
-  set res [zaberSetPos $device $newp]
+  set newp $ZABERS($name,$pos)
+  set res [zaberSetPos $name $newp]
+}
+
+proc zaberConfigurePos { name property {value current} } {
+global ZABERS
+    if { $value == "current" } {
+        set ZABERS($name,$property) $ZABERS($name,pos)
+    } else {
+        set ZABERS($name,$property) $value
+    }   
 }
 
 
@@ -127,42 +200,30 @@ global ZABERS
    puts stdout "
 Supported commands : 
     home
-    move max nnn
+    speckle
+    wide
     move abs nnn
     move rel nnn
-    renumber
-    stepsize nnn
-    led 0/1
     set xxx
 "
 }
 
-
-set simzaber 0
-if { [info exists env(NESSI_SIM)] } {
-   set simdev [split $env(NESSI_SIM) ,]
-   if { [lsearch $simdev zaber] > -1 } {
-       set simzaber 1
+proc zaberService { name cmd {a1 ""} {a2 ""} } {
+   switch $cmd { 
+      home        {zaberCommand $name home}
+      speckle     {zaberGoto $name speckle}
+      wide        {zaberGoto $name wide}
+      move        {zaberCommand $name "move $a1 $a2"}
+      set         {zaberSetProperty $a1 $a2}
    }
 }
 
-if { $simzaber } {
-     proc za_send { handle cmd } {
-        global ZABERS
-        set ZABERS(sim) $cmd
-     }
-     proc za_receive { handle } {
-        global ZABERS
-        set cmd $ZABERS(sim)
-        set dev [string trim [lindex $cmd 0] "/"]
-        set res [lrange $cmd 1 end]
-        return "$dev $res"
-     }
-} else {
-   load $env(NESSI_DIR)/lib/libzaber.so
+if { [info exists env(NESSI_SIM)] } {
+   set simdev [split $env(NESSI_SIM) ,]
+   if { [lsearch $simdev zaber] > -1 } {
+       set ZABERS(sim) 1
+   }
 }
-
-
 
 
 
