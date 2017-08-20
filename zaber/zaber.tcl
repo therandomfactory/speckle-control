@@ -199,6 +199,7 @@ proc zaberHelp { } {
 global ZABERS
    puts stdout "
 Supported commands : 
+    estop
     home
     speckle
     wide
@@ -208,8 +209,20 @@ Supported commands :
 "
 }
 
+proc zaberStopAll { } {
+global ZABERS
+  foreach d [array names ZABERS] {
+     if { [lindex [split $d ,] 1] == "device" } {
+        set id [lindex [split $d ,] 0]
+        puts stdout "Requested estop for device $id"
+        zaberCommand $id estop
+     }
+  }
+}
+
 proc zaberService { name cmd {a1 ""} {a2 ""} } {
-   switch $cmd { 
+   switch $cmd {
+      estop       {zaberStopAll}
       home        {zaberCommand $name home}
       speckle     {zaberGoto $name speckle}
       wide        {zaberGoto $name wide}
