@@ -1,0 +1,132 @@
+#
+# oriel makefile for linux
+# $Id: makefile-tcl,v 1.4 2017/06/15 07:34:43 dmills Exp $
+#
+BASE = oriel
+LNAME = lib$(BASE)
+MACHINE = linux
+M = linux
+# Version and minor version
+V = 1
+MV = 0
+
+
+DEVHOME		= .
+LIBDIR		= $(DEVHOME)
+STATICLIBRARY	= $(LIBDIR)/$(LNAME)_$(M).a
+SHAREDLIB	= $(LIBDIR)/$(LNAME)_$(M).so	# ignored
+SHAREDLIBDATA	= $(LIBDIR)/$(LNAME)_$(M).sa	# ignored
+SHAREDLIBLN	= $(LIBDIR)/$(LNAME)_$(M).so
+INSTALL_DIR	= $(DEVHOME)
+
+.PRECIOUS:	$(STATICLIBRARY) $(LIBDIR)/$(LNAME)_$(M).so $(LIBDIR)/$(LNAME)_$(M)
+
+# Test program
+TPROG = apwish.$(M)
+TSRC =  tkMain.c myAppInit.c 
+TOBJ =	$(TSRC:%.c=%.o)
+
+
+# -R$(DEVHOME):$(GWCHOME)/lib -lsocket -lnsl
+# If you don't have TkPixmap tk leave out Xpm
+XPMLIBS = -lXpm 
+LDLIBS +=  -L$(NESSI_DIR)/lib -lusb-1.0 -ltk $(XPMLIBS) -ltcl -lX11 -lm 
+
+.KEEP_STATE:
+CC =	gcc
+INCDIR		= $(DEVHOME)
+PRIVATEINCDIR	= $(DEVHOME)
+GUIINC          = /usr/include
+
+CFLAGS 		+= -pipe -g -D$(MACHINE)  -DLINUX -Wall  -I/usr/include/tcl -I$(DEVHOME)/include -I../include -lstdc++ -fpermissive
+
+
+CPPFLAGS	= -I/usr/local/include -I$(INCDIR) -I/usr/include/tcl -DVER=\"$(V).$(MV)\"
+
+INCLUDES =
+
+PRIVATE_INCLUDES =	
+
+LIBSOURCES =    orielPackage.cpp  \
+		oriel_tcl.cpp \
+		GenOneLinuxUSB.cpp
+
+LIBDATA =	
+
+CSOURCE_ALL = $(LIBSOURCES) $(LIBDATA)
+
+STATICLIBDIR=Static
+SHAREDLIBDIR=Shared
+
+CONFIGPIC		= -fPIC
+CONFIGSHAREDLIBLD	= gcc -shared -o $@ $?
+
+SHAREDLIB		= $(LIBDIR)/$(LNAME)_$(M).so
+CONFIGTARGETS		= $(SHAREDLIB)
+
+CFLAGS		=
+NSLLIB		= -lnsl
+
+all: Static Shared $(LIBDIR) $(CONFIGTARGETS) $(STATICLIBRARY) $(SHAREDLIBLN)
+#all: Shared $(LIBDIR) $(CONFIGTARGETS) $(SHAREDLIBLN)
+#all: Static $(LIBDIR) $(CONFIGTARGETS) $(STATICLIBRARY) 
+test: $(TPROG)
+
+$(STATICLIBRARY):	$(CSOURCE_ALL:%.c=Static/%.o)
+	ar rv $@ $?
+
+$(STATICLIBDIR)/%.o: %.c $(PRIVATE_INCLUDES) $(INCLUDES)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(SHAREDLIB):	$(CSOURCE_ALL:%.c=Shared/%.o)
+	$(CONFIGSHAREDLIBLD)
+
+$(SHAREDLIBDATA): $(LIBDATA:%.c=Shared/%.o)
+	ar ruv $(SHAREDLIBDATA) $?
+	-ranlib $(SHAREDLIBDATA)
+
+$(SHAREDLIBDIR)/%.o: %.c $(PRIVATE_INCLUDES) $(INCLUDES)
+	$(CC) $(CFLAGS) $(CONFIGPIC) $(CPPFLAGS) -c $< -o $@
+
+$(SHAREDLIBLN):
+	rm -f $(SHAREDLIBLN) 
+
+xdr:	edm.x
+	rpcgen -C edm.x
+
+$(TPROG): $(TSRC) $(TOBJ) $(STATICLIBRARY)
+	$(LINK.c) -o $@ $(TOBJ)  libnessi_linux.a /-l$(BASE)_$(M) $(LDLIBS)
+
+
+linux:
+	@-rm makefile
+	ln -s Makefile.linux makefile
+
+Shared:
+	-mkdir Shared
+
+Static:
+	-mkdir Static
+
+$(LIBDIR):
+	-mkdir $(LIBDIR)
+
+
+install: $(STATICLIBRARY) $(SHAREDLIB) FORCE
+	-mkdir -p $(INSTALL_DIR)/lib
+	cp $(STATICLIBRARY) $(INSTALL_DIR)/lib
+	cp $(SHAREDLIB) $(INSTALL_DIR)/lib
+	-mkdir -p $(INSTALL_DIR)/include/$(BASE)
+	cp $(INCLUDES) $(INSTALL_DIR)/include/.
+	rm -f $(INSTALL_DIR)/lib/$(LNAME)_$(M).so
+	rm -f $(INSTALL_DIR)/lib/$(LNAME).so
+
+clean:
+	rm -rf Shared Static
+	rm -f tags TAGS .make.state .nse_depinfo Makefile $(TOBJ)
+
+tags:
+	ctags $(LIBSOURCES)
+
+FORCE:
+

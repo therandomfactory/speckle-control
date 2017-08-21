@@ -12,6 +12,7 @@
 #include "GenOneLinuxUSB.h" 
 #include <cstring>
 #include <sstream>
+#include <stdio.h>
 
 const int32_t INTERFACE_NUM = 0x0;
 const uint32_t TIMEOUT = 10000;  
