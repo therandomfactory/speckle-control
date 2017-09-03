@@ -1,0 +1,5 @@
+# andor.rules a udev rules file for apogee usb cameras
+SUBSYSTEM!="usb", ACTION!="add", GOTO="andor_rules_end"
+# Andor IXon
+ATTRS{idVendor}=="125c", ATTRS{idProduct}=="0010", GROUP="users", MODE="666"
+
