@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/wish
 
 #
 # This Source Code Form is subject to the terms of the GNU Public
@@ -8,18 +8,21 @@
 # Copyright(c) 2017 The Random Factory (www.randomfactory.com) 
 #
 #
-
+# A = blue
+# B = red
 
 set NESSI_DIR $env(NESSI_DIR)
 
-source ../util/common.tcl
+#source ../util/common.tcl
+proc debuglog { msg } {puts stdout $msg}
+proc errordialog { msg} {puts stdout $msg}
 
-proc loadZaberConfig { fname } {
+proc loadZaberConfig { {fname zabersConfiguration} } {
 global NESSI_DIR ZABERS
    if { [file exists $NESSI_DIR/$fname] == 0 } {
      errordialog "Zaber configuration file $NESSI_DIR/$fname\n does not exist"
    } else {
-     source $NESSI_DIR/zabersConfiguration
+     source $NESSI_DIR/$fname
      set NESCONFIG(zaberChange) 0
    }
 }
@@ -72,6 +75,7 @@ global ZABERS
    } else {
       set handle [open $ZABERS(port) RDWR]
       fconfigure $handle -buffering none -blocking 0
+      fconfigure $handle -mode "115200,n,8,1"
       fileevent $handle readable [list zaberReader $handle]
     }
    if { $handle < 0 } {
@@ -103,14 +107,15 @@ global ZABERS ZPROP ZNAME ZSIMPROP
      if { [info exists ZABERS(sim)] && [lindex $cmd 0] == "set" } {
         set ZSIMPROP [lindex $cmd 2]
      } else {
-       set result [puts $ZABERS(handle) "/$ZABERS($name,device) $cmd"]
+       set result [puts $ZABERS(handle) "/$ZABERS($name,device) $cmd\r\n"]
+       after 100 update
      }
   } else {
      errordialog "Zaber handle not valid in zaberCommand - $handle"
   }
 }
 
-proc zaberReader { fd } {
+proc zaberReader { fh } {
 global ZABERS ZPROP ZNAME ZSIMPROP
   if { [info exists ZABERS(sim)] && $ZSIMPROP != "" } {
     set ZABERS($ZNAME,$ZPROP) $ZSIMPROP
@@ -168,7 +173,7 @@ resolution"
 
 
 proc zaberSetPos  { name pos } {
-   zaberCommand $name  "set pos $pos"
+   zaberCommand $name  "move abs $pos"
 }
 
 proc zaberSetProperty { name property value } {
@@ -237,6 +242,17 @@ if { [info exists env(NESSI_SIM)] } {
        set ZABERS(sim) 1
    }
 }
+
+loadZaberConfig
+echoZaberConfig
+zaberConnect nessi
+zaberGetProperties A
+zaberGetProperties B
+zaberGetProperties input
+zaberPrintProperties
+zaberCommand A home
+zaberCommand B home
+zaberCommand input home
 
 
 
