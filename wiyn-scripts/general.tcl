@@ -439,26 +439,6 @@ proc toggle { win } {
 #  Arguments  :
 #
  
-proc pastelocation { } {
- 
-#
-#  Globals    :
-#  
-#               SITES	-	Site long/lat info
-global SITES 
-  set l [.psite.l curselection]
-  set ll [split $SITES($l) |]
-  set lat [lindex $ll 0]
-  set lon [lindex $ll 1]
-  .main.vsite delete 0 end
-  .main.vlatitude delete 0 end
-  .main.vlongitude delete 0 end
-  .main.vlatitude insert 0 "[join [lrange $lat 0 2] :] [lindex $lat 3]"
-  .main.vlongitude insert 0 "[join [lrange $lon 0 2] :] [lindex $lon 3]" 
-  .main.vsite insert 0 "[.psite.l get $l]"
-  wm withdraw .psite
-}
-
 
 
 

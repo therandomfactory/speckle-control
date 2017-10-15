@@ -62,8 +62,6 @@ set CAMSTATUS(BinX) 1
 set CAMSTATUS(BinY) 1
 set CAMSTATUS(Temperature) -100.0
 set CAMSTATUS(CoolerMode) 1
-set SCOPE(site) KPNO
-set SCOPE(name) WIYN
 set SCOPE(latitude) 31:57:11.78
 set SCOPE(longitude) 07:26:27.97
 set SCOPE(camera) "NESSI"

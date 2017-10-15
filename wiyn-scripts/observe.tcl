@@ -238,7 +238,6 @@ global CAMERAS STATUS DEBUG SCOPE ALTA REMAINING tcl_platform
 #  exec sleep 1
   if { $exp == 0 } {set exp 1}
   set STATUS(readout) 0
-  set STATUS(pause) 0
   set SCOPE(darktime) 0
   update idletasks
   if { $ALTA } {
@@ -267,24 +266,6 @@ global CAMERAS STATUS DEBUG SCOPE ALTA REMAINING tcl_platform
         abortexposure
         set exp -1
         return -1
-     }
-     if { $STATUS(pause) } {
-        if { $ALTA } {$camera SetShutterState 3 } else {$camera write_ForceShutterOpen 0}
-        while { $STATUS(pause) } {
-           if { $STATUS(abort) } {
-             abortexposure
-             set exp -1
-             return -1
-           }
-           update 
-           if { $tcl_platform(os) == "Darwin" } {
-             exec sleep 1
-           } else {
-             exec usleep 100000
-           }
-           set SCOPE(darktime) [expr $SCOPE(darktime) +1]
-        }
-        if { $ALTA } {$camera SetShutterState 2 } else {$camera write_ForceShutterOpen 1}
      }
      if { $SCOPE(darktime) > 0 } {set s 0}
      if { $DEBUG } {debuglog "waiting $exp $s"}
@@ -603,8 +584,6 @@ global STATUS
   countdown off
   .main.observe configure -text "Observe" -bg gray -relief raised
   .main.abort configure -bg gray -relief sunken -fg LightGray
-  .main.pause configure -bg gray -relief sunken -fg LightGray
-  .main.resume configure -bg gray -relief sunken -fg LightGray
 }
 
 
@@ -647,7 +626,6 @@ global STATUS CAMERAS SCOPE ALTA
    if { $STATUS(busy) } {after 100 continuousmode $exp $n}
    .main.observe configure -text "continuous" -bg green -relief sunken
    .main.abort configure -bg orange -relief raised -fg black
-   .main.pause configure -bg orange -relief raised -fg black
    update
    set camera $CAMERAS($id)
    exec rm -f /tmp/continuous.fits
@@ -691,7 +669,6 @@ global STATUS CAMERAS SCOPE ALTA
    } else {
       .main.observe configure -text "Observe" -bg gray -relief raised
       .main.abort configure -bg gray -relief sunken -fg LightGray
-      .main.pause configure -bg gray -relief sunken -fg LightGray
    }
    set now [expr [clock clicks]/1000000.]
    puts stdout "[expr $now - $STATUS(last)] seconds since previous exposure"
@@ -889,11 +866,6 @@ global FRAME STATUS REMAINING
   }
   .countdown.f configure -text $FRAME
   .countdown.t configure -text $REMAINING
-  if { $STATUS(pause) == 0 } {
-      set time [expr $time - 1]
-  } else {
-      .countdown.t configure -text "$time (HOLD)"
-  }
   if { [winfo ismapped .countdown] == 0 } {
      wm deiconify .countdown
      wm geometry .countdown +20+20
@@ -952,7 +924,6 @@ global SCOPE OBSPARS FRAME STATUS DEBUG
    }
    .main.observe configure -text "working" -bg green -relief sunken
    .main.abort configure -bg orange -relief raised -fg black
-   .main.pause configure -bg orange -relief raised -fg black
    set i 1
    while { $i <= $SCOPE(numframes) && $STATUS(abort) == 0 } {
       set FRAME $i
@@ -963,24 +934,9 @@ global SCOPE OBSPARS FRAME STATUS DEBUG
    }
    .main.observe configure -text "Observe" -bg gray -relief raised
    .main.abort configure -bg gray -relief sunken -fg LightGray
-   .main.pause configure -bg gray -relief sunken -fg LightGray
    countdown off
 }
 
-
-proc pausesequence { } {
-global STATUS
-  set STATUS(pause) 1
-  .main.pause configure -bg gray -relief sunken -fg Black -bg yellow
-  .main.resume configure -bg gray -relief raised -fg Black -bg orange
-}
-
-proc resumesequence { } {
-global STATUS
-  set STATUS(pause) 0
-  .main.pause configure -bg orange -relief raised -fg black
-  .main.resume configure -bg gray -relief sunken -fg LightGray
-}
 
 
 

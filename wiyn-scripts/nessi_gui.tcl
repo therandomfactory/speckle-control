@@ -10,7 +10,6 @@ foreach item "target ra dec equinox observer telescope instrument site latitude 
    place .main.v$item -x 440 -y $iy
    incr iy 24 
 }
-place .main.ssite -x 530 -y 218
 
 
 checkbutton .main.bred -bg gray50 -text "RED ARM" -variable INSTRUMENT(red)

@@ -11,7 +11,11 @@ set where [exec ip route]
 set gw [lindex $where 2]
 set SCOPE(telescope) GEMINI
 set SCOPE(site) GEMINI_N
+set SCOPE(latitude) 19:49:00
+set SCOPE(longitude) 155:28:00
 if { $gw == "140.252.61.1" } {
+  set SCOPE(latitude) 31:57:11.78
+  set SCOPE(longitude) 07:26:27.97
   set SCOPE(telescope) WIYN
   set SCOPE(site) KPNO
 }
@@ -96,7 +100,6 @@ set STATUS(readout) 0
 #  Update status display
 #
 showstatus "Building user interface"
-set SCOPE(telescope) "WIYN"
 set SCOPE(instrument) "NESSI"
 set SCOPE(equinox) "2000.0"
 
@@ -155,11 +158,11 @@ menu .mbar.help.m
 .mbar.temp.m add command -label "Cooler to ambient" -command  {set ok [confirmaction "Ramp temperature to ambient"] ; if {$ok} {setpoint amb}}
 .mbar.temp.m add command -label "Plot averaged temps" -command {set RAWTEMP 0}
 .mbar.temp.m add command -label "Plot raw temps" -command {set RAWTEMP 1}
-.mbar.tools.m add command -label "Engineering" -command "nessiMode engineeringGui"
+.mbar.tools.m add command -label "Engineering" -command "nessiGuiMode engineeringGui"
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file:/opt/apogee/doc/user-guide.html &}
-.mbar.tools.m add command -label "Observing" -command "nessiMode observingGui"
+.mbar.tools.m add command -label "Observing" -command "nessiGuiMode observingGui"
 
-proc nessiMode { mode } {
+proc nessiGuiMode { mode } {
 global NESSI
   wm geometry . $NESSI($mode)
 }
@@ -167,7 +170,7 @@ global NESSI
 #
 #  Initialize telescope/user variables
 #
-frame .main -bg gray -width 520 -height 330
+frame .main -bg gray -width 640 -height 330
 pack .main -side bottom
 set iy 10
 foreach item "target ra dec equinox observer telescope instrument site latitude longitude" {
@@ -246,8 +249,6 @@ place .main.hibias -x 280 -y 244
 checkbutton .main.autobias -bg gray  -text "Automatic bias subtraction" -variable SCOPE(autobias)
 place .main.autobias -x 20 -y 244
 .main.abort configure -relief sunken -fg LightGray
-.main.pause configure -relief sunken -fg LightGray
-.main.resume configure -relief sunken -fg LightGray
 set SCOPE(autodisplay) 1
 set SCOPE(autobias) 0
 set SCOPE(autocalibrate) 0
@@ -377,15 +378,13 @@ focus .
 #
 
 wm protocol .countdown WM_DELETE_WINDOW {wm withdraw .countdown}
-wm protocol .psite  WM_DELETE_WINDOW {wm withdraw .psite}
 wm protocol .status WM_DELETE_WINDOW {wm withdraw .status}
 wm protocol .       WM_DELETE_WINDOW {wm withdraw .status}
 
 #ap7p  set_biascols 1 7, set bic 4
 #kx260 set_biascols 1 5, set bic 2
 
-wm geometry .  602x883+200+200
-
+nessiGuiMode observingGui
 
 
 
