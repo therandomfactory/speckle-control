@@ -7,6 +7,25 @@ set DEBUG 1
 set RAWTEMP 0
 set NESSIGUI 1
 set NOBLT 1
+set where [exec ip route]
+set gw [lindex $where 2]
+set SCOPE(telescope) GEMINI
+set SCOPE(site) GEMINI_N
+if { $gw == "140.252.61.1" } {
+  set SCOPE(telescope) WIYN
+  set SCOPE(site) KPNO
+}
+set now [clock seconds]
+set FLOG [open /tmp/nessiLog_[set now].log w]
+exec xterm -e tail -f /tmp/nessiLog_[set now].log &
+
+proc debuglog { msg } {
+global FLOG
+   puts $FLOG $msg
+   flush $FLOG
+}
+
+
 #
 # Load the procedures
 #
@@ -15,6 +34,7 @@ source $NESSI_DIR/wiyn-scripts/display.tcl
 source $NESSI_DIR/wiyn-scripts/temperature.tcl
 ###source $NESSI_DIR/wiyn-scripts/calibration.tcl
 source $NESSI_DIR/wiyn-scripts/observe.tcl
+
 
 # Create the status window. This window is used to display informative messages
 # during initialization.
@@ -135,9 +155,14 @@ menu .mbar.help.m
 .mbar.temp.m add command -label "Cooler to ambient" -command  {set ok [confirmaction "Ramp temperature to ambient"] ; if {$ok} {setpoint amb}}
 .mbar.temp.m add command -label "Plot averaged temps" -command {set RAWTEMP 0}
 .mbar.temp.m add command -label "Plot raw temps" -command {set RAWTEMP 1}
-.mbar.tools.m add command -label "DSS" -command getDSS
+.mbar.tools.m add command -label "Engineering" -command "nessiMode engineeringGui"
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file:/opt/apogee/doc/user-guide.html &}
+.mbar.tools.m add command -label "Observing" -command "nessiMode observingGui"
 
+proc nessiMode { mode } {
+global NESSI
+  wm geometry . $NESSI($mode)
+}
 
 #
 #  Initialize telescope/user variables
@@ -152,9 +177,6 @@ foreach item "target ra dec equinox observer telescope instrument site latitude 
    place .main.v$item -x 400 -y $iy
    incr iy 24 
 }
-button .main.ssite -bg gray -fg black -text "?" -font "Helvetica -10 bold" -command "wm deiconify .psite"
-place .main.ssite -x 491 -y 178
-
 
 #
 #  Create main observation management widgets
@@ -171,19 +193,19 @@ if { $tcl_platform(os) != "Darwin" } {
 if { [lindex [package version BWidget] end] >= 1.8 } {
  set bwkey text
  set bwfont font
- SpinBox .main.exposure -width 10 -font fixed -$bwfont "fixed"  -range "0.0 1048.75 1" -textvariable SCOPE(exposure)
+ SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure)
  place .main.exposure -x 100 -y 20
- SpinBox .main.numexp -width 10  -font fixed  -$bwfont "fixed"  -range "1 1000 1" -textvariable SCOPE(numframes)
+ SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes)
  place .main.numexp -x 100 -y 50
  set opts "Object Focus Acquire Flat SkyFlat Dark Zero"
- ComboBox .main.exptype -width 10 -font fixed -$bwfont "fixed"  -values "$opts" -textvariable SCOPE(exptype)
+ ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype)
  place .main.exptype -x 100 -y 80
  label .main.lexp -text Exposure -bg gray
  label .main.lnum -text "Num. Frames" -bg gray
  label .main.ltyp -text "Exp. Type" -bg gray
- place .main.lexp -x 5 -y 23
- place .main.lnum -x 5 -y 53
- place .main.ltyp -x 5 -y 83
+ place .main.lexp -x 20 -y 23
+ place .main.lnum -x 20 -y 53
+ place .main.ltyp -x 20 -y 83
 } else {
  SpinBox .main.exposure -width 7 -$bwkey "Exposure (in seconds) : " -font fixed -$bwfont "fixed"  -range "0.0 1048.75 1" -textvariable SCOPE(exposure)
  place .main.exposure -x 20 -y 20
@@ -195,24 +217,20 @@ if { [lindex [package version BWidget] end] >= 1.8 } {
 }
 set SCOPE(exptype) Object
 button .main.seldir -width 24 -text "Configure data directory" -command "choosedir data data"
-place .main.seldir -x 20 -y 110
+place .main.seldir -x 20 -y 275
 label .main.lname -bg gray -fg black -text "File name :"
-place .main.lname -x 20 -y 140
-entry .main.imagename -width 16 -bg white -fg black -textvariable SCOPE(imagename)
-place .main.imagename -x 90 -y 140
+place .main.lname -x 20 -y 130
+entry .main.imagename -width 12 -bg white -fg black -textvariable SCOPE(imagename)
+place .main.imagename -x 100 -y 125
 .main.imagename insert 0 test
 entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum)
-place .main.seqnum -x 220 -y 140
+place .main.seqnum -x 205 -y 126
 set SCOPE(seqnum) 1
 button .main.observe -width 5 -height 2 -text "Observe" -bg gray -command startsequence
 button .main.abort -width 5 -height 2 -text "Abort" -relief sunken -bg gray -command abortsequence
-button .main.pause -width 5 -height 2 -text "Pause" -relief sunken -bg gray -command pausesequence
-button .main.resume -width 5 -height 2 -text "Resume" -relief sunken -bg gray -command resumesequence
+place .main.observe -x 20  -y 167
+place .main.abort   -x 120 -y 167
 
-place .main.observe -x 20  -y 170
-place .main.abort   -x 83 -y 170
-place .main.pause   -x 148 -y 170
-place .main.resume  -x 211 -y 170
 checkbutton .main.autodisplay -bg gray  -text "Automatic display" -variable SCOPE(autodisplay)
 place .main.autodisplay -x 20 -y 217
 checkbutton .main.overwrite -bg gray  -text "Overwrite files" -variable SCOPE(overwrite)
@@ -237,27 +255,6 @@ set SCOPE(overwrite) 0
 set STATUS(abort) 0
 set STATUS(pause) 0
 set STATUS(readout) 0
-toplevel .psite -bg gray -width 225 -height 695
-listbox .psite.l -width 30 -height 40
-scrollbar .psite.s -orient vertical 
-pack .psite.l -side left
-pack .psite.s -side right -expand yes -fill y 
-.psite.l configure -yscrollcommand ".psite.s set"  
-.psite.s configure  -command ".psite.l yview" 
-wm withdraw .psite
-set fin [open $NESSI_DIR/wiyn-scripts/sites.dat r]
-set i 0
-while { $i < 23 } {gets $fin rec ; incr i 1}
-set i 0
-while { [gets $fin rec] > -1 } {
-   set s [split $rec ";"]
-   .psite.l insert end [lindex $s 0]
-   set SITES($i) [string trim "[lindex $s 1] | [lindex $s 2]" ]
-   incr i 1
-}
-close $fin
-bind  .psite.l <Double-1> {pastelocation}
-wm title .psite "double-click to select"
 
 
 

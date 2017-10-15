@@ -14,7 +14,6 @@
 set NESSI_DIR $env(NESSI_DIR)
 
 #source ../util/common.tcl
-proc debuglog { msg } {puts stdout $msg}
 proc errordialog { msg} {puts stdout $msg}
 
 proc loadZaberConfig { {fname zabersConfiguration} } {
@@ -56,6 +55,7 @@ set ZABERS(port) $ZABERS(port)
    foreach p "device speckle wide" {  
      puts $fcfg "set ZABERS(input,$p) \"$ZABERS(input,$p)\""
    }
+   flush $fcfg
 }
 
 proc zaberPrintProperties { {fd stdout} } {
@@ -183,6 +183,13 @@ proc zaberSetProperty { name property value } {
 proc zaberLed { name state } {
    zaberSetProperty system.led.enable $state
 }
+
+proc zaberEngpos { name } {
+global ZABERS
+  set newp $ZABERS($name,target)
+  set res [zaberSetPos $name $newp]
+}
+
 
 proc zaberGoto { name pos } {
 global ZABERS

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+export NESSI_DIR=/home/rfactory/nessi-control
+export PATH=${PATH}:${NESSI_DIR}/bin
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${NESSI_DIR}/lib
+$NESSI_DIR/wiyn-scripts/gui.tcl
+

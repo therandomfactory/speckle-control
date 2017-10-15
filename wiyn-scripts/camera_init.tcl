@@ -41,6 +41,21 @@ global SCOPE TELEMETRY FITSKEY IMGMETA
    }
 }
 
+proc shutdown { {id 0} } {
+ 
+#
+#  Globals    :
+#  
+#               CAMERAS	-	Camera id's
+global CAMERAS ANDOR
+   set it [tk_dialog .d "Exit" "Confirm exit" {} -1 "Cancel" "EXIT"]
+   if { $it } {
+#     set camera $CAMERAS($id)
+#     $camera $cooler 2
+     catch { exec xpaset -p ds9 exit }
+     exit
+   }
+}
 
 set CAMSTATUS(Gain) 1.0
 set CAMSTATUS(BinX) 1

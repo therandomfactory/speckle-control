@@ -1,19 +1,27 @@
 #!/usr/bin/tclsh
 
 
-set PICOS(A,ip) 	        192.168.0.1
-set PICOS(A,in)			1000
-set PICOS(A,out)       		-1000
-set PICOS(A,home)      		-3000
-set PICOS(A,engineer)  		-5000
-set PICOS(A,velocity)       		10.0
-set PICOS(A,acceleration)      		10.0
+set PICOS(X,ip) 	        192.168.0.1
+set PICOS(X,in)      		1000
+set PICOS(X,out)       		-1000
+set PICOS(X,home)      		-3000
+set PICOS(X,engineer)  		-5000
+set PICOS(X,velocity)       	10.0
+set PICOS(X,acceleration)      	10.0
+set PICOS(X,jog++)		100
+set PICOS(X,jog+)		10
+set PICOS(X,jog-)		-10
+set PICOS(X,jog--)		-100
 
-set PICOS(B,ip)         	192.168.0.2
-set PICOS(B,in)	       		1000
-set PICOS(B,out)      		-1000
-set PICOS(B,home)     		-3000
-set PICOS(B,engineer) 		-5000
-set PICOS(B,velocity)  		10.0
-set PICOS(B,acceleration)       10.0
+set PICOS(Y,ip)         	192.168.0.2
+set PICOS(Y,in)	       		1000
+set PICOS(Y,out)      		-1000
+set PICOS(Y,home)     		-3000
+set PICOS(Y,engineer) 		-5000
+set PICOS(Y,velocity)  		10.0
+set PICOS(Y,acceleration)       10.0
+set PICOS(Y,jog++)		100
+set PICOS(Y,jog+)		10
+set PICOS(Y,jog-)		-10
+set PICOS(Y,jog--)		-100
 

@@ -14,64 +14,84 @@ place .main.ssite -x 530 -y 218
 
 
 checkbutton .main.bred -bg gray50 -text "RED ARM" -variable INSTRUMENT(red)
-place .main.bred -x 240 -y 70
+place .main.bred -x 320 -y 25
 checkbutton .main.bblue -bg gray50 -text "BLUE ARM" -variable INSTRUMENT(blue)
-place .main.bblue -x 240 -y 97
-.main configure -height 360
+place .main.bblue -x 440 -y 25
+.main configure -height 380
 
-label .main.status -text test -fg NavyBlue
-place .main.status -x 20 -y 330
-
-.main.status configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD   Temp:ON:-50  Frame:200x200   PGain:10   NumPix:??"
+label .main.astatus -text test -fg black -bg LightBlue
+place .main.astatus -x 20 -y 315
+.main.astatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD   Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??"
  
-frame .lowlevel -bg gray50 -width 600 -height 500
-place .lowlevel -x 0 -y 380
-label .lowlevel.red -text "RED ARM" -bg gray50
+label .main.bstatus -text test -bg Orange -fg black
+place .main.bstatus -x 20 -y 340
+.main.bstatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD   Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??"
+
+frame .lowlevel -bg gray50 -width 600 -height 710
+place .lowlevel -x 0 -y 400
+label .lowlevel.red -text "RED ARM" -bg red -fg black
 place .lowlevel.red -x 20 -y 20
-label .lowlevel.blue -text "BLUE ARM" -bg gray50
-place .lowlevel.blue -x 320 -y 20
+label .lowlevel.blue -text "BLUE ARM" -bg LightBlue -fg black
+place .lowlevel.blue -x 420 -y 20
 checkbutton .lowlevel.clone -bg gray50 -text "Clone settings" -variable INSTRUMENT(clone)
-place .lowlevel.clone -x 150 -y 20
+place .lowlevel.clone -x 100 -y 20
+label .lowlevel.input -text "INPUT" -bg white
+place .lowlevel.input -x 280 -y 20
 
-set iy 300
-foreach item "ZaberSpeckle ZaberWide ZaberHome ZaberOffset ZaberGoto" {
-  label .lowlevel.r$item -bg gray50 -text $item
-  place .lowlevel.r$item -x 20 -y $iy
-  entry .lowlevel.er$item -bg white -textvariable INSTRUMENT(red,$item) -width 7
-  place .lowlevel.er$item -x 120 -y $iy
-  label .lowlevel.vr$item -bg gray50 -text "????"
-  place .lowlevel.vr$item -x 200 -y $iy
-  incr iy 24
-}
+set ZABERS(A,target) 0
+set ZABERS(B,target) 0
+set ZABERS(input,target) 0
 
-set iy 300
-foreach item "ZaberSpeckle ZaberWide ZaberHome ZaberOffset ZaberGoto" {
-  label .lowlevel.b$item -bg gray50 -text $item
-  place .lowlevel.b$item -x 320 -y $iy
-  entry .lowlevel.eb$item -bg white -textvariable INSTRUMENT(blue,$item) -width 7
-  place .lowlevel.eb$item -x 420 -y $iy
-  label .lowlevel.vb$item -bg gray50 -text "????"
-  place .lowlevel.vb$item -x 500 -y $iy
-  incr iy 24
-}
+button .lowlevel.zagoto -bg gray50 -text "Move to" -width 8 -command "zaberEngpos A"
+entry .lowlevel.vzagoto -bg white -textvariable ZABERS(A,target) -width 10
+place .lowlevel.zagoto -x 20 -y 300
+place .lowlevel.vzagoto -x 130 -y 302
+button .lowlevel.zawide -bg gray50 -text "Set WIDE to current" -width 20 -command "zaberConfigurePos A wide"
+place .lowlevel.zawide -x 20 -y 340
+button .lowlevel.zaspec -bg gray50 -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos A speckle"
+place .lowlevel.zaspec -x 20 -y 380
+button .lowlevel.zahome -bg gray50 -text "Set HOME to current" -width 20 -command "zaberConfigurePos A home"
+place .lowlevel.zahome -x 20 -y 420
+
+button .lowlevel.zigoto -bg gray50 -text "Move to" -width 8 -command "zaberEngpos input"
+entry .lowlevel.vzigoto -bg white -textvariable ZABERS(B,target) -width 10
+place .lowlevel.zigoto -x 220 -y 300
+place .lowlevel.vzigoto -x 330 -y 302
+button .lowlevel.ziwide -bg gray50 -text "Set WIDE to current" -width 20 -command "zaberConfigurePos input wide"
+place .lowlevel.ziwide -x 220 -y 340
+button .lowlevel.zispec -bg gray50 -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos input speckle"
+place .lowlevel.zispec -x 220 -y 380
+button .lowlevel.zihome -bg gray50 -text "Set HOME to current" -width 20 -command "zaberConfigurePos input home"
+place .lowlevel.zihome -x 220 -y 420
+
+button .lowlevel.zbgoto -bg gray50 -text "Move to" -width 8 -command "zaberEngpos B"
+entry .lowlevel.vzbgoto -bg white -textvariable ZABERS(B,target) -width 10
+place .lowlevel.zbgoto -x 420 -y 300
+place .lowlevel.vzbgoto -x 530 -y 302
+button .lowlevel.zbwide -bg gray50 -text "Set WIDE to current" -width 20 -command "zaberConfigurePos B wide"
+place .lowlevel.zbwide -x 420 -y 340
+button .lowlevel.zbspec -bg gray50 -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos B speckle"
+place .lowlevel.zbspec -x 420 -y 380
+button .lowlevel.zbhome -bg gray50 -text "Set HOME to current" -width 20 -command "zaberConfigurePos B home"
+place .lowlevel.zbhome -x 420 -y 420
 
 menubutton .lowlevel.rmode -text Mode  -width 10 -bg gray80 -menu .lowlevel.rmode.m
 menu .lowlevel.rmode.m
-place .lowlevel.rmode -x 20 -y 45
+place .lowlevel.rmode -x 20 -y 60
 .lowlevel.rmode.m add command -label "Wide Field" -command "nessimode red wide"
 .lowlevel.rmode.m add command -label "Speckle" -command "nessimode red speckle"
 .lowlevel.rmode.m add command -label "Custom" -command "nessimode red custom"
 
 menubutton .lowlevel.bmode -text Mode -width 10 -bg gray80 -menu .lowlevel.bmode.m
 menu .lowlevel.bmode.m
-place .lowlevel.bmode -x 320 -y 45
+place .lowlevel.bmode -x 420 -y 60
 .lowlevel.bmode.m add command -label "Wide Field" -command "nessimode blue wide"
 .lowlevel.bmode.m add command -label "Speckle" -command "nessimode blue speckle"
 .lowlevel.bmode.m add command -label "Custom" -command "nessimode blue custom"
 
 menubutton .lowlevel.rfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.rfilter.m
 menu .lowlevel.rfilter.m
-place .lowlevel.rfilter -x 20 -y 75
+place .lowlevel.rfilter -x 120 -y 60
 .lowlevel.rfilter.m add command -label "i" -command "nessifilter red i"
 .lowlevel.rfilter.m add command -label "z" -command "nessifilter red z"
 .lowlevel.rfilter.m add command -label "716" -command "nessifilter red 716"
@@ -79,7 +99,7 @@ place .lowlevel.rfilter -x 20 -y 75
 
 menubutton .lowlevel.bfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.bfilter.m
 menu .lowlevel.bfilter.m
-place .lowlevel.bfilter -x 320 -y 75
+place .lowlevel.bfilter -x 520 -y 60
 .lowlevel.bfilter.m add command -label "u" -command "nessifilter blue u"
 .lowlevel.bfilter.m add command -label "g" -command "nessifilter blue g"
 .lowlevel.bfilter.m add command -label "r" -command "nessifilter blue r"
@@ -112,8 +132,8 @@ label .lowlevel.lemhs  -bg gray50 -text "EMCCD HS"
 SpinBox .lowlevel.emhs -width 4  -bg gray50   -range "0 30 1" -textvariable INSTRUMENT(red,emhs)
 label .lowlevel.lccdhs  -bg gray50 -text "CCD HS" 
 SpinBox .lowlevel.ccdhs -width 4  -bg gray50  -range "0 30 1" -textvariable INSTRUMENT(red,ccdhs)
-place .lowlevel.emccd -x 20 -y 110
-place .lowlevel.hgain -x 20 -y 140
+place .lowlevel.emccd -x 20 -y 120
+place .lowlevel.hgain -x 120 -y 120
 
 place .lowlevel.lemgain -x 20 -y 170
 place .lowlevel.emgain -x 120 -y 170
@@ -138,107 +158,96 @@ label .lowlevel.lbemhs  -bg gray50 -text "EMCCD HS"
 SpinBox .lowlevel.bemhs -width 4  -bg gray50  -range "0 30 1" -textvariable INSTRUMENT(blue,emhs)
 label .lowlevel.lbccdhs  -bg gray50 -text "CCD HS" 
 SpinBox .lowlevel.bccdhs -width 4  -bg gray50  -range "0 30 1" -textvariable INSTRUMENT(blue,ccdhs)
-place .lowlevel.bemccd -x 320 -y 110
-place .lowlevel.bhgain -x 320 -y 140
+place .lowlevel.bemccd -x 420 -y 120
+place .lowlevel.bhgain -x 520 -y 120
 
-place .lowlevel.lbemgain -x 320 -y 170
-place .lowlevel.bemgain -x 420 -y 170
+place .lowlevel.lbemgain -x 420 -y 170
+place .lowlevel.bemgain -x 520 -y 170
 
-place .lowlevel.lbvspeed -x 320 -y 200
-place .lowlevel.bvspeed -x 420 -y 200
+place .lowlevel.lbvspeed -x 420 -y 200
+place .lowlevel.bvspeed -x 520 -y 200
 
-place .lowlevel.lbemhs -x 320 -y 230
-place .lowlevel.bemhs -x 420 -y 230
+place .lowlevel.lbemhs -x 420 -y 230
+place .lowlevel.bemhs -x 520 -y 230
 
-place .lowlevel.lbccdhs -x 320 -y 260
-place .lowlevel.bccdhs -x 420 -y 260
+place .lowlevel.lbccdhs -x 420 -y 260
+place .lowlevel.bccdhs -x 520 -y 260
 
-label .lowlevel.lrxbin -text Xbin -bg gray50
-SpinBox .lowlevel.rxbin -width 4  -bg gray50 -range "1 32 1" -textvariable INSTRUMENT(red,xbin)
-label .lowlevel.lrybin -text Ybin -bg gray50
-SpinBox .lowlevel.rybin -width 4  -bg gray50 -range "1 32 1" -textvariable INSTRUMENT(red,ybin)
-label .lowlevel.lrxmin -text Xmin -bg gray50
-SpinBox .lowlevel.rxmin -width 4  -bg gray50 -range "0 1024 1" -textvariable INSTRUMENT(red,xmin)
-label .lowlevel.lrxmax -text Xmax -bg gray50
-SpinBox .lowlevel.rxmax -width 4  -bg gray50 -range "0 1024 1024" -textvariable INSTRUMENT(red,xmax)
-label .lowlevel.lrymin -text Ymin -bg gray50
-SpinBox .lowlevel.rymin -width 4  -bg gray50 -range "0 1024 1" -textvariable INSTRUMENT(red,ymin)
-label .lowlevel.lrymax -text Ymax -bg gray50
-SpinBox .lowlevel.rymax -width 4  -bg gray50 -range "0 1024 1024" -textvariable INSTRUMENT(red,ymax)
-place .lowlevel.lrxbin -x 130 -y 70
-place .lowlevel.rxbin -x 165 -y 70
-place .lowlevel.lrybin -x 212 -y 70
-place .lowlevel.rybin -x 245 -y 70
-place .lowlevel.lrxmin -x 130 -y 95
-place .lowlevel.rxmin -x 165 -y 95
-place .lowlevel.lrxmax -x 212 -y 95
-place .lowlevel.rxmax -x 245 -y 95
-place .lowlevel.lrymin -x 130 -y 120
-place .lowlevel.rymin -x 165 -y 120
-place .lowlevel.lrymax -x 212 -y 120
-place .lowlevel.rymax -x 245 -y 120
+button .lowlevel.rsave -text Save -bg gray70 -width 6 -command "nessisave red"
+button .lowlevel.rload -text Load -bg gray70 -width 6 -command "nessiload red"
+place .lowlevel.rsave -x 115  -y 460
+place .lowlevel.rload -x 20 -y 460
 
-label .lowlevel.lbxbin -text Xbin -bg gray50
-SpinBox .lowlevel.bxbin -width 4  -bg gray50 -range "1 32 1" -textvariable INSTRUMENT(blue,xbin)
-label .lowlevel.lbybin -text Ybin -bg gray50
-SpinBox .lowlevel.bybin -width 4  -bg gray50 -range "1 32 1" -textvariable INSTRUMENT(blue,ybin)
-label .lowlevel.lbxmin -text Xmin -bg gray50
-SpinBox .lowlevel.bxmin -width 4  -bg gray50 -range "0 1024 1" -textvariable INSTRUMENT(blue,xmin)
-label .lowlevel.lbxmax -text Xmax -bg gray50
-SpinBox .lowlevel.bxmax -width 4  -bg gray50 -range "0 1024 1024" -textvariable INSTRUMENT(blue,xmax)
-label .lowlevel.lbymin -text Ymin -bg gray50
-SpinBox .lowlevel.bymin -width 4  -bg gray50 -range "0 1024 1" -textvariable INSTRUMENT(blue,ymin)
-label .lowlevel.lbymax -text Ymax -bg gray50
-SpinBox .lowlevel.bymax -width 4  -bg gray50 -range "0 1024 1024" -textvariable INSTRUMENT(blue,ymax)
-place .lowlevel.lbxbin -x 430 -y 70
-place .lowlevel.bxbin -x 465 -y 70
-place .lowlevel.lbybin -x 512 -y 70
-place .lowlevel.bybin -x 545 -y 70
-place .lowlevel.lbxmin -x 430 -y 95
-place .lowlevel.bxmin -x 465 -y 95
-place .lowlevel.lbxmax -x 512 -y 95
-place .lowlevel.bxmax -x 545 -y 95
-place .lowlevel.lbymin -x 430 -y 120
-place .lowlevel.bymin -x 465 -y 120
-place .lowlevel.lbymax -x 512 -y 120
-place .lowlevel.bymax -x 545 -y 120
 
+button .lowlevel.isave -text Save -bg gray70 -width 6 -command "nessisave input"
+button .lowlevel.iload -text Load -bg gray70 -width 6 -command "nessiload input"
+place .lowlevel.isave -x 220  -y 460
+place .lowlevel.iload -x 310 -y 460
+
+
+button .lowlevel.bsave -text Save -bg gray70 -width 6 -command "nessisave blue"
+button .lowlevel.bload -text Load -bg gray70 -width 6 -command "nessiload blue"
+place .lowlevel.bsave -x 420  -y 460
+place .lowlevel.bload -x 515 -y 460
+
+
+
+
+set NESSI(observingGui) 620x405
+
+if { $SCOPE(telescope) == "WIYN" } {
+   .lowlevel configure -height 500 -width 620
+   wm geometry . 620x900
+   set NESSI(engineeringGui) 620x900
+} else {
+
+set NESSI(engineeringGui) 620x1100
+wm geometry . 620x1100
+.lowlevel configure -height 700 -width 620
 label .lowlevel.rpico -text "Pico position" -bg gray50
-place .lowlevel.rpico -x 20 -y 425
-button .lowlevel.rpicomm -width 3 -text "<<" -command "nessipico red --" -bg gray50
-button .lowlevel.rpicom  -width 3 -text "<" -command "nessipico red -" -bg gray50
-entry .lowlevel.vrpico -width 6 -bg white -textvariable INSTRUMENT(red,picopos)
-button .lowlevel.rpicop  -width 3 -text ">" -command "nessipico red +" -bg gray50
-button .lowlevel.rpicopp  -width 3 -text ">>" -command "nessipico red ++" -bg gray50
-place .lowlevel.rpicomm -x 100 -y 425
-place .lowlevel.rpicom -x 139 -y 425
-place .lowlevel.vrpico -x 185 -y 428
-place .lowlevel.rpicop -x 235 -y 425
-place .lowlevel.rpicopp -x 270 -y 425
+place .lowlevel.rpico -x 20 -y 565
+button .lowlevel.rpicomm -width 3 -text "<<" -command "jogPico X --" -bg gray50
+button .lowlevel.rpicom  -width 3 -text "<" -command "jogPico X -" -bg gray50
+button .lowlevel.rpicop  -width 3 -text ">" -command "jogPico X +" -bg gray50
+button .lowlevel.rpicopp  -width 3 -text ">>" -command "jogPico X ++" -bg gray50
+place .lowlevel.rpicomm -x 120 -y 565
+place .lowlevel.rpicom -x 200 -y 565
+place .lowlevel.rpicop -x 350 -y 565
+place .lowlevel.rpicopp -x 430 -y 565
+
+button .lowlevel.rvpicomm -width 3 -text "--" -command "jogPico Y --" -bg gray50
+button .lowlevel.rvpicom  -width 3 -text "-" -command "jogPico Y -" -bg gray50
+button .lowlevel.rvpicop  -width 3 -text "+" -command "jogPico Y +" -bg gray50
+button .lowlevel.rvpicopp  -width 3 -text "++" -command "jogPico Y ++" -bg gray50
+place .lowlevel.rvpicomm -x 278 -y 625
+place .lowlevel.rvpicom -x 278 -y 585
+place .lowlevel.rvpicop -x 278 -y 545
+place .lowlevel.rvpicopp -x 278 -y 505
+
+button .lowlevel.psave -text Save -bg gray70 -width 12 -command "savePicosConfig"
+button .lowlevel.pload -text Load -bg gray70 -width 12 -command "loadPicosConfig"
+place .lowlevel.psave -x 420  -y 660
+place .lowlevel.pload -x 60 -y 660
+
+entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)
+place .lowlevel.vxpico -x 510 -y 570
+entry .lowlevel.vypico -width 8 -bg white -textvariable PICOS(Y,current)
+place .lowlevel.vypico -x 280 -y 665
+
+button .lowlevel.movein -text "Move to IN" -bg gray70 -width 12 -command "picosInPosition"
+button .lowlevel.moveout -text "Move to OUT" -bg gray70 -width 12 -command "picosInitialize"
+place .lowlevel.movein -x 2  -y 620
+place .lowlevel.moveout -x 130  -y 620
 
 
-label .lowlevel.bpico -text "Pico position" -bg gray50
-place .lowlevel.bpico -x 320 -y 425
-button .lowlevel.bpicomm -width 3 -text "<<" -command "nessipico blue --" -bg gray50
-button .lowlevel.bpicom  -width 3 -text "<" -command "nessipico blue -" -bg gray50
-entry .lowlevel.vbpico -width 6 -bg white -textvariable INSTRUMENT(blue,picopos)
-button .lowlevel.bpicop  -width 3 -text ">" -command "nessipico blue +" -bg gray50
-button .lowlevel.bpicopp  -width 3 -text ">>" -command "nessipico blue ++" -bg gray50
-place .lowlevel.bpicomm -x 400 -y 425
-place .lowlevel.bpicom -x 439 -y 425
-place .lowlevel.vbpico -x 485 -y 428
-place .lowlevel.bpicop -x 535 -y 425
-place .lowlevel.bpicopp -x 570 -y 425
+button .lowlevel.usein -text "IN = Current" -bg gray70 -width 12 -command "picoUseCurrentPos in"
+button .lowlevel.useout -text "OUT = Current" -bg gray70 -width 12 -command "picoUseCurrentPos out"
+place .lowlevel.usein -x 360  -y 620
+place .lowlevel.useout -x 490  -y 620
 
- 
-button .lowlevel.rsave -text Save -bg gray70 -width 14 -command "nessisave red"
-button .lowlevel.rload -text Load -bg gray70 -width 14 -command "nessiload red"
-place .lowlevel.rsave -x 20  -y 460
-place .lowlevel.rload -x 160 -y 460
+source $NESSI_DIR/picomotor/picomotor.tcl
 
-button .lowlevel.bsave -text Save -bg gray70 -width 14 -command "nessisave blue"
-button .lowlevel.bload -text Load -bg gray70 -width 14 -command "nessiload blue"
-place .lowlevel.bsave -x 320  -y 460
-place .lowlevel.bload -x 460 -y 460
+}
+
 
 
