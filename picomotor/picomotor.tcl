@@ -73,7 +73,7 @@ global PICOS
    if { $PICOS(sim) } {
      set rec "SIM $axis $cmd"
      set ctype [lindex $cmd 0]
-     if { $ctype == "ABS" } {
+     if { $ctype == "POS" } {
         set PICOS($axis,position) [lindex [split $cmd "= "] 2]
      }
      if { $ctype == "REL" } {
@@ -83,6 +83,7 @@ global PICOS
      set PICOS($axis,current) $PICOS($axis,position)
    } else {
      puts $PICOS($axis,handle) $cmd
+     after 100
      gets $PICOS($axis,handle) rec
    }
    return $rec
@@ -93,18 +94,24 @@ global PICOS
    switch $par {
       enable         { set res [picoCommand $axis MON] }
       disable        { set res [picoCommand $axis MOF] }
+      stop           { set res [picoCommand $axis STO] }
+      default        { set res [picoCommand $axis DEF] }
+      reverse        { set res [picoCommand $axis REV] }
       poslimit       { set res [picoCommand $axis FLI] }
       neglimit       { set res [picoCommand $axis RLI] }
-      position       { set res [picoCommand $axis "ABS A1=$value G"] }
+      forward        { set res [picoCommand $axis FOR] }
+      position       { set res [picoCommand $axis "POS A1=$value G"] }
       acceleration   { set res [picoCommand $axis "ACC M0=$value"] }
       offset         { set res [picoCommand $axis "REL A1=$value G"] }
       stop           { set res [picoCommand $axis STO] }
+      query          { set res [picoCommand $axis "CHL $value" }
       velocity       { set res [picoCommand $axis "VEL M0=$value"] }
       reset          { set res [picoCommand $axis INI] }
-      in             { set res [picoCommand $axis "ABS A1=$PICOS($axis,in) G"] }
-      out            { set res [picoCommand $axis "ABS A1=$PICOS($axis,out) G"] }
-      home           { set res [picoCommand $axis "ABS A1=$PICOS($axis,home) G"] }
-      engineer       { set res [picoCommand $axis "ABS A1=$PICOS($axis,engineer) G"] }
+      readanalog     { set res [picoCommand $axis "AIN $value" }
+      in             { set res [picoCommand $axis "POS A1=$PICOS($axis,in) G"] }
+      out            { set res [picoCommand $axis "POS A1=$PICOS($axis,out) G"] }
+      home           { set res [picoCommand $axis "POS A1=$PICOS($axis,home) G"] }
+      engineer       { set res [picoCommand $axis "POS A1=$PICOS($axis,engineer) G"] }
   }
 }
 
