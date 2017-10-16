@@ -1,8 +1,8 @@
 wm title . "NESSI Control"
 place .main -x 0 -y 30
 place .mbar -x 0
-.main configure -width 600
-.mbar configure -width 600
+.main configure -width 620
+.mbar configure -width 620
 place .mbar.help -x 550
 set iy 50
 foreach item "target ra dec equinox observer telescope instrument site latitude longitude" {
@@ -26,7 +26,7 @@ label .main.bstatus -text test -bg Orange -fg black
 place .main.bstatus -x 20 -y 340
 .main.bstatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD   Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??"
 
-frame .lowlevel -bg gray50 -width 600 -height 710
+frame .lowlevel -bg gray50 -width 620 -height 710
 place .lowlevel -x 0 -y 400
 label .lowlevel.red -text "RED ARM" -bg red -fg black
 place .lowlevel.red -x 20 -y 20
