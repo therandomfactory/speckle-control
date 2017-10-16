@@ -1,15 +1,16 @@
 #
 # Gemini translations for TELEMETRY array
 #
+
 proc geminiConnect { scope } {
 global GEMINICFG
    set handle -1
-   set handle [socket $GEMINICFG($scope,ip) 7283]
+   set handle [socket $GEMINICFG($scope,ip) $GEMINICFG($scope,port)]
    fconfigure $handle -buffering line -blocking 0
    if { $handle < 0 } {
-     errordialog "Failed to connect to Gemini service at $GEMINICFG($scope,ip) port 7283"
+     errordialog "Failed to connect to Gemini service at $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) "
    } else {
-     debuglog "Connected to Gemini $GEMINICFG($scope,ip) port 7283 - OK"
+     debuglog "Connected to Gemini $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) - OK"
      set GEMINICFG(handle) $handle
    }
    puts $GEMINICFG(handle) "get airmass"
@@ -50,10 +51,9 @@ global GEMINI TELEMETRY
    }
 }
 
-proc debuglog { msg } {puts stdout $msg}
 
-
-set GEMINICFG(north,ip) 10.1.203.20
+set GEMINICFG(north,ip) 0.0.0.0
+set GEMINICFG(north,port) 0
 
 set GEMINI(airmass) tcs.telescope.airmass
 set GEMINI(azimuth) tcs.azimuth.mapper
