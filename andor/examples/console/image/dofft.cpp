@@ -5,7 +5,6 @@
  *
  */
 
-
 #include <stdio.h>
 #ifdef __GNUC__
 #  if(__GNUC__ > 3 || __GNUC__ ==3)
