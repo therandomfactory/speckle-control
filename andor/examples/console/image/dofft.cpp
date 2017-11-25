@@ -1,6 +1,7 @@
 /* Use VIPS library to compute fft 
  *
- *  link with -I/usr/local/include -L/usr/local/lib64 -lvips $(pkg-config --cflags glib-2.0) $(pkg-config --libs gio-2.0) -lm
+ *  compile with $(pkg-config --cflags vips)
+ *  link with $(pkg-config --libs vips)
  *
  */
 
@@ -44,12 +45,6 @@ void dofft(int width, int height, int *imageData, int* outputData)
         if (vipsout == NULL) vips_error_exit(NULL);
         vips_image_inplace(vipsin);
         vips_image_inplace(vipsout);
-        for (i=0;i<width;i++) {
-            for (j=0;j<height;j++) {
-                 inpixels = (int *)VIPS_IMAGE_ADDR(vipsin,i,j);
-                 inpixels[0] = imageData[i*256+j];
-             }
-        }
         im_fwfft(vipsin,vipsout);
         for (i=0;i<width;i++) {
              for (j=0;j<height;j++) {
