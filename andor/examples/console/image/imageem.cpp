@@ -22,8 +22,10 @@ the CCD. The image is saved in file image.bmp*/
 #include <signal.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "vips/vips.h"
 
 //#include "atmcdLXd.h"
 #include <atmcdLXd.h>
@@ -31,6 +33,7 @@ unsigned short *SharedMem;
 struct shmid_ds Shmem_buf;
 int Shmem_size = 256*256*4;
 int Shmem_id = 0;
+void dofft(int width, int height, int *imageData, int* outputData);
 
 int CameraSelect (int iNumArgs, char* szArgList[]);
 
@@ -47,9 +50,11 @@ int main(int argc, char* argv[])
 	bool quit;
 	char choice;
         int count=0;
-	float fChoice;
+        int i,j;
+ 	float fChoice;
 	int width, height;
-        
+        vips_init(argv[0]);
+
 	//Initialize CCD
 	error = Initialize("/usr/local/etc/andor");
 	if(error!=DRV_SUCCESS){
@@ -81,6 +86,7 @@ int main(int argc, char* argv[])
 
 	at_32* imageData = new at_32[width*height];
         Shmem_size = width*height*4;
+	at_32* outputData = new at_32[width*height];
 
       Shmem_id = shmget(7772, Shmem_size, IPC_CREAT|0666);
       if (Shmem_id < 0) {
@@ -91,6 +97,7 @@ int main(int argc, char* argv[])
       SharedMem  = (unsigned short *) shmat(Shmem_id, NULL, 0);
   	printf("CameraSetup: Attached shared memory @%lx, using %d bytes\n",SharedMem, Shmem_size);
 	quit = false;
+
 	while (count < 1000) {
 			StartAcquisition();
 
@@ -105,9 +112,12 @@ int main(int argc, char* argv[])
                        }
 //                        GetOldestImage16();
 			GetAcquiredData(imageData, width*height);
-                        memcpy(SharedMem,imageData,Shmem_size);
+                        dofft(width,height,imageData,outputData);
+                        memcpy(SharedMem,outputData,Shmem_size);
+                        
                          count  = count+1;
                          printf(".");
+                         fflush(stdout);
 
 	}
 
@@ -118,6 +128,39 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+
+#if 0
+void dofft(int width, int height, int *imageData, int* outputData) 
+{
+  int i,j;
+        int *inpixels;
+        double *outpixels;
+	at_32* fftData = new at_32[4*width*height];
+
+        VipsImage *vipsin = vips_image_new_from_memory_copy(imageData,Shmem_size,width,height,1,VIPS_FORMAT_UINT);
+        if (vipsin == NULL) vips_error_exit(NULL);
+        VipsImage *vipsout = vips_image_new_from_memory_copy(fftData,Shmem_size*4,width,height,1,VIPS_FORMAT_COMPLEX);
+        if (vipsout == NULL) vips_error_exit(NULL);
+        vips_image_inplace(vipsin);
+        vips_image_inplace(vipsout);
+        for (i=0;i<width;i++) {
+            for (j=0;j<height;j++) {
+                 inpixels = (int *)VIPS_IMAGE_ADDR(vipsin,i,j);
+                 inpixels[0] = imageData[i*256+j];
+             }
+        }
+        im_fwfft(vipsin,vipsout);
+        for (i=0;i<width;i++) {
+             for (j=0;j<height;j++) {
+                 outpixels = (double *)VIPS_IMAGE_ADDR(vipsout,i,j);
+                 outputData[i*256+j] = (int)(outpixels[0]*1000.);
+             }
+        }
+        delete fftData;
+        g_object_unref(vipsin);
+        g_object_unref(vipsout);
+}
+#endif
 
 int CameraSelect (int iNumArgs, char* szArgList[])
 {

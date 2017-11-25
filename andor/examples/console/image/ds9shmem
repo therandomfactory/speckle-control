@@ -1,0 +1,3 @@
+xpaset -p ds9 shm array shmid 132513871 [xdim=256,ydim=256,bitpix=32]
+xpaset -p ds9 frame refresh
+

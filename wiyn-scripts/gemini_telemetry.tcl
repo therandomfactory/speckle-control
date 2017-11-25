@@ -26,6 +26,7 @@ global GEMINI GEMINICFG TELEMETRY
 }
 
 
+
 proc updateGeminiTelemetry { } {
 global GEMINI GEMINICFG TELEMETRY
    set all [lsort [array names GEMINI]]
