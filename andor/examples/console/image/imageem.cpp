@@ -34,6 +34,8 @@ struct shmid_ds Shmem_buf;
 int Shmem_size = 256*256*4;
 int Shmem_id = 0;
 void dofft(int width, int height, int *imageData, int* outputData);
+void addavg(at_32 *im, at_32 *avg, int n);
+void calcavg(at_32 *avg, int n);
 
 int CameraSelect (int iNumArgs, char* szArgList[]);
 
@@ -88,6 +90,7 @@ int main(int argc, char* argv[])
         Shmem_size = width*height*4;
 	at_32* outputData = new at_32[width*height];
 
+	at_32* outputAvg = new at_32[width*height];
       Shmem_id = shmget(7772, Shmem_size, IPC_CREAT|0666);
       if (Shmem_id < 0) {
         Shmem_id = shmget(7772, Shmem_size, IPC_CREAT|0666);
@@ -114,12 +117,14 @@ int main(int argc, char* argv[])
 			GetAcquiredData(imageData, width*height);
                         dofft(width,height,imageData,outputData);
                         memcpy(SharedMem,outputData,Shmem_size);
-                        
+                        addavg(outputData,outputAvg,width*height);
                          count  = count+1;
                          printf(".");
                          fflush(stdout);
 
 	}
+        calcavg(outputAvg,width*height);
+        memcpy(SharedMem,outputAvg,Shmem_size);
 
 	//Shut down CCD
 	AbortAcquisition();
@@ -129,38 +134,20 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-#if 0
-void dofft(int width, int height, int *imageData, int* outputData) 
+void addavg(at_32 *im, at_32 *avg, int n) 
 {
-  int i,j;
-        int *inpixels;
-        double *outpixels;
-	at_32* fftData = new at_32[4*width*height];
-
-        VipsImage *vipsin = vips_image_new_from_memory_copy(imageData,Shmem_size,width,height,1,VIPS_FORMAT_UINT);
-        if (vipsin == NULL) vips_error_exit(NULL);
-        VipsImage *vipsout = vips_image_new_from_memory_copy(fftData,Shmem_size*4,width,height,1,VIPS_FORMAT_COMPLEX);
-        if (vipsout == NULL) vips_error_exit(NULL);
-        vips_image_inplace(vipsin);
-        vips_image_inplace(vipsout);
-        for (i=0;i<width;i++) {
-            for (j=0;j<height;j++) {
-                 inpixels = (int *)VIPS_IMAGE_ADDR(vipsin,i,j);
-                 inpixels[0] = imageData[i*256+j];
-             }
-        }
-        im_fwfft(vipsin,vipsout);
-        for (i=0;i<width;i++) {
-             for (j=0;j<height;j++) {
-                 outpixels = (double *)VIPS_IMAGE_ADDR(vipsout,i,j);
-                 outputData[i*256+j] = (int)(outpixels[0]*1000.);
-             }
-        }
-        delete fftData;
-        g_object_unref(vipsin);
-        g_object_unref(vipsout);
+  for(int i=0;i<n;i++) {
+     avg[i] = avg[i]+ im[i];
+  }
 }
-#endif
+
+void calcavg(at_32 *avg, int n) 
+{
+  for(int i=0;i<n;i++) {
+     avg[i] = avg[i]/1000;
+  }
+}
+
 
 int CameraSelect (int iNumArgs, char* szArgList[])
 {
