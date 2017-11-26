@@ -35,7 +35,7 @@ int Shmem_size = 512*256*4;
 int Shmem_id = 0;
 void dofft(int width, int height, int *imageData, int* outputData);
 void addavg(at_32 *im, at_32 *avg, int n);
-void calcavg(at_32 *avg, int n);
+void calcavg(at_32 *avg, int n, int numexp);
 
 int CameraSelect (int iNumArgs, char* szArgList[]);
 
@@ -51,6 +51,7 @@ int main(int argc, char* argv[])
         unsigned short *SharedMem2;
 	unsigned long error;
 	bool quit;
+        int numexp=1000;
 	char choice;
         int count=0;
         int i,j;
@@ -60,6 +61,9 @@ int main(int argc, char* argv[])
         vips_init(argv[0]);
         if (argc > 2) { 
            sscanf(argv[2],"%f",&exposure);
+        }
+        if (argc > 3) { 
+           sscanf(argv[3],"%d",&numexp);
         }
 	//Initialize CCD
 	error = Initialize("/usr/local/etc/andor");
@@ -107,7 +111,7 @@ int main(int argc, char* argv[])
   	printf("CameraSetup: Attached shared memory2 @%lx, using %d bytes\n",SharedMem2, Shmem_size/2);
 	quit = false;
 
-	while (count < 1000) {
+	while (count < numexp) {
 			StartAcquisition();
 
 			int status;
@@ -130,7 +134,7 @@ int main(int argc, char* argv[])
                          fflush(stdout);
 
 	}
-        calcavg(outputAvg,width*height);
+        calcavg(outputAvg,width*height,numexp);
         memcpy(SharedMem,outputAvg,Shmem_size/2);
 
 	//Shut down CCD
@@ -148,10 +152,10 @@ void addavg(at_32 *im, at_32 *avg, int n)
   }
 }
 
-void calcavg(at_32 *avg, int n) 
+void calcavg(at_32 *avg, int n, int numexp) 
 {
   for(int i=0;i<n;i++) {
-     avg[i] = avg[i]/1000;
+     avg[i] = avg[i]/numexp;
   }
 }
 
