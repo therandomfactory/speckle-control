@@ -37,6 +37,7 @@ void dofft(int width, int height, int *imageData, int* outputData)
         double *outpixels;
         int memsize = 4*width*height;
 	int fftData[memsize];
+        float scale=0.0;
 
         VipsImage *vipsin = vips_image_new_from_memory_copy(imageData,memsize,width,height,1,VIPS_FORMAT_UINT);
         if (vipsin == NULL) vips_error_exit(NULL);
@@ -46,9 +47,13 @@ void dofft(int width, int height, int *imageData, int* outputData)
         vips_image_inplace(vipsout);
         im_fwfft(vipsin,vipsout);
         for (i=0;i<width;i++) {
+           scale = scale + (float)imageData[i*width+i];
+        } 
+        scale = scale / width;
+        for (i=0;i<width;i++) {
              for (j=0;j<height;j++) {
                  outpixels = (double *)VIPS_IMAGE_ADDR(vipsout,i,j);
-                 outputData[i*256+j] = (int)(outpixels[0]*1000.);
+                 outputData[i*256+j] = (int)(outpixels[0]*1000.+scale);
              }
         }
         g_object_unref(vipsin);

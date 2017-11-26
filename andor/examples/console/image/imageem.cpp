@@ -31,7 +31,7 @@ the CCD. The image is saved in file image.bmp*/
 #include <atmcdLXd.h>
 unsigned short *SharedMem;
 struct shmid_ds Shmem_buf;
-int Shmem_size = 256*256*4;
+int Shmem_size = 512*256*4;
 int Shmem_id = 0;
 void dofft(int width, int height, int *imageData, int* outputData);
 void addavg(at_32 *im, at_32 *avg, int n);
@@ -48,15 +48,19 @@ int main(int argc, char* argv[])
           return -1;
         }
   
+        unsigned short *SharedMem2;
 	unsigned long error;
 	bool quit;
 	char choice;
         int count=0;
         int i,j;
  	float fChoice;
+        float exposure=0.04;
 	int width, height;
         vips_init(argv[0]);
-
+        if (argc > 2) { 
+           sscanf(argv[2],"%f",&exposure);
+        }
 	//Initialize CCD
 	error = Initialize("/usr/local/etc/andor");
 	if(error!=DRV_SUCCESS){
@@ -73,7 +77,7 @@ int main(int argc, char* argv[])
 	SetAcquisitionMode(1);
 
 	//Set initial exposure time
-	SetExposureTime(0.04);
+	SetExposureTime(exposure);
 
 	//Get Detector dimensions
 	GetDetector(&width, &height);
@@ -87,7 +91,7 @@ int main(int argc, char* argv[])
         SetImage(1,1,1,width,1,height);
 
 	at_32* imageData = new at_32[width*height];
-        Shmem_size = width*height*4;
+        Shmem_size = 2*width*height*4;
 	at_32* outputData = new at_32[width*height];
 
 	at_32* outputAvg = new at_32[width*height];
@@ -98,7 +102,9 @@ int main(int argc, char* argv[])
 	printf("CameraSetup: Shared memory shmid = %d.\n",Shmem_id);
 //      Shmem_size = Shmem_buf.shm_segsz; 
       SharedMem  = (unsigned short *) shmat(Shmem_id, NULL, 0);
+      SharedMem2 = SharedMem + width*height*2;
   	printf("CameraSetup: Attached shared memory @%lx, using %d bytes\n",SharedMem, Shmem_size);
+  	printf("CameraSetup: Attached shared memory2 @%lx, using %d bytes\n",SharedMem2, Shmem_size/2);
 	quit = false;
 
 	while (count < 1000) {
@@ -116,7 +122,8 @@ int main(int argc, char* argv[])
 //                        GetOldestImage16();
 			GetAcquiredData(imageData, width*height);
                         dofft(width,height,imageData,outputData);
-                        memcpy(SharedMem,outputData,Shmem_size);
+                        memcpy(SharedMem,outputData,Shmem_size/2);
+                        memcpy(SharedMem2,imageData,Shmem_size/2);
                         addavg(outputData,outputAvg,width*height);
                          count  = count+1;
                          printf(".");
@@ -124,7 +131,7 @@ int main(int argc, char* argv[])
 
 	}
         calcavg(outputAvg,width*height);
-        memcpy(SharedMem,outputAvg,Shmem_size);
+        memcpy(SharedMem,outputAvg,Shmem_size/2);
 
 	//Shut down CCD
 	AbortAcquisition();
