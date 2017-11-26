@@ -1,7 +1,6 @@
-# ignore thee files
+# ignore these files
 *.log
-*.so
-*.so.*
 *.o
 *.a
+*.tgz
 
