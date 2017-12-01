@@ -1,10 +1,11 @@
 #!/bin/sh
 swig -c++ -tcl  -v -o tcl_andorWrap.cpp ./andorWrap.i
-g++ -c -fPIC tcl_andorWrap.cpp -fpic -DLINUX -DWall -g -I./include
-g++ -shared -o andorWrap.so tcl_andorWrap.o andorGenTclInterfaces.o andorCreateTclCmds.o ../lib/libandor.so.2 ../lib/libUSBI2C.so.2
+g++ -g -c -fPIC tcl_andorWrap.cpp -fpic -DLINUX -DWall -g -I./include
+g++ -g -shared -o andorWrap.so tcl_andorWrap.o andorGenTclInterfaces.o andorCreateTclCmds.o ../lib/libandor.so.2 ../lib/libUSBI2C.so.2
 
-gcc -c -fPIC andorCreateTclCmds.c -fpic -DLINUX -DWall -g -I./include
-gcc -c -fPIC andorGenTclInterfaces.c -fpic -DLINUX -DWall -g -I./include
-gcc -c -fPIC andor_tcl.c -fpic -DLINUX -DWall -g -I./include
-g++ -shared -o andorTclInit.so andor_tcl.o andorGenTclInterfaces.o andorCreateTclCmds.o ../lib/libandor.so.2 ../lib/libUSBI2C.so.2
+gcc -g -c -fPIC andorCreateTclCmds.c -fpic -DLINUX -DWall -g -I./include
+gcc -g -c -fPIC andorGenTclInterfaces.c -fpic -DLINUX -DWall -g -I./include
+gcc -g -c -fPIC andor_tcl.c -fpic -DLINUX -DWall -g -I./include $(pkg-config --cflags vips)
+g++ -g -c -fPIC dofft.cpp -fpic -DLINUX -DWall -g -I./include $(pkg-config --cflags vips)
+g++ -g -shared -o andorTclInit.so andor_tcl.o andorGenTclInterfaces.o andorCreateTclCmds.o dofft.o ../lib/libandor.so.2 ../lib/libUSBI2C.so.2 $(pkg-config --libs vips)
 

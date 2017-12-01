@@ -1961,7 +1961,6 @@ SWIGINTERN ushortArray *ushortArray_frompointer(unsigned short *t){
   }
 
 #include "atmcdLXd.h"
-unsigned int returnValue;
 typedef short unsigned int uint16_t;
 
 
@@ -4472,40 +4471,6 @@ static swig_attribute swig_WHITEBALANCEINFO_attributes[] = {
 static swig_class *swig_WHITEBALANCEINFO_bases[] = {0};
 static const char * swig_WHITEBALANCEINFO_base_names[] = {0};
 static swig_class _wrap_class_WHITEBALANCEINFO = { "WhiteBalanceInfo", &SWIGTYPE_p_WHITEBALANCEINFO,_wrap_new_WhiteBalanceInfo, swig_delete_WhiteBalanceInfo, swig_WHITEBALANCEINFO_methods, swig_WHITEBALANCEINFO_attributes, swig_WHITEBALANCEINFO_bases,swig_WHITEBALANCEINFO_base_names, &swig_module, SWIG_TCL_HASHTABLE_INIT };
-SWIGINTERN const char *_wrap_returnValue_get(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, char *name1, char *name2, int flags) {
-  Tcl_Obj *value = 0;
-  
-  value = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(returnValue));
-  if (value) {
-    Tcl_SetVar2(interp,name1,name2,Tcl_GetStringFromObj(value,NULL), flags);
-    Tcl_DecrRefCount(value);
-  }
-  return NULL;
-}
-
-
-SWIGINTERN const char *_wrap_returnValue_set(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, char *name1, char *name2 SWIGUNUSED, int flags) {
-  Tcl_Obj *value = 0;
-  Tcl_Obj *name1o = 0;
-  
-  name1o = Tcl_NewStringObj(name1,-1);
-  value = Tcl_ObjGetVar2(interp, name1o, 0, flags);
-  Tcl_DecrRefCount(name1o);
-  if (!value) SWIG_fail;
-  {
-    unsigned int val;
-    int res = SWIG_AsVal_unsigned_SS_int SWIG_TCL_CALL_ARGS_2(value, &val);
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""returnValue""' of type '""unsigned int""'");
-    }
-    returnValue = static_cast< unsigned int >(val);
-  }
-  return NULL;
-fail:
-  return "returnValue";
-}
-
-
 SWIGINTERN int
 _wrap_AbortAcquisition(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   unsigned int result;
@@ -5112,35 +5077,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_GetAvailableCameras(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetAvailableCameras numCamera ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetAvailableCameras" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetAvailableCameras(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_GetBackground(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int *arg1 = (int *) 0 ;
   unsigned int arg2 ;
@@ -5164,35 +5100,6 @@ _wrap_GetBackground(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int ob
   {
     try {
       result = (unsigned int)GetBackground(arg1,arg2);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetBaselineClamp(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetBaselineClamp state ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetBaselineClamp" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetBaselineClamp(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -5304,35 +5211,6 @@ _wrap_GetCameraInformation(ClientData clientData SWIGUNUSED, Tcl_Interp *interp,
   {
     try {
       result = (unsigned int)GetCameraInformation(arg1,arg2);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetCameraSerialNumber(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetCameraSerialNumber number ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetCameraSerialNumber" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetCameraSerialNumber(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -5538,64 +5416,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_GetEMAdvanced(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetEMAdvanced state ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetEMAdvanced" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetEMAdvanced(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetEMCCDGain(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetEMCCDGain gain ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetEMCCDGain" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetEMCCDGain(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_GetEMGainRange(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int *arg1 = (int *) 0 ;
   int *arg2 = (int *) 0 ;
@@ -5633,35 +5453,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_GetExternalTriggerTermination(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  unsigned int *arg1 = (unsigned int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetExternalTriggerTermination puiTermination ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_unsigned_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetExternalTriggerTermination" "', argument " "1"" of type '" "unsigned int *""'"); 
-  }
-  arg1 = reinterpret_cast< unsigned int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetExternalTriggerTermination(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_GetFastestRecommendedVSSpeed(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int *arg1 = (int *) 0 ;
   float *arg2 = (float *) 0 ;
@@ -5685,93 +5476,6 @@ _wrap_GetFastestRecommendedVSSpeed(ClientData clientData SWIGUNUSED, Tcl_Interp 
   {
     try {
       result = (unsigned int)GetFastestRecommendedVSSpeed(arg1,arg2);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetFIFOUsage(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetFIFOUsage FIFOusage ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetFIFOUsage" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetFIFOUsage(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetFilterMode(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetFilterMode mode ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetFilterMode" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetFilterMode(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetFKExposureTime(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  float *arg1 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetFKExposureTime time ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetFKExposureTime" "', argument " "1"" of type '" "float *""'"); 
-  }
-  arg1 = reinterpret_cast< float * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetFKExposureTime(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -5846,64 +5550,6 @@ _wrap_GetFKVShiftSpeedF(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, in
   {
     try {
       result = (unsigned int)GetFKVShiftSpeedF(arg1,arg2);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetFrontEndStatus(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetFrontEndStatus piFlag ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetFrontEndStatus" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetFrontEndStatus(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetGateMode(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetGateMode piGatemode ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetGateMode" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetGateMode(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -6212,35 +5858,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_GetImageRotate(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetImageRotate iRotate ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetImageRotate" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetImageRotate(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_GetImages(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int arg1 ;
   int arg2 ;
@@ -6408,64 +6025,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_GetIRQ(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetIRQ IRQ ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetIRQ" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetIRQ(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetKeepCleanTime(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  float *arg1 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetKeepCleanTime KeepCleanTime ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetKeepCleanTime" "', argument " "1"" of type '" "float *""'"); 
-  }
-  arg1 = reinterpret_cast< float * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetKeepCleanTime(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_GetMaximumBinning(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int arg1 ;
   int arg2 ;
@@ -6497,64 +6056,6 @@ _wrap_GetMaximumBinning(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, in
   {
     try {
       result = (unsigned int)GetMaximumBinning(arg1,arg2,arg3);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetMaximumExposure(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  float *arg1 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetMaximumExposure MaxExp ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetMaximumExposure" "', argument " "1"" of type '" "float *""'"); 
-  }
-  arg1 = reinterpret_cast< float * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetMaximumExposure(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetMaximumNumberRingExposureTimes(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetMaximumNumberRingExposureTimes number ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetMaximumNumberRingExposureTimes" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetMaximumNumberRingExposureTimes(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -6695,64 +6196,6 @@ _wrap_GetMCPVoltage(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int ob
   {
     try {
       result = (unsigned int)GetMCPVoltage(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetMinimumImageLength(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetMinimumImageLength MinImageLength ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetMinimumImageLength" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetMinimumImageLength(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetMinimumNumberInSeries(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetMinimumNumberInSeries number ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetMinimumNumberInSeries" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetMinimumNumberInSeries(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -7079,64 +6522,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_GetNumberADChannels(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberADChannels channels ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberADChannels" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberADChannels(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberAmp(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberAmp amp ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberAmp" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberAmp(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_GetNumberAvailableImages(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int *arg1 = (int *) 0 ;
   int *arg2 = (int *) 0 ;
@@ -7189,93 +6574,6 @@ _wrap_GetNumberDDGExternalOutputs(ClientData clientData SWIGUNUSED, Tcl_Interp *
   {
     try {
       result = (unsigned int)GetNumberDDGExternalOutputs(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberDevices(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberDevices numDevs ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberDevices" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberDevices(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberFKVShiftSpeeds(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberFKVShiftSpeeds number ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberFKVShiftSpeeds" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberFKVShiftSpeeds(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberHorizontalSpeeds(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberHorizontalSpeeds number ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberHorizontalSpeeds" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberHorizontalSpeeds(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -7477,180 +6775,6 @@ _wrap_GetNumberPhotonCountingDivisions(ClientData clientData SWIGUNUSED, Tcl_Int
   {
     try {
       result = (unsigned int)GetNumberPhotonCountingDivisions(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberPreAmpGains(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberPreAmpGains noGains ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberPreAmpGains" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberPreAmpGains(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberRingExposureTimes(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberRingExposureTimes ipnumTimes ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberRingExposureTimes" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberRingExposureTimes(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberIO(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberIO iNumber ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberIO" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberIO(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberVerticalSpeeds(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberVerticalSpeeds number ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberVerticalSpeeds" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberVerticalSpeeds(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberVSAmplitudes(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberVSAmplitudes number ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberVSAmplitudes" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberVSAmplitudes(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetNumberVSSpeeds(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetNumberVSSpeeds speeds ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetNumberVSSpeeds" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetNumberVSSpeeds(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -8015,35 +7139,6 @@ _wrap_GetQE(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_
   return TCL_OK;
 fail:
   if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetReadOutTime(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  float *arg1 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetReadOutTime ReadOutTime ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetReadOutTime" "', argument " "1"" of type '" "float *""'"); 
-  }
-  arg1 = reinterpret_cast< float * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetReadOutTime(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
   return TCL_ERROR;
 }
 
@@ -8475,93 +7570,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_GetStartUpTime(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  float *arg1 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetStartUpTime time ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetStartUpTime" "', argument " "1"" of type '" "float *""'"); 
-  }
-  arg1 = reinterpret_cast< float * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetStartUpTime(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetStatus(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetStatus status ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetStatus" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetStatus(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetTECStatus(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetTECStatus piFlag ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetTECStatus" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetTECStatus(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_GetTemperature(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int *arg1 = (int *) 0 ;
   void *argp1 = 0 ;
@@ -8725,35 +7733,6 @@ _wrap_GetTemperatureStatus(ClientData clientData SWIGUNUSED, Tcl_Interp *interp,
   {
     try {
       result = (unsigned int)GetTemperatureStatus(arg1,arg2,arg3,arg4);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_GetTotalNumberImagesAcquired(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:GetTotalNumberImagesAcquired index ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GetTotalNumberImagesAcquired" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)GetTotalNumberImagesAcquired(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -9627,35 +8606,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_IsCoolerOn(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:IsCoolerOn iCoolerStatus ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IsCoolerOn" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)IsCoolerOn(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_IsCountConvertModeAvailable(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int arg1 ;
   int val1 ;
@@ -9671,35 +8621,6 @@ _wrap_IsCountConvertModeAvailable(ClientData clientData SWIGUNUSED, Tcl_Interp *
   {
     try {
       result = (unsigned int)IsCountConvertModeAvailable(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_IsInternalMechanicalShutter(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:IsInternalMechanicalShutter InternalShutter ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IsInternalMechanicalShutter" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)IsInternalMechanicalShutter(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -16314,35 +15235,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_Filter_GetMode(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  unsigned int *arg1 = (unsigned int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:Filter_GetMode mode ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_unsigned_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Filter_GetMode" "', argument " "1"" of type '" "unsigned int *""'"); 
-  }
-  arg1 = reinterpret_cast< unsigned int * >(argp1);
-  {
-    try {
-      result = (unsigned int)Filter_GetMode(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_Filter_SetThreshold(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   float arg1 ;
   float val1 ;
@@ -16358,35 +15250,6 @@ _wrap_Filter_SetThreshold(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, 
   {
     try {
       result = (unsigned int)Filter_SetThreshold(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_Filter_GetThreshold(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  float *arg1 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:Filter_GetThreshold threshold ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_float, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Filter_GetThreshold" "', argument " "1"" of type '" "float *""'"); 
-  }
-  arg1 = reinterpret_cast< float * >(argp1);
-  {
-    try {
-      result = (unsigned int)Filter_GetThreshold(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -16430,35 +15293,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_Filter_GetDataAveragingMode(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:Filter_GetDataAveragingMode mode ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Filter_GetDataAveragingMode" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)Filter_GetDataAveragingMode(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_Filter_SetAveragingFrameCount(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int arg1 ;
   int val1 ;
@@ -16488,35 +15322,6 @@ fail:
 
 
 SWIGINTERN int
-_wrap_Filter_GetAveragingFrameCount(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:Filter_GetAveragingFrameCount frames ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Filter_GetAveragingFrameCount" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)Filter_GetAveragingFrameCount(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
 _wrap_Filter_SetAveragingFactor(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
   int arg1 ;
   int val1 ;
@@ -16532,35 +15337,6 @@ _wrap_Filter_SetAveragingFactor(ClientData clientData SWIGUNUSED, Tcl_Interp *in
   {
     try {
       result = (unsigned int)Filter_SetAveragingFactor(arg1);
-    } catch(const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what() );
-    } catch(...) {
-      SWIG_exception(SWIG_RuntimeError, "Unknown error");
-    }
-  }
-  Tcl_SetObjResult(interp,SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result)));
-  return TCL_OK;
-fail:
-  return TCL_ERROR;
-}
-
-
-SWIGINTERN int
-_wrap_Filter_GetAveragingFactor(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-  int *arg1 = (int *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int result;
-  
-  if (SWIG_GetArgs(interp, objc, objv,"o:Filter_GetAveragingFactor averagingFactor ",(void *)0) == TCL_ERROR) SWIG_fail;
-  res1 = SWIG_ConvertPtr(objv[1], &argp1,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Filter_GetAveragingFactor" "', argument " "1"" of type '" "int *""'"); 
-  }
-  arg1 = reinterpret_cast< int * >(argp1);
-  {
-    try {
-      result = (unsigned int)Filter_GetAveragingFactor(arg1);
     } catch(const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what() );
     } catch(...) {
@@ -17065,31 +15841,20 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "GetAllDMAData", (swig_wrapper_func) _wrap_GetAllDMAData, NULL},
     { SWIG_prefix "GetAmpDesc", (swig_wrapper_func) _wrap_GetAmpDesc, NULL},
     { SWIG_prefix "GetAmpMaxSpeed", (swig_wrapper_func) _wrap_GetAmpMaxSpeed, NULL},
-    { SWIG_prefix "GetAvailableCameras", (swig_wrapper_func) _wrap_GetAvailableCameras, NULL},
     { SWIG_prefix "GetBackground", (swig_wrapper_func) _wrap_GetBackground, NULL},
-    { SWIG_prefix "GetBaselineClamp", (swig_wrapper_func) _wrap_GetBaselineClamp, NULL},
     { SWIG_prefix "GetBitDepth", (swig_wrapper_func) _wrap_GetBitDepth, NULL},
     { SWIG_prefix "GetCameraHandle", (swig_wrapper_func) _wrap_GetCameraHandle, NULL},
     { SWIG_prefix "GetCameraInformation", (swig_wrapper_func) _wrap_GetCameraInformation, NULL},
-    { SWIG_prefix "GetCameraSerialNumber", (swig_wrapper_func) _wrap_GetCameraSerialNumber, NULL},
     { SWIG_prefix "GetCapabilities", (swig_wrapper_func) _wrap_GetCapabilities, NULL},
     { SWIG_prefix "GetControllerCardModel", (swig_wrapper_func) _wrap_GetControllerCardModel, NULL},
     { SWIG_prefix "GetCountConvertWavelengthRange", (swig_wrapper_func) _wrap_GetCountConvertWavelengthRange, NULL},
     { SWIG_prefix "GetCurrentCamera", (swig_wrapper_func) _wrap_GetCurrentCamera, NULL},
     { SWIG_prefix "GetDetector", (swig_wrapper_func) _wrap_GetDetector, NULL},
     { SWIG_prefix "GetDICameraInfo", (swig_wrapper_func) _wrap_GetDICameraInfo, NULL},
-    { SWIG_prefix "GetEMAdvanced", (swig_wrapper_func) _wrap_GetEMAdvanced, NULL},
-    { SWIG_prefix "GetEMCCDGain", (swig_wrapper_func) _wrap_GetEMCCDGain, NULL},
     { SWIG_prefix "GetEMGainRange", (swig_wrapper_func) _wrap_GetEMGainRange, NULL},
-    { SWIG_prefix "GetExternalTriggerTermination", (swig_wrapper_func) _wrap_GetExternalTriggerTermination, NULL},
     { SWIG_prefix "GetFastestRecommendedVSSpeed", (swig_wrapper_func) _wrap_GetFastestRecommendedVSSpeed, NULL},
-    { SWIG_prefix "GetFIFOUsage", (swig_wrapper_func) _wrap_GetFIFOUsage, NULL},
-    { SWIG_prefix "GetFilterMode", (swig_wrapper_func) _wrap_GetFilterMode, NULL},
-    { SWIG_prefix "GetFKExposureTime", (swig_wrapper_func) _wrap_GetFKExposureTime, NULL},
     { SWIG_prefix "GetFKVShiftSpeed", (swig_wrapper_func) _wrap_GetFKVShiftSpeed, NULL},
     { SWIG_prefix "GetFKVShiftSpeedF", (swig_wrapper_func) _wrap_GetFKVShiftSpeedF, NULL},
-    { SWIG_prefix "GetFrontEndStatus", (swig_wrapper_func) _wrap_GetFrontEndStatus, NULL},
-    { SWIG_prefix "GetGateMode", (swig_wrapper_func) _wrap_GetGateMode, NULL},
     { SWIG_prefix "GetHardwareVersion", (swig_wrapper_func) _wrap_GetHardwareVersion, NULL},
     { SWIG_prefix "GetHeadModel", (swig_wrapper_func) _wrap_GetHeadModel, NULL},
     { SWIG_prefix "GetHorizontalSpeed", (swig_wrapper_func) _wrap_GetHorizontalSpeed, NULL},
@@ -17097,21 +15862,14 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "GetHVflag", (swig_wrapper_func) _wrap_GetHVflag, NULL},
     { SWIG_prefix "GetID", (swig_wrapper_func) _wrap_GetID, NULL},
     { SWIG_prefix "GetImageFlip", (swig_wrapper_func) _wrap_GetImageFlip, NULL},
-    { SWIG_prefix "GetImageRotate", (swig_wrapper_func) _wrap_GetImageRotate, NULL},
     { SWIG_prefix "GetImages", (swig_wrapper_func) _wrap_GetImages, NULL},
     { SWIG_prefix "GetImages16", (swig_wrapper_func) _wrap_GetImages16, NULL},
     { SWIG_prefix "GetImagesPerDMA", (swig_wrapper_func) _wrap_GetImagesPerDMA, NULL},
-    { SWIG_prefix "GetIRQ", (swig_wrapper_func) _wrap_GetIRQ, NULL},
-    { SWIG_prefix "GetKeepCleanTime", (swig_wrapper_func) _wrap_GetKeepCleanTime, NULL},
     { SWIG_prefix "GetMaximumBinning", (swig_wrapper_func) _wrap_GetMaximumBinning, NULL},
-    { SWIG_prefix "GetMaximumExposure", (swig_wrapper_func) _wrap_GetMaximumExposure, NULL},
-    { SWIG_prefix "GetMaximumNumberRingExposureTimes", (swig_wrapper_func) _wrap_GetMaximumNumberRingExposureTimes, NULL},
     { SWIG_prefix "GetMCPGain", (swig_wrapper_func) _wrap_GetMCPGain, NULL},
     { SWIG_prefix "GetMCPGainRange", (swig_wrapper_func) _wrap_GetMCPGainRange, NULL},
     { SWIG_prefix "GetMCPGainTable", (swig_wrapper_func) _wrap_GetMCPGainTable, NULL},
     { SWIG_prefix "GetMCPVoltage", (swig_wrapper_func) _wrap_GetMCPVoltage, NULL},
-    { SWIG_prefix "GetMinimumImageLength", (swig_wrapper_func) _wrap_GetMinimumImageLength, NULL},
-    { SWIG_prefix "GetMinimumNumberInSeries", (swig_wrapper_func) _wrap_GetMinimumNumberInSeries, NULL},
     { SWIG_prefix "GetMostRecentColorImage16", (swig_wrapper_func) _wrap_GetMostRecentColorImage16, NULL},
     { SWIG_prefix "GetMostRecentImage", (swig_wrapper_func) _wrap_GetMostRecentImage, NULL},
     { SWIG_prefix "GetMostRecentImage16", (swig_wrapper_func) _wrap_GetMostRecentImage16, NULL},
@@ -17120,24 +15878,13 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "GetNewData", (swig_wrapper_func) _wrap_GetNewData, NULL},
     { SWIG_prefix "GetNewData16", (swig_wrapper_func) _wrap_GetNewData16, NULL},
     { SWIG_prefix "GetNewFloatData", (swig_wrapper_func) _wrap_GetNewFloatData, NULL},
-    { SWIG_prefix "GetNumberADChannels", (swig_wrapper_func) _wrap_GetNumberADChannels, NULL},
-    { SWIG_prefix "GetNumberAmp", (swig_wrapper_func) _wrap_GetNumberAmp, NULL},
     { SWIG_prefix "GetNumberAvailableImages", (swig_wrapper_func) _wrap_GetNumberAvailableImages, NULL},
     { SWIG_prefix "GetNumberDDGExternalOutputs", (swig_wrapper_func) _wrap_GetNumberDDGExternalOutputs, NULL},
-    { SWIG_prefix "GetNumberDevices", (swig_wrapper_func) _wrap_GetNumberDevices, NULL},
-    { SWIG_prefix "GetNumberFKVShiftSpeeds", (swig_wrapper_func) _wrap_GetNumberFKVShiftSpeeds, NULL},
-    { SWIG_prefix "GetNumberHorizontalSpeeds", (swig_wrapper_func) _wrap_GetNumberHorizontalSpeeds, NULL},
     { SWIG_prefix "GetNumberHSSpeeds", (swig_wrapper_func) _wrap_GetNumberHSSpeeds, NULL},
     { SWIG_prefix "GetNumberMissedExternalTriggers", (swig_wrapper_func) _wrap_GetNumberMissedExternalTriggers, NULL},
     { SWIG_prefix "GetIRIGData", (swig_wrapper_func) _wrap_GetIRIGData, NULL},
     { SWIG_prefix "GetNumberNewImages", (swig_wrapper_func) _wrap_GetNumberNewImages, NULL},
     { SWIG_prefix "GetNumberPhotonCountingDivisions", (swig_wrapper_func) _wrap_GetNumberPhotonCountingDivisions, NULL},
-    { SWIG_prefix "GetNumberPreAmpGains", (swig_wrapper_func) _wrap_GetNumberPreAmpGains, NULL},
-    { SWIG_prefix "GetNumberRingExposureTimes", (swig_wrapper_func) _wrap_GetNumberRingExposureTimes, NULL},
-    { SWIG_prefix "GetNumberIO", (swig_wrapper_func) _wrap_GetNumberIO, NULL},
-    { SWIG_prefix "GetNumberVerticalSpeeds", (swig_wrapper_func) _wrap_GetNumberVerticalSpeeds, NULL},
-    { SWIG_prefix "GetNumberVSAmplitudes", (swig_wrapper_func) _wrap_GetNumberVSAmplitudes, NULL},
-    { SWIG_prefix "GetNumberVSSpeeds", (swig_wrapper_func) _wrap_GetNumberVSSpeeds, NULL},
     { SWIG_prefix "GetOldestImage", (swig_wrapper_func) _wrap_GetOldestImage, NULL},
     { SWIG_prefix "GetOldestImage16", (swig_wrapper_func) _wrap_GetOldestImage16, NULL},
     { SWIG_prefix "GetPhosphorStatus", (swig_wrapper_func) _wrap_GetPhosphorStatus, NULL},
@@ -17147,7 +15894,6 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "GetPreAmpGainText", (swig_wrapper_func) _wrap_GetPreAmpGainText, NULL},
     { SWIG_prefix "GetDualExposureTimes", (swig_wrapper_func) _wrap_GetDualExposureTimes, NULL},
     { SWIG_prefix "GetQE", (swig_wrapper_func) _wrap_GetQE, NULL},
-    { SWIG_prefix "GetReadOutTime", (swig_wrapper_func) _wrap_GetReadOutTime, NULL},
     { SWIG_prefix "GetRegisterDump", (swig_wrapper_func) _wrap_GetRegisterDump, NULL},
     { SWIG_prefix "GetRelativeImageTimes", (swig_wrapper_func) _wrap_GetRelativeImageTimes, NULL},
     { SWIG_prefix "GetRingExposureRange", (swig_wrapper_func) _wrap_GetRingExposureRange, NULL},
@@ -17158,15 +15904,11 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "GetSlotBusDeviceFunction", (swig_wrapper_func) _wrap_GetSlotBusDeviceFunction, NULL},
     { SWIG_prefix "GetSoftwareVersion", (swig_wrapper_func) _wrap_GetSoftwareVersion, NULL},
     { SWIG_prefix "GetSpoolProgress", (swig_wrapper_func) _wrap_GetSpoolProgress, NULL},
-    { SWIG_prefix "GetStartUpTime", (swig_wrapper_func) _wrap_GetStartUpTime, NULL},
-    { SWIG_prefix "GetStatus", (swig_wrapper_func) _wrap_GetStatus, NULL},
-    { SWIG_prefix "GetTECStatus", (swig_wrapper_func) _wrap_GetTECStatus, NULL},
     { SWIG_prefix "GetTemperature", (swig_wrapper_func) _wrap_GetTemperature, NULL},
     { SWIG_prefix "GetTemperatureF", (swig_wrapper_func) _wrap_GetTemperatureF, NULL},
     { SWIG_prefix "GetTemperatureRange", (swig_wrapper_func) _wrap_GetTemperatureRange, NULL},
     { SWIG_prefix "GetTemperaturePrecision", (swig_wrapper_func) _wrap_GetTemperaturePrecision, NULL},
     { SWIG_prefix "GetTemperatureStatus", (swig_wrapper_func) _wrap_GetTemperatureStatus, NULL},
-    { SWIG_prefix "GetTotalNumberImagesAcquired", (swig_wrapper_func) _wrap_GetTotalNumberImagesAcquired, NULL},
     { SWIG_prefix "GetIODirection", (swig_wrapper_func) _wrap_GetIODirection, NULL},
     { SWIG_prefix "GetIOLevel", (swig_wrapper_func) _wrap_GetIOLevel, NULL},
     { SWIG_prefix "GetUSBDeviceDetails", (swig_wrapper_func) _wrap_GetUSBDeviceDetails, NULL},
@@ -17189,9 +15931,7 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "Initialize", (swig_wrapper_func) _wrap_Initialize, NULL},
     { SWIG_prefix "InitializeDevice", (swig_wrapper_func) _wrap_InitializeDevice, NULL},
     { SWIG_prefix "IsAmplifierAvailable", (swig_wrapper_func) _wrap_IsAmplifierAvailable, NULL},
-    { SWIG_prefix "IsCoolerOn", (swig_wrapper_func) _wrap_IsCoolerOn, NULL},
     { SWIG_prefix "IsCountConvertModeAvailable", (swig_wrapper_func) _wrap_IsCountConvertModeAvailable, NULL},
-    { SWIG_prefix "IsInternalMechanicalShutter", (swig_wrapper_func) _wrap_IsInternalMechanicalShutter, NULL},
     { SWIG_prefix "IsPreAmpGainAvailable", (swig_wrapper_func) _wrap_IsPreAmpGainAvailable, NULL},
     { SWIG_prefix "IsReadoutFlippedByAmplifier", (swig_wrapper_func) _wrap_IsReadoutFlippedByAmplifier, NULL},
     { SWIG_prefix "IsTriggerModeAvailable", (swig_wrapper_func) _wrap_IsTriggerModeAvailable, NULL},
@@ -17369,15 +16109,10 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "OA_GetFloat", (swig_wrapper_func) _wrap_OA_GetFloat, NULL},
     { SWIG_prefix "OA_GetString", (swig_wrapper_func) _wrap_OA_GetString, NULL},
     { SWIG_prefix "Filter_SetMode", (swig_wrapper_func) _wrap_Filter_SetMode, NULL},
-    { SWIG_prefix "Filter_GetMode", (swig_wrapper_func) _wrap_Filter_GetMode, NULL},
     { SWIG_prefix "Filter_SetThreshold", (swig_wrapper_func) _wrap_Filter_SetThreshold, NULL},
-    { SWIG_prefix "Filter_GetThreshold", (swig_wrapper_func) _wrap_Filter_GetThreshold, NULL},
     { SWIG_prefix "Filter_SetDataAveragingMode", (swig_wrapper_func) _wrap_Filter_SetDataAveragingMode, NULL},
-    { SWIG_prefix "Filter_GetDataAveragingMode", (swig_wrapper_func) _wrap_Filter_GetDataAveragingMode, NULL},
     { SWIG_prefix "Filter_SetAveragingFrameCount", (swig_wrapper_func) _wrap_Filter_SetAveragingFrameCount, NULL},
-    { SWIG_prefix "Filter_GetAveragingFrameCount", (swig_wrapper_func) _wrap_Filter_GetAveragingFrameCount, NULL},
     { SWIG_prefix "Filter_SetAveragingFactor", (swig_wrapper_func) _wrap_Filter_SetAveragingFactor, NULL},
-    { SWIG_prefix "Filter_GetAveragingFactor", (swig_wrapper_func) _wrap_Filter_GetAveragingFactor, NULL},
     { SWIG_prefix "PostProcessNoiseFilter", (swig_wrapper_func) _wrap_PostProcessNoiseFilter, NULL},
     { SWIG_prefix "PostProcessCountConvert", (swig_wrapper_func) _wrap_PostProcessCountConvert, NULL},
     { SWIG_prefix "PostProcessPhotonCounting", (swig_wrapper_func) _wrap_PostProcessPhotonCounting, NULL},
@@ -17386,7 +16121,6 @@ static swig_command_info swig_commands[] = {
 };
 
 static swig_var_info swig_variables[] = {
-    { SWIG_prefix "returnValue", 0, (swig_variable_func) _wrap_returnValue_get,(swig_variable_func) _wrap_returnValue_set},
     {0,0,0,0}
 };
 

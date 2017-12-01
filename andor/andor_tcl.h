@@ -69,13 +69,7 @@
 
 
 extern bool verbose;
-//NJS
-#ifdef u32
-extern at_u32 *image_data;
-#else
-extern at_u16 *image_data;
-#endif
-extern at_u16 *image_data;
+at_u32 *image_data;
 extern bool save_fits;
 extern int number_of_processed_frames;
 extern float **data_frame;

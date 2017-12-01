@@ -33,6 +33,17 @@ global ANDOR_CFG
   }
 }
 
+proc initds9 { shmid width height } {
+  exec xpaset -p ds9 source ds9refresher.tcl
+  exec xpaset -p ds9 shm array shmid $thesmhid \\\[xdim=width,ydim=$height,bitpix=32\\\]
+}
+
+proc refreshds9 { delta count } {
+  exec xpaset -p ds9 tcl \\\{refinit $delta $count\\\}
+  exec xpaset -p ds9 tcl refresher
+}
+
+
 set ANDOR_MODES(readout) 		"full_vertical_binning multi_track random_track single_track image"
 set ANDOR_MODES(acquisition)		"single_scan accumulate kinetics fast_kinetics run_till_abort"
 set ANDOR_MODES(shutter) 		"auto open close"
@@ -64,7 +75,6 @@ set ANDOR_TEMPERATURE(NOT_REACHED)             2
 set ANDOR_TEMPERATURE(DRIFT)                   3
 set ANDOR_TEMPERATURE(NOT_STABILIZED)          4
 
-load $NESSI_DIR/lib/andorWrap.so
 set ANDOR_DEF(exposure_time)		0.001
 set ANDOR_DEF(shutter)	 		$ANDOR_SHUTTER(close)
 set ANDOR_DEF(hbin)			1
@@ -310,7 +320,7 @@ set ANDORCODE(AC_TRIGGERMODE_EXTERNALEXPOSURE) 32
 set ANDORCODE(AC_TRIGGERMODE_INVERTED) 0x40
 set ANDORCODE(AC_TRIGGERMODE_EXTERNAL_CHARGESHIFTING) 0x80
 
-// Deprecated for AC_TRIGGERMODE_EXTERNALEXPOSURE
+# Deprecated for AC_TRIGGERMODE_EXTERNALEXPOSURE
 set ANDORCODE(AC_TRIGGERMODE_BULB) 32
 
 set ANDORCODE(AC_CAMERATYPE_PDA) 0
@@ -386,7 +396,7 @@ set ANDORCODE(AC_SETFUNCTION_EXTENDED_CROP_MODE)  0x10000000
 set ANDORCODE(AC_SETFUNCTION_SUPERKINETICS)  0x20000000
 set ANDORCODE(AC_SETFUNCTION_TIMESCAN ) 0x40000000
 
-// Deprecated for AC_SETFUNCTION_MCPGAIN
+# Deprecated for AC_SETFUNCTION_MCPGAIN
 set ANDORCODE(AC_SETFUNCTION_GAIN)  8
 set ANDORCODE(AC_SETFUNCTION_ICCDGAIN)  8
 
