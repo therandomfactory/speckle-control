@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include "vips/vips.h"
 
+extern "C" {
+
 void dofft(int width, int height, int *imageData, int* outputData) 
 {
   int i,j;
@@ -59,5 +61,8 @@ void dofft(int width, int height, int *imageData, int* outputData)
         g_object_unref(vipsin);
         g_object_unref(vipsout);
 }
+
+}
+
 
 

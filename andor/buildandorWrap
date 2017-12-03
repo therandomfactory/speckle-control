@@ -8,4 +8,5 @@ gcc -g -c -fPIC andorGenTclInterfaces.c -fpic -DLINUX -DWall -g -I./include
 gcc -g -c -fPIC andor_tcl.c -fpic -DLINUX -DWall -g -I./include $(pkg-config --cflags vips)
 g++ -g -c -fPIC dofft.cpp -fpic -DLINUX -DWall -g -I./include $(pkg-config --cflags vips)
 g++ -g -shared -o andorTclInit.so andor_tcl.o andorGenTclInterfaces.o andorCreateTclCmds.o dofft.o ../lib/libandor.so.2 ../lib/libUSBI2C.so.2 $(pkg-config --libs vips)
+mv andorTclInit.so ../lib/.
 

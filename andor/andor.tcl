@@ -35,11 +35,11 @@ global ANDOR_CFG
 
 proc initds9 { shmid width height } {
   exec xpaset -p ds9 source ds9refresher.tcl
-  exec xpaset -p ds9 shm array shmid $thesmhid \\\[xdim=width,ydim=$height,bitpix=32\\\]
+  exec xpaset -p ds9 shm array shmid $shmid \\\[xdim=$width,ydim=$height,bitpix=32\\\]
 }
 
 proc refreshds9 { delta count } {
-  exec xpaset -p ds9 tcl \\\{refinit $delta $count\\\}
+  exec xpaset -p ds9 tcl \{refinit $delta $count\}
   exec xpaset -p ds9 tcl refresher
 }
 
@@ -394,7 +394,7 @@ set ANDORCODE(AC_SETFUNCTION_PRESCANS)  0x4000000
 set ANDORCODE(AC_SETFUNCTION_GATEWIDTHSTEP)  0x8000000
 set ANDORCODE(AC_SETFUNCTION_EXTENDED_CROP_MODE)  0x10000000
 set ANDORCODE(AC_SETFUNCTION_SUPERKINETICS)  0x20000000
-set ANDORCODE(AC_SETFUNCTION_TIMESCAN ) 0x40000000
+set ANDORCODE(AC_SETFUNCTION_TIMESCAN) 0x40000000
 
 # Deprecated for AC_SETFUNCTION_MCPGAIN
 set ANDORCODE(AC_SETFUNCTION_GAIN)  8
