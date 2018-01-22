@@ -124,7 +124,7 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateObjCommand(interp, "andor::test1", (Tcl_ObjCmdProc *)cmdTest1,
                        (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
 
-  Tcl_CreateCommand(interp, "andorConnect", (Tcl_CmdProc *) tcl_andorInit, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorConnectCamera", (Tcl_CmdProc *) tcl_andorInit, NULL, NULL);
   Tcl_CreateCommand(interp, "andorConfigure", (Tcl_CmdProc *) tcl_andorConfigure, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSetupCamera", (Tcl_CmdProc *) tcl_andorSetupCamera, NULL, NULL);
   Tcl_CreateCommand(interp, "andorIdle", (Tcl_CmdProc *) tcl_andorIdle, NULL, NULL);
@@ -198,8 +198,8 @@ int tcl_andorConnectShmem(ClientData clientData, Tcl_Interp *interp, int argc, c
     }
     SharedMemA  = (unsigned int *) shmat(Shmem_id, NULL, 0);
     SharedMemAPro = SharedMemA + width*height/2;
-    SharedMemB  = SharedMemA + width*4;
-    SharedMemBPro = SharedMemAPro + width*4;
+    SharedMemB  = SharedMemA + width/2;
+    SharedMemBPro = SharedMemAPro + width/2;
     sprintf(result,"%ld %d",Shmem_id, Shmem_size);
     Tcl_SetResult(interp,result,TCL_STATIC);
 }
@@ -242,22 +242,22 @@ int tcl_andorDisplayFrame(ClientData clientData, Tcl_Interp *interp, int argc, c
     }
   }
 
-/*  if ( cameraId == 1 ) { */
+  if ( cameraId == 1 ) {
     if ( ifft == 1) {
-      dofft(width,height,imageDataA,outputData);
+      dofft(width,height,imageDataB,outputData);
       for ( irow=0;irow<width;irow++) {
-        copyline(SharedMemAPro + irow*width*2, outputData + irow*width, width*4, width);
+        copyline(SharedMemBPro + irow*width*2, outputData + irow*width, width*4, 0);
       }
       for ( irow=0;irow<width;irow++) {
-        copyline(SharedMemA + irow*width*2, imageDataA + irow*width, width*4, width);
+        copyline(SharedMemB + irow*width*2, imageDataB + irow*width, width*4, 0);
       }
-      addavg(outputData,outputAvgA,width*height);
+      addavg(outputData,outputAvgB,width*height);
     } else {
       for ( irow=0;irow<width;irow++) {
-        copyline(SharedMemA + irow*width*2, imageDataA + irow*width, width*4, width);
+        copyline(SharedMemB + irow*width*2, imageDataB + irow*width, width*4, 0);
       }
     }
-/*  }  */
+  }
 
     return TCL_OK;
 }
@@ -459,7 +459,7 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
 
   /* Check number of arguments provided and return an error if necessary */
   if (argc < 2) {
-     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  numCameras\"", (char *)NULL);
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  numCamera\"", (char *)NULL);
      return TCL_ERROR;
   }
 
@@ -472,11 +472,13 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
      return TCL_ERROR;
   }
 
-  status = GetCameraHandle(0, &cameraA);
-  if (status != DRV_SUCCESS) {
+  if (numCamReq == 1) { 
+    status = GetCameraHandle(0, &cameraA);
+    if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to connect camera A - %d",status);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_ERROR;
+    }
   }
 
   if (numCamReq == 2) { 
@@ -488,18 +490,20 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
     }
   }
 
-  SetCurrentCamera(cameraA);
-  status = Initialize("/usr/local/etc/andor");
-  sleep(2);
-  SetReadMode(4);
+  if (numCamReq == 1) { 
+    SetCurrentCamera(cameraA);
+    status = Initialize("/usr/local/etc/andor");
+    sleep(2);
+    SetReadMode(4);
   //Set Acquisition mode to --Single scan--
-  SetAcquisitionMode(1);
-  status = SetShutter(1, 1, 50, 50);
-  SetFrameTransferMode(1);
-  if (status != DRV_SUCCESS) {
+    SetAcquisitionMode(1);
+    status = SetShutter(1, 1, 50, 50);
+    SetFrameTransferMode(1);
+    if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to initialize camera A - %d",status);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_ERROR;
+    }
   }
 
   if (numCamReq == 2) { 
@@ -762,7 +766,21 @@ int tcl_andorStartAcquisition(ClientData clientData, Tcl_Interp *interp, int arg
 
 int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
+  int cameraId=0;
   int status=0;
+
+  sscanf(argv[1],"%d",&cameraId);
+
+  if ( cameraId == 0 ) {
+     status = SetCurrentCamera(cameraA);
+  } else {
+     status = SetCurrentCamera(cameraB);
+  }
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select camera - %d",cameraId);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
 
   status = AbortAcquisition();
 

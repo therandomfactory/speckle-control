@@ -34,7 +34,8 @@ global ANDOR_CFG
 }
 
 proc initds9 { shmid width height } {
-  exec xpaset -p ds9 source ds9refresher.tcl
+global NESSI_DIR
+  exec xpaset -p ds9 source $NESSI_DIR/andor/ds9refresher.tcl
   exec xpaset -p ds9 shm array shmid $shmid \\\[xdim=$width,ydim=$height,bitpix=32\\\]
 }
 
