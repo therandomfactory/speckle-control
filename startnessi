@@ -1,8 +1,12 @@
 #!/bin/sh
 
-export NESSI_DIR=/home/rfactory/nessi-control
+export TELESCOPE=WIYN
+export PKG_CONFIG_PATH=/home/nessi/nessi-control/lib/pkgconfig
+export NESSI_DIR=/home/nessi/nessi-control
 export PATH=${NESSI_DIR}/bin:${PATH}
 export LD_LIBRARY_PATH=${NESSI_DIR}/lib:${LD_LIBRARY_PATH}
 export XPA_METHOD=local
+xpans &
+ds9 &
 $NESSI_DIR/wiyn-scripts/gui.tcl
 

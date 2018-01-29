@@ -44,6 +44,28 @@ proc refreshds9 { delta count } {
   exec xpaset -p ds9 tcl refresher
 }
 
+proc connectToAndors { } {
+global ANDOR_SOCKET
+   set s2001 [socket localhost 2001]
+   fconfigure $s2001 -buffering line
+   set s2002 [socket localhost 2002]
+   fconfigure $s2002 -buffering line
+   puts $s2001 "whicharm"
+   gets $s2001 rec
+   puts stdout "Server at socket 2001 is $rec arm"
+   set ANDOR_SOCKET($rec) $s2001
+   puts $s2002 "whicharm"
+   gets $s2002 rec
+   puts stdout "Server at socket 2002 is $rec arm"
+   set ANDOR_SOCKET($rec) $s2002
+}
+
+proc commandAndor { arm cmd } {
+global ANDOR_SOCKET
+   puts $ANDOR_SOCKET($arm) $cmd
+   gets $ANDOR_SOCKET($arm) result
+   return $result
+}
 
 set ANDOR_MODES(readout) 		"full_vertical_binning multi_track random_track single_track image"
 set ANDOR_MODES(acquisition)		"single_scan accumulate kinetics fast_kinetics run_till_abort"

@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,34 +15,36 @@
 #include <stdint.h>
 #include "andor_tcl.h"
 #include "vips/vips.h"
+#include "fitsio.h"
 
 #define OBS_SIZE 256
 #define LOC_SIZE 1024
 
+ 
 unsigned int *SharedMemA;
 struct shmid_ds Shmem_buf;
 unsigned int *SharedMemAPro;
 unsigned int *SharedMemB;
 unsigned int *SharedMemBPro;
-at_32 imageDataA[1024*1024];
-at_32 imageDataB[1024*1024];
-at_32 outputData[1024*1024];
-at_32 outputAvgA[1024*1024];
-at_32 outputAvgB[1024*1024];
+int imageDataA[1024*1024];
+int imageDataB[1024*1024];
+int outputData[1024*1024];
+int outputAvgA[1024*1024];
+int outputAvgB[1024*1024];
+float fitsROI[256*256];
 char *result=NULL;
 static at_32 cameraA;
 static at_32 cameraB;
 static at_32 numCameras;
-int currentCamera=NULL;
 andor_setup andorSetup[2];
-#define CAMERA_A 0
-#define CAMERA_B 1
+fitsfile *fptr;       /* pointer to the FITS file, defined in fitsio.h */
 
 int Shmem_id = 0;
 void dofft(int width, int height, int *imageData, int* outputData);
 void addavg(at_32 *im, at_32 *avg, int n);
 void calcavg(at_32 *avg, int n, int numexp);
 void copyline (int *tobuf, int *frombuf, int count, int offset);
+void create_fits_header(Tcl_Interp *interp, fitsfile *fptr);
 
 int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -200,13 +203,127 @@ int tcl_andorConnectShmem(ClientData clientData, Tcl_Interp *interp, int argc, c
     SharedMemAPro = SharedMemA + width*height/2;
     SharedMemB  = SharedMemA + width/2;
     SharedMemBPro = SharedMemAPro + width/2;
-    sprintf(result,"%ld %d",Shmem_id, Shmem_size);
+    sprintf(result,"%ld %d %ld %ld %ld %ld",Shmem_id, Shmem_size,SharedMemA,SharedMemAPro,SharedMemB,SharedMemBPro);
     Tcl_SetResult(interp,result,TCL_STATIC);
+    return TCL_OK;
 }
 
 int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
-    return(0);
+  int width,height,numexp,iexp,cameraId;
+  int irow,iw,ih;
+  int status;
+  int *copyFrom;
+  char filename[1024];
+  int bitpix   =  FLOAT_IMG; /* 32-bit unsigned int pixel values       */
+  long naxes3[3];   
+  long naxes[2];
+  int fpixel=1;
+  int nelements;
+
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 6) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId filename width height iexp numexp\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+  sscanf(argv[1],"%d",&cameraId);
+  strcpy(filename,argv[2]);
+  sscanf(argv[3],"%d",&width);
+  sscanf(argv[4],"%d",&height);
+  sscanf(argv[5],"%d",&iexp);
+  sscanf(argv[6],"%d",&numexp);
+  if ( cameraId == 0 ) {
+     copyFrom = &imageDataA;
+     for (iw=0;iw<width;iw++) {
+     for (ih=0;ih<height;ih++) {
+         fitsROI[iw+ih*width] = (float)imageDataA[iw+ih*width];
+     }
+     }
+  }
+  if ( cameraId == 1 ) {
+     copyFrom = &imageDataB;
+     for (iw=0;iw<width;iw++) {
+     for (ih=0;ih<height;ih++) {
+         fitsROI[iw+ih*width] = (float)imageDataB[iw+ih*width];
+     }
+     }
+ }
+
+  if ( numexp == 1 ) {
+    status = 0;         /* initialize status before calling fitsio routines */ 
+    fits_create_file(&fptr, filename, &status); /* create new FITS file */
+    if (status != 0) {
+         sprintf(result,"fits create file error %d",status);
+         Tcl_SetResult(interp,result,TCL_STATIC);
+         return TCL_ERROR;
+    }
+    naxes[0]=width;
+    naxes[1]=height;
+    fpixel=1;
+    nelements = naxes[0] * naxes[1];          /* number of pixels to write */
+
+    fits_create_img(fptr,  bitpix, 2, naxes, &status);
+    if (status != 0) {
+          sprintf(result,"fits create image error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+
+    /* write the array of unsigned integers to the FITS file */
+    fits_write_img(fptr, TFLOAT, fpixel, nelements, copyFrom, &status);
+    if (status != 0) {
+          sprintf(result,"fits write error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+
+    create_fits_header(interp, fptr);
+ 
+    fits_close_file(fptr, &status);                /* close the file */
+    if (status != 0) {
+          sprintf(result,"fits close error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+   } else {
+     status=0;
+     naxes3[0]=width;
+     naxes3[1]=height;
+     naxes3[2]=numexp;
+     if ( iexp == 1) {
+        fits_create_file(&fptr, filename, &status); /* create new FITS file */
+        if (status != 0) {
+            sprintf(result,"fits create file error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+        fits_create_img(fptr,  bitpix, 3, naxes3, &status);
+        if (status != 0) {
+            sprintf(result,"fits create img error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+     }
+     fpixel=width*height*(iexp-1)+1;
+     nelements = naxes3[0] * naxes3[1];          /* number of pixels to write */
+     fits_write_img(fptr, TFLOAT, fpixel, nelements, &fitsROI, &status);
+     if (status != 0) {
+         sprintf(result,"fits write img error %d",status);
+         Tcl_SetResult(interp,result,TCL_STATIC);
+         return TCL_ERROR;
+     }
+     if (iexp == numexp) {
+        create_fits_header(interp, fptr);
+        fits_close_file(fptr, &status);                /* close the file */
+        if (status != 0) {
+            sprintf(result,"fits close error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+     }
+  }  
+
+  return TCL_OK;
 }
 
 
@@ -225,6 +342,7 @@ int tcl_andorDisplayFrame(ClientData clientData, Tcl_Interp *interp, int argc, c
   sscanf(argv[2],"%d",&width);
   sscanf(argv[3],"%d",&height);
   sscanf(argv[4],"%d",&ifft);
+
   if ( cameraId == 0 ) {
     if ( ifft == 1) {
       dofft(width,height,imageDataA,outputData);
@@ -520,6 +638,15 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_ERROR;
     }
+  }
+  if (numCamReq == 1) { 
+     sprintf(result,"%d",cameraA);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+  }
+
+  if (numCamReq == 2) { 
+     sprintf(result,"%d",cameraB);
+     Tcl_SetResult(interp,result,TCL_STATIC);
   }
 
   return TCL_OK;
@@ -820,9 +947,9 @@ int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc
   }
 
   if ( cameraId == 0 ) {
-     status = GetAcquiredData(imageDataA, andorSetup[currentCamera].npix);
+     status = GetAcquiredData(imageDataA, andorSetup[cameraId].npix);
   } else {
-     status = GetAcquiredData(imageDataB, andorSetup[currentCamera].npix);
+     status = GetAcquiredData(imageDataB, andorSetup[cameraId].npix);
   }
   if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to get acquired data %d",status);
@@ -836,8 +963,22 @@ int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc
 int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
   int status=0;
+  int cameraId=0;
 
-  status = GetOldestImage(image_data, andorSetup[currentCamera].npix);
+  sscanf(argv[1],"%d",&cameraId);
+
+  if ( cameraId == 0 ) {
+     status = SetCurrentCamera(cameraA);
+  } else {
+     status = SetCurrentCamera(cameraB);
+  }
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select camera - %d",cameraId);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+
+  status = GetOldestImage(image_data, andorSetup[cameraId].npix);
   if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to get oldest frame %d",status);
      Tcl_SetResult(interp,result,TCL_STATIC);
@@ -852,18 +993,32 @@ int tcl_andorSetCropMode(ClientData clientData, Tcl_Interp *interp, int argc, ch
 {
   int status=-1;
   int height,width,vbin,hbin;
+  int cameraId=0;
+
+  sscanf(argv[1],"%d",&cameraId);
+
+  if ( cameraId == 0 ) {
+     status = SetCurrentCamera(cameraA);
+  } else {
+     status = SetCurrentCamera(cameraB);
+  }
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select camera - %d",cameraId);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
 
  
   /* Check number of arguments provided and return an error if necessary */
   if (argc < 5) {
-     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  height width vbin hbin\"", (char *)NULL);
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," camnum height width vbin hbin\"", (char *)NULL);
      return TCL_ERROR;
   }
 
-  sscanf(argv[1],"%d",&height);
-  sscanf(argv[2],"%d",&width);
-  sscanf(argv[3],"%d",&vbin);
-  sscanf(argv[4],"%d",&hbin);
+  sscanf(argv[2],"%d",&height);
+  sscanf(argv[3],"%d",&width);
+  sscanf(argv[4],"%d",&vbin);
+  sscanf(argv[5],"%d",&hbin);
   status = SetIsolatedCropMode(1, height, width, vbin, hbin);
   if (status != DRV_SUCCESS) {
      sprintf(result,"Failed to set crop mode %d",status);
@@ -1031,8 +1186,86 @@ int tcl_UnlockUsbMutex(ClientData clientData, Tcl_Interp *interp, int argc, char
   return TCL_OK;
 }
 
+#endif
 
-#endif 
+
+void create_fits_header(Tcl_Interp *interp, fitsfile *fptr)
+{
+    char *text;
+    int status;
+    float fvar;
+    int ivar;
+    int utcmon, utcyear;
+    double utcday;
+    double jdobs, mjdobs;
+    struct tm *gmt;
+    time_t t;
+
+    status = 0;
+    fits_write_key(fptr, TSTRING, "CREATOR", "Linux ANDOR CCD control", "NESSI Data-taking program", &status);
+/*
+    text = Tcl_GetVar2(interp, "SCOPE", "site", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "OBSERVAT", text, "Observatory Site", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "name", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "TELESCOP", text, "Telescope Name",&status);
+    text = Tcl_GetVar2(interp, "SCOPE", "latitude", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "LATITUDE", text, "[deg] Observatory Latitude", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "longitude", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "LONGITUD", text, "[deg west] Observatory Longtiude", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "camera", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "INSTRUME", text, "Instrument", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "detector", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "DETECTOR", text, "CCD Detector ID", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "instrument", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "INSTID", text, "Instrument ID Code", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "observer", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "OBSERVER", text, "Observer(s)", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "target", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "OBJECT", text, "Target Name",&status);
+    text = Tcl_GetVar2(interp, "SCOPE", "imagetype", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "OBSTYPE", text, "Image type code", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "exposure", TCL_GLOBAL_ONLY); 
+    sscanf(text,"%f", &fvar);
+    fits_write_key_fixflt(fptr, "EXPTIME", fvar, 2, "[sec] Exposure time", &status);
+    fits_write_key(fptr, TSTRING, "TIMESYS", "UTC", "Time System is UTC", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "obsdate", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "DATE-OBS", text, "Date of start of observation", &status);
+    text = Tcl_GetVar2(interp, "SCOPE", "obstime", TCL_GLOBAL_ONLY); 
+    fits_write_key(fptr, TSTRING, "TIME-OBS", text, "Time of start of observation", &status);
+ */
+    t = time(NULL);
+    gmt = gmtime(&t);
+
+    utcday = (double)(gmt->tm_mday) + ((double)(gmt->tm_hour) + (double)(gmt->tm_min)/60.0
+                                   + (double)(gmt->tm_sec)/3600.0) / 24.0 ;
+
+    utcmon = gmt->tm_mon + 1;
+
+    utcyear = gmt->tm_year + 1900;
+
+    cal_mjd(utcmon, utcday, utcyear, &mjdobs);
+
+    jdobs = mjdobs + 2415020.0;
+
+    mjdobs = jdobs - 2400000.5;
+
+    fits_write_key_fixdbl( fptr, "MJD-OBS", mjdobs, 6, "MJD at start of obs", &status);
+    fits_write_key_fixdbl( fptr, "JD", jdobs, 5, "Julian Date at start of obs", &status);
+
+/*
+    text = Tcl_GetVar2(interp, "CAMSTATUS", "Temperature", TCL_GLOBAL_ONLY); 
+    sscanf(text,"%f", &fvar);
+    fits_write_key_fixflt(fptr, "CCDTEMP", fvar, 1, "[C] CCD temperature at readout", &status);
+    text = Tcl_GetVar2(interp, "CAMSTATUS", "BinX", TCL_GLOBAL_ONLY); 
+    sscanf(text,"%d", &ivar);
+    fits_write_key(fptr, TSHORT, "CCDXBIN", &ivar, "Column Binning on detector", &status);
+    text = Tcl_GetVar2(interp, "CAMSTATUS", "BinY", TCL_GLOBAL_ONLY); 
+    sscanf(text,"%d", &ivar);
+    fits_write_key(fptr, TSHORT, "CCDYBIN", &ivar, "Row Binning on detector", &status);
+ */
+
+}
+
 
 
 

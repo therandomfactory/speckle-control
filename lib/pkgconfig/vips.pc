@@ -1,0 +1,14 @@
+prefix=/home/nessi/nessi-control
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: vips
+Description: Image processing library
+Version: 8.5.9
+Requires.private:  glib-2.0 gmodule-2.0 gobject-2.0 fftw3 zlib pangoft2 libpng
+Requires: gobject-2.0
+Libs: -L${libdir} -lvips 
+Libs.private: 
+Cflags: -I${includedir}
+

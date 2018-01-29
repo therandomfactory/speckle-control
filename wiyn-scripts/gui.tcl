@@ -1,3 +1,4 @@
+#!/usr/bin/wish
 #
 # Define the global environment, everything lives under /opt/apogee
 # Change NESSI_DIR to move the code somewhere else
@@ -13,7 +14,7 @@ set SCOPE(telescope) GEMINI
 set SCOPE(site) GEMINI_N
 set SCOPE(latitude) 19:49:00
 set SCOPE(longitude) 155:28:00
-if { $gw == "140.252.61.1" } {
+if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
   set SCOPE(latitude) 31:57:11.78
   set SCOPE(longitude) 07:26:27.97
   set SCOPE(telescope) WIYN
@@ -263,10 +264,10 @@ set STATUS(readout) 0
 #  Define a default sub-region
 #  
 set ACQREGION(xs) 200
-set ACQREGION(xe) 64
+set ACQREGION(xe) 456
 set ACQREGION(ys) 200
-set ACQREGION(ye) 64
-
+set ACQREGION(ye) 456
+set LASTACQ none
 
 #
 #  Set up the default structures for temperaure control/plotting

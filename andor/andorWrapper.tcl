@@ -12,10 +12,10 @@ source $NESSI_DIR/andorsConfiguration
 set ncam [GetAvailableCameras]
 puts stdout "Detected $ncam cameras"
 
-andorConnect 2
+andorConnectCamera 1
 puts stdout "Connected to camera(s)"
 
-foreach CAM "0 1" {
+foreach CAM "0" {
   andorConfigure $CAM 1 1 1 256 1 256 0 0 0 0
 #  andorSetup $CAM 1 
   puts stdout "Configured camera $CAM for ccd mode"

@@ -61,50 +61,6 @@ global STATUS CFG CAMERAS DEBUG SCOPE ALTA
 
 
 
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
-#
-#  Procedure  : testgeometry
-#
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#  This procedure uses the Expose method to test that the current set
-#  of geometry parameters represents a legal combination.
-#
-#  Arguments  :
-#
-#               id	-	Camera id (for multi-camera use) (optional, default is 0)
- 
-proc testgeometry { {id 0} } {
- 
-#
-#  Globals    :
-#  
-#               CONFIG	-	GUI configuration
-#               CAMERAS	-	Camera id's
-global CONFIG CAMERAS ALTA
-   set exp 0.01
-   set shutter 0
-   set res "illegal"
-   set camera $CAMERAS($id)
-   if { $ALTA } {
-     $camera GetImagingStatus
-     set res "ok"
-   } else {
-     set res [$camera Expose $exp $shutter]
-   }
-   return $res
-}
-
-
-
-
 
 
 
@@ -761,7 +717,7 @@ proc setfullframe { } {
 #  Globals    :
 #  
 #               SCOPE	-	Telescope parameters, gui setup
-global SCOPE CONFIG
+global SCOPE CONFIG LASTACQ
    set CONFIG(geometry.BinX)      1
    set CONFIG(geometry.BinY)      1
    set CONFIG(geometry.StartCol)  1
@@ -801,14 +757,17 @@ proc  acquisitionmode { } {
 #  
 #               ACQREGION	-	Sub-frame region coordinates
 #               CONFIG	-	GUI configuration
-global ACQREGION CONFIG
+global ACQREGION CONFIG LASTACQ
+  if { $LASTAVQ != "fullframe" } {
+     obstodisk
+  }
   set it [ tk_dialog .d "Acquisition region" "Click New to define a new region,\n OK to use the current region " {} -1 OK "New"]      
   if {$it} {
     catch {
       exec xpaset -p ds9 regions deleteall
       exec echo "box $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye) | xpaset ds9 regions
     }
-    set it [tk_dialog .d "Edit region" "Resize/Move the region in the\n image display tool then click OK" {} -1 "OK"]
+    set it [tk_dialog .d "Edit region" "Move the region in the\n image display tool then click OK" {} -1 "OK"]
     set reg [split [exec xpaget ds9 regions] \n]
     foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {

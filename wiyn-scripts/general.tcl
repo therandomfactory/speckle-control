@@ -508,16 +508,6 @@ global CONFIG CAMERAS CCAPI CCAPIW CCDID LASTBIN APOGEEGUI ALTA
             }
          }
       }
-      if { [testgeometry] == 0 } {
-         if { $APOGEEGUI } {
-	         .p.props.fGeometry configure -bg orange
-	 }
-         bell
-      } else {
-	 if { $APOGEEGUI } {
-	         .p.props.fGeometry configure -bg gray
-	 }
-      }
 }
 
 
