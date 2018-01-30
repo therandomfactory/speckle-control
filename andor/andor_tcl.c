@@ -31,6 +31,7 @@ int imageDataB[1024*1024];
 int outputData[1024*1024];
 int outputAvgA[1024*1024];
 int outputAvgB[1024*1024];
+float imageFrame[1024*1024];
 float fitsROI[256*256];
 char *result=NULL;
 static at_32 cameraA;
@@ -64,6 +65,7 @@ int tcl_andorWaitForData(ClientData clientData, Tcl_Interp *interp, int argc, ch
 int tcl_andorWaitForIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorPrepDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStartUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorShutDown(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 #ifdef TCL_USB_THREAD
@@ -149,6 +151,7 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorGetFrame", (Tcl_CmdProc *) tcl_andorGetOldestFrame, NULL, NULL);
   Tcl_CreateCommand(interp, "andorPrepDataCube", (Tcl_CmdProc *) tcl_andorPrepDataCube, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSetCropMode", (Tcl_CmdProc *) tcl_andorSetCropMode, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorPrepDataFrame", (Tcl_CmdProc *) tcl_andorPrepDataFrame, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetDataCube", (Tcl_CmdProc *) tcl_andorGetDataCube, NULL, NULL);
   Tcl_CreateCommand(interp, "andorWaitForData", (Tcl_CmdProc *) tcl_andorWaitForData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorWaitForIdle", (Tcl_CmdProc *) tcl_andorWaitForIdle, NULL, NULL);
@@ -211,7 +214,7 @@ int tcl_andorConnectShmem(ClientData clientData, Tcl_Interp *interp, int argc, c
 int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
   int width,height,numexp,iexp,cameraId;
-  int irow,iw,ih;
+  int irow,iw,ih,ipix;
   int status;
   int *copyFrom;
   char filename[1024];
@@ -234,18 +237,22 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
   sscanf(argv[6],"%d",&numexp);
   if ( cameraId == 0 ) {
      copyFrom = &imageDataA;
-     for (iw=0;iw<width;iw++) {
-     for (ih=0;ih<height;ih++) {
+     if (width < 1024) {
+       for (iw=0;iw<width;iw++) {
+       for (ih=0;ih<height;ih++) {
          fitsROI[iw+ih*width] = (float)imageDataA[iw+ih*width];
-     }
+       }
+       }
      }
   }
   if ( cameraId == 1 ) {
      copyFrom = &imageDataB;
-     for (iw=0;iw<width;iw++) {
-     for (ih=0;ih<height;ih++) {
+     if (width < 1024) {
+       for (iw=0;iw<width;iw++) {
+       for (ih=0;ih<height;ih++) {
          fitsROI[iw+ih*width] = (float)imageDataB[iw+ih*width];
-     }
+       }
+       }
      }
  }
 
@@ -268,9 +275,20 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
           Tcl_SetResult(interp,result,TCL_STATIC);
           return TCL_ERROR;
     }
+    if ( cameraId == 0 ) {
+      for (ipix=0;ipix<1024*1024;ipix++) {
+          imageFrame[ipix] = (float)imageDataA[ipix];
+      }
+    }
+    if ( cameraId == 1 ) {
+      for (ipix=0;ipix<1024*1024;ipix++) {
+          imageFrame[ipix] = (float)imageDataB[ipix];
+      }
+    }
+
 
     /* write the array of unsigned integers to the FITS file */
-    fits_write_img(fptr, TFLOAT, fpixel, nelements, copyFrom, &status);
+    fits_write_img(fptr, TFLOAT, fpixel, nelements, &imageFrame, &status);
     if (status != 0) {
           sprintf(result,"fits write error %d",status);
           Tcl_SetResult(interp,result,TCL_STATIC);
@@ -519,6 +537,40 @@ int tcl_andorPrepDataCube(ClientData clientData, Tcl_Interp *interp, int argc, c
         return TCL_OK;
 }
 
+int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+        int num;
+	unsigned long error;
+	bool quit;
+        int numexp=1;
+	char choice;
+        int count=0;
+        int i,j;
+ 	float fChoice;
+        float exposure=0.04;
+	int width, height;
+
+	//Set Read Mode to --Image--
+	SetReadMode(4);
+
+	//Set Acquisition mode to --Single scan--
+	SetAcquisitionMode(1);
+
+	//Set initial exposure time
+	SetExposureTime(exposure);
+
+	//Get Detector dimensions
+	GetDetector(&width, &height);
+        height=1024;
+        width=1024;
+	//Initialize Shutter
+	SetShutter(1,1,50,50);
+        SetFrameTransferMode(1);
+        
+        //Setup Image dimensions
+        SetImage(1,1,1,width,1,height);
+        return TCL_OK;
+}
 
 
 int tcl_andorGetDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)

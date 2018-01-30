@@ -47,11 +47,13 @@ proc shutdown { {id 0} } {
 #  Globals    :
 #  
 #               CAMERAS	-	Camera id's
-global CAMERAS ANDOR
+global CAMERAS ANDOR ANDOR_SOCKET
    set it [tk_dialog .d "Exit" "Confirm exit" {} -1 "Cancel" "EXIT"]
    if { $it } {
 #     set camera $CAMERAS($id)
 #     $camera $cooler 2
+     catch { commandAndor red shutdown }
+     catch { commandAndor blue shutdown }
      catch { exec xpaset -p ds9 exit }
      exit
    }
@@ -83,5 +85,9 @@ set SCOPE(obsdate) [exec date -u +%Y-%m-%dT%H:%M:%S.0]
 set SCOPE(obstime) [lindex [getlocaltime] 3]
 
 source $NESSI_DIR/andor/andor.tcl
-source $NESSI_DIR/andor/andorWrapper.tcl
+resetAndors fullframe
+
+####
+####For use with internal andor server version
+####source $NESSI_DIR/andor/andorWrapper.tcl
 

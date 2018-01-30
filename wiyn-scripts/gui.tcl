@@ -263,10 +263,10 @@ set STATUS(readout) 0
 #
 #  Define a default sub-region
 #  
-set ACQREGION(xs) 200
-set ACQREGION(xe) 456
-set ACQREGION(ys) 200
-set ACQREGION(ye) 456
+set ACQREGION(xs) 1
+set ACQREGION(xe) 256
+set ACQREGION(ys) 1
+set ACQREGION(ye) 256
 set LASTACQ none
 
 #

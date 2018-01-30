@@ -67,6 +67,49 @@ global ANDOR_SOCKET
    return $result
 }
 
+
+proc acquireCubes { } {
+global INSTRUMENT SCOPE LASTACQ
+   if { $INSTRUMENT(red) } {
+      commandAndor red "acquire $SCOPE(exposure) $SCOPE(numframes)"
+      set LASTACQ roi
+   }
+   if { $INSTRUMENT(blue) } {
+      commandAndor blue "acquire $SCOPE(exposure) $SCOPE(numframes)"
+      set LASTACQ roi
+   }
+}
+
+proc acquireFrames { } {
+global INSTRUMENT SCOPE
+   if { $INSTRUMENT(red) } {
+      commandAndor red "grabframe $SCOPE(exposure)"
+      set LASTACQ fullframe
+   }
+   if { $INSTRUMENT(blue) } {
+      commandAndor blue "grabframe $SCOPE(exposure)"
+      set LASTACQ fullframe
+   }
+}
+   
+proc resetAndors { mode } {
+global INSTRUMENT NESSI_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
+   catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
+   catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
+   if { $mode == "fullframe" } {
+     exec xterm -e "$NESSI_DIR/andor/andorServer.tcl 1 1 1024 1 1024" &
+     exec xterm -e "$NESSI_DIR/andor/andorServer.tcl 2 1 1024 1 1024" &
+     set LASTACQ fullframe
+   } else {
+     exec xterm -e "$NESSI_DIR/andor/andorServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -e "$NESSI_DIR/andor/andorServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     set LASTACQ roi
+     set SCOPE(numframes) 1000
+   }
+   after 15000
+   connectToAndors
+}
+
 set ANDOR_MODES(readout) 		"full_vertical_binning multi_track random_track single_track image"
 set ANDOR_MODES(acquisition)		"single_scan accumulate kinetics fast_kinetics run_till_abort"
 set ANDOR_MODES(shutter) 		"auto open close"
@@ -118,7 +161,7 @@ set ANDOR_DEF(kinetic_time)         0.07059
 set ANDOR_DEF(num_exposures)        1
 set ANDOR_DEF(exposure_total)       1
 set ANDOR_DEF(read_mode)            "Image"
-set ANDOR_DEF(fullframe)            "1, 1024, 1024, 1"
+set ANDOR_DEF(fullframe)            "1,1024,1,1024"
 set ANDOR_DEF(roi)                  "385, 640, 640, 385"
 set ANDOR_DEF(datatype)             "Counts"
 set ANDOR_DEF(calibration_type)     "Pixel number"

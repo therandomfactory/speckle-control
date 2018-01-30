@@ -9,9 +9,18 @@ load $NESSI_DIR/lib/libguider.so
 source $NESSI_DIR/andor/andor.tcl
 source $NESSI_DIR/andorsConfiguration
 
-set cameraNum $argv
-puts stdout "Establishing server for camera $cameraNum"
+set cameraNum [lindex $argv 0]
+set hstart [lindex $argv 1]
+set hend   [lindex $argv 2]
+set vstart [lindex $argv 3]
+set vend   [lindex $argv 4]
+set NESSI_DATADIR $env(NESSI_DATADIR)
 
+puts stdout "Establishing server for camera $cameraNum"
+puts stdout "hstart =  $hstart"
+puts stdout "hend =  $hend"
+puts stdout "vstart =  $vstart"
+puts stdout "vend =  $vend"
 set ncam [GetAvailableCameras]
 puts stdout "Detected $ncam cameras"
 
@@ -22,7 +31,7 @@ if { $handle < 0} {exit}
 puts stdout "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
 
-andorConfigure $CAM 1 1 1 256 1 256 0 0 0 0
+andorConfigure $CAM 1 1 $hstart $hend $vstart $vend 0 0 0 0
 puts stdout "Configured camera id $CAM for ccd mode"
 set ANDOR_CFG(red) -1
 set ANDOR_CFG(blue) -1
@@ -45,26 +54,67 @@ foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilt
 SetExposureTime 0.04
 
 
-set shmid [andorConnectShmem 512 512]
-puts stdout "memory buffers @ $shmid"
-initds9 [lindex $shmid 0] 512 512
-andorPrepDataCube
+if { $hend != 1024 } {
+   set shmid [andorConnectShmem 512 512]
+   puts stdout "memory buffers @ $shmid"
+   initds9 [lindex $shmid 0] 512 512
+   andorPrepDataCube
+   exec xpaset -p ds9 single
+   exec xpaset -p ds9 zoom to fit
+} else {
+   andorPrepDataFrame
+}
+
+
+proc resetCamera { mode } {
+global CAM
+   andorShutDown
+   set handle [andorConnectCamera [expr $CAM+1]]
+   if { $mode == "fullframe" } {
+     puts stdout "Connected to camera $CAM for fullframe, handle = $handle"
+     andorConfigure $CAM 1 1 1 1024 1 1024 0 0 0 0
+   }
+   if { $mode == "roi" } {
+     puts stdout "Connected to camera $CAM for ROI, handle = $handle"
+     andorConfigure $CAM 1 1 1 256 1 256 0 0 0 0
+   }
+}
+
+proc acquireDataFrame { exp } {
+global ANDOR_CFG NESSI_DATADIR
+    set t [clock seconds]
+    if { $ANDOR_CFG(red) > -1} {
+      andorGetData $ANDOR_CFG(red)
+      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/testf_red_[set t].fits 1024 1024 1 1
+      exec xpaset -p ds9 frame 1
+      after 400
+      exec xpaset -p ds9 file $NESSI_DATADIR/testf_red_[set t].fits
+    }
+    if { $ANDOR_CFG(blue) > -1 } {
+      andorGetData $ANDOR_CFG(blue)t
+      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/testf_blue_[set t].fits 1024 1024 1 1
+      exec xpaset -p ds9 frame 2
+      after 400
+      exec xpaset -p ds9 file $NESSI_DATADIR/testf_blue_[set t].fits
+    }
+}
+
 
 proc acquireDataCube { exp n } {
-global ANDOR_CFG
-  refreshds9 [expr int($exp*2000)] [expr $n*3]
+global ANDOR_CFG NESSI_DATADIR
+  refreshds9 [expr int($exp*2000)] [expr $n*4]
   set t [clock seconds]
   set count 0
   while { $count < $n } {
     incr count 1
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
-      andorStoreFrame $ANDOR_CFG(red) test_red_[set t].fits 256 256 $count $n
+      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/test_red_[set t].fits 256 256 $count $n
       andorDisplayFrame $ANDOR_CFG(red) 256 256 1
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
-      andorStoreFrame $ANDOR_CFG(blue) test_blue_[set t].fits 256 256 $count $n
+      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/test_blue_[set t].fits 256 256 $count $n
       andorDisplayFrame $ANDOR_CFG(blue) 256 256 1
     }
     update idletasks
@@ -84,17 +134,21 @@ global ANDOR_CFG
 
 proc shutDown { } {
   andorShutDown
+  exit
 }
 
 proc doService {sock msg} {
-global TLM SCOPE CAM ANDOR_ARM
+global TLM SCOPE CAM ANDOR_ARM DATADIR
     puts stdout "echosrv:$msg"
     switch [lindex $msg 0] {
          shutdown        { shutDown ; puts $sock "OK"; exit }
          acquire         { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2]" ; puts $sock "Acquiring"}
+         reset           { resetCamera [lindex $msg 1] ; puts $sock "OK"}
+         grabframe       { after 10 "acquireDataFrame [lindex $msg 1]" ; puts $sock "OK"}
          version         { puts $sock "1.0" }
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
+         datadir         { set NESSI_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
          configure       { set hbin [lindex $msg 1]
                            set vbin [lindex $msg 2]
@@ -106,7 +160,7 @@ global TLM SCOPE CAM ANDOR_ARM
                            set vertical_speed [lindex $msg 8]
                            set ccd_horizontal_speed [lindex $msg 9]
                            set em_horizontal_speed [lindex $msg 10]
-                           andorConfigure $CAM $vbin $hstart $hend $vstart $vend $preamp_gain $vertical_speed $ccd_horizontal_speed $em_horizontal_speed
+                           andorConfigure $CAM $hbin $vbin $hstart $hend $vstart $vend $preamp_gain $vertical_speed $ccd_horizontal_speed $em_horizontal_speed
 			   puts $sock "OK"
                          }
          default         { if { [string range [lindex $msg 0] 0 3] == "Get" } {

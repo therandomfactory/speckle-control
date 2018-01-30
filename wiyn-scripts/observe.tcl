@@ -10,7 +10,7 @@
 
 
 #---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
+#-----------------------------------------------
 #
 #  Procedure  : snapshot
 #
@@ -151,6 +151,7 @@ global CAMERA tcl_platform
     } else {
       exec usleep 1000
     }
+
     update idletasks
     incr i 1
   }
@@ -717,13 +718,13 @@ proc setfullframe { } {
 #  Globals    :
 #  
 #               SCOPE	-	Telescope parameters, gui setup
-global SCOPE CONFIG LASTACQ
+global SCOPE CONFIG LASTACQ ANDOR_DEF
    set CONFIG(geometry.BinX)      1
    set CONFIG(geometry.BinY)      1
    set CONFIG(geometry.StartCol)  1
    set CONFIG(geometry.StartRow)  1
-   set CONFIG(geometry.NumCols)   $CONFIG(geometry.Columns)
-   set CONFIG(geometry.NumRows)   $CONFIG(geometry.Rows)
+   set CONFIG(geometry.NumCols)   [lindex [split $ANDOR_DEF(fullframe) ,] 1]
+   set CONFIG(geometry.NumRows)   [lindex [split $ANDOR_DEF(fullframe) ,] 3]
 }
 
 
@@ -757,9 +758,10 @@ proc  acquisitionmode { } {
 #  
 #               ACQREGION	-	Sub-frame region coordinates
 #               CONFIG	-	GUI configuration
-global ACQREGION CONFIG LASTACQ
-  if { $LASTAVQ != "fullframe" } {
-     obstodisk
+global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
+  if { $LASTACQ != "fullframe" } {
+        resetAndors fullframe
+        acquireFrames
   }
   set it [ tk_dialog .d "Acquisition region" "Click New to define a new region,\n OK to use the current region " {} -1 OK "New"]      
   if {$it} {
@@ -782,8 +784,8 @@ global ACQREGION CONFIG LASTACQ
   } 
   set CONFIG(geometry.StartCol) [expr $ACQREGION(xs)]
   set CONFIG(geometry.StartRow) [expr $ACQREGION(ys)]
-  set CONFIG(geometry.NumCols) [expr $ACQREGION(xe)-$ACQREGION(xs)+1]
-  set CONFIG(geometry.NumRows) [expr $ACQREGION(ye)-$ACQREGION(ys)+1]
+  set CONFIG(geometry.NumCols) [expr $ACQREGION(xs)+256]
+  set CONFIG(geometry.NumRows) [expr $ACQREGION(ye)-256]
 }
 
 
@@ -875,7 +877,7 @@ proc startsequence { } {
 #               FRAME	-	Frame number in a sequence
 #               STATUS	-	Exposure status
 #               DEBUG	-	Set to 1 for verbose logging
-global SCOPE OBSPARS FRAME STATUS DEBUG
+global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
    set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
    set STATUS(abort) 0
    if { $SCOPE(lobias) > 0 && $SCOPE(hibias) > 0 } {
@@ -883,17 +885,28 @@ global SCOPE OBSPARS FRAME STATUS DEBUG
    }
    .main.observe configure -text "working" -bg green -relief sunken
    .main.abort configure -bg orange -relief raised -fg black
+   wm geometry .countdown
    set i 1
+   if { $LASTACQ == "fullframe" } {
+      acquireFrames
+   } else {
+      acquireCubes
+   }
+   set now [clock seconds]
+   set FRAME 0
+   set REMAINING 0
+   countdown [expr int($SCOPE(exposure)*$SCOPE(numframes))]
    while { $i <= $SCOPE(numframes) && $STATUS(abort) == 0 } {
       set FRAME $i
-      countdown [expr int($SCOPE(exposure))]
+      set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-      obstodisk $i 
+      after [expr int($SCOPE(exposure)*1000)+60]
       incr i 1
+      update
    }
    .main.observe configure -text "Observe" -bg gray -relief raised
    .main.abort configure -bg gray -relief sunken -fg LightGray
-   countdown off
+   abortsequence
 }
 
 
@@ -1023,7 +1036,7 @@ proc driftcalc { } {
  
 #
 #  Globals    :
-#  
+#  ANDOR_ACQMODE
 #               SCOPE	-	Telescope parameters, gui setup
 #               CAMSTATUS	-	Current values of camera variables
 global SCOPE CAMSTATUS
@@ -1109,10 +1122,6 @@ global CAMERAS DEBUG CAMSTATUS
   if { $DEBUG } {debuglog "Saving to FITS $name"}
   write_image READOUT $name.fits
 }
-
-
-
-
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------

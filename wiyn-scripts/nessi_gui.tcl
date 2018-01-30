@@ -14,7 +14,7 @@ foreach item "target ra dec equinox observer telescope instrument site latitude 
 
 checkbutton .main.bred -bg gray50 -text "RED ARM" -variable INSTRUMENT(red)
 place .main.bred -x 320 -y 25
-checkbutton .main.bblue -bg gray50 -text "BLUE ARM" -variable INSTRUMENT(blue)
+checkbutton .main.bblue -bg gray50 -text "BLTUE ARM" -variable INSTRUMENT(blue)
 place .main.bblue -x 440 -y 25
 .main configure -height 380
 
@@ -114,11 +114,15 @@ proc nessifilter { arm name } {
 }
 
 proc nessimode { arm name } {
-  if { $arm == "red" } {
+global ANDOR_MODE LASTACQ
     .lowlevel.rmode configure -text "Mode=$name"
-  } else {
     .lowlevel.bmode configure -text "Mode=$name"
-  }
+    if { $name == "wide" && $LASTACQ != "fullframe" } {
+       resetAndors fullframe
+    }
+    if { $name == "speckle" && $LASTACQ != "roi" } {
+       resetAndors roi
+    }
 }
 
 checkbutton .lowlevel.emccd  -bg gray50 -text "EMCCD" -variable INSTRUMENT(red,emccd)
@@ -191,6 +195,12 @@ place .lowlevel.bload -x 515 -y 460
 
 
 
+set INSTRUMENT(red) 1
+set INSTRUMENT(blue) 1
+set SCOPE(exposure) 0.04
+set LASTACQ fullframe
+nessimode red wide
+nessimode blue wide
 
 set NESSI(observingGui) 620x405
 

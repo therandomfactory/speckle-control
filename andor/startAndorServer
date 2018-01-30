@@ -1,0 +1,3 @@
+#!/bin/sh
+wish -f /home/nessi/nessi-control/andor/andorServer.tcl
+
