@@ -21,15 +21,15 @@ checkbutton .main.bred -bg gray50 -text "RED ARM" -variable INSTRUMENT(red)
 place .main.bred -x 200 -y 22
 checkbutton .main.bblue -bg gray50 -text "BLUE ARM" -variable INSTRUMENT(blue)
 place .main.bblue -x 300 -y 22
-.main configure -height 370
+.main configure -height 370 -width 620
 
 label .main.astatus -text test -fg black -bg LightBlue
 place .main.astatus -x 20 -y 315
-.main.astatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD   Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??"
+.main.astatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD     Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??????"
  
 label .main.bstatus -text test -bg Orange -fg black
 place .main.bstatus -x 20 -y 340
-.main.bstatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD   Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??"
+.main.bstatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD     Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??????"
 
 frame .lowlevel -bg gray50 -width 620 -height 710
 place .lowlevel -x 0 -y 400
@@ -259,10 +259,10 @@ set LASTACQ fullframe
 nessimode red wide
 nessimode blue wide
 
-set NESSI(observingGui) 620x405
+set NESSI(observingGui) 620x494
 
 if { $SCOPE(telescope) == "WIYN" } {
-   .lowlevel configure -height 500 -width 620
+   .lowlevel configure -height 520 -width 620
    wm geometry . 620x900
    set NESSI(engineeringGui) 620x900
 } else {
