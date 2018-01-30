@@ -11,12 +11,17 @@ foreach item "target ra dec equinox observer telescope instrument site latitude 
    incr iy 24 
 }
 
+label .main.laccum -text "Accum" -bg gray50
+place .main.laccum -x 205 -y 50
+SpinBox .main.numaccum -width 10   -range "1 1000 1" -textvariable SCOPE(numaccum)
+place .main.numaccum -x 260 -y 50
+
 
 checkbutton .main.bred -bg gray50 -text "RED ARM" -variable INSTRUMENT(red)
-place .main.bred -x 320 -y 25
-checkbutton .main.bblue -bg gray50 -text "BLTUE ARM" -variable INSTRUMENT(blue)
-place .main.bblue -x 440 -y 25
-.main configure -height 380
+place .main.bred -x 200 -y 22
+checkbutton .main.bblue -bg gray50 -text "BLUE ARM" -variable INSTRUMENT(blue)
+place .main.bblue -x 300 -y 22
+.main configure -height 370
 
 label .main.astatus -text test -fg black -bg LightBlue
 place .main.astatus -x 20 -y 315
@@ -29,13 +34,29 @@ place .main.bstatus -x 20 -y 340
 frame .lowlevel -bg gray50 -width 620 -height 710
 place .lowlevel -x 0 -y 400
 label .lowlevel.red -text "RED ARM" -bg red -fg black
-place .lowlevel.red -x 20 -y 20
+place .lowlevel.red -x 20 -y 0
 label .lowlevel.blue -text "BLUE ARM" -bg LightBlue -fg black
-place .lowlevel.blue -x 420 -y 20
+place .lowlevel.blue -x 420 -y 0
 checkbutton .lowlevel.clone -bg gray50 -text "Clone settings" -variable INSTRUMENT(clone)
-place .lowlevel.clone -x 100 -y 20
+place .lowlevel.clone -x 160 -y 0
 label .lowlevel.input -text "INPUT" -bg white
 place .lowlevel.input -x 280 -y 20
+set INSTRUMENT(clone) 1
+
+menubutton .lowlevel.rshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.rshut.m
+menu .lowlevel.rshut.m
+place .lowlevel.rshut -x 20 -y 30
+.lowlevel.rshut.m add command -label "Shutter=During" -command "nessishutter red during"
+.lowlevel.rshut.m add command -label "Shutter=Close" -command "nessishutter red close"
+.lowlevel.rshut.m add command -label "Shutter=Open" -command "nessishutter red open"
+
+menubutton .lowlevel.bshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.bshut.m
+menu .lowlevel.bshut.m
+place .lowlevel.bshut -x 420 -y 30
+.lowlevel.bshut.m add command -label "Shutter=During" -command "nessishutter blue during"
+.lowlevel.bshut.m add command -label "Shutter=Close" -command "nessishutter blue close"
+.lowlevel.bshut.m add command -label "Shutter=Open" -command "nessishutter blue open"
+
 
 set ZABERS(A,target) 0
 set ZABERS(B,target) 0
@@ -119,16 +140,39 @@ global ANDOR_MODE LASTACQ
     .lowlevel.bmode configure -text "Mode=$name"
     if { $name == "wide" && $LASTACQ != "fullframe" } {
        resetAndors fullframe
+       positionZabers fullframe
     }
     if { $name == "speckle" && $LASTACQ != "roi" } {
        resetAndors roi
-    }
+       positionZabers roi
+     }
 }
 
-checkbutton .lowlevel.emccd  -bg gray50 -text "EMCCD" -variable INSTRUMENT(red,emccd)
-checkbutton .lowlevel.hgain  -bg gray50 -text "High Gain" -variable INSTRUMENT(red,emccd)
+proc nessishutter { arm name } {
+global ANDOR_MODE LASTACQ
+    .lowlevel.rshut configure -text "Shutter=$name"
+    .lowlevel.bshut configure -text "Shutter=$name"
+}
+
+proc checkemccdgain { arm } {
+global INSTRUMENT
+   if { $INSTRUMENT($arm,highgain) == 0 || $INSTRUMENT($arm,emccd) == 0 } {
+      if { $INSTRUMENT($arm,emgain) > 300 } {set INSTRUMENT($arm,emgain) 300}
+      .mbar configure -bg gray50
+   }
+   if { $INSTRUMENT($arm,highgain) && $INSTRUMENT($arm,emccd) } {
+      if { $INSTRUMENT($arm,emgain) > 300 } {
+         .mbar configure -bg orange
+      } else {
+         .mbar configure -bg gray50
+      }
+   }
+}
+
+checkbutton .lowlevel.emccd  -bg gray50 -text "EMCCD" -variable INSTRUMENT(red,emccd) -command "checkemccdgain red"
+checkbutton .lowlevel.hgain  -bg gray50 -text "High Gain" -command "checkemccdgain red" -variable INSTRUMENT(red,highgain)
 label .lowlevel.lemgain  -bg gray50 -text "EM Gain"
-SpinBox .lowlevel.emgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(red,emgain)
+SpinBox .lowlevel.emgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red" 
 label .lowlevel.lvspeed  -bg gray50 -text "VSpeed"
 SpinBox .lowlevel.vspeed -width 4  -bg gray50   -range "0 1000 1" -textvariable INSTRUMENT(red,vspeed)
 label .lowlevel.lemhs  -bg gray50 -text "EMCCD HS" 
@@ -151,10 +195,10 @@ place .lowlevel.lccdhs -x 20 -y 260
 place .lowlevel.ccdhs -x 120 -y 260
 
 
-checkbutton .lowlevel.bemccd  -bg gray50 -text "EMCCD" -variable INSTRUMENT(blue,emccd)
-checkbutton .lowlevel.bhgain  -bg gray50 -text "High Gain" -variable INSTRUMENT(blue,emccd)
+checkbutton .lowlevel.bemccd  -bg gray50 -text "EMCCD" -variable INSTRUMENT(blue,emccd) -command "checkemccdgain blue"
+checkbutton .lowlevel.bhgain  -bg gray50 -text "High Gain" -variable INSTRUMENT(blue,highgain) -command "checkemccdgain blue"
 label .lowlevel.lbemgain  -bg gray50 -text "EM Gain"
-SpinBox .lowlevel.bemgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(blue,emgain)
+SpinBox .lowlevel.bemgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(blue,emgain) -command "checkemccdgain blue"
 label .lowlevel.lbvspeed  -bg gray50 -text "Vspeed"
 SpinBox .lowlevel.bvspeed -width 4  -bg gray50   -range "0 1000 1" -textvariable INSTRUMENT(blue,vspeed)
 label .lowlevel.lbemhs  -bg gray50 -text "EMCCD HS" 

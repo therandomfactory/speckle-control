@@ -14,3 +14,7 @@ set ZABERS(input,device)       3
 set ZABERS(input,speckle)   5000
 set ZABERS(input,wide)   1066667
 
+set ZABERS(pickoff,device)     4
+set ZABERS(pickoff,in)      5000
+set ZABERS(pickoff,out)  1066667
+

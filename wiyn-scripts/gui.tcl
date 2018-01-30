@@ -150,10 +150,10 @@ menu .mbar.help.m
 .mbar.file.m add command -label "Exit" -command shutdown
 .mbar.edit.m add command -label "Properties" -command showconfig
 .mbar.observe.m add command -label "Single" -command "observe single"
-.mbar.observe.m add command -label "Continuous" -command "observe multiple"
-.mbar.observe.m add command -label "Snap-region" -command "observe region"
+.mbar.observe.m add command -label "Snap-roi-128" -command "observe region128"
+.mbar.observe.m add command -label "Snap-roi-256" -command "observe region256"
+.mbar.observe.m add command -label "Snap-roi-512" -command "observe region512"
 .mbar.observe.m add command -label "Reset full-frame" -command "observe fullframe"
-.mbar.observe.m add command -label "Drift-scan" -command "toggle .drift"
 .mbar.temp.m add command -label "Cooler on" -command "setpoint on"
 .mbar.temp.m add command -label "Cooler off" -command "setpoint off"
 .mbar.temp.m add command -label "Cooler to ambient" -command  {set ok [confirmaction "Ramp temperature to ambient"] ; if {$ok} {setpoint amb}}

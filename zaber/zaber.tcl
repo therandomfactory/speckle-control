@@ -55,6 +55,9 @@ set ZABERS(port) $ZABERS(port)
    foreach p "device speckle wide" {  
      puts $fcfg "set ZABERS(input,$p) \"$ZABERS(input,$p)\""
    }
+   foreach p "device in out" {  
+     puts $fcfg "set ZABERS(pickoff,$p) \"$ZABERS(pickoff,$p)\""
+   }
    flush $fcfg
 }
 
@@ -215,6 +218,8 @@ Supported commands :
     home
     speckle
     wide
+    in
+    out
     move abs nnn
     move rel nnn
     set xxx
@@ -232,11 +237,26 @@ global ZABERS
   }
 }
 
+proc positionZabers { station } {
+   if { $station == "fullframe" } {
+      zaberCommand A wide   
+      zaberCommand B wide
+      zaberCommand input wide
+   }
+   if { $station == "roi" } {
+      zaberCommand A speckle  
+      zaberCommand B speckle
+      zaberCommand input speckle
+   }
+}
+
 proc zaberService { name cmd {a1 ""} {a2 ""} } {
    switch $cmd {
       estop       {zaberStopAll}
       home        {zaberCommand $name home}
       speckle     {zaberGoto $name speckle}
+      in          {zaberCommand $name in}
+      out         {zaberCommand $name out}
       wide        {zaberGoto $name wide}
       move        {zaberCommand $name "move $a1 $a2"}
       set         {zaberSetProperty $a1 $a2}
@@ -256,10 +276,11 @@ zaberConnect nessi
 zaberGetProperties A
 zaberGetProperties B
 zaberGetProperties input
+zaberGetProperties pickoff
 zaberPrintProperties
-zaberCommand A home
-zaberCommand B home
-zaberCommand input home
-
+zaberCommand A wide
+zaberCommand B wide
+zaberCommand input wide
+zaberCommand pickoff out
 
 

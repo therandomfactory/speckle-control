@@ -683,7 +683,9 @@ proc observe { op {id 0} } {
 #               SCOPE	-	Telescope parameters, gui setup
 global SCOPE
   switch $op {
-      region {acquisitionmode}
+      region128 {acquisitionmode 128}
+      region256 {acquisitionmode 256}
+      region512 {acquisitionmode 512}
       multiple {continuousmode $SCOPE(exposure) 999999 $id}
       fullframe {setfullframe}
   }
@@ -751,7 +753,7 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF
 #  Arguments  :
 #
  
-proc  acquisitionmode { } {
+proc  acquisitionmode { rdim } {
  
 #
 #  Globals    :
@@ -761,12 +763,17 @@ proc  acquisitionmode { } {
 global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   if { $LASTACQ != "fullframe" } {
         resetAndors fullframe
-        acquireFrames
+        positionZabers fullframe
   }
-  set it [ tk_dialog .d "Acquisition region" "Click New to define a new region,\n OK to use the current region " {} -1 OK "New"]      
-  if {$it} {
-    catch {
+  acquireFrames
+  catch {
+      set xcenter 512
+      set ycenter 512
       exec xpaset -p ds9 regions deleteall
+      set ACQREGION(xs) [expr int($xcenter-$rdim/2)]
+      set ACQREGION(xe) [expr int($xcenter+$rdim/2)]
+      set ACQREGION(ys) [expr int($ycenter-$rdim/2)]
+      set ACQREGION(ye) [expr int($ycenter+$rdim/2)]
       exec echo "box $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye) | xpaset ds9 regions
     }
     set it [tk_dialog .d "Edit region" "Move the region in the\n image display tool then click OK" {} -1 "OK"]
@@ -780,12 +787,15 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
         set ACQREGION(ye) [expr int([lindex $r 1] + [lindex $r 3]/2)]
         puts stdout "selected region $r"
      }
-    }
-  } 
+  }
   set CONFIG(geometry.StartCol) [expr $ACQREGION(xs)]
   set CONFIG(geometry.StartRow) [expr $ACQREGION(ys)]
-  set CONFIG(geometry.NumCols) [expr $ACQREGION(xs)+256]
-  set CONFIG(geometry.NumRows) [expr $ACQREGION(ye)-256]
+  set CONFIG(geometry.NumCols) [expr $ACQREGION(xs)+$rdim]
+  set CONFIG(geometry.NumRows) [expr $ACQREGION(ye)-$rdim]
+  resetAndors roi
+  positionZabers roi
+  .lowlevel.rmode configure -text "Mode=speckle"
+  .lowlevel.bmode configure -text "Mode=speckle"
 }
 
 

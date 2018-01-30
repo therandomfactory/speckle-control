@@ -85,7 +85,7 @@ set SCOPE(obsdate) [exec date -u +%Y-%m-%dT%H:%M:%S.0]
 set SCOPE(obstime) [lindex [getlocaltime] 3]
 
 source $NESSI_DIR/andor/andor.tcl
-resetAndors fullframe
+###resetAndors fullframe
 
 ####
 ####For use with internal andor server version

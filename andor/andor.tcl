@@ -130,7 +130,7 @@ set ANDOR_ACQMODE(SINGLE_SCAN)                 1
 set ANDOR_ACQMODE(ACCUMULATE)                  2
 set ANDOR_ACQMODE(KINETICS)                    3
 set ANDOR_ACQMODE(FAST_KINETICS)               4
-set ANDOR_ACQMODE_(RUN_TILL_ABORT)             5
+set ANDOR_ACQMODE(RUN_TILL_ABORT)              5
 
 set ANDOR_EMCCD                                0
 set ANDOR_CCD                                  1
@@ -141,33 +141,31 @@ set ANDOR_TEMPERATURE(NOT_REACHED)             2
 set ANDOR_TEMPERATURE(DRIFT)                   3
 set ANDOR_TEMPERATURE(NOT_STABILIZED)          4
 
-set ANDOR_DEF(exposure_time)		0.001
+set ANDOR_DEF(exposure_time)		0.04
 set ANDOR_DEF(shutter)	 		$ANDOR_SHUTTER(close)
 set ANDOR_DEF(hbin)			1
 set ANDOR_DEF(vbin)			1
 set ANDOR_DEF(hstart)			1
-set ANDOR_DEF(hend)			90
+set ANDOR_DEF(hend)			1024
 set ANDOR_DEF(vstart)			1
-set ANDOR_DEF(vend)			90
+set ANDOR_DEF(vend)			1024
 set ANDOR_DEF(amplifier)		$ANDOR_CCD
 set ANDOR_DEF(ccd_horizontal_speed	0
 set ANDOR_DEF(emccd_horizontal_speed)   0
 set ANDOR_DEF(em_advanced)		0
 set ANDOR_DEF(camera_link)		0
 set ANDOR_DEF(head)                 "DU888_BV"
-set ANDOR_DEF(acquisition_mode)     "Kinetics"
+set ANDOR_DEF(acquisition_mode)     "singel_scan"
 set ANDOR_DEF(int_time)             0.07059
 set ANDOR_DEF(kinetic_time)         0.07059
 set ANDOR_DEF(num_exposures)        1
 set ANDOR_DEF(exposure_total)       1
 set ANDOR_DEF(read_mode)            "Image"
 set ANDOR_DEF(fullframe)            "1,1024,1,1024"
-set ANDOR_DEF(roi)                  "385, 640, 640, 385"
+set ANDOR_DEF(roi)                  "200, 456, 200, 456"
 set ANDOR_DEF(datatype)             "Counts"
 set ANDOR_DEF(calibration_type)     "Pixel number"
 set ANDOR_DEF(calibration_units)    0
-set ANDOR_DEF(rayleigh_wave)        422.
-set ANDOR_DEF(wave_calibration)     1
 set ANDOR_DEF(trigger)              "Internal"
 set ANDOR_DEF(calibration)          "0,1,0,0"
 set ANDOR_DEF(sw_version)           "4.27.30001.0"
@@ -182,25 +180,18 @@ set ANDOR_DEF(vertical_speed)       4.33E-06
 set ANDOR_DEF(amplifier)            "Electron Multiplying"
 set ANDOR_DEF(preamp_gain)          2.
 set ANDOR_DEF(serial_number)        10244   
-set ANDOR_DEF(target_temperature)   -999.
+set ANDOR_DEF(target_temperature)   -60.
 set ANDOR_DEF(base_clamp)           T    
 set ANDOR_DEF(prescans)             0
 set ANDOR_DEF(flipx)                0
 set ANDOR_DEF(flipy)                0
 set ANDOR_DEF(convert_mode)         0
 set ANDOR_DEF(conversion)           1    
-set ANDOR_DEF(detection_wave)       550.
 set ANDOR_DEF(sensitivity)          4.17358
 set ANDOR_DEF(spurious_filter)      0
 set ANDOR_DEF(threshold)            0.
 set ANDOR_DEF(photon_counting)      0  
 set ANDOR_DEF(nphoton_thresh)       0
-set ANDOR_DEF(pc_thresh1)           0.
-set ANDOR_DEF(pc_thresh2)           0.
-set ANDOR_DEF(pc_thresh3)           0.
-set ANDOR_DEF(pc_thresh4)           0.
-set ANDOR_DEF(avg_filter_mode)      0 
-set ANDOR_DEF(avg_factor)           1
 set ANDOR_DEF(frame_count)          1       
 set ANDOR_DEF(port_readout)         -1            
 set ANDOR_DEF(exp_window_height)    0    
@@ -208,10 +199,6 @@ set ANDOR_DEF(linescan_speed)       0.
 set ANDOR_DEF(alternate_readout)    0
 set ANDOR_DEF(scanspeed_control)    0            
 set ANDOR_DEF(readout_direction)    -1                      
-set ANDOR_DEF(user_text1)           ""                             
-set ANDOR_DEF(user_text2)           ""
-set ANDOR_DEF(user_text3)           ""
-set ANDOR_DEF(user_text4)           ""
 set ANDOR_DEF(eshutter_mode)        -1
 
 
