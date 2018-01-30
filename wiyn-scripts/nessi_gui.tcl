@@ -33,14 +33,18 @@ place .main.bstatus -x 20 -y 340
 
 frame .lowlevel -bg gray50 -width 620 -height 710
 place .lowlevel -x 0 -y 400
-label .lowlevel.red -text "RED ARM" -bg red -fg black
+label .lowlevel.red -text "RED ARM" -bg red -fg black -width 25
 place .lowlevel.red -x 20 -y 0
-label .lowlevel.blue -text "BLUE ARM" -bg LightBlue -fg black
+label .lowlevel.blue -text "BLUE ARM" -bg LightBlue -fg black -width 25
 place .lowlevel.blue -x 420 -y 0
 checkbutton .lowlevel.clone -bg gray50 -text "Clone settings" -variable INSTRUMENT(clone)
-place .lowlevel.clone -x 160 -y 0
+place .lowlevel.clone -x 220 -y 0
+
+label .lowlevel.pickoff -text "PICK-OFF" -bg white
+place .lowlevel.pickoff -x 280 -y 110
+
 label .lowlevel.input -text "INPUT" -bg white
-place .lowlevel.input -x 280 -y 20
+place .lowlevel.input -x 280 -y 270
 set INSTRUMENT(clone) 1
 
 menubutton .lowlevel.rshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.rshut.m
@@ -56,6 +60,15 @@ place .lowlevel.bshut -x 420 -y 30
 .lowlevel.bshut.m add command -label "Shutter=During" -command "nessishutter blue during"
 .lowlevel.bshut.m add command -label "Shutter=Close" -command "nessishutter blue close"
 .lowlevel.bshut.m add command -label "Shutter=Open" -command "nessishutter blue open"
+
+button .lowlevel.zpgoto -bg gray50 -text "Move to" -width 8 -command "zaberEngpos pickoff"
+entry .lowlevel.vzpgoto -bg white -textvariable ZABERSpickoff,target) -width 10
+place .lowlevel.zpgoto -x 220 -y 140
+place .lowlevel.vzpgoto -x 330 -y 142
+button .lowlevel.zpin -bg gray50 -text "Set IN to current" -width 20 -command "zaberConfigurePos pickoff in "
+place .lowlevel.zpin -x 220 -y 180
+button .lowlevel.zpout -bg gray50 -text "Set OUT to current" -width 20 -command "zaberConfigurePos pickoff out"
+place .lowlevel.zpout -x 220 -y 220
 
 
 set ZABERS(A,target) 0
@@ -111,7 +124,7 @@ place .lowlevel.bmode -x 420 -y 60
 
 menubutton .lowlevel.rfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.rfilter.m
 menu .lowlevel.rfilter.m
-place .lowlevel.rfilter -x 120 -y 60
+place .lowlevel.rfilter -x 118 -y 60
 .lowlevel.rfilter.m add command -label "i" -command "nessifilter red i"
 .lowlevel.rfilter.m add command -label "z" -command "nessifilter red z"
 .lowlevel.rfilter.m add command -label "716" -command "nessifilter red 716"
@@ -119,7 +132,7 @@ place .lowlevel.rfilter -x 120 -y 60
 
 menubutton .lowlevel.bfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.bfilter.m
 menu .lowlevel.bfilter.m
-place .lowlevel.bfilter -x 520 -y 60
+place .lowlevel.bfilter -x 518 -y 60
 .lowlevel.bfilter.m add command -label "u" -command "nessifilter blue u"
 .lowlevel.bfilter.m add command -label "g" -command "nessifilter blue g"
 .lowlevel.bfilter.m add command -label "r" -command "nessifilter blue r"
