@@ -41,7 +41,7 @@ proc echoFiltersConfig { {fcfg stdout} } {
 global FWHEELS
    puts $fcfg  "# Filters stage configuration parameters
 "
-   foreach i "A B " {
+   foreach i "red blue" {
      foreach p "port 1 2 3 4 5 6" {
          puts $fcfg "set FWHEELS($i,$p) \"$FWHEELS($i,$p)\""
      }
@@ -75,7 +75,7 @@ global FILTERWHEEL FWHEELS MAXFILTERS
 
 
 
-foreach a "A B" {
+foreach a "red blue" {
   foreach i "1 2 3 4 5 6" {
      set FWHEELS($a,$i,focus) 0
   }
@@ -86,12 +86,12 @@ set MAXFILTERS 6
 destroy .filters
 toplevel .filters -bg gray
 wm title .filters "NESSI Filter Wheels control"
-label .filters.lpos   -text "A Position" -bg gray -fg black
-label .filters.lname  -text "A Filter Name" -bg gray -fg black
-label .filters.lfocus -text "A Focus offset" -bg gray -fg black
-label .filters.lbpos   -text "B Position" -bg gray -fg black
-label .filters.lbname  -text "B Filter Name" -bg gray -fg black
-label .filters.lbfocus -text "B Focus offset" -bg gray -fg black
+label .filters.lpos   -text "Red Position" -bg gray -fg black
+label .filters.lname  -text "Red Filter Name" -bg gray -fg black
+label .filters.lfocus -text "Red Focus offset" -bg gray -fg black
+label .filters.lbpos   -text "Blue Position" -bg gray -fg black
+label .filters.lbname  -text "Blue Filter Name" -bg gray -fg black
+label .filters.lbfocus -text "Blue Focus offset" -bg gray -fg black
 place .filters.lpos -x 30 -y 20
 place .filters.lname -x 150 -y 20
 place .filters.lfocus -x 290 -y 20
@@ -104,19 +104,19 @@ set i 0
 set iy 50
 while { $i < $MAXFILTERS } {
    incr i 1
-   button .filters.fA$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter A $i" -width 8
-   entry  .filters.nameA$i -textvariable FWHEELS(A,$i) -bg LightBlue -fg black -width 20
-   entry  .filters.focusA$i -textvariable FWHEELS(A,$i,focus) -bg LightBlue -fg black -width 8
-   place  .filters.fA$i -x 20 -y $iy
-   button .filters.fB$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter B $i" -width 8
-   entry  .filters.nameB$i -textvariable FWHEELS(B,$i) -bg LightBlue -fg black -width 20
-   entry  .filters.focusB$i -textvariable FWHEELS(B,$i,focus) -bg LightBlue -fg black -width 8
-   place  .filters.fB$i -x 390 -y $iy
+   button .filters.fred$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter red $i" -width 8
+   entry  .filters.namered$i -textvariable FWHEELS(red,$i) -bg LightBlue -fg black -width 20
+   entry  .filters.focusred$i -textvariable FWHEELS(red,$i,focus) -bg LightBlue -fg black -width 8
+   place  .filters.fred$i -x 20 -y $iy
+   button .filters.fblue$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter blue $i" -width 8
+   entry  .filters.nameblue$i -textvariable FWHEELS(blue,$i) -bg LightBlue -fg black -width 20
+   entry  .filters.focusblue$i -textvariable FWHEELS(blue,$i,focus) -bg LightBlue -fg black -width 8
+   place  .filters.fblue$i -x 390 -y $iy
    incr iy 3
-   place  .filters.nameA$i -x 130 -y $iy
-   place  .filters.focusA$i -x 310 -y $iy
-   place  .filters.nameB$i -x 500 -y $iy
-   place  .filters.focusB$i -x 690 -y $iy
+   place  .filters.namered$i -x 130 -y $iy
+   place  .filters.focusred$i -x 310 -y $iy
+   place  .filters.nameblue$i -x 500 -y $iy
+   place  .filters.focusblue$i -x 690 -y $iy
    incr iy 30
 }
 
