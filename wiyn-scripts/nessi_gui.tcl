@@ -41,11 +41,26 @@ checkbutton .lowlevel.clone -bg gray50 -text "Clone settings" -variable INSTRUME
 place .lowlevel.clone -x 220 -y 0
 
 label .lowlevel.pickoff -text "PICK-OFF" -bg white
-place .lowlevel.pickoff -x 280 -y 110
+place .lowlevel.pickoff -x 280 -y 90
 
 label .lowlevel.input -text "INPUT" -bg white
 place .lowlevel.input -x 280 -y 270
 set INSTRUMENT(clone) 1
+
+button .lowlevel.rtempset -bg gray50 -text "Temp Set" -width 6 -command "andorsetpoint red"
+entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6
+place .lowlevel.rtempset -x 116 -y 30
+place .lowlevel.vrtempset -x 210 -y 33
+label .lowlevel.rcamtemp -bg gray -fg orange -text "???.??"
+place .lowlevel.rcamtemp -x 265 -y 33
+
+button .lowlevel.btempset -bg gray50 -text "Temp Set" -width 6 -command "andorsetpoint blue"
+entry .lowlevel.vbtempset -bg white -textvariable ANDOR_CFG(blue,setpoint) -width 6
+place .lowlevel.btempset -x 446 -y 30
+place .lowlevel.vbtempset -x 527 -y 33
+label .lowlevel.bcamtemp -bg gray -fg orange -text "???.??"
+place .lowlevel.bcamtemp -x 570 -y 33
+
 
 menubutton .lowlevel.rshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.rshut.m
 menu .lowlevel.rshut.m
@@ -56,20 +71,24 @@ place .lowlevel.rshut -x 20 -y 30
 
 menubutton .lowlevel.bshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.bshut.m
 menu .lowlevel.bshut.m
-place .lowlevel.bshut -x 420 -y 30
+place .lowlevel.bshut -x 355 -y 30
 .lowlevel.bshut.m add command -label "Shutter=During" -command "nessishutter blue during"
 .lowlevel.bshut.m add command -label "Shutter=Close" -command "nessishutter blue close"
 .lowlevel.bshut.m add command -label "Shutter=Open" -command "nessishutter blue open"
 
 button .lowlevel.zpgoto -bg gray50 -text "Move to" -width 8 -command "zaberEngpos pickoff"
-entry .lowlevel.vzpgoto -bg white -textvariable ZABERSpickoff,target) -width 10
-place .lowlevel.zpgoto -x 220 -y 140
-place .lowlevel.vzpgoto -x 330 -y 142
+entry .lowlevel.vzpgoto -bg white -textvariable ZABERS(pickoff,target) -width 10
+place .lowlevel.zpgoto -x 220 -y 120
+place .lowlevel.vzpgoto -x 330 -y 122
 button .lowlevel.zpin -bg gray50 -text "Set IN to current" -width 20 -command "zaberConfigurePos pickoff in "
-place .lowlevel.zpin -x 220 -y 180
+place .lowlevel.zpin -x 220 -y 160
 button .lowlevel.zpout -bg gray50 -text "Set OUT to current" -width 20 -command "zaberConfigurePos pickoff out"
-place .lowlevel.zpout -x 220 -y 220
+place .lowlevel.zpout -x 220 -y 195
 
+button .lowlevel.psave -text Save -bg gray70 -width 6 -command "nessisave pickoff"
+button .lowlevel.pload -text Load -bg gray70 -width 6 -command "nessiload pickoff"
+place .lowlevel.psave -x 220  -y 230
+place .lowlevel.pload -x 310 -y 230
 
 set ZABERS(A,target) 0
 set ZABERS(B,target) 0
@@ -110,21 +129,21 @@ place .lowlevel.zbhome -x 420 -y 420
 
 menubutton .lowlevel.rmode -text Mode  -width 10 -bg gray80 -menu .lowlevel.rmode.m
 menu .lowlevel.rmode.m
-place .lowlevel.rmode -x 20 -y 60
+place .lowlevel.rmode -x 20 -y 70
 .lowlevel.rmode.m add command -label "Wide Field" -command "nessimode red wide"
 .lowlevel.rmode.m add command -label "Speckle" -command "nessimode red speckle"
 .lowlevel.rmode.m add command -label "Custom" -command "nessimode red custom"
 
 menubutton .lowlevel.bmode -text Mode -width 10 -bg gray80 -menu .lowlevel.bmode.m
 menu .lowlevel.bmode.m
-place .lowlevel.bmode -x 420 -y 60
+place .lowlevel.bmode -x 420 -y 70
 .lowlevel.bmode.m add command -label "Wide Field" -command "nessimode blue wide"
 .lowlevel.bmode.m add command -label "Speckle" -command "nessimode blue speckle"
 .lowlevel.bmode.m add command -label "Custom" -command "nessimode blue custom"
 
 menubutton .lowlevel.rfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.rfilter.m
 menu .lowlevel.rfilter.m
-place .lowlevel.rfilter -x 118 -y 60
+place .lowlevel.rfilter -x 118 -y 70
 .lowlevel.rfilter.m add command -label "i" -command "nessifilter red i"
 .lowlevel.rfilter.m add command -label "z" -command "nessifilter red z"
 .lowlevel.rfilter.m add command -label "716" -command "nessifilter red 716"
@@ -132,7 +151,7 @@ place .lowlevel.rfilter -x 118 -y 60
 
 menubutton .lowlevel.bfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.bfilter.m
 menu .lowlevel.bfilter.m
-place .lowlevel.bfilter -x 518 -y 60
+place .lowlevel.bfilter -x 518 -y 70
 .lowlevel.bfilter.m add command -label "u" -command "nessifilter blue u"
 .lowlevel.bfilter.m add command -label "g" -command "nessifilter blue g"
 .lowlevel.bfilter.m add command -label "r" -command "nessifilter blue r"
@@ -166,6 +185,12 @@ global ANDOR_MODE LASTACQ
     .lowlevel.rshut configure -text "Shutter=$name"
     .lowlevel.bshut configure -text "Shutter=$name"
 }
+
+proc andorsetpoint { arm } {
+global ANDOR_CFG
+   puts stdout "Set $arm camera temperature setpoint to $ANDOR_CFG($arm,setpoint)"
+}
+
 
 proc checkemccdgain { arm } {
 global INSTRUMENT
@@ -235,8 +260,8 @@ place .lowlevel.bccdhs -x 520 -y 260
 
 button .lowlevel.rsave -text Save -bg gray70 -width 6 -command "nessisave red"
 button .lowlevel.rload -text Load -bg gray70 -width 6 -command "nessiload red"
-place .lowlevel.rsave -x 115  -y 460
-place .lowlevel.rload -x 20 -y 460
+place .lowlevel.rsave -x 20  -y 460
+place .lowlevel.rload -x 115 -y 460
 
 
 button .lowlevel.isave -text Save -bg gray70 -width 6 -command "nessisave input"

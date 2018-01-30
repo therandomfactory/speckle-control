@@ -174,7 +174,7 @@ global NESSI
 frame .main -bg gray -width 640 -height 330
 pack .main -side bottom
 set iy 10
-foreach item "target ra dec equinox observer telescope instrument site latitude longitude" {
+foreach item "target propid ra dec equinox observer telescope instrument site latitude longitude" {
    label .main.l$item -bg gray -fg black -text $item
    place .main.l$item -x 300 -y $iy
    entry .main.v$item -bg white -fg black -relief sunken -width 12 -textvariable SCOPE($item)
