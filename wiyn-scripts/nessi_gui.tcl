@@ -224,6 +224,15 @@ global NESSI_FILTER
   }
 }
 
+proc nessisave { device } {
+global NESSI_DIR
+   saveZaberConfig zabersConfiguration
+}
+
+proc nessiload { device } {
+global NESSI_DIR
+   source $NESSI_DIR/zabersConfiguration
+}
 
 proc nessimode { arm name } {
 global ANDOR_MODE LASTACQ
@@ -344,6 +353,7 @@ nessimode red wide
 nessimode blue wide
 initfilter red
 initfilter blue
+source $NESSI_DIR/zaber/zaber.tcl 
 
 set NESSI(observingGui) 620x497
 
