@@ -888,6 +888,9 @@ proc startsequence { } {
 #               STATUS	-	Exposure status
 #               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
+ set iseqnum 0
+ while { $iseqnum < $SCOPE(numseq) } {
+   incr iseqnum 1
    set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
    set STATUS(abort) 0
    if { $SCOPE(lobias) > 0 && $SCOPE(hibias) > 0 } {
@@ -917,6 +920,7 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
    .main.observe configure -text "Observe" -bg gray -relief raised
    .main.abort configure -bg gray -relief sunken -fg LightGray
    abortsequence
+ }
 }
 
 
