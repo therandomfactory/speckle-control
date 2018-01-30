@@ -58,6 +58,7 @@ pack .status.msg
 # wish shell. 
 #
 set libs $NESSI_DIR/lib
+load $libs/liboriel.so
 
 #
 # Load the tcl interface to FITS (Flexible image transport system) disk files

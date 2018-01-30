@@ -144,27 +144,74 @@ place .lowlevel.bmode -x 420 -y 70
 menubutton .lowlevel.rfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.rfilter.m
 menu .lowlevel.rfilter.m
 place .lowlevel.rfilter -x 118 -y 70
-.lowlevel.rfilter.m add command -label "i" -command "nessifilter red i"
-.lowlevel.rfilter.m add command -label "z" -command "nessifilter red z"
-.lowlevel.rfilter.m add command -label "716" -command "nessifilter red 716"
-.lowlevel.rfilter.m add command -label "832" -command "nessifilter red 832"
+.lowlevel.rfilter.m add command -label "i" -command "nessifilter Red-I"
+.lowlevel.rfilter.m add command -label "z" -command "nessifilter Red-Z"
+.lowlevel.rfilter.m add command -label "716" -command "nessifilter Red-716"
+.lowlevel.rfilter.m add command -label "832" -command "nessifilter Red-832"
 
 menubutton .lowlevel.bfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.bfilter.m
 menu .lowlevel.bfilter.m
 place .lowlevel.bfilter -x 518 -y 70
-.lowlevel.bfilter.m add command -label "u" -command "nessifilter blue u"
-.lowlevel.bfilter.m add command -label "g" -command "nessifilter blue g"
-.lowlevel.bfilter.m add command -label "r" -command "nessifilter blue r"
-.lowlevel.bfilter.m add command -label "467" -command "nessifilter blue 467"
-.lowlevel.bfilter.m add command -label "562" -command "nessifilter blue 562"
+.lowlevel.bfilter.m add command -label "u" -command "nessifilter Blue-U"
+.lowlevel.bfilter.m add command -label "g" -command "nessifilter Blue-G"
+.lowlevel.bfilter.m add command -label "r" -command "nessifilter Blue-R"
+.lowlevel.bfilter.m add command -label "467" -command "nessifilter Blue-467"
+.lowlevel.bfilter.m add command -label "562" -command "nessifilter Blue-562"
+.lowlevel.bfilter.m add command -label "467" -command "nessifilter clear"
 
 proc nessifilter { arm name } {
+global FWHEELS NESSI__FILTER
   if { $arm == "red" } {
     .lowlevel.rfilter configure -text "Filter = $name"
   } else {
     .lowlevel.bfilter configure -text "Filter = $name"
   }
+  if { $NESSI_FILTER($arm,current) != $name } {
+    set id [findfilter $arm $name]
+    if { $id > 0 } {
+      set ijog 0
+      while { $ijog < 7 } {
+        ijog++
+        oriel_write_cmd $NESSI_FILTER($arm,wheel) "NEXT\n"
+        set res [oriel_read_result $NESSI_FILTER($arm,wheel)]                
+        if { $res == "FILT $id" } {
+           return
+        } else {
+          puts stdout "nessifilter $arm got $res"
+        }
+      }
+    }
+  }
 }
+
+set NESSI_FILTER(red,current) unknown
+set NESSI_FILTER(blue,current) unknown
+set NESSI_FILTER(red,wheel) 1
+set NESSI_FILTER(blue,wheel) 2
+
+proc findfilter { arm name  } {
+global FWHEELS
+   foreach i "1 2 3 4 5 6"  {
+     if { $FWHEELS($arm,$i) == $name } {return $i}
+   }
+   return 0
+}
+
+
+proc initFilter { arm } {
+global NESSI_FILTER
+  if { $arm == "red" } {
+    set NESSI_FILTER(red,handle) [oriel_connect 1]
+    oriel_write_cmd 1 "STB?\n"
+    set res [oriel_read_result 1]
+  }
+  if { $arm == "blue" } {
+    set NESSI_FILTER(blue,handle) [oriel_connect 2]
+    oriel_write_cmd 2 "STB?\n"
+    set res [oriel_read_result 2]
+  }
+}
+
 
 proc nessimode { arm name } {
 global ANDOR_MODE LASTACQ
