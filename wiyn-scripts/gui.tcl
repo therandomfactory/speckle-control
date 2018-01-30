@@ -127,20 +127,17 @@ wm withdraw .countdown
 wm title . "NESSI Instrument Control"
 frame .mbar -width 520 -height 30 -bg gray
 menubutton .mbar.file -text "File" -fg black -bg gray -menu .mbar.file.m
-menubutton .mbar.edit -text "Edit" -fg black -bg gray -menu .mbar.edit.m
 menubutton .mbar.observe -text "Observe" -fg black -bg gray -menu .mbar.observe.m
 menubutton .mbar.temp -text "Temperature" -fg black -bg gray -menu .mbar.temp.m
 menubutton .mbar.help -text "Help" -fg black -bg gray -menu .mbar.help.m
 menubutton .mbar.tools -text "Tools" -fg black -bg gray -menu .mbar.tools.m
 pack .mbar
 place .mbar.file -x 0 -y 0
-place .mbar.edit -x 40 -y 0
 place .mbar.observe -x 80 -y 0
 place .mbar.temp -x 150 -y 0
 place .mbar.tools -x 300 -y 0
 place .mbar.help -x 460 -y 0
 menu .mbar.file.m 
-menu .mbar.edit.m
 menu .mbar.observe.m
 menu .mbar.temp.m
 menu .mbar.tools.m
@@ -149,7 +146,6 @@ menu .mbar.help.m
 .mbar.file.m add command -label "Save" -command savestate
 #.mbar.file.m add command -label "Save As" -command filesaveas
 .mbar.file.m add command -label "Exit" -command shutdown
-.mbar.edit.m add command -label "Properties" -command showconfig
 .mbar.observe.m add command -label "Single" -command "observe single"
 .mbar.observe.m add command -label "Snap-roi-128" -command "observe region128"
 .mbar.observe.m add command -label "Snap-roi-256" -command "observe region256"
