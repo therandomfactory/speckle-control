@@ -5,7 +5,7 @@ place .mbar -x 0
 .mbar configure -width 620
 place .mbar.help -x 550
 set iy 50
-foreach item "target ra dec equinox observer telescope instrument site latitude longitude" {
+foreach item "target propid ra dec equinox observer telescope instrument site latitude longitude" {
    place .main.l$item -x 360 -y $iy
    place .main.v$item -x 440 -y $iy
    incr iy 24 
