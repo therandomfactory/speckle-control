@@ -201,14 +201,26 @@ global FWHEELS
 proc initFilter { arm } {
 global NESSI_FILTER
   if { $arm == "red" } {
-    set NESSI_FILTER(red,handle) [oriel_connect 1]
-    oriel_write_cmd 1 "STB?\n"
-    set res [oriel_read_result 1]
+    set NESSI_FILTER(red,handle) [oriel_connect $NESSI_FILTER(red,wheel)]
+    oriel_write_cmd $NESSI_FILTER(red,wheel) "STB?\n"
+    set res [oriel_read_result $NESSI_FILTER(red,wheel)]
+    oriel_write_cmd 1NESSI_FILTER(red,wheel) "FILT?\n"
+    set res [oriel_read_result $NESSI_FILTER(red,wheel)]
+    if { [string range $res 0 3] == "FILT" } {
+       set id [lindex $res $NESSI_FILTER(red,wheel)]
+      .lowlevel.rfilter configure -text "Filter = $FWHEELS(red,$id)"
+    }
   }
   if { $arm == "blue" } {
-    set NESSI_FILTER(blue,handle) [oriel_connect 2]
-    oriel_write_cmd 2 "STB?\n"
-    set res [oriel_read_result 2]
+    set NESSI_FILTER(blue,handle) [oriel_connect NESSI_FILTER(blue,wheel)]
+    oriel_write_cmd NESSI_FILTER(blue,wheel) "STB?\n"
+    set res [oriel_read_result NESSI_FILTER(blue,wheel)]
+    oriel_write_cmd NESSI_FILTER(blue,wheel) "FILT?\n"
+    set res [oriel_read_result NESSI_FILTER(blue,wheel)]
+    if { [string range $res 0 3] == "FILT" } {
+       set id [lindex $res NESSI_FILTER(blue,wheel)]
+      .lowlevel.rfilter configure -text "Filter = $FWHEELS(blue,$id)"
+    }
   }
 }
 
@@ -330,6 +342,8 @@ set SCOPE(exposure) 0.04
 set LASTACQ fullframe
 nessimode red wide
 nessimode blue wide
+initfilter red
+initfilter blue
 
 set NESSI(observingGui) 620x497
 
