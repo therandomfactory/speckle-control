@@ -84,7 +84,6 @@ set FWHEELS(focusoffset) 0
 
 set MAXFILTERS 6
 destroy .filters
-wm withdraw .
 toplevel .filters -bg gray
 wm title .filters "NESSI Filter Wheels control"
 label .filters.lpos   -text "A Position" -bg gray -fg black
@@ -123,7 +122,7 @@ while { $i < $MAXFILTERS } {
 
 button .filters.load -text "Load configuration" -fg black -bg green -width 32 -command "loadFiltersConfig filtersConfiguration"
 button .filters.save -text "Save configuration" -fg black -bg green -width 32 -command "saveFiltersConfig"
-button .filters.exit -text "Exit" -fg black -bg orange -width 32 -command "exit"
+button .filters.exit -text "Exit" -fg black -bg orange -width 32 -command "destroy .filters"
 place .filters.load -x 10 -y [expr $iy+30]
 place .filters.save -x 262 -y [expr $iy+30]
 place .filters.exit -x 502 -y [expr $iy+30]

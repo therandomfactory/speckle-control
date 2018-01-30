@@ -41,7 +41,7 @@ checkbutton .lowlevel.clone -bg gray50 -text "Clone settings" -variable INSTRUME
 place .lowlevel.clone -x 220 -y 0
 
 label .lowlevel.pickoff -text "PICK-OFF" -bg white
-place .lowlevel.pickoff -x 280 -y 90
+place .lowlevel.pickoff -x 280 -y 97
 
 label .lowlevel.input -text "INPUT" -bg white
 place .lowlevel.input -x 280 -y 270
@@ -284,7 +284,7 @@ set LASTACQ fullframe
 nessimode red wide
 nessimode blue wide
 
-set NESSI(observingGui) 620x494
+set NESSI(observingGui) 620x497
 
 if { $SCOPE(telescope) == "WIYN" } {
    .lowlevel configure -height 520 -width 620
