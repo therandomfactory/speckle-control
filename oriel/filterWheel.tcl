@@ -176,4 +176,5 @@ global FWHEEL
   }
 }
 
+loadFiltersConfig filtersConfiguration
 
