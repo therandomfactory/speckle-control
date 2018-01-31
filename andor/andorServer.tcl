@@ -52,7 +52,7 @@ foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilt
      puts stdout "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
 }
 SetExposureTime 0.04
-
+andorSetProperty $CAM temperature -60
 
 if { $hend != 1024 } {
    set shmid [andorConnectShmem 512 512]
@@ -149,6 +149,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
          datadir         { set NESSI_DATADIR [lindex $msg 1] ; puts $sock "OK"}
+         gettemp         { set it [andorGetProperty $CAM temperature] ; puts $sock $it }
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
          configure       { set hbin [lindex $msg 1]
                            set vbin [lindex $msg 2]

@@ -1,6 +1,6 @@
 //
-//  gcc -c -g -I../include GenOneLinuxUSB.cpp -fpermissive
-//  gcc -g -o test testwheel.cpp GenOneLinuxUSB.o -L../lib -I. -I../include ../lib/libusb-1.0.so.0 -lstdc++ -fpermissive
+//  g++ -c -g -I../include GenOneLinuxUSB.cpp -fpermissive
+//  g++ -g -o test2 testwheel2.cpp GenOneLinuxUSB.o -L../lib -I. -I../include ../lib/libusb-1.0.so.0 -lstdc++ -fpermissive
 //
 
 #include "string.h"
@@ -18,8 +18,8 @@ int main(int argc, char **argv)
   int status;
   unsigned int count=80;
 
-  GenOneLinuxUSB wheelA = GenOneLinuxUSB(1);
-  printf("Connected to wheel 1");
+  GenOneLinuxUSB wheelA = GenOneLinuxUSB(2);
+  printf("Connected to wheel 2\n");
  
   wheelA.write_cmd("STB?\n");
   status=wheelA.read_result(result,count);
@@ -33,6 +33,9 @@ int main(int argc, char **argv)
   wheelA.write_cmd("NEXT\n");
   status=wheelA.read_result(result,count);
   printf("result of NEXT is %d, %s\n",status,result);
+  delete wheelA;
+ 
+ 
 
 
 }

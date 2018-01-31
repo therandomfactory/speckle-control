@@ -42,7 +42,7 @@ global FLOG
 }
 
 proc echoZaberConfig { {fcfg stdout} } {
-global ZABERS
+global ZABERS SCOPE
    puts $fcfg  "# Zaber stage configuration parameters
 set ZABERS(port) $ZABERS(port)
 "
@@ -55,17 +55,30 @@ set ZABERS(port) $ZABERS(port)
    foreach p "device speckle wide" {  
      puts $fcfg "set ZABERS(input,$p) \"$ZABERS(input,$p)\""
    }
-   foreach p "device in out" {  
-     puts $fcfg "set ZABERS(pickoff,$p) \"$ZABERS(pickoff,$p)\""
+   if { $SCOPE(telescope) == "GEMINI" } {
+     foreach p "device in out" {  
+       puts $fcfg "set ZABERS(pickoff,$p) \"$ZABERS(pickoff,$p)\""
+     }
+     foreach p "device extend stow" {  
+       puts $fcfg "set ZABERS(focus,$p) \"$ZABERS(focus,$p)\""
+     }
    }
    flush $fcfg
 }
 
 proc zaberPrintProperties { {fd stdout} } {
-global ZABERS ZPROPERTIES
-   puts $fd "Property		A	B	input"
-   foreach p [split $ZPROPERTIES \n] {
+global ZABERS ZPROPERTIES SCOPE
+   if { $SCOPE(telescope) == "WIYN" } {
+    puts $fd "Property		A	B	input"
+    foreach p [split $ZPROPERTIES \n] {
        puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)"
+     }
+   }
+   puts $fd "Property		A	B	input	pickoff		focus"
+   if { $SCOPE(telescope) == "GEMINI" } {
+     foreach p [split $ZPROPERTIES \n] {
+       puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)	$ZABERS(pickoff,$p)	$ZABERS(focus,$p)"
+     }
    }
 }
 
@@ -77,8 +90,9 @@ global ZABERS
       set handle 1
    } else {
       set handle [open $ZABERS(port) RDWR]
-      fconfigure $handle -buffering none -blocking 0
-      fconfigure $handle -mode "115200,n,8,1"
+      fconfigure $handle -buffering none
+      fconfigure $handle -blocking 0
+      fconfigure $handle -mode 115200,n,8,1
       fileevent $handle readable [list zaberReader $handle]
     }
    if { $handle < 0 } {
@@ -96,6 +110,7 @@ global ZABERS
 }
 
 
+zaberGoto A speckle
 
 proc zaberCommand { name cmd } {
 global ZABERS ZPROP ZNAME ZSIMPROP
@@ -220,7 +235,8 @@ Supported commands :
     wide
     in
     out
-    move abs nnn
+    move abs nnnzaberGoto input speckle
+
     move rel nnn
     set xxx
 "
@@ -255,12 +271,14 @@ proc zaberService { name cmd {a1 ""} {a2 ""} } {
       estop       {zaberStopAll}
       home        {zaberCommand $name home}
       speckle     {zaberGoto $name speckle}
-      in          {zaberCommand $name in}
+      in          {zaberCommand $name in}zaberGoto input speckle
+
       out         {zaberCommand $name out}
       wide        {zaberGoto $name wide}
       move        {zaberCommand $name "move $a1 $a2"}
       set         {zaberSetProperty $a1 $a2}
-   }
+   }zaberGoto input speckle
+
 }
 
 if { [info exists env(NESSI_SIM)] } {
@@ -276,11 +294,18 @@ zaberConnect nessi
 zaberGetProperties A
 zaberGetProperties B
 zaberGetProperties input
-zaberGetProperties pickoff
+if { $SCOPE(telescope) == "GEMINI" } { zaberGetProperties pickoff ; zaberGetProperties focus }
 zaberPrintProperties
-zaberCommand A wide
-zaberCommand B wide
-zaberCommand input wide
-zaberCommand pickoff out
+#zaberCommand A wide
+#zaberCommand B wide
+#zaberCommand input wide
+
+zaberGoto A speckle
+zaberGoto B speckle
+zaberGoto input speckle
+
+
+
+if { $SCOPE(telescope) == "GEMINI" } { zaberCommand pickoff in ; zaberCommand focus extend }
 
 

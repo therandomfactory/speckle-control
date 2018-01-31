@@ -1,5 +1,8 @@
 #!/usr/bin/tclsh
 
+set FWHEELS(red,serialnum) 1B18177A01135400
+set FWHEELS(red,serialnum) 061D088E010F5400
+
 
 set FWHEELS(red,port)		/dev/ttyUSB1
 set FWHEELS(red,1)		"Red-I"

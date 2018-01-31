@@ -8,19 +8,20 @@ set iy 50
 foreach item "target propid ra dec equinox observer telescope instrument site latitude longitude" {
    place .main.l$item -x 360 -y $iy
    place .main.v$item -x 440 -y $iy
+
    incr iy 24 
 }
 
-label .main.laccum -text "Accum" -bg gray50
-place .main.laccum -x 205 -y 50
-SpinBox .main.numaccum -width 10   -range "1 1000 1" -textvariable SCOPE(numaccum)
-place .main.numaccum -x 260 -y 50
+label .main.lseq -text "Number of Seqs. :" -bg gray80
+place .main.lseq -x 20 -y 108
+SpinBox .main.numseq  -width 10   -range "1 1000 1" -textvariable SCOPE(numseq)
+place .main.numseq -x 160 -y 108
 
 
 checkbutton .main.bred -bg gray50 -text "RED ARM" -variable INSTRUMENT(red)
-place .main.bred -x 200 -y 22
+place .main.bred -x 350 -y 22
 checkbutton .main.bblue -bg gray50 -text "BLUE ARM" -variable INSTRUMENT(blue)
-place .main.bblue -x 300 -y 22
+place .main.bblue -x 450 -y 22
 .main configure -height 370 -width 620
 
 label .main.astatus -text test -fg black -bg LightBlue
@@ -51,15 +52,15 @@ button .lowlevel.rtempset -bg gray50 -text "Temp Set" -width 6 -command "andorse
 entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6
 place .lowlevel.rtempset -x 116 -y 30
 place .lowlevel.vrtempset -x 210 -y 33
-label .lowlevel.rcamtemp -bg gray -fg orange -text "???.??"
+label .lowlevel.rcamtemp -bg gray -fg red -text "???.??" -bg gray50
 place .lowlevel.rcamtemp -x 265 -y 33
 
 button .lowlevel.btempset -bg gray50 -text "Temp Set" -width 6 -command "andorsetpoint blue"
 entry .lowlevel.vbtempset -bg white -textvariable ANDOR_CFG(blue,setpoint) -width 6
 place .lowlevel.btempset -x 446 -y 30
 place .lowlevel.vbtempset -x 527 -y 33
-label .lowlevel.bcamtemp -bg gray -fg orange -text "???.??"
-place .lowlevel.bcamtemp -x 570 -y 33
+label .lowlevel.bcamtemp -bg gray -fg red -text "???.??" -bg gray50
+place .lowlevel.bcamtemp -x 578 -y 33
 
 
 menubutton .lowlevel.rshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.rshut.m
@@ -188,6 +189,14 @@ set NESSI_FILTER(red,current) unknown
 set NESSI_FILTER(blue,current) unknown
 set NESSI_FILTER(red,wheel) 1
 set NESSI_FILTER(blue,wheel) 2
+
+set d  [split $SCOPE(obsdate) "-"]
+set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
+
+#
+#  Do the actual setup of the GUI, to sync it with the camera status
+#
+
 
 proc findfilter { arm name  } {
 global FWHEELS
@@ -351,8 +360,11 @@ set SCOPE(exposure) 0.04
 set LASTACQ fullframe
 nessimode red wide
 nessimode blue wide
-initfilter red
-initfilter blue
+
+
+#initFilter red
+#initFilter blue
+
 source $NESSI_DIR/zaber/zaber.tcl 
 
 set NESSI(observingGui) 620x497

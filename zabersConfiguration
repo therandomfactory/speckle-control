@@ -1,6 +1,6 @@
 #!/usr/bin/tclsh
 
-set ZABERS(port) /dev/ttyS3
+set ZABERS(port) /dev/ttyUSB1
 
 set ZABERS(A,device)           1
 set ZABERS(A,speckle)	   42700
@@ -14,7 +14,4 @@ set ZABERS(input,device)       3
 set ZABERS(input,speckle)   5000
 set ZABERS(input,wide)   1066667
 
-set ZABERS(pickoff,device)     4
-set ZABERS(pickoff,in)      5000
-set ZABERS(pickoff,out)  1066667
 
