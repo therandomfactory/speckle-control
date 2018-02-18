@@ -159,7 +159,7 @@ menu .mbar.help.m
 .mbar.tools.m add command -label "Engineering" -command "nessiGuiMode engineeringGui"
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file:/opt/apogee/doc/user-guide.html &}
 .mbar.tools.m add command -label "Observing" -command "nessiGuiMode observingGui"
-.mbar.tools.m add command -label "Filter Editor" -command "source $NESSI_DIR/oriel/filterWheel.tcl"
+.mbar.tools.m add command -label "Filter Editor" -command "wm deiconify .filters"
 
 proc nessiGuiMode { mode } {
 global NESSI

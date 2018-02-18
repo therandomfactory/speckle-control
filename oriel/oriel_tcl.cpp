@@ -34,7 +34,7 @@ int tcl_oriel_read_result(ClientData clientData, Tcl_Interp *interp, int argc, c
 int tcl_oriel_disconnect(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 
 char *result;
-GenOneLinuxUSB *filterWheel[2];
+GenOneLinuxUSB *filterWheel[3];
 //GenOneLinuxUSB filterWheelA = GenOneLinuxUSB(1);
 //GenOneLinuxUSB filterWheelB = GenOneLinuxUSB(2);
 
@@ -42,6 +42,7 @@ int tcl_oriel_connect(ClientData clientData, Tcl_Interp *interp, int argc, char 
 {
   int status=0;
   int id=0;
+  int ubus,uaddr;
 
   result = malloc(256);
 
@@ -60,7 +61,10 @@ int tcl_oriel_connect(ClientData clientData, Tcl_Interp *interp, int argc, char 
      return TCL_ERROR;
   }
 
-  sprintf(result,"%d",filterWheel[id]->m_Device);
+  ubus = filterWheel[id]->GetBus();
+  uaddr = filterWheel[id]->GetAddress();
+
+  sprintf(result,"%d %3.3d:%3.3d",filterWheel[id]->m_Device,ubus,uaddr);
   Tcl_SetResult(interp,result,TCL_STATIC);
 
   return TCL_OK;

@@ -129,6 +129,8 @@ bool GenOneLinuxUSB::OpenDeviceHandle(const uint16_t DeviceNum,
 			{
 				//we found the device we want try to open
 				//handle to it
+                                uAddress = num;
+                                uBus = libusb_get_bus_number(devs[i]);
 				int32_t notOpened = libusb_open(devs[i], &m_Device);
 
 				if( notOpened )
@@ -164,6 +166,15 @@ bool GenOneLinuxUSB::OpenDeviceHandle(const uint16_t DeviceNum,
 
 }
 
+int  GenOneLinuxUSB::GetAddress()
+{
+    return uAddress;
+}
+
+int  GenOneLinuxUSB::GetBus()
+{
+    return uBus;
+}
 
 
 //////////////////////////// 

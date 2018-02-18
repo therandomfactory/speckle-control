@@ -58,7 +58,7 @@ global FILTERWHEEL FWHEELS MAXFILTERS
   }
   .filters.f$id$n configure -bg yellow -activebackground yellow
   update
-  set result [setOrielFilter $id $n]
+  set result [setOrielFilter $FWHEELS($id,handle) $n]
   set msg [split $result \n]
   if { [string range [lindex $msg 3] 0 9] == "USB error:" } {
     set it [ tk_dialog .d "NESSI Filter Wheel $id" "$result" {} -1 OK]
@@ -71,6 +71,20 @@ global FILTERWHEEL FWHEELS MAXFILTERS
        set FWHEELS(focusoffset) $FWHEELS($id,$FWHEELS($id,position),focus)
     }
   }
+}
+
+proc findWheels { } {
+global FWSERIAL
+   set fw [split [exec lsusb] \n]
+   set id 1
+   foreach i $fw {
+      if { [lindex $i 6] == "Newport" } {
+         set iusb($id) [string trim [lindex $i 1]:[lindex $i 3] :]
+         set info [exec lsusb -v -s $iusb($id)]
+         set FWSERIAL($iusb($id)) [lindex $info [expr [lsearch $info iSerial] +2]]
+         incr id 1
+      }
+   }
 }
 
 
@@ -122,7 +136,7 @@ while { $i < $MAXFILTERS } {
 
 button .filters.load -text "Load configuration" -fg black -bg green -width 32 -command "loadFiltersConfig filtersConfiguration"
 button .filters.save -text "Save configuration" -fg black -bg green -width 32 -command "saveFiltersConfig"
-button .filters.exit -text "Exit" -fg black -bg orange -width 32 -command "destroy .filters"
+button .filters.exit -text "Close" -fg black -bg orange -width 32 -command "wm withdraw .filters"
 place .filters.load -x 10 -y [expr $iy+30]
 place .filters.save -x 262 -y [expr $iy+30]
 place .filters.exit -x 502 -y [expr $iy+30]
@@ -176,5 +190,75 @@ global FWHEEL
   }
 }
 
+proc resetFilterWheel { id } {
+   oriel_write_cmd $id RST
+   after 7000
+   set res [oriel_read_result $id]
+   oriel_write_cmd $id FILT?
+   after 200
+   set res [oriel_read_result $id]
+   return $res
+}
+
+proc setOrielFilter { id n } {
+   oriel_write_cmd $id FILT?
+   after 200
+   set res [oriel_read_result $id]
+   set cpos [string range $res 4 4]
+   set npos [expr $n - $cpos]
+   while { $npos > 0 } {
+      oriel_write_cmd $id NEXT
+      incr npos -1
+      after 2000
+      set res [oriel_read_result $id]
+   }
+   while { $npos < 0 } {
+      oriel_write_cmd $id PREV
+      incr npos 1
+      after 2000
+      set res [oriel_read_result $id]
+   }
+   oriel_write_cmd $id FILT?
+   after 200
+   set res [oriel_read_result $id]
+   set cpos [string range $res 4 4]
+   if { $cpos == $n } {
+      return $n
+   }
+   return -1
+}
+
+
+
 loadFiltersConfig filtersConfiguration
+load $env(NESSI_DIR)/lib/liboriel.so
+
+foreach p "1 2 3 4 5 6" {
+  if { $FWHEELS(red,$p) == "clear" } {
+     set FWHEELS(red,clear) $p
+  }
+  if { $FWHEELS(blue,$p) == "clear" } {
+     set FWHEELS(blue,clear) $p
+  }
+}
+
+findWheels
+set f1 [oriel_connect 1]
+set sn1 $FWSERIAL([lindex $f1 1])
+if { $sn1 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 1}
+if { $sn1 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 1}
+
+set f2 [oriel_connect 2]
+set sn2 $FWSERIAL([lindex $f2 1])
+if { $sn2 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 2}
+if { $sn2 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 2}
+
+resetFilterWheel 1
+resetFilterWheel 2
+selectfilter red $FWHEELS(red,clear)
+selectfilter blue $FWHEELS(blue,clear)
+
+
+
+
 

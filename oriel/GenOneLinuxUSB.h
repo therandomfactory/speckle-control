@@ -36,12 +36,16 @@ class GenOneLinuxUSB
 
 		bool OpenDeviceHandle (const uint16_t DeviceNum,
  		                       std::string & err);
+                int GetAddress();
+                int GetBus();
 
 		libusb_context * m_Context;
 		libusb_device_handle  * m_Device;
 		libusb_device_descriptor m_DeviceDescriptor;
 	        bool m_IoError;
 	        uint16_t m_DeviceNum;
+                uint16_t uBus;
+                uint16_t uAddress;
 
 	        GenOneLinuxUSB(const GenOneLinuxUSB&);
 	        GenOneLinuxUSB& operator=(GenOneLinuxUSB&);

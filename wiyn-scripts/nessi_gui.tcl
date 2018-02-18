@@ -145,20 +145,22 @@ place .lowlevel.bmode -x 420 -y 70
 menubutton .lowlevel.rfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.rfilter.m
 menu .lowlevel.rfilter.m
 place .lowlevel.rfilter -x 118 -y 70
-.lowlevel.rfilter.m add command -label "i" -command "nessifilter Red-I"
-.lowlevel.rfilter.m add command -label "z" -command "nessifilter Red-Z"
-.lowlevel.rfilter.m add command -label "716" -command "nessifilter Red-716"
-.lowlevel.rfilter.m add command -label "832" -command "nessifilter Red-832"
+.lowlevel.rfilter.m add command -label "i" -command "nessifilter red Red-I"
+.lowlevel.rfilter.m add command -label "z" -command "nessifilter red Red-Z"
+.lowlevel.rfilter.m add command -label "716" -command "nessifilter red Red-716"
+.lowlevel.rfilter.m add command -label "832" -command "nessifilter red Red-832"
+.lowlevel.rfilter.m add command -label "clear" -command "nessifilter red clear"
+.lowlevel.rfilter.m add command -label "block" -command "nessifilter red block"
 
 menubutton .lowlevel.bfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.bfilter.m
 menu .lowlevel.bfilter.m
 place .lowlevel.bfilter -x 518 -y 70
-.lowlevel.bfilter.m add command -label "u" -command "nessifilter Blue-U"
-.lowlevel.bfilter.m add command -label "g" -command "nessifilter Blue-G"
-.lowlevel.bfilter.m add command -label "r" -command "nessifilter Blue-R"
-.lowlevel.bfilter.m add command -label "467" -command "nessifilter Blue-467"
-.lowlevel.bfilter.m add command -label "562" -command "nessifilter Blue-562"
-.lowlevel.bfilter.m add command -label "467" -command "nessifilter clear"
+.lowlevel.bfilter.m add command -label "u" -command "nessifilter blue Blue-U"
+.lowlevel.bfilter.m add command -label "g" -command "nessifilter blue Blue-G"
+.lowlevel.bfilter.m add command -label "r" -command "nessifilter blue Blue-R"
+.lowlevel.bfilter.m add command -label "467" -command "nessifilter blue Blue-467"
+.lowlevel.bfilter.m add command -label "562" -command "nessifilter blue Blue-562"
+.lowlevel.bfilter.m add command -label "clear" -command "nessifilter blue clear"
 
 proc nessifilter { arm name } {
 global FWHEELS NESSI__FILTER
@@ -170,17 +172,7 @@ global FWHEELS NESSI__FILTER
   if { $NESSI_FILTER($arm,current) != $name } {
     set id [findfilter $arm $name]
     if { $id > 0 } {
-      set ijog 0
-      while { $ijog < 7 } {
-        ijog++
-        oriel_write_cmd $NESSI_FILTER($arm,wheel) "NEXT\n"
-        set res [oriel_read_result $NESSI_FILTER($arm,wheel)]                
-        if { $res == "FILT $id" } {
-           return
-        } else {
-          puts stdout "nessifilter $arm got $res"
-        }
-      }
+       selectfilter $arm $id
     }
   }
 }
@@ -208,29 +200,9 @@ global FWHEELS
 
 
 proc initFilter { arm } {
-global NESSI_FILTER
-  if { $arm == "red" } {
-    set NESSI_FILTER(red,handle) [oriel_connect $NESSI_FILTER(red,wheel)]
-    oriel_write_cmd $NESSI_FILTER(red,wheel) "STB?\n"
-    set res [oriel_read_result $NESSI_FILTER(red,wheel)]
-    oriel_write_cmd 1NESSI_FILTER(red,wheel) "FILT?\n"
-    set res [oriel_read_result $NESSI_FILTER(red,wheel)]
-    if { [string range $res 0 3] == "FILT" } {
-       set id [lindex $res $NESSI_FILTER(red,wheel)]
-      .lowlevel.rfilter configure -text "Filter = $FWHEELS(red,$id)"
-    }
-  }
-  if { $arm == "blue" } {
-    set NESSI_FILTER(blue,handle) [oriel_connect NESSI_FILTER(blue,wheel)]
-    oriel_write_cmd NESSI_FILTER(blue,wheel) "STB?\n"
-    set res [oriel_read_result NESSI_FILTER(blue,wheel)]
-    oriel_write_cmd NESSI_FILTER(blue,wheel) "FILT?\n"
-    set res [oriel_read_result NESSI_FILTER(blue,wheel)]
-    if { [string range $res 0 3] == "FILT" } {
-       set id [lindex $res NESSI_FILTER(blue,wheel)]
-      .lowlevel.rfilter configure -text "Filter = $FWHEELS(blue,$id)"
-    }
-  }
+global NESSI_FILTER FWHEELS
+   resetFilterWheel $FWHEELS($arm,handle)
+   selectfilter $arm $FWHEELS($arm,clear)
 }
 
 proc nessisave { device } {
@@ -362,10 +334,10 @@ nessimode red wide
 nessimode blue wide
 
 
-#initFilter red
-#initFilter blue
 
 source $NESSI_DIR/zaber/zaber.tcl 
+
+source $NESSI_DIR/oriel/filterWheel.tcl
 
 set NESSI(observingGui) 620x497
 

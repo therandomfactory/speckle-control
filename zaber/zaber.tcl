@@ -110,7 +110,6 @@ global ZABERS
 }
 
 
-zaberGoto A speckle
 
 proc zaberCommand { name cmd } {
 global ZABERS ZPROP ZNAME ZSIMPROP
