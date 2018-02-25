@@ -53,6 +53,7 @@ foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilt
 }
 SetExposureTime 0.04
 andorSetProperty $CAM temperature -60
+andorSetProperty $CAM cooler 1
 
 if { $hend != 1024 } {
    set shmid [andorConnectShmem 512 512]
@@ -91,7 +92,7 @@ global ANDOR_CFG NESSI_DATADIR
       exec xpaset -p ds9 file $NESSI_DATADIR/testf_red_[set t].fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
-      andorGetData $ANDOR_CFG(blue)t
+      andorGetData $ANDOR_CFG(blue)
       andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/testf_blue_[set t].fits 1024 1024 1 1
       exec xpaset -p ds9 frame 2
       after 400
@@ -99,6 +100,26 @@ global ANDOR_CFG NESSI_DATADIR
     }
 }
 
+proc acquireDataROI { exp x y n } {
+global ANDOR_CFG NESSI_DATADIR
+    set t [clock seconds]
+    if { $ANDOR_CFG(red) > -1} {
+      andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
+      andorGetData $ANDOR_CFG(red)
+      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/testf_red_[set t].fits $n $n 1 1
+      exec xpaset -p ds9 frame 1
+      after 400
+      exec xpaset -p ds9 file $NESSI_DATADIR/testf_red_[set t].fits
+    }
+    if { $ANDOR_CFG(blue) > -1 } {
+      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
+      andorGetData $ANDOR_CFG(blue)
+      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/testf_blue_[set t].fits $n $n 1 1
+      exec xpaset -p ds9 frame 2
+      after 400
+      exec xpaset -p ds9 file $NESSI_DATADIR/testf_blue_[set t].fits
+    }
+}
 
 proc acquireDataCube { exp n } {
 global ANDOR_CFG NESSI_DATADIR
@@ -145,6 +166,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          acquire         { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2]" ; puts $sock "Acquiring"}
          reset           { resetCamera [lindex $msg 1] ; puts $sock "OK"}
          grabframe       { after 10 "acquireDataFrame [lindex $msg 1]" ; puts $sock "OK"}
+         grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "OK"}
          version         { puts $sock "1.0" }
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
@@ -167,7 +189,11 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          default         { if { [string range [lindex $msg 0] 0 3] == "Get" } {
                              puts $sock [eval [lindex $msg 0]]
                            } else {
-                             puts $sock "ERROR: unknown $msg"
+                             if { [string range [lindex $msg 0] 0 3] == "Set" } {
+                                puts $sock [eval [lindex $msg 0] [lindex $msg 1]]
+                             } else {
+                                puts $sock "ERROR: unknown $msg"
+                             }
                            }
                          }
     }

@@ -60,6 +60,7 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
 int tcl_andorDisplayAvgFFT(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorSetCropMode(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorWaitForData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorWaitForIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -149,6 +150,7 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorAbortAcq", (Tcl_CmdProc *) tcl_andorAbortAcquisition, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetData", (Tcl_CmdProc *) tcl_andorGetAcquiredData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetFrame", (Tcl_CmdProc *) tcl_andorGetOldestFrame, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorSetROI", (Tcl_CmdProc *) tcl_andorSetROI, NULL, NULL);
   Tcl_CreateCommand(interp, "andorPrepDataCube", (Tcl_CmdProc *) tcl_andorPrepDataCube, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSetCropMode", (Tcl_CmdProc *) tcl_andorSetCropMode, NULL, NULL);
   Tcl_CreateCommand(interp, "andorPrepDataFrame", (Tcl_CmdProc *) tcl_andorPrepDataFrame, NULL, NULL);
@@ -275,20 +277,23 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
           Tcl_SetResult(interp,result,TCL_STATIC);
           return TCL_ERROR;
     }
-    if ( cameraId == 0 ) {
-      for (ipix=0;ipix<1024*1024;ipix++) {
-          imageFrame[ipix] = (float)imageDataA[ipix];
+   
+    if (width < 1024) {
+      fits_write_img(fptr, TFLOAT, fpixel, nelements, &fitsROI, &status);
+    } else {
+      if ( cameraId == 0 ) {
+        for (ipix=0;ipix<1024*1024;ipix++) {
+            imageFrame[ipix] = (float)imageDataA[ipix];
+        }
       }
-    }
-    if ( cameraId == 1 ) {
-      for (ipix=0;ipix<1024*1024;ipix++) {
-          imageFrame[ipix] = (float)imageDataB[ipix];
+      if ( cameraId == 1 ) {
+        for (ipix=0;ipix<1024*1024;ipix++) {
+            imageFrame[ipix] = (float)imageDataB[ipix];
+        }
       }
+      fits_write_img(fptr, TFLOAT, fpixel, nelements, &imageFrame, &status);
     }
 
-
-    /* write the array of unsigned integers to the FITS file */
-    fits_write_img(fptr, TFLOAT, fpixel, nelements, &imageFrame, &status);
     if (status != 0) {
           sprintf(result,"fits write error %d",status);
           Tcl_SetResult(interp,result,TCL_STATIC);
@@ -451,17 +456,21 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
 
   sscanf(argv[1],"%d",&cameraId);
 
-  if (strcmp(argv[1],"temperature") == 0) {
-     sscanf(argv[2],"%d",&ivalue);
+  if (strcmp(argv[2],"temperature") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
      status = SetTemperature(ivalue);
      if (status == DRV_SUCCESS) {
         andorSetup[cameraId].target_temperature = ivalue;
      }
   }
-
-
-
-
+  if (strcmp(argv[2],"cooler") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     if (ivalue == 0) {
+        CoolerOFF();
+     } else {
+        CoolerON();
+     }
+  }
 
   return TCL_OK;
 }
@@ -494,11 +503,52 @@ int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
      return TCL_OK;
   }
 
-
-
-
   return TCL_OK;
 }
+
+int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=-1;
+  int cameraId;
+  int xstart, ystart, xend, yend, ibin;
+
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 7) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," cameraId xstart xend ystart yend bin\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+
+  sscanf(argv[1],"%d",&cameraId);
+  sscanf(argv[2],"%d",&xstart);
+  sscanf(argv[3],"%d",&xend);
+  sscanf(argv[4],"%d",&ystart);
+  sscanf(argv[5],"%d",&yend);
+  sscanf(argv[6],"%d",&ibin);
+  if ( cameraId == 0 ) {
+     status = SetCurrentCamera(cameraA);
+  } else {
+     status = SetCurrentCamera(cameraB);
+  }
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select camera - %d",cameraId);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  andorSetup[cameraId].image.vbin =   ibin;
+  andorSetup[cameraId].image.hbin =   ibin;
+  andorSetup[cameraId].image.hstart = xstart;
+  andorSetup[cameraId].image.hend =   xend;
+  andorSetup[cameraId].image.vstart = ystart;
+  andorSetup[cameraId].image.vend =   yend;
+  andorSetup[cameraId].npix = (xend-xstart+1)*(yend-ystart+1)/ibin/ibin;
+
+  SetImage(ibin,ibin,xstart,xend-xstart+1,ystart,yend-ystart+1);
+  return TCL_OK;
+
+}
+
+
+
 
 int tcl_andorPrepDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
