@@ -19,6 +19,7 @@
 
 #define OBS_SIZE 256
 #define LOC_SIZE 1024
+#define MINBORDER 16
 
  
 unsigned int *SharedMemA;
@@ -64,6 +65,7 @@ int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **
 int tcl_andorSetCropMode(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorWaitForData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorWaitForIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorPrepDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStartUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -152,6 +154,7 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorGetFrame", (Tcl_CmdProc *) tcl_andorGetOldestFrame, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSetROI", (Tcl_CmdProc *) tcl_andorSetROI, NULL, NULL);
   Tcl_CreateCommand(interp, "andorPrepDataCube", (Tcl_CmdProc *) tcl_andorPrepDataCube, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorLocateStar", (Tcl_CmdProc *) tcl_andorLocateStar, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSetCropMode", (Tcl_CmdProc *) tcl_andorSetCropMode, NULL, NULL);
   Tcl_CreateCommand(interp, "andorPrepDataFrame", (Tcl_CmdProc *) tcl_andorPrepDataFrame, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetDataCube", (Tcl_CmdProc *) tcl_andorGetDataCube, NULL, NULL);
@@ -347,6 +350,64 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
   }  
 
   return TCL_OK;
+}
+
+int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+   int stepsize, smoothing;
+   int bnum;
+   int ifound;
+   int cameraId;
+   unsigned int *cframe;
+   int line, pixel, ii,jj;
+   int xmaxat, ymaxat;
+   int image_width,image_height;
+   double maxsum, csum;
+   char starpos[16];
+
+   xmaxat = 0;
+   ymaxat = 0;
+   maxsum = 0.0;
+
+   if ( argc < 4 ) {
+           Tcl_AppendResult (interp, "wrong # args: should be \"", argv[0],
+            " cameraId stepsize smoothing\"", (char *) NULL);
+           return TCL_ERROR;
+   }
+   sscanf (argv[1],"%d", &cameraId);
+   sscanf (argv[2],"%d", &stepsize);
+   sscanf (argv[3],"%d", &smoothing);
+
+   if ( cameraId == 0 ) {
+     cframe = &imageDataA;
+    }
+   if ( cameraId == 1 ) {
+     cframe = &imageDataB;
+    }
+    image_width = andorSetup[cameraId].image.hend -  andorSetup[cameraId].image.hstart +1;
+    image_height = andorSetup[cameraId].image.vend -  andorSetup[cameraId].image.vstart +1;
+
+    xmaxat = 0;
+    ymaxat = 0;
+    maxsum = 0.0;
+    for (line = MINBORDER; line <= image_height-MINBORDER; line=line+stepsize) {
+       for (pixel = MINBORDER; pixel <= image_width-MINBORDER; pixel=pixel+stepsize) {
+        csum = 0.0;
+        for (ii=-1*smoothing;ii<=smoothing;ii++) {
+          for (jj=-1*smoothing;jj<=smoothing;jj++) {
+             csum = csum + (double)cframe[(line+ii) * image_width + pixel+jj];
+          }
+        }
+        if (csum > maxsum) {
+           xmaxat = pixel;
+           ymaxat = line;
+           maxsum = csum;
+        }
+      }
+    }
+    sprintf(starpos,"%d %d ",xmaxat,ymaxat);
+    Tcl_AppendResult (interp,starpos,(char *) NULL);
+    return TCL_OK;
 }
 
 

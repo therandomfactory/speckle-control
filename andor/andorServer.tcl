@@ -81,6 +81,7 @@ global CAM
    }
 }
 
+
 proc acquireDataFrame { exp } {
 global ANDOR_CFG NESSI_DATADIR
     set t [clock seconds]
@@ -152,6 +153,17 @@ global ANDOR_CFG NESSI_DATADIR
   puts stdout "Finished acquisition"
 }
 
+proc locateStar { steps smooth } {
+global ANDOR_CFG
+  if { $ANDOR_CFG(red) > -1} {
+     set res [andorLocateStar $ANDOR_CFG(red) $steps $smooth]
+  }  
+  if { $ANDOR_CFG(blue) > -1} {
+     set res [andorLocateStar $ANDOR_CFG(blue) $steps $smooth]
+  }  
+  return $res
+}
+
 
 proc shutDown { } {
   andorShutDown
@@ -170,6 +182,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          version         { puts $sock "1.0" }
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
+         locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex @$msg 2]]" }
          datadir         { set NESSI_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; puts $sock $it }
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
