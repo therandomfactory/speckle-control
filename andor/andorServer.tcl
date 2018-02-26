@@ -164,6 +164,21 @@ global ANDOR_CFG
   return $res
 }
 
+proc selectROI { idim } {
+  set xy [locateStar 20 5]
+  set x [lindex $xy 0]
+  set y [lindex $xy 1]
+  set xs [expr $x - $idim/2]
+  set xe [expr $x + $idim/2]
+  if { $xs < 1 } { set xs 1 ; set xe $idim}
+  if { $xe > 1024 } {set xe 1024 ; set xs [expr 1024-$idim+1]}
+  set ys [expr $y - $idim/2]
+  set ye [expr $y + $idim/2]
+  if { $ys < 1 } { set yd 1 ; set ye $idim}
+  if { $ye > 1024 } {set ye 1024 ; set ys [expr 1024-$idim+1]}
+  exec xpaset -p ds9 regions deleteall
+  exec echo "box [expr $xs+$idim/2] [expr $ys+$idim/2] $idim $idim 0" | xpaset  ds9 regions
+}
 
 proc shutDown { } {
   andorShutDown
@@ -178,6 +193,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          acquire         { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2]" ; puts $sock "Acquiring"}
          reset           { resetCamera [lindex $msg 1] ; puts $sock "OK"}
          grabframe       { after 10 "acquireDataFrame [lindex $msg 1]" ; puts $sock "OK"}
+         setroi          { selectROI [lindex $msg 1] ; puts $sock "OK"}
          grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "OK"}
          version         { puts $sock "1.0" }
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
