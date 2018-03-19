@@ -22,6 +22,7 @@ global NESSI_DIR NESCONFIG PICOS
      set NESCONFIG(picoChange) 0
    }
    logPicosConfig
+   debuglog "Loaded PICO configuration"
 }
 
 proc savePicosConfig { fname } {
@@ -41,8 +42,7 @@ global FLOG
 
 proc echoPicosConfig { fcfg } {
 global PICOS
-   puts $fcfg  "# Picos stage configuration parameters : [exec date]
-"
+   puts $fcfg  "# Picos stage configuration parameters : [exec date]"
    foreach i "X Y " {
      foreach p "ip in out home engineer jog++ jog+ jog-- jog-" {
          puts $fcfg "set PICOS($i,$p) \"$PICOS($i,$p)\""
@@ -82,6 +82,7 @@ global PICOS
      }
      set PICOS($axis,current) $PICOS($axis,position)
    } else {
+     debuglog "Sending PICO command $cmd"
      puts $PICOS($axis,handle) $cmd
      after 100
      gets $PICOS($axis,handle) rec
@@ -91,6 +92,7 @@ global PICOS
 
 proc picoSet { axis par {value ""} } {
 global PICOS
+   debuglog "PICO command set $axis $par $value"
    switch $par {
       enable         { set res [picoCommand $axis MON] }
       disable        { set res [picoCommand $axis MOF] }
@@ -117,18 +119,26 @@ global PICOS
 
 proc picosInitialize { } {
 global PICOS
+   debuglog "Initializing PICO stages"
    picoSet X out
    picoSet Y out
 }
 
 proc picosInPosition { } {
+   debuglog "Set PICO position to in "
    picoSet X in
    picoSet Y in
 }
 
+proc picosOutPosition { } {
+   debuglog "Set PICO position to out"
+   picoSet X out
+   picoSet Y out
+}
 
 proc jogPico { axis delta } {
 global PICOS
+   debuglog "Jog PICO $axis $delta"
    picoSet $axis offset $PICOS($axis,jog[set delta])
 }
 
@@ -146,6 +156,7 @@ global PICOS
         status         { set PICOS($axis,status)       [lindex [split [picoCommand $axis STA] "="] 1] }
       }
    }
+   debuglog "Got PICO $axis $par = $PICOS($axis,$par)"
    return $PICOS($axis,$par)
 }
 

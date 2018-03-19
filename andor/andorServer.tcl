@@ -16,40 +16,40 @@ set vstart [lindex $argv 3]
 set vend   [lindex $argv 4]
 set NESSI_DATADIR $env(NESSI_DATADIR)
 
-puts stdout "Establishing server for camera $cameraNum"
-puts stdout "hstart =  $hstart"
-puts stdout "hend =  $hend"
-puts stdout "vstart =  $vstart"
-puts stdout "vend =  $vend"
+debuglog "Establishing server for camera $cameraNum"
+debuglog "hstart =  $hstart"
+debuglog "hend =  $hend"
+debuglog "vstart =  $vstart"
+debuglog "vend =  $vend"
 set ncam [GetAvailableCameras]
-puts stdout "Detected $ncam cameras"
+debuglog "Detected $ncam cameras"
 
 set handle -1
 set handle [andorConnectCamera $cameraNum]
 if { $handle < 0} {exit}
 
-puts stdout "Connected to camera $cameraNum, handle = $handle"
+debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
 
 andorConfigure $CAM 1 1 $hstart $hend $vstart $vend 0 0 0 0
-puts stdout "Configured camera id $CAM for ccd mode"
+debuglog "Configured camera id $CAM for ccd mode"
 set ANDOR_CFG(red) -1
 set ANDOR_CFG(blue) -1
 set ANDOR_CFG($CAM,SerialNumber) "X-[GetCameraSerialNumber]"
-puts stdout "Camera $CAM is serial number $ANDOR_CFG($CAM,SerialNumber) = $ANDORS($ANDOR_CFG($CAM,SerialNumber)) arm"
+debuglog "Camera $CAM is serial number $ANDOR_CFG($CAM,SerialNumber) = $ANDORS($ANDOR_CFG($CAM,SerialNumber)) arm"
 if { $ANDOR_CFG($CAM,SerialNumber) == $ANDORS(red,serialnum) }  {
   set ANDOR_CFG(red) $CAM
-  puts stdout "ANDOR_CFG(red) = $ANDOR_CFG(red)"
+  debuglog "ANDOR_CFG(red) = $ANDOR_CFG(red)"
   set ANDOR_ARM red
 }
 if { $ANDOR_CFG($CAM,SerialNumber) == $ANDORS(blue,serialnum) } {
   set ANDOR_CFG(blue) $CAM
-  puts stdout "ANDOR_CFG(blue) = $ANDOR_CFG(blue)"
+  debuglog "ANDOR_CFG(blue) = $ANDOR_CFG(blue)"
   set ANDOR_ARM blue
 }
 foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilterMode GetImageRotate GetKeepCleanTime GetMaximumExposure GetMaximumNumberRingExposureTimes GetMinimumImageLength GetMinimumNumberInSeries GetNumberADChannels GetNumberAmp GetNumberDevices GetNumberFKVShiftSpeeds GetNumberHorizontalSpeeds GetNumberIO GetNumberPreAmpGains GetNumberRingExposureTimes GetNumberVSAmplitudes GetNumberVSSpeeds GetNumberVerticalSpeeds GetReadOutTime GetStartUpTime GetStatus GetTotalNumberImagesAcquired" {
      set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
-     puts stdout "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
+     debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
 }
 SetExposureTime 0.04
 andorSetProperty $CAM temperature -60
@@ -57,7 +57,7 @@ andorSetProperty $CAM cooler 1
 
 if { $hend != 1024 } {
    set shmid [andorConnectShmem 512 512]
-   puts stdout "memory buffers @ $shmid"
+   debuglog "$ANDOR_ARM memory buffers @ $shmid"
    initds9 [lindex $shmid 0] 512 512
    andorPrepDataCube
    exec xpaset -p ds9 single
@@ -72,19 +72,21 @@ global CAM
    andorShutDown
    set handle [andorConnectCamera [expr $CAM+1]]
    if { $mode == "fullframe" } {
-     puts stdout "Connected to camera $CAM for fullframe, handle = $handle"
+     debuglog "Connected to camera $CAM for fullframe, handle = $handle"
      andorConfigure $CAM 1 1 1 1024 1 1024 0 0 0 0
    }
    if { $mode == "roi" } {
-     puts stdout "Connected to camera $CAM for ROI, handle = $handle"
+     debuglog "Connected to camera $CAM for ROI, handle = $handle"
      andorConfigure $CAM 1 1 1 256 1 256 0 0 0 0
    }
 }
 
 
 proc acquireDataFrame { exp } {
-global ANDOR_CFG NESSI_DATADIR
+global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
+    debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
     set t [clock seconds]
+    SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
       andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/testf_red_[set t].fits 1024 1024 1 1
@@ -102,8 +104,10 @@ global ANDOR_CFG NESSI_DATADIR
 }
 
 proc acquireDataROI { exp x y n } {
-global ANDOR_CFG NESSI_DATADIR
+global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
+    debuglog "Starting $ANDOR_ARM ROI sequence with exposure = $exp"
     set t [clock seconds]
+    SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
@@ -123,9 +127,11 @@ global ANDOR_CFG NESSI_DATADIR
 }
 
 proc acquireDataCube { exp n } {
-global ANDOR_CFG NESSI_DATADIR
+global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
+    debuglog "Starting $ANDOR_ARM full-frame sequence with exposure = $exp"
   refreshds9 [expr int($exp*2000)] [expr $n*4]
   set t [clock seconds]
+  SetExposureTime $exp
   set count 0
   while { $count < $n } {
     incr count 1
@@ -150,7 +156,7 @@ global ANDOR_CFG NESSI_DATADIR
     andorDisplayAvgFFT $ANDOR_CFG(blue) 256 256 $n
     catch {andorAbortAcq $ANDOR_CFG(blue)}
   }
-  puts stdout "Finished acquisition"
+  debuglog "Finished acquisition"
 }
 
 proc locateStar { steps smooth } {
@@ -165,6 +171,7 @@ global ANDOR_CFG
 }
 
 proc selectROI { idim } {
+global ANDOR_ARM
   set xy [locateStar 20 5]
   set x [lindex $xy 0]
   set y [lindex $xy 1]
@@ -178,16 +185,18 @@ proc selectROI { idim } {
   if { $ye > 1024 } {set ye 1024 ; set ys [expr 1024-$idim+1]}
   exec xpaset -p ds9 regions deleteall
   exec echo "box [expr $xs+$idim/2] [expr $ys+$idim/2] $idim $idim 0" | xpaset  ds9 regions
+  debuglog "$ANDOR_ARM ROI measured as $xs , $xe , $ys , $ye"
 }
 
 proc shutDown { } {
+  debuglog "Shutting down ANdor acqusition servers"
   andorShutDown
   exit
 }
 
 proc doService {sock msg} {
 global TLM SCOPE CAM ANDOR_ARM DATADIR
-    puts stdout "echosrv:$msg"
+    debuglog "echosrv:$msg"
     switch [lindex $msg 0] {
          shutdown        { shutDown ; puts $sock "OK"; exit }
          acquire         { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2]" ; puts $sock "Acquiring"}

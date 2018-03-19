@@ -42,6 +42,7 @@ global GEMINI GEMINICFG TELEMETRY
         debuglog "Got unknown $rec"
       }
    }
+   echoGeminiTelemetry
 }
 
 proc echoGeminiTelemetry { } {

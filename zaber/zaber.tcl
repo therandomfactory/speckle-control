@@ -23,6 +23,7 @@ global NESSI_DIR ZABERS
    } else {
      source $NESSI_DIR/$fname
      set NESCONFIG(zaberChange) 0
+     debuglog "Loaded Zaber configuration from $NESSI_DIR/$fname"
    }
 }
 
@@ -106,6 +107,7 @@ global ZABERS
 
 proc zaberDisconnect { } {
 global ZABERS
+   debuglog "Disconnecting from Zabers"
    close $ZABERS(handle)
 }
 
@@ -124,6 +126,7 @@ global ZABERS ZPROP ZNAME ZSIMPROP
      if { [info exists ZABERS(sim)] && [lindex $cmd 0] == "set" } {
         set ZSIMPROP [lindex $cmd 2]
      } else {
+       debuglog "Sending zaber command /$ZABERS($name,device) $cmd"
        set result [puts $ZABERS(handle) "/$ZABERS($name,device) $cmd\r\n"]
        after 100 update
      }
@@ -243,6 +246,7 @@ Supported commands :
 
 proc zaberStopAll { } {
 global ZABERS
+  debuglog "Zabers estop"
   foreach d [array names ZABERS] {
      if { [lindex [split $d ,] 1] == "device" } {
         set id [lindex [split $d ,] 0]
@@ -253,6 +257,7 @@ global ZABERS
 }
 
 proc positionZabers { station } {
+   debuglog "Configure Zabers for $station"
    if { $station == "fullframe" } {
       zaberCommand A wide   
       zaberCommand B wide
@@ -276,8 +281,7 @@ proc zaberService { name cmd {a1 ""} {a2 ""} } {
       wide        {zaberGoto $name wide}
       move        {zaberCommand $name "move $a1 $a2"}
       set         {zaberSetProperty $a1 $a2}
-   }zaberGoto input speckle
-
+   }
 }
 
 if { [info exists env(NESSI_SIM)] } {
@@ -295,15 +299,10 @@ zaberGetProperties B
 zaberGetProperties input
 if { $SCOPE(telescope) == "GEMINI" } { zaberGetProperties pickoff ; zaberGetProperties focus }
 zaberPrintProperties
-#zaberCommand A wide
-#zaberCommand B wide
-#zaberCommand input wide
 
-zaberGoto A speckle
-zaberGoto B speckle
-zaberGoto input speckle
-
-
+zaberGoto A wide
+zaberGoto B wide
+zaberGoto input wide
 
 if { $SCOPE(telescope) == "GEMINI" } { zaberCommand pickoff in ; zaberCommand focus extend }
 

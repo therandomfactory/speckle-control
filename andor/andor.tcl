@@ -35,6 +35,7 @@ global ANDOR_CFG
 
 proc initds9 { shmid width height } {
 global NESSI_DIR
+  debuglog "Configuring ds9"
   exec xpaset -p ds9 source $NESSI_DIR/andor/ds9refresher.tcl
   exec xpaset -p ds9 shm array shmid $shmid \\\[xdim=$width,ydim=$height,bitpix=32\\\]
 }
@@ -52,16 +53,17 @@ global ANDOR_SOCKET
    fconfigure $s2002 -buffering line
    puts $s2001 "whicharm"
    gets $s2001 rec
-   puts stdout "Server at socket 2001 is $rec arm"
+   debuglog "Server at socket 2001 is $rec arm"
    set ANDOR_SOCKET($rec) $s2001
    puts $s2002 "whicharm"
    gets $s2002 rec
-   puts stdout "Server at socket 2002 is $rec arm"
+   debuglog "Server at socket 2002 is $rec arm"
    set ANDOR_SOCKET($rec) $s2002
 }
 
 proc commandAndor { arm cmd } {
 global ANDOR_SOCKET
+   debuglog "Commanding Andor $arm : $cmd"
    puts $ANDOR_SOCKET($arm) $cmd
    gets $ANDOR_SOCKET($arm) result
    return $result
@@ -94,6 +96,7 @@ global INSTRUMENT SCOPE
    
 proc resetAndors { mode } {
 global INSTRUMENT NESSI_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
+   debuglog "Resetting Andors for $mode"
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
    if { $mode == "fullframe" } {
@@ -108,6 +111,7 @@ global INSTRUMENT NESSI_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
    }
    after 15000
    connectToAndors
+   debuglog "Andor reset complete"
 }
 
 set ANDOR_MODES(readout) 		"full_vertical_binning multi_track random_track single_track image"

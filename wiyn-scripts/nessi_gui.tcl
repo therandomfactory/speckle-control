@@ -172,6 +172,7 @@ global FWHEELS NESSI__FILTER
   if { $NESSI_FILTER($arm,current) != $name } {
     set id [findfilter $arm $name]
     if { $id > 0 } {
+       debuglog "Arm $arm select filter $name"
        selectfilter $arm $id
     }
   }
@@ -201,25 +202,30 @@ global FWHEELS
 
 proc initFilter { arm } {
 global NESSI_FILTER FWHEELS
+   debuglog "Initializing filter wheels ..."
    resetFilterWheel $FWHEELS($arm,handle)
    selectfilter $arm $FWHEELS($arm,clear)
+   debuglog "Initialized filter wheels"
 }
 
 proc nessisave { device } {
 global NESSI_DIR
    saveZaberConfig zabersConfiguration
+   debuglog "Saved zabers configuration"
 }
 
 proc nessiload { device } {
 global NESSI_DIR
    source $NESSI_DIR/zabersConfiguration
+   debuglog "Loaded zabers configuration"
 }
 
 proc nessimode { arm name } {
 global ANDOR_MODE LASTACQ
     .lowlevel.rmode configure -text "Mode=$name"
     .lowlevel.bmode configure -text "Mode=$name"
-    if { $name == "wide" && $LASTACQ != "fullframe" } {
+    debuglog "Setting arm $arm up for $name"
+   if { $name == "wide" && $LASTACQ != "fullframe" } {
        resetAndors fullframe
        positionZabers fullframe
     }
@@ -227,6 +233,7 @@ global ANDOR_MODE LASTACQ
        resetAndors roi
        positionZabers roi
      }
+    debuglog "$arm setup for $name"
 }
 
 proc nessishutter { arm name } {
@@ -237,18 +244,22 @@ global ANDOR_MODE LASTACQ
 
 proc andorsetpoint { arm } {
 global ANDOR_CFG
-   puts stdout "Set $arm camera temperature setpoint to $ANDOR_CFG($arm,setpoint)"
+   debuglog "Set $arm camera temperature setpoint to $ANDOR_CFG($arm,setpoint)"
+   commandAndor $arm "setTemperature $ANDOR_CFG($arm,setpoint)"
 }
 
 
 proc checkemccdgain { arm } {
 global INSTRUMENT
+   debuglog "Set $arm camera EMCCD gain to $INSTRUMENT($arm,emccd)"
+   commandAndor $arm "setEMCCDGain $INSTRUMENT($arm,emccd)"
    if { $INSTRUMENT($arm,highgain) == 0 || $INSTRUMENT($arm,emccd) == 0 } {
       if { $INSTRUMENT($arm,emgain) > 300 } {set INSTRUMENT($arm,emgain) 300}
       .mbar configure -bg gray50
    }
    if { $INSTRUMENT($arm,highgain) && $INSTRUMENT($arm,emccd) } {
       if { $INSTRUMENT($arm,emgain) > 300 } {
+         debuglog "$arm camera EMCCD gain >300 WARNING"
          .mbar configure -bg orange
       } else {
          .mbar configure -bg gray50
