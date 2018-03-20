@@ -111,7 +111,7 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
-      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/testf_red_[set t].fits $n $n 1 1
+      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/testf_red_[set t].fits $n $n 1 1
       exec xpaset -p ds9 frame 1
       after 400
       exec xpaset -p ds9 file $NESSI_DATADIR/testf_red_[set t].fits
@@ -119,7 +119,7 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     if { $ANDOR_CFG(blue) > -1 } {
       andorSetROI $ANDOR_CFG(blue) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(blue)
-      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/testf_blue_[set t].fits $n $n 1 1
+      andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/testf_blue_[set t].fits $n $n 1 1
       exec xpaset -p ds9 frame 2
       after 400
       exec xpaset -p ds9 file $NESSI_DATADIR/testf_blue_[set t].fits
@@ -137,12 +137,12 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     incr count 1
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
-      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/test_red_[set t].fits 256 256 $count $n
+      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/test_red_[set t].fits 256 256 $count $n
       andorDisplayFrame $ANDOR_CFG(red) 256 256 1
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
-      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/test_blue_[set t].fits 256 256 $count $n
+      andorSavedata $ANDOR_CFG(blue) $NESSI_DATADIR/test_blue_[set t].fits 256 256 $count $n
       andorDisplayFrame $ANDOR_CFG(blue) 256 256 1
     }
     update idletasks
@@ -158,6 +158,18 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
   }
   debuglog "Finished acquisition"
 }
+
+proc andorSaveData { cid fname nx ny count n } {
+global ANDOR_CFG
+  switch $ANDOR_CFG(fitsbits) { 
+      default { andorStoreFrame   $cid $fname $nx $ny $count $n }
+      short   { andorStoreFrameI2 $cid $fname $nx $ny $count $n }
+      long    { andorStoreFrameI4 $cid $fname $nx $ny $count $n }
+  }
+}
+
+
+
 
 proc locateStar { steps smooth } {
 global ANDOR_CFG
@@ -205,6 +217,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          setroi          { selectROI [lindex $msg 1] ; puts $sock "OK"}
          grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "OK"}
          version         { puts $sock "1.0" }
+         fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex @$msg 2]]" }

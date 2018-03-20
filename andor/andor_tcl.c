@@ -33,7 +33,11 @@ int outputData[1024*1024];
 int outputAvgA[1024*1024];
 int outputAvgB[1024*1024];
 float imageFrame[1024*1024];
-float fitsROI[256*256];
+float fitsROI[512*512];
+unsigned int imageFrameI4[1024*1024];
+unsigned int fitsROI4[512*512];
+unsigned short imageFrameI2[1024*1024];
+unsigned short fitsROI2[512*512];
 char *result=NULL;
 static at_32 cameraA;
 static at_32 cameraB;
@@ -58,7 +62,9 @@ int tcl_andorSelectCamera(ClientData clientData, Tcl_Interp *interp, int argc, c
 int tcl_andorDisplayFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorStoreFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorDisplayAvgFFT(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -67,11 +73,11 @@ int tcl_andorWaitForData(ClientData clientData, Tcl_Interp *interp, int argc, ch
 int tcl_andorWaitForIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorPrepDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorStartUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorShutDown(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 #ifdef TCL_USB_THREAD
+int tcl_andorStartUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStopUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStartUsb(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStopUsb(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -145,7 +151,9 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorShutDown", (Tcl_CmdProc *) tcl_andorShutDown, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplayAvgFFT", (Tcl_CmdProc *) tcl_andorDisplayAvgFFT, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStoreFrame", (Tcl_CmdProc *) tcl_andorStoreFrame, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorStoreFrameI2", (Tcl_CmdProc *) tcl_andorStoreFrameI2, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetProperty", (Tcl_CmdProc *) tcl_andorGetProperty, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorStoreFrameI4", (Tcl_CmdProc *) tcl_andorStoreFrameI4, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSetProperty", (Tcl_CmdProc *) tcl_andorSetProperty, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSelectCamera", (Tcl_CmdProc *) tcl_andorSelectCamera, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStartAcq", (Tcl_CmdProc *) tcl_andorStartAcquisition, NULL, NULL);
@@ -351,6 +359,281 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
 
   return TCL_OK;
 }
+
+int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int width,height,numexp,iexp,cameraId;
+  int irow,iw,ih,ipix;
+  int status;
+  int *copyFrom;
+  char filename[1024];
+  int bitpix   =  ULONG_IMG; /* 32-bit unsigned int pixel values       */
+  long naxes3[3];   
+  long naxes[2];
+  int fpixel=1;
+  int nelements;
+
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 6) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId filename width height iexp numexp\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+  sscanf(argv[1],"%d",&cameraId);
+  strcpy(filename,argv[2]);
+  sscanf(argv[3],"%d",&width);
+  sscanf(argv[4],"%d",&height);
+  sscanf(argv[5],"%d",&iexp);
+  sscanf(argv[6],"%d",&numexp);
+  if ( cameraId == 0 ) {
+     copyFrom = &imageDataA;
+     if (width < 1024) {
+       for (iw=0;iw<width;iw++) {
+       for (ih=0;ih<height;ih++) {
+         fitsROI4[iw+ih*width] = (unsigned int)imageDataA[iw+ih*width];
+       }
+       }
+     }
+  }
+  if ( cameraId == 1 ) {
+     copyFrom = &imageDataB;
+     if (width < 1024) {
+       for (iw=0;iw<width;iw++) {
+       for (ih=0;ih<height;ih++) {
+         fitsROI4[iw+ih*width] = (unsigned int)imageDataB[iw+ih*width];
+       }
+       }
+     }
+ }
+
+  if ( numexp == 1 ) {
+    status = 0;         /* initialize status before calling fitsio routines */ 
+    fits_create_file(&fptr, filename, &status); /* create new FITS file */
+    if (status != 0) {
+         sprintf(result,"fits create file error %d",status);
+         Tcl_SetResult(interp,result,TCL_STATIC);
+         return TCL_ERROR;
+    }
+    naxes[0]=width;
+    naxes[1]=height;
+    fpixel=1;
+    nelements = naxes[0] * naxes[1];          /* number of pixels to write */
+
+    fits_create_img(fptr,  bitpix, 2, naxes, &status);
+    if (status != 0) {
+          sprintf(result,"fits create image error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+   
+    if (width < 1024) {
+      fits_write_img(fptr, TULONG, fpixel, nelements, &fitsROI, &status);
+    } else {
+      if ( cameraId == 0 ) {
+        for (ipix=0;ipix<1024*1024;ipix++) {
+            imageFrameI4[ipix] = (unsigned int)imageDataA[ipix];
+        }
+      }
+      if ( cameraId == 1 ) {
+        for (ipix=0;ipix<1024*1024;ipix++) {
+            imageFrameI4[ipix] = (unsigned int)imageDataB[ipix];
+        }
+      }
+      fits_write_img(fptr, TULONG, fpixel, nelements, &imageFrameI4, &status);
+    }
+
+    if (status != 0) {
+          sprintf(result,"fits write error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+
+    create_fits_header(interp, fptr);
+ 
+    fits_close_file(fptr, &status);                /* close the file */
+    if (status != 0) {
+          sprintf(result,"fits close error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+   } else {
+     status=0;
+     naxes3[0]=width;
+     naxes3[1]=height;
+     naxes3[2]=numexp;
+     if ( iexp == 1) {
+        fits_create_file(&fptr, filename, &status); /* create new FITS file */
+        if (status != 0) {
+            sprintf(result,"fits create file error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+        fits_create_img(fptr,  bitpix, 3, naxes3, &status);
+        if (status != 0) {
+            sprintf(result,"fits create img error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+     }
+     fpixel=width*height*(iexp-1)+1;
+     nelements = naxes3[0] * naxes3[1];          /* number of pixels to write */
+     fits_write_img(fptr, TULONG, fpixel, nelements, &fitsROI4, &status);
+     if (status != 0) {
+         sprintf(result,"fits write img error %d",status);
+         Tcl_SetResult(interp,result,TCL_STATIC);
+         return TCL_ERROR;
+     }
+     if (iexp == numexp) {
+        create_fits_header(interp, fptr);
+        fits_close_file(fptr, &status);                /* close the file */
+        if (status != 0) {
+            sprintf(result,"fits close error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+     }
+  }  
+
+  return TCL_OK;
+}
+
+int tcl_andorStoreFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int width,height,numexp,iexp,cameraId;
+  int irow,iw,ih,ipix;
+  int status;
+  int *copyFrom;
+  char filename[1024];
+  int bitpix   =  USHORT_IMG; /* 32-bit unsigned int pixel values       */
+  long naxes3[3];   
+  long naxes[2];
+  int fpixel=1;
+  int nelements;
+
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 6) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId filename width height iexp numexp\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+  sscanf(argv[1],"%d",&cameraId);
+  strcpy(filename,argv[2]);
+  sscanf(argv[3],"%d",&width);
+  sscanf(argv[4],"%d",&height);
+  sscanf(argv[5],"%d",&iexp);
+  sscanf(argv[6],"%d",&numexp);
+  if ( cameraId == 0 ) {
+     copyFrom = &imageDataA;
+     if (width < 1024) {
+       for (iw=0;iw<width;iw++) {
+       for (ih=0;ih<height;ih++) {
+         fitsROI4[iw+ih*width] = (unsigned int)imageDataA[iw+ih*width];
+       }
+       }
+     }
+  }
+  if ( cameraId == 1 ) {
+     copyFrom = &imageDataB;
+     if (width < 1024) {
+       for (iw=0;iw<width;iw++) {
+       for (ih=0;ih<height;ih++) {
+         fitsROI2[iw+ih*width] = (unsigned short)imageDataB[iw+ih*width];
+       }
+       }
+     }
+ }
+
+  if ( numexp == 1 ) {
+    status = 0;         /* initialize status before calling fitsio routines */ 
+    fits_create_file(&fptr, filename, &status); /* create new FITS file */
+    if (status != 0) {
+         sprintf(result,"fits create file error %d",status);
+         Tcl_SetResult(interp,result,TCL_STATIC);
+         return TCL_ERROR;
+    }
+    naxes[0]=width;
+    naxes[1]=height;
+    fpixel=1;
+    nelements = naxes[0] * naxes[1];          /* number of pixels to write */
+
+    fits_create_img(fptr,  bitpix, 2, naxes, &status);
+    if (status != 0) {
+          sprintf(result,"fits create image error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+   
+    if (width < 1024) {
+      fits_write_img(fptr, TUSHORT, fpixel, nelements, &fitsROI2, &status);
+    } else {
+      if ( cameraId == 0 ) {
+        for (ipix=0;ipix<1024*1024;ipix++) {
+            imageFrameI2[ipix] = (unsigned short)imageDataA[ipix];
+        }
+      }
+      if ( cameraId == 1 ) {
+        for (ipix=0;ipix<1024*1024;ipix++) {
+            imageFrameI2[ipix] = (unsigned short)imageDataB[ipix];
+        }
+      }
+      fits_write_img(fptr, TUSHORT, fpixel, nelements, &imageFrameI2, &status);
+    }
+
+    if (status != 0) {
+          sprintf(result,"fits write error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+
+    create_fits_header(interp, fptr);
+ 
+    fits_close_file(fptr, &status);                /* close the file */
+    if (status != 0) {
+          sprintf(result,"fits close error %d",status);
+          Tcl_SetResult(interp,result,TCL_STATIC);
+          return TCL_ERROR;
+    }
+   } else {
+     status=0;
+     naxes3[0]=width;
+     naxes3[1]=height;
+     naxes3[2]=numexp;
+     if ( iexp == 1) {
+        fits_create_file(&fptr, filename, &status); /* create new FITS file */
+        if (status != 0) {
+            sprintf(result,"fits create file error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+        fits_create_img(fptr,  bitpix, 3, naxes3, &status);
+        if (status != 0) {
+            sprintf(result,"fits create img error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+     }
+     fpixel=width*height*(iexp-1)+1;
+     nelements = naxes3[0] * naxes3[1];          /* number of pixels to write */
+     fits_write_img(fptr, TUSHORT, fpixel, nelements, &fitsROI2, &status);
+     if (status != 0) {
+         sprintf(result,"fits write img error %d",status);
+         Tcl_SetResult(interp,result,TCL_STATIC);
+         return TCL_ERROR;
+     }
+     if (iexp == numexp) {
+        create_fits_header(interp, fptr);
+        fits_close_file(fptr, &status);                /* close the file */
+        if (status != 0) {
+            sprintf(result,"fits close error %d",status);
+            Tcl_SetResult(interp,result,TCL_STATIC);
+            return TCL_ERROR;
+        }
+     }
+  }  
+
+  return TCL_OK;
+}
+
+
+
 
 int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
