@@ -113,7 +113,7 @@ place .filters.lbpos -x 400 -y 20
 place .filters.lbname -x 520 -y 20
 place .filters.lbfocus -x 680 -y 20
 
-wm geometry .filters 773x[expr $MAXFILTERS*35 + 110]
+wm geometry .filters 773x[expr $MAXFILTERS*35 + 110]+10+170
 set i 0
 set iy 50
 while { $i < $MAXFILTERS } {
@@ -252,12 +252,15 @@ set f2 [oriel_connect 2]
 set sn2 $FWSERIAL([lindex $f2 1])
 if { $sn2 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 2}
 if { $sn2 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 2}
-
+showstatus "Initializing filter wheel 1"
 resetFilterWheel 1
+
+showstatus "Initializing filter wheel 2"
 resetFilterWheel 2
+debuglog "Moving filter wheels to clear positions"
 selectfilter red $FWHEELS(red,clear)
 selectfilter blue $FWHEELS(blue,clear)
-
+wm withdraw .filters
 
 
 

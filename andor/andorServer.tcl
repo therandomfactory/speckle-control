@@ -1,4 +1,8 @@
 #!/usr/bin/wish
+proc debuglog { msg } {
+   puts stdout $msg
+}
+
 
 set NESSI_DIR $env(NESSI_DIR)
 load $NESSI_DIR/lib/andorTclInit.so
@@ -81,6 +85,17 @@ global CAM
    }
 }
 
+proc configureFrame { mode } {
+global CAM ANDOR_ROI
+   if { $mode == "fullframe" } {
+     debuglog "Configure camera $CAM for fullframe"
+     andorConfigure $CAM 1 1 1 1024 1 1024 0 0 0 0
+   }
+   if { $mode == "roi" } {
+     debuglog "Configure camera $CAM for ROI : $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye)"
+     andorConfigure $CAM 1 1 $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) 0 0 0 0
+   }
+}
 
 proc acquireDataFrame { exp } {
 global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
@@ -127,8 +142,8 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
 }
 
 proc acquireDataCube { exp n } {
-global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
-    debuglog "Starting $ANDOR_ARM full-frame sequence with exposure = $exp"
+global ANDOR_CFG NESSI_DATADIR ANDOR_ARM ANDOR_ROI
+  debuglog "Starting $ANDOR_ARM full-frame sequence with exposure = $exp"
   refreshds9 [expr int($exp*2000)] [expr $n*4]
   set t [clock seconds]
   SetExposureTime $exp
@@ -183,7 +198,7 @@ global ANDOR_CFG
 }
 
 proc selectROI { idim } {
-global ANDOR_ARM
+global ANDOR_ARM ANDOR_ROI
   set xy [locateStar 20 5]
   set x [lindex $xy 0]
   set y [lindex $xy 1]
@@ -197,6 +212,10 @@ global ANDOR_ARM
   if { $ye > 1024 } {set ye 1024 ; set ys [expr 1024-$idim+1]}
   exec xpaset -p ds9 regions deleteall
   exec echo "box [expr $xs+$idim/2] [expr $ys+$idim/2] $idim $idim 0" | xpaset  ds9 regions
+  set ANDOR_ROI(xs) $xs
+  set ANDOR_ROI(xe) $xe
+  set ANDOR_ROI(ys) $ys
+  set ANDOR_ROI(ye) $ye
   debuglog "$ANDOR_ARM ROI measured as $xs , $xe , $ys , $ye"
 }
 
@@ -217,6 +236,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          setroi          { selectROI [lindex $msg 1] ; puts $sock "OK"}
          grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "OK"}
          version         { puts $sock "1.0" }
+         setframe        { configureFrame [lindex $msg 1] ;  puts $sock "OK"}
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }

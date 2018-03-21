@@ -55,6 +55,7 @@ global CAMERAS ANDOR ANDOR_SOCKET
      catch { commandAndor red shutdown }
      catch { commandAndor blue shutdown }
      catch { exec xpaset -p ds9 exit }
+     catch { exec pkill -9 tail }
      exit
    }
 }

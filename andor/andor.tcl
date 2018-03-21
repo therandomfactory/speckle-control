@@ -46,38 +46,58 @@ proc refreshds9 { delta count } {
 }
 
 proc connectToAndors { } {
-global ANDOR_SOCKET
-   set s2001 [socket localhost 2001]
-   fconfigure $s2001 -buffering line
-   set s2002 [socket localhost 2002]
-   fconfigure $s2002 -buffering line
-   puts $s2001 "whicharm"
-   gets $s2001 rec
-   debuglog "Server at socket 2001 is $rec arm"
-   set ANDOR_SOCKET($rec) $s2001
-   puts $s2002 "whicharm"
-   gets $s2002 rec
-   debuglog "Server at socket 2002 is $rec arm"
-   set ANDOR_SOCKET($rec) $s2002
+global ANDOR_SOCKET INSTRUMENT
+   set ANDOR_SOCKET(red) 0
+   set ANDOR_SOCKET(blue) 0
+   catch {
+     set s2001 [socket localhost 2001]
+     fconfigure $s2001 -buffering line
+     puts $s2001 "whicharm"
+     gets $s2001 rec
+     debuglog "Server at socket 2001 is $rec arm"
+     set INSTRUMENT($rec) 1
+   }
+   catch {
+     set ANDOR_SOCKET($rec) $s2001
+     set s2002 [socket localhost 2002]
+     fconfigure $s2002 -buffering line
+     puts $s2002 "whicharm"
+     gets $s2002 rec
+     debuglog "Server at socket 2002 is $rec arm"
+     set ANDOR_SOCKET($rec) $s2002
+     set INSTRUMENT($rec) 1
+   }
+   if { $ANDOR_SOCKET(red) == 0 } {
+      debuglog "No connecton to Red arm camera"
+   }
+   if { $ANDOR_SOCKET(blue) == 0 } {
+      debuglog "No connecton to Blue arm camera"
+   }
 }
 
 proc commandAndor { arm cmd } {
 global ANDOR_SOCKET
-   debuglog "Commanding Andor $arm : $cmd"
-   puts $ANDOR_SOCKET($arm) $cmd
-   gets $ANDOR_SOCKET($arm) result
+   if { $ANDOR_SOCKET($arm) == 0 } {
+     debuglog "WARNING : $arm arm camera not connected"
+     return 0
+   } else {
+     debuglog "Commanding Andor $arm : $cmd"
+     puts $ANDOR_SOCKET($arm) $cmd
+     gets $ANDOR_SOCKET($arm) result
+   }
    return $result
 }
 
 
 proc acquireCubes { } {
-global INSTRUMENT SCOPE LASTACQ
+global INSTRUMENT SCOPE LASTACQ ACQREGION
+   set n [expr $ACQREGION(xe) - $ACQREGION(xs) +1]
    if { $INSTRUMENT(red) } {
-      commandAndor red "acquire $SCOPE(exposure) $SCOPE(numframes)"
+      commandAndor red "grabroi $SCOPE(exposure) $SCOPE(numframes)"
       set LASTACQ roi
    }
    if { $INSTRUMENT(blue) } {
-      commandAndor blue "acquire $SCOPE(exposure) $SCOPE(numframes)"
+      commandAndor blue "grabroi $SCOPE(exposure) $SCOPE(numframes)"
       set LASTACQ roi
    }
 }
@@ -96,7 +116,7 @@ global INSTRUMENT SCOPE
    
 proc resetAndors { mode } {
 global INSTRUMENT NESSI_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
-   debuglog "Resetting Andors for $mode"
+   debuglog "Resetting Andors for $mode" 
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
    if { $mode == "fullframe" } {

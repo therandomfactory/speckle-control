@@ -762,11 +762,14 @@ proc  acquisitionmode { rdim } {
 #               CONFIG	-	GUI configuration
 global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   if { $LASTACQ != "fullframe" } {
-        resetAndors fullframe
+        commandAndor red "setframe fullframe"
+        commandAndor blue "setframe fullframe"
         positionZabers fullframe
   }
   acquireFrames
-  catch {
+  after 2000
+  if { $rdim == "manual" } {
+    catch {
       set xcenter 512
       set ycenter 512
       exec xpaset -p ds9 regions deleteall
@@ -777,8 +780,12 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
       exec echo "box $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye) | xpaset ds9 regions
     }
     set it [tk_dialog .d "Edit region" "Move the region in the\n image display tool then click OK" {} -1 "OK"]
-    set reg [split [exec xpaget ds9 regions] \n]
-    foreach i $reg {
+  } else {
+    commandAndor red "setroi $rdim"
+    commandAndor blue "setroi $rdim"
+  }
+  set reg [split [exec xpaget ds9 regions] \n]
+  foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
         set r [lrange [split $i ",()"] 1 4]
         set ACQREGION(xs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
@@ -792,6 +799,9 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   set CONFIG(geometry.StartRow) [expr $ACQREGION(ys)]
   set CONFIG(geometry.NumCols) [expr $ACQREGION(xs)+$rdim]
   set CONFIG(geometry.NumRows) [expr $ACQREGION(ye)-$rdim]
+  debuglog "ROI is $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye)" 
+  commandAndor red "setframe roi"
+  commandAndor blue "setframe roi"
   resetAndors roi
   positionZabers roi
   .lowlevel.rmode configure -text "Mode=speckle"
@@ -924,218 +934,6 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
 }
 
 
-
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
-#
-#  Procedure  : driftscan
-#
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#  This procedure manages driftscan observations. All the heavy lifting is
-#  done by the C/C++ code of course.
-#
-#  Arguments  :
-#
-#               nrow	-	Number of rows to readout (optional, default is 0)
-#               delay	-	Per-row delay in microseconds (optional, default is 0)
-#               nblock	-	Number of rows to read per cycle (optional, default is 1)
-#               shutter	-	Shutter open(1), closed(0) (optional, default is 1)
-#               id	-	Camera id (for multi-camera use) (optional, default is 0)
- 
-proc driftscan { name {nrow 0} {delay 0} {shutter 1} {nblock 1} {id 0} } {
- 
-#
-#  Globals    :
-#  
-#               CAMERAS	-	Camera id's
-#               SCOPE	-	Telescope parameters, gui setup
-#               DEBUG	-	Set to 1 for verbose logging
-global CAMERAS SCOPE DEBUG ALTA
-  if { $delay == 0 } {set delay $SCOPE(driftdcalc)}
-  if { $nrow == 0 } {set nrow $SCOPE(driftrows)}
-  if { $DEBUG } {debuglog  "Drift scan using delay = $delay, rows = $nrow"}
-  set camera $CAMERAS($id)
-  if { $ALTA } {
-    $camera SetTdiRows $nrow
-    $camera SetTdiRate [expr $delay/1000000.]
-    $camera SetCameraMode 1
-    $camera SetBulkDownload 1
-    $camera StartExposure [expr $delay/1000000.] $shutter
-    setutc
-    $camera BufferImage tempobs
-    saveandshow tempobs $name
-    $camera SetCameraMode 0
-    $camera SetBulkDownload 0
-  } else {
-    $camera configure -m_TDI 1
-    $camera Expose [expr $delay/1000] $shutter
-    setutc
-    $camera BufferDriftScan drift $delay $nrow $nblock 0
-    saveandshow drift $name
-    $camera configure -m_TDI 0
-    $camera Flush
-  }
-}
-
-
-
-
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
-#
-#  Procedure  : driftcalib
-#
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#
-#  This procedure calculates the equatorial drift rate based upon a 
-#  rate measured by the user at an arbritary (hopefully accurate) known
-#  DEC.
-#
-#  Arguments  :
-#
- 
-proc driftcalib { } {
- 
-#
-#  Globals    :
-#  
-#               SCOPE	-	Telescope parameters, gui setup
-global SCOPE
-   set delay $SCOPE(driftsamp)
-   set d [dms_to_radians [.main.vdec get]]
-   set fac [expr cos($d)]
-   set SCOPE(driftdelay) [expr int($delay*$fac)]
-}
-
-
-
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
-#
-#  Procedure  : driftcalc
-#
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#  This procedure calculates the drift rate in microseconds. It presumes that
-#  the equatorial rate has already been calculated.
-#
-#
-#  Arguments  :
-#
- 
-proc driftcalc { } {
- 
-#
-#  Globals    :
-#  ANDOR_ACQMODE
-#               SCOPE	-	Telescope parameters, gui setup
-#               CAMSTATUS	-	Current values of camera variables
-global SCOPE CAMSTATUS
-   set delay $SCOPE(driftdelay)
-   set d [dms_to_radians [.main.vdec get]]
-   set fac [expr cos($d)]
-   set SCOPE(driftdcalc) [expr int($delay/$fac)]
-   set t [tlabel [expr $SCOPE(driftdcalc)/1000000.*($CAMSTATUS(NumY)+$SCOPE(driftrows))/3600./12.*3.14159]]
-   set SCOPE(driftexp) $t
-}
-
-
-
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
-#
-#  Procedure  : focustest
-#
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#  This procedure takes a focus exposure. This consists of taking a series
-#  of exposures, and shifting the charge on the ccd in between each.
-#  In addition, the focus is also altered between each exposure.
-#  The resulting image can be automatically analsed to determine 
-#  optimum focus.
-#  This is an example of using TDI mode, without writing any c/c++ code, the 
-#  applications of this technique are legion.....
-#
-#  Arguments  :
-#
-#               name	-	Image file name
-#               exp	-	Exposure time in seconds
-#               nstep	-	Number of steps in focus
-#               nshift	-	Number of rows to shift per focus step
-#               id	-	Camera id (for multi-camera use) (optional, default is 0)
- 
-proc focustest { name exp nstep nshift {id 0} } {
- 
-#
-#  Globals    :
-#  
-#               CAMERAS	-	Camera id's
-#               DEBUG	-	Set to 1 for verbose logging
-#               CAMSTATUS	-	Current values of camera variables
-global CAMERAS DEBUG CAMSTATUS
-  set camera $CAMERAS($id)
-  $camera configure -m_TDI 1
-  $camera Expose 0.02 0
-  setutc
-  set istep 1
-  set ishift 0
-  while { $ishift < $CAMSTATUS(NumY) } {
-     $camera DigitizeLine
-     incr ishift 1
-  }
-  while { $istep <= $nstep } {
-    set it [tk_dialog .d "Focus exposure" "Move to focus position $istep\n then click OK" {} -1 "Cancel" "OK"]
-    if { $it } {
-      if { $istep == $nstep } {set nshift [expr $nshift*2] }
-      $camera write_ForceShutterOpen 1 
-      exec sleep $exp
-      $camera write_ForceShutterOpen 0
-      set ishift 0
-      while { $ishift < $nshift } {
-         $camera DigitizeLine
-         incr ishift 1
-      }
-    } else { 
-       set istep $nstep
-    }
-    incr istep 1
-  }
-  $camera configure -m_TDI 0
-  $camera BufferImage READOUT
-  $camera Flush
-  if { $DEBUG } {debuglog "Saving to FITS $name"}
-  write_image READOUT $name.fits
-}
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------

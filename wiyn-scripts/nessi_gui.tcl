@@ -142,7 +142,7 @@ place .lowlevel.bmode -x 420 -y 70
 .lowlevel.bmode.m add command -label "Speckle" -command "nessimode blue speckle"
 .lowlevel.bmode.m add command -label "Custom" -command "nessimode blue custom"
 
-menubutton .lowlevel.rfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.rfilter.m
+menubutton .lowlevel.rfilter -text "Filter = clear"  -width 10 -bg gray80 -menu .lowlevel.rfilter.m
 menu .lowlevel.rfilter.m
 place .lowlevel.rfilter -x 118 -y 70
 .lowlevel.rfilter.m add command -label "i" -command "nessifilter red Red-I"
@@ -152,7 +152,7 @@ place .lowlevel.rfilter -x 118 -y 70
 .lowlevel.rfilter.m add command -label "clear" -command "nessifilter red clear"
 .lowlevel.rfilter.m add command -label "block" -command "nessifilter red block"
 
-menubutton .lowlevel.bfilter -text Filter  -width 10 -bg gray80 -menu .lowlevel.bfilter.m
+menubutton .lowlevel.bfilter -text "Filter = clear"  -width 10 -bg gray80 -menu .lowlevel.bfilter.m
 menu .lowlevel.bfilter.m
 place .lowlevel.bfilter -x 518 -y 70
 .lowlevel.bfilter.m add command -label "u" -command "nessifilter blue Blue-U"
@@ -163,7 +163,7 @@ place .lowlevel.bfilter -x 518 -y 70
 .lowlevel.bfilter.m add command -label "clear" -command "nessifilter blue clear"
 
 proc nessifilter { arm name } {
-global FWHEELS NESSI__FILTER
+global FWHEELS NESSI_FILTER
   if { $arm == "red" } {
     .lowlevel.rfilter configure -text "Filter = $name"
   } else {
@@ -178,8 +178,8 @@ global FWHEELS NESSI__FILTER
   }
 }
 
-set NESSI_FILTER(red,current) unknown
-set NESSI_FILTER(blue,current) unknown
+set NESSI_FILTER(red,current) clear
+set NESSI_FILTER(blue,current) clear
 set NESSI_FILTER(red,wheel) 1
 set NESSI_FILTER(blue,wheel) 2
 
@@ -225,12 +225,14 @@ global ANDOR_MODE LASTACQ
     .lowlevel.rmode configure -text "Mode=$name"
     .lowlevel.bmode configure -text "Mode=$name"
     debuglog "Setting arm $arm up for $name"
-   if { $name == "wide" && $LASTACQ != "fullframe" } {
-       resetAndors fullframe
+    if { $name == "wide" && $LASTACQ != "fullframe" } {
+       commandAndor red "setframe fullframe"
+       commandAndor blue "setframe fullframe"
        positionZabers fullframe
     }
     if { $name == "speckle" && $LASTACQ != "roi" } {
-       resetAndors roi
+       commandAndor red "setframe fullframe"
+       commandAndor blue "setframe fullframe"
        positionZabers roi
      }
     debuglog "$arm setup for $name"
@@ -337,20 +339,22 @@ place .lowlevel.bload -x 515 -y 460
 
 
 
-set INSTRUMENT(red) 1
-set INSTRUMENT(blue) 1
+#set INSTRUMENT(red) 1
+#set INSTRUMENT(blue) 1
 set SCOPE(exposure) 0.04
 set LASTACQ fullframe
 nessimode red wide
 nessimode blue wide
 
 
-
+showstatus "Initializing Zabers"
 source $NESSI_DIR/zaber/zaber.tcl 
 
+showstatus "Initializing Filter Wheeels"
 source $NESSI_DIR/oriel/filterWheel.tcl
 
 set NESSI(observingGui) 620x497
+source $NESSI_DIR/wiyn-scripts/mimic.tcl
 
 if { $SCOPE(telescope) == "WIYN" } {
    .lowlevel configure -height 520 -width 620
@@ -401,7 +405,7 @@ button .lowlevel.usein -text "IN = Current" -bg gray70 -width 12 -command "picoU
 button .lowlevel.useout -text "OUT = Current" -bg gray70 -width 12 -command "picoUseCurrentPos out"
 place .lowlevel.usein -x 360  -y 620
 place .lowlevel.useout -x 490  -y 620
-
+showstatus "Initializing PICOs"
 source $NESSI_DIR/picomotor/picomotor.tcl
 
 }
