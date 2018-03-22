@@ -1,0 +1,11 @@
+
+if { $SCOPE(instrument) == "WIYN" } {
+  set SCOPE(exposure) 0.04
+} else {
+  set SCOPE(exposure) 0.06
+}
+set ANDOR_CFG(accum) 1
+commandAndor red "setframe roi"
+commandAndor blue "setframe roi"
+
+

@@ -1,0 +1,15 @@
+
+set ANDOR_CFG(fitsbits) u16
+set SCOPE(numframes) 1000
+set ANDOR_CFG(accum) 1
+commandAndors SetFrameTransferMode $ANDORCODE(AC_ACQMODE_FRAMETRANSFER)
+commandAndors SetTemperature -60
+set ANDOR_DEF(hbin) 1
+set ANDOR_DEF(vbin) 1
+set ANDOR_DEF(shutter) $ANDOR_SHUTTER(close)
+#vertical clock voltage amplitude = 0
+#pre amplifier gain = 2
+#vertical shift speed = 1.13e-6
+#pixel readout rate = 20MHz
+#baseline clamp = True
+

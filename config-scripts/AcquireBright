@@ -1,0 +1,12 @@
+
+set INSTRUMENT(red,emccdgain) 20
+set INSTRUMENT(blue,emccdgain) 20
+if { $SCOPE(instrument) == "WIYN" } {
+  set SCOPE(exposure) 0.04
+} else {
+  set SCOPE(exposure) 0.06
+}
+commandAndor red "setframe fullframe"
+commandAndor blue "setframe fullframe"
+
+
