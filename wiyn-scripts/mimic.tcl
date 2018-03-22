@@ -43,18 +43,18 @@ proc mimicMode { arm mode {value ""} } {
 global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut
    if { $arm == "red" } {
      if { $mode == "wide" } {
-       .mimicNessi.myCanvas move $oredwide 450 115
-       .mimicNessi.myCanvas move $oredspck 460 180
+       .mimicNessi.myCanvas moveto $oredwide 450 115
+       .mimicNessi.myCanvas moveto $oredspck 460 180
      }
      if { $mode == "speckle" } {
-       .mimicNessi.myCanvas move $oredwide 450 60
-       .mimicNessi.myCanvas move $oredspck 460 135
+       .mimicNessi.myCanvas moveto $oredwide 450 60
+       .mimicNessi.myCanvas moveto $oredspck 460 135
      }
      if { $mode == "open" } {
-       .mimicNessi.myCanvas move $oredshut 670 124
+       .mimicNessi.myCanvas moveto $oredshut 670 124
      }
      if { $mode == "close" } {
-       .mimicNessi.myCanvas move $oredshut 1000 124
+       .mimicNessi.myCanvas moveto $oredshut 1000 124
      }
      if { $mode == "filter" } {
        .mimicNessi.myCanvas.redfilt configure -text $value
@@ -65,18 +65,18 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
    }
    if { $arm == "blue" } {
      if { $mode == "wide" } {
-       .mimicNessi.myCanvas move $obluewide 276 260
-       .mimicNessi.myCanvas move $obluespck 341 268 
+       .mimicNessi.myCanvas moveto $obluewide 276 260
+       .mimicNessi.myCanvas moveto $obluespck 341 268 
      }
      if { $mode == "speckle" } {
-       .mimicNessi.myCanvas move $obluewide 221 260
-       .mimicNessi.myCanvas move $obluespck 297 268
+       .mimicNessi.myCanvas moveto $obluewide 221 260
+       .mimicNessi.myCanvas moveto $obluespck 297 268
      }
      if { $mode == "open" } {
-       .mimicNessi.myCanvas move $oblueshut 286 468
+       .mimicNessi.myCanvas moveto $oblueshut 286 468
      }
      if { $mode == "close" } {
-       .mimicNessi.myCanvas move $oblueshut 286 1000
+       .mimicNessi.myCanvas moveto $oblueshut 286 1000
      }
      if { $mode == "filter" } {
        .mimicNessi.myCanvas.bluefilt configure -text $value
@@ -87,12 +87,12 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
    }
    if { $arm == "input" } {
      if { $mode == "wide" } {
-       .mimicNessi.myCanvas move $oinpwide 200 95
-       .mimicNessi.myCanvas move $oinpspck 200 35
+       .mimicNessi.myCanvas moveto $oinpwide 200 95
+       .mimicNessi.myCanvas moveto $oinpspck 200 35
      }
      if { $mode == "speckle" } {
-       .mimicNessi.myCanvas move $oinpwide 200 180
-       .mimicNessi.myCanvas move $oinpspck 200 115
+       .mimicNessi.myCanvas moveto $oinpwide 200 180
+       .mimicNessi.myCanvas moveto $oinpspck 200 115
      }
    }
 }
