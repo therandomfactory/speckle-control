@@ -240,10 +240,15 @@ global ANDOR_MODE LASTACQ
 }
 
 proc nessishutter { arm name } {
-global ANDOR_MODE LASTACQ
+global ANDOR_MODE LASTACQ ANDOR_SHUTTER
     .lowlevel.rshut configure -text "Shutter=$name"
     .lowlevel.bshut configure -text "Shutter=$name"
     mimicMode $arm $name
+    if { $name == "during" } { 
+       commandAndor $arm "shutter $ANDOR_SHUTTER(auto)"
+    } else { 
+       commandAndor $arm "shutter $ANDOR_SHUTTER($name)"
+    }
 }
 
 proc andorsetpoint { arm } {
@@ -360,6 +365,7 @@ source $NESSI_DIR/oriel/filterWheel.tcl
 
 set NESSI(observingGui) 620x540
 source $NESSI_DIR/wiyn-scripts/mimic.tcl
+wm geometry .mimicNessi +660+30
 
 if { $SCOPE(telescope) == "WIYN" } {
    .lowlevel configure -height 520 -width 620

@@ -58,6 +58,7 @@ foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilt
 SetExposureTime 0.04
 andorSetProperty $CAM temperature -60
 andorSetProperty $CAM cooler 1
+andorSetProperty $CAM shutter 0
 
 if { $hend != 1024 } {
    set shmid [andorConnectShmem 512 512]
@@ -244,6 +245,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          datadir         { set NESSI_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; puts $sock $it }
+         shutter         { set it [andorSetProperty $CAM shutter [lindex $msg 1]] ; puts $sock %$it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
          configure       { set hbin [lindex $msg 1]
                            set vbin [lindex $msg 2]

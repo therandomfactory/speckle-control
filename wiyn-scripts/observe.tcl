@@ -541,6 +541,8 @@ global STATUS
   countdown off
   .main.observe configure -text "Observe" -bg gray -relief raised
   .main.abort configure -bg gray -relief sunken -fg LightGray
+  mimicMode red close
+  mimicMode blue close
 }
 
 

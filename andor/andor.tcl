@@ -98,6 +98,10 @@ global LASTACQ STATUS
       commandAndor blue "grabroi $SCOPE(exposure) 1"
    }
    if { $STATUS(abort) == 0 } {
+      if { $SCOPE(exposure) > 0.0 } {
+          mimicMode red open
+          mimicMode blue open
+      }
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
       after [expr int($SCOPE(exposure)*1000)] videomode

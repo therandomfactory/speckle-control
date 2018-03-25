@@ -815,6 +815,13 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
         CoolerON();
      }
   }
+  if (strcmp(argv[2],"shutter") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetShutter(1,ivalue,50,50);
+     if (status == DRV_SUCCESS) {
+        andorSetup[cameraId].shutter = ivalue;
+     }
+  }
 
   return TCL_OK;
 }

@@ -18,7 +18,7 @@ proc errordialog { msg} {puts stdout $msg}
 
 proc loadZaberConfig { {fname zabersConfiguration} } {
 global NESSI_DIR ZABERS SCOPE
-   if { $SCOPE(telescope) == GEMINI" } {  
+   if { $SCOPE(telescope) == "GEMINI" } {  
       set fname "[set fname].gemini"
    }
    if { [file exists $NESSI_DIR/$fname] == 0 } {
