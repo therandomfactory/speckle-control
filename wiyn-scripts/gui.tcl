@@ -203,17 +203,21 @@ if { [lindex [package version BWidget] end] >= 1.8 } {
  ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype)
  SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq)
  place .main.numseq -x 100 -y 106
+ label .main.laccum -text "Accum." -bg gray
+ SpinBox .main.numaccum -width 10   -range "1 10000 1" -textvariable SCOPE(numaccum)
  place .main.exptype -x 100 -y 80
+ place .main.numaccum -x 250 -y 106
  label .main.lexp -text Exposure -bg gray
  label .main.lnum -text "Num. Frames" -bg gray
  label .main.lseq -text "Num. Seq." -bg gray
  label .main.ltyp -text "Exp. Type" -bg gray
+ place .main.laccum -x 200 -y 106
  place .main.lexp -x 20 -y 23
  place .main.lnum -x 20 -y 53
  place .main.ltyp -x 20 -y 83
  place .main.lseq -x 20 -y 107
 } else {
- SpinBox .main.exposure -width 7 -$bwkey "Exposure (in seconds) : " -font fixed -$bwfont "fixed"  -range "0.0 1048.75 1" -textvariable SCOPE(exposure)
+ SpinBox .main.exposure -width 7 -$bwkey "Exposure (in seconds) : " -font fixed -$bwfont "fixed"  -range "0.0 1000.0 1" -textvariable SCOPE(exposure)
  place .main.exposure -x 20 -y 20
  SpinBox .main.numexp -width 12 -$bwkey "Number of frames : " -font fixed  -$bwfont "fixed"  -range "1 1000 1" -textvariable SCOPE(numframes)
  place .main.numexp -x 20 -y 50
@@ -222,7 +226,8 @@ if { [lindex [package version BWidget] end] >= 1.8 } {
  place .main.exptype -x 20 -y 80
 }
 set SCOPE(exptype) Object
-button .main.seldir -width 24 -text "Configure data directory" -command "choosedir data data"
+set SCOPE(numaccum) 1
+button .main.seldir -width 40 -text "Configure data directory" -command "choosedir data data"
 place .main.seldir -x 20 -y 275
 label .main.lname -bg gray -fg black -text "File name :"
 place .main.lname -x 20 -y 135
