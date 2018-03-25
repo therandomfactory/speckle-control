@@ -727,6 +727,8 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF
    set CONFIG(geometry.StartRow)  1
    set CONFIG(geometry.NumCols)   [lindex [split $ANDOR_DEF(fullframe) ,] 1]
    set CONFIG(geometry.NumRows)   [lindex [split $ANDOR_DEF(fullframe) ,] 3]
+   mimicMode red roi 1024x1024
+   mimicMode blue roi 1024x1024
 }
 
 
@@ -784,6 +786,8 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
     commandAndor red "setroi $rdim"
     commandAndor blue "setroi $rdim"
   }
+  mimicMode red roi [set rdim]x[set rdim]
+  mimicMode blue roi [set rdim]x[set rdim]
   set reg [split [exec xpaget ds9 regions] \n]
   foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
@@ -920,6 +924,10 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
    commandAndor blue "imagename $SCOPE(imagename) $SCOPE(overwrite)"
    commandAndor red "datadir $SCOPE(datadir)"
    commandAndor blue "datadir $SCOPE(datadir)"
+   set redtemp  [commandAndor red gettemp]
+   set bluetemp  [commandAndor blue gettemp]
+   mimicMode red temp "[lindex $redtemp 0] degC"
+   mimicMode blue temp "[lindex $bluetemp 0] degC"
    if { $LASTACQ == "fullframe" } {
       acquireFrames
    } else {

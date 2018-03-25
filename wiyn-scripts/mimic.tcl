@@ -62,6 +62,9 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
      if { $mode == "roi" } {
        .mimicNessi.myCanvas.redroi configure -text $value
      }
+     if { $mode == "temp" } {
+       .mimicNessi.myCanvas.redtemp configure -text $value
+     }
    }
    if { $arm == "blue" } {
      if { $mode == "wide" } {
@@ -84,7 +87,10 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
      if { $mode == "roi" } {
        .mimicNessi.myCanvas.blueroi configure -text $value
      }
-   }
+      if { $mode == "temp" } {
+       .mimicNessi.myCanvas.bluetemp configure -text $value
+     }
+  }
    if { $arm == "input" } {
      if { $mode == "wide" } {
        .mimicNessi.myCanvas moveto $oinpwide 200 95
