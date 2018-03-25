@@ -22,4 +22,5 @@ set ZABERS(input,device)        2
 set ZABERS(input,speckle) 1066667
 set ZABERS(input,wide)          0
 
-
+set ZABERS(A,arm) red
+set ZABERS(B,arm) blue

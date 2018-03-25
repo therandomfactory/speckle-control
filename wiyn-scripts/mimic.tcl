@@ -27,7 +27,7 @@ label .mimicNessi.myCanvas.redfilt -width 10  -text "Red-???"
 place .mimicNessi.myCanvas.redfilt -x 410 -y 80
 
 label .mimicNessi.myCanvas.bluefilt  -width 10  -text "Blue-???" 
-place .mimicNessi.myCanvas.bluefilt -x 230 -y 220
+place .mimicNessi.myCanvas.bluefilt -x 306 -y 220
 
 label .mimicNessi.myCanvas.redroi  -width 10  -text "1024x1024" 
 place .mimicNessi.myCanvas.redroi -x 716 -y 120

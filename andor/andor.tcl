@@ -86,7 +86,27 @@ global ANDOR_SOCKET
      gets $ANDOR_SOCKET($arm) result
    }
    return $result
+} 
+
+proc videomode { } {
+global LASTACQ STATUS
+   if { $LASTACQ == "fullframe" } {
+      commandAndor red "grabframe $SCOPE(exposure)"
+      commandAndor blue "grabframe $SCOPE(exposure)"
+   } else {
+      commandAndor red "grabroi $SCOPE(exposure) 1"
+      commandAndor blue "grabroi $SCOPE(exposure) 1"
+   }
+   if { $STATUS(abort) == 0 } {
+      .main.video configure -relief raised -fg black
+      .main.observe configure -fg black -relief raised -command startsequence
+      after [expr int($SCOPE(exposure)*1000)] videomode
+   } else {
+      .main.video configure -relief sunken -fg yellow
+      .main.observe configure -fg LightGray -relief sunken -command ""
+   }
 }
+  
 
 
 proc acquireCubes { } {

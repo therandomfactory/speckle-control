@@ -64,6 +64,7 @@ global FILTERWHEEL FWHEELS MAXFILTERS
     set it [ tk_dialog .d "NESSI Filter Wheel $id" "$result" {} -1 OK]
   } else {
     .filters.f$id$n configure -bg green -relief sunken -activebackground green
+    mimicMode $id filter $FWHEELS($id,$n)
     set FWHEELS($id,position) $n
     if { [info proc adjustTeleFocus] != "" } {
        set delta  [expr $FWHEELS($id,$FWHEELS($id,position),focus) - $FWHEELS(focusoffset)]
@@ -242,24 +243,37 @@ foreach p "1 2 3 4 5 6" {
   }
 }
 
-findWheels
-set f1 [oriel_connect 1]
-set sn1 $FWSERIAL([lindex $f1 1])
-if { $sn1 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 1}
-if { $sn1 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 1}
 
-set f2 [oriel_connect 2]
-set sn2 $FWSERIAL([lindex $f2 1])
-if { $sn2 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 2}
-if { $sn2 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 2}
-showstatus "Initializing filter wheel 1"
-resetFilterWheel 1
+set FWHEELS(sim) 0
+if { [info exists env(NESSI_SIM)] } {
+   set simdev [split $env(NESSI_SIM) ,]
+   if { [lsearch $simdev filter] > -1 } {
+       set FWHEELS(sim) 1
+       debuglog "Filter wheels in SIMULATION mode"
+  }
+}
 
-showstatus "Initializing filter wheel 2"
-resetFilterWheel 2
-debuglog "Moving filter wheels to clear positions"
-selectfilter red $FWHEELS(red,clear)
-selectfilter blue $FWHEELS(blue,clear)
+if { $FWHEELS(sim) == 0 } {
+  findWheels
+  set f1 [oriel_connect 1]
+  set sn1 $FWSERIAL([lindex $f1 1])
+  if { $sn1 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 1}
+  if { $sn1 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 1}
+
+  set f2 [oriel_connect 2]
+  set sn2 $FWSERIAL([lindex $f2 1])
+  if { $sn2 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 2}
+  if { $sn2 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 2}
+  showstatus "Initializing filter wheel 1"
+  resetFilterWheel 1
+
+  showstatus "Initializing filter wheel 2"
+  resetFilterWheel 2
+  debuglog "Moving filter wheels to clear positions"
+  selectfilter red $FWHEELS(red,clear)
+  selectfilter blue $FWHEELS(blue,clear)
+}  
+
 wm withdraw .filters
 
 

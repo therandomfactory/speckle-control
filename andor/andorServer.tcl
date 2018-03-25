@@ -104,17 +104,17 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
-      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/testf_red_[set t].fits 1024 1024 1 1
+      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_[set t].fits 1024 1024 1 1
       exec xpaset -p ds9 frame 1
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/testf_red_[set t].fits
+      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_[set t].fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
-      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/testf_blue_[set t].fits 1024 1024 1 1
+      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_[set t].fits 1024 1024 1 1
       exec xpaset -p ds9 frame 2
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/testf_blue_[set t].fits
+      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_[set t].fits
     }
 }
 
@@ -126,18 +126,18 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
-      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/testf_red_[set t].fits $n $n 1 1
+      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_[set t].fits $n $n 1 1
       exec xpaset -p ds9 frame 1
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/testf_red_[set t].fits
+      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_[set t].fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorSetROI $ANDOR_CFG(blue) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(blue)
-      andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/testf_blue_[set t].fits $n $n 1 1
+      andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_[set t].fits $n $n 1 1
       exec xpaset -p ds9 frame 2
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/testf_blue_[set t].fits
+      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_[set t].fits
     }
 }
 
@@ -152,12 +152,12 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM ANDOR_ROI
     incr count 1
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
-      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/test_red_[set t].fits 256 256 $count $n
+      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_[set t].fits 256 256 $count $n
       andorDisplayFrame $ANDOR_CFG(red) 256 256 1
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
-      andorSavedata $ANDOR_CFG(blue) $NESSI_DATADIR/test_blue_[set t].fits 256 256 $count $n
+      andorSavedata $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_[set t].fits 256 256 $count $n
       andorDisplayFrame $ANDOR_CFG(blue) 256 256 1
     }
     update idletasks
@@ -242,6 +242,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          whicharm        { puts $sock $ANDOR_ARM }
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex @$msg 2]]" }
          datadir         { set NESSI_DATADIR [lindex $msg 1] ; puts $sock "OK"}
+         imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; puts $sock $it }
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
          configure       { set hbin [lindex $msg 1]

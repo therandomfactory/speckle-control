@@ -17,7 +17,10 @@ set NESSI_DIR $env(NESSI_DIR)
 proc errordialog { msg} {puts stdout $msg}
 
 proc loadZaberConfig { {fname zabersConfiguration} } {
-global NESSI_DIR ZABERS
+global NESSI_DIR ZABERS SCOPE
+   if { $SCOPE(telescope) == GEMINI" } {  
+      set fname "[set fname].gemini"
+   }
    if { [file exists $NESSI_DIR/$fname] == 0 } {
      errordialog "Zaber configuration file $NESSI_DIR/$fname\n does not exist"
    } else {
@@ -215,6 +218,11 @@ proc zaberGoto { name pos } {
 global ZABERS
   set newp $ZABERS($name,$pos)
   set res [zaberSetPos $name $newp]
+  if { $name == "input" } {
+    mimicMode input $pos
+  } else {
+    mimicMode $ZABERS($name,arm) $pos
+  } 
 }
 
 proc zaberConfigurePos { name property {value current} } {
@@ -237,8 +245,7 @@ Supported commands :
     wide
     in
     out
-    move abs nnnzaberGoto input speckle
-
+    move abs nnn
     move rel nnn
     set xxx
 "
@@ -275,8 +282,7 @@ proc zaberService { name cmd {a1 ""} {a2 ""} } {
       estop       {zaberStopAll}
       home        {zaberCommand $name home}
       speckle     {zaberGoto $name speckle}
-      in          {zaberCommand $name in}zaberGoto input speckle
-
+      in          {zaberCommand $name in}
       out         {zaberCommand $name out}
       wide        {zaberGoto $name wide}
       move        {zaberCommand $name "move $a1 $a2"}
@@ -294,16 +300,15 @@ if { [info exists env(NESSI_SIM)] } {
 loadZaberConfig
 echoZaberConfig
 zaberConnect nessi
-zaberGetProperties A
-zaberGetProperties B
-zaberGetProperties input
-if { $SCOPE(telescope) == "GEMINI" } { zaberGetProperties pickoff ; zaberGetProperties focus }
-zaberPrintProperties
-
-zaberGoto A wide
-zaberGoto B wide
-zaberGoto input wide
-
-if { $SCOPE(telescope) == "GEMINI" } { zaberCommand pickoff in ; zaberCommand focus extend }
-
+if { $ZABERS(sim) ==  0 } {
+  zaberGetProperties A
+  zaberGetProperties B
+  zaberGetProperties input
+  if { $SCOPE(telescope) == "GEMINI" } { zaberGetProperties pickoff ; zaberGetProperties focus }
+  zaberPrintProperties
+  zaberGoto A wide
+  zaberGoto B wide
+  zaberGoto input wide
+  if { $SCOPE(telescope) == "GEMINI" } { zaberCommand pickoff in ; zaberCommand focus extend }
+}
 

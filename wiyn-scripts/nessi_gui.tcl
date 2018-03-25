@@ -12,10 +12,18 @@ foreach item "target propid ra dec equinox observer telescope instrument site la
    incr iy 24 
 }
 
-label .main.lseq -text "Number of Seqs. :" -bg gray80
-place .main.lseq -x 20 -y 108
-SpinBox .main.numseq  -width 10   -range "1 1000 1" -textvariable SCOPE(numseq)
-place .main.numseq -x 160 -y 108
+
+menubutton .mbar.config -text "Configurations" -fg black -bg gray -menu .mbar.config.m
+menu .mbar.config.m
+set cfg [glob $env(NESSI_DIR)/config-scripts/*]
+foreach i $$cfg { 
+   set id [file tail $i]
+   .mbar.config.m add command -label "$id" -command "loadconfig $id"
+}
+.mbar.config.m add command -label "User selected" -command "loadconfig user"
+.mbar.config.m add command -label "Save current as" -command "saveconfig"
+place .mbar.config -x 380 -y 0
+
 
 
 checkbutton .main.bred -bg gray50 -text "RED ARM" -variable INSTRUMENT(red)
@@ -41,12 +49,10 @@ place .lowlevel.blue -x 420 -y 0
 checkbutton .lowlevel.clone -bg gray50 -text "Clone settings" -variable INSTRUMENT(clone)
 place .lowlevel.clone -x 220 -y 0
 
-label .lowlevel.pickoff -text "PICK-OFF" -bg white
-place .lowlevel.pickoff -x 280 -y 97
 
 label .lowlevel.input -text "INPUT" -bg white
 place .lowlevel.input -x 280 -y 270
-set INSTRUMENT(clone) 1
+set INSTRUMENT(clone) 0
 
 button .lowlevel.rtempset -bg gray50 -text "Temp Set" -width 6 -command "andorsetpoint red"
 entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6
@@ -61,7 +67,8 @@ place .lowlevel.btempset -x 446 -y 30
 place .lowlevel.vbtempset -x 527 -y 33
 label .lowlevel.bcamtemp -bg gray -fg red -text "???.??" -bg gray50
 place .lowlevel.bcamtemp -x 578 -y 33
-
+set ANDOR_CFG(red,setpoint) -60
+set ANDOR_CFG(blue,setpoint) -60
 
 menubutton .lowlevel.rshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.rshut.m
 menu .lowlevel.rshut.m
@@ -77,19 +84,6 @@ place .lowlevel.bshut -x 355 -y 30
 .lowlevel.bshut.m add command -label "Shutter=Close" -command "nessishutter blue close"
 .lowlevel.bshut.m add command -label "Shutter=Open" -command "nessishutter blue open"
 
-button .lowlevel.zpgoto -bg gray50 -text "Move to" -width 8 -command "zaberEngpos pickoff"
-entry .lowlevel.vzpgoto -bg white -textvariable ZABERS(pickoff,target) -width 10
-place .lowlevel.zpgoto -x 220 -y 120
-place .lowlevel.vzpgoto -x 330 -y 122
-button .lowlevel.zpin -bg gray50 -text "Set IN to current" -width 20 -command "zaberConfigurePos pickoff in "
-place .lowlevel.zpin -x 220 -y 160
-button .lowlevel.zpout -bg gray50 -text "Set OUT to current" -width 20 -command "zaberConfigurePos pickoff out"
-place .lowlevel.zpout -x 220 -y 195
-
-button .lowlevel.psave -text Save -bg gray70 -width 6 -command "nessisave pickoff"
-button .lowlevel.pload -text Load -bg gray70 -width 6 -command "nessiload pickoff"
-place .lowlevel.psave -x 220  -y 230
-place .lowlevel.pload -x 310 -y 230
 
 set ZABERS(A,target) 0
 set ZABERS(B,target) 0
@@ -200,6 +194,13 @@ global FWHEELS
 }
 
 
+proc loadconfig { fname } {
+global NESSI_DIR
+   debuglog "Loading configration from $NESSI_DIR/config-scripts/$fname"
+   source $NESSI_DIR/config-scripts/$fname
+}
+
+
 proc initFilter { arm } {
 global NESSI_FILTER FWHEELS
    debuglog "Initializing filter wheels ..."
@@ -242,6 +243,7 @@ proc nessishutter { arm name } {
 global ANDOR_MODE LASTACQ
     .lowlevel.rshut configure -text "Shutter=$name"
     .lowlevel.bshut configure -text "Shutter=$name"
+    mimicMode $arm $name
 }
 
 proc andorsetpoint { arm } {
@@ -279,8 +281,8 @@ label .lowlevel.lemhs  -bg gray50 -text "EMCCD HS"
 SpinBox .lowlevel.emhs -width 4  -bg gray50   -range "0 30 1" -textvariable INSTRUMENT(red,emhs)
 label .lowlevel.lccdhs  -bg gray50 -text "CCD HS" 
 SpinBox .lowlevel.ccdhs -width 4  -bg gray50  -range "0 30 1" -textvariable INSTRUMENT(red,ccdhs)
-place .lowlevel.emccd -x 20 -y 120
-place .lowlevel.hgain -x 120 -y 120
+place .lowlevel.emccd -x 20 -y 100
+place .lowlevel.hgain -x 120 -y 100
 
 place .lowlevel.lemgain -x 20 -y 170
 place .lowlevel.emgain -x 120 -y 170
@@ -305,8 +307,8 @@ label .lowlevel.lbemhs  -bg gray50 -text "EMCCD HS"
 SpinBox .lowlevel.bemhs -width 4  -bg gray50  -range "0 30 1" -textvariable INSTRUMENT(blue,emhs)
 label .lowlevel.lbccdhs  -bg gray50 -text "CCD HS" 
 SpinBox .lowlevel.bccdhs -width 4  -bg gray50  -range "0 30 1" -textvariable INSTRUMENT(blue,ccdhs)
-place .lowlevel.bemccd -x 420 -y 120
-place .lowlevel.bhgain -x 520 -y 120
+place .lowlevel.bemccd -x 420 -y 100
+place .lowlevel.bhgain -x 520 -y 100
 
 place .lowlevel.lbemgain -x 420 -y 170
 place .lowlevel.bemgain -x 520 -y 170
@@ -337,7 +339,10 @@ button .lowlevel.bload -text Load -bg gray70 -width 6 -command "nessiload blue"
 place .lowlevel.bsave -x 420  -y 460
 place .lowlevel.bload -x 515 -y 460
 
+button .main.video -width 5 -height 2 -text "Video" -relief sunken -bg gray -command videomode
+place .main.video  -x 100 -y 167
 
+place .main.abort   -x 180 -y 167
 
 #set INSTRUMENT(red) 1
 #set INSTRUMENT(blue) 1
@@ -353,7 +358,7 @@ source $NESSI_DIR/zaber/zaber.tcl
 showstatus "Initializing Filter Wheeels"
 source $NESSI_DIR/oriel/filterWheel.tcl
 
-set NESSI(observingGui) 620x497
+set NESSI(observingGui) 620x540
 source $NESSI_DIR/wiyn-scripts/mimic.tcl
 
 if { $SCOPE(telescope) == "WIYN" } {
@@ -362,9 +367,44 @@ if { $SCOPE(telescope) == "WIYN" } {
    set NESSI(engineeringGui) 620x900
 } else {
 
-set NESSI(engineeringGui) 620x1100
-wm geometry . 620x1100
-.lowlevel configure -height 700 -width 620
+set NESSI(engineeringGui) 900x1100
+wm geometry . 900x1100
+.lowlevel configure -height 700 -width 900
+.main configure -width 900
+.mbar  configure -width 900
+
+label .lowlevel.pickoff -text "PICK-OFF" -bg white
+place .lowlevel.pickoff -x 735 -y 276
+button .lowlevel.zpgoto -bg gray50 -text "Move to" -width 8 -command "zaberEngpos pickoff"
+entry .lowlevel.vzpgoto -bg white -textvariable ZABERS(pickoff,target) -width 10
+place .lowlevel.zpgoto -x 670 -y 305
+place .lowlevel.vzpgoto -x 780 -y 307
+button .lowlevel.zpin -bg gray50 -text "Set IN to current" -width 20 -command "zaberConfigurePos pickoff in "
+place .lowlevel.zpin -x 670 -y 350
+button .lowlevel.zpout -bg gray50 -text "Set OUT to current" -width 20 -command "zaberConfigurePos pickoff out"
+place .lowlevel.zpout -x 670 -y 392
+button .lowlevel.pksave -text Save -bg gray70 -width 6 -command "nessisave pickoff"
+button .lowlevel.pkload -text Load -bg gray70 -width 6 -command "nessiload pickoff"
+place .lowlevel.pksave -x 668  -y 430
+place .lowlevel.pkload -x 768 -y 430
+
+
+label .lowlevel.focus -text "FOCUS" -bg white
+place .lowlevel.focus -x 735 -y 506
+button .lowlevel.zfgoto -bg gray50 -text "Move to" -width 8 -command "zaberEngpos focus"
+entry .lowlevel.vzfgoto -bg white -textvariable ZABERS(focus,target) -width 10
+place .lowlevel.zfgoto -x 670 -y 535
+place .lowlevel.vzfgoto -x 780 -y 537
+button .lowlevel.zfin -bg gray50 -text "Set EXTEND to current" -width 20 -command "zaberConfigurePos focus extend "
+place .lowlevel.zfin -x 670 -y 580
+button .lowlevel.zfout -bg gray50 -text "Set STOW to current" -width 20 -command "zaberConfigurePos focus stow"
+place .lowlevel.zfout -x 670 -y 622
+button .lowlevel.fksave -text Save -bg gray70 -width 6 -command "nessisave focus"
+button .lowlevel.fkload -text Load -bg gray70 -width 6 -command "nessiload focus"
+place .lowlevel.fksave -x 668  -y 660
+place .lowlevel.fkload -x 768 -y 660
+
+
 label .lowlevel.rpico -text "Pico position" -bg gray50
 place .lowlevel.rpico -x 20 -y 565
 button .lowlevel.rpicomm -width 3 -text "<<" -command "jogPico X --" -bg gray50
@@ -393,7 +433,7 @@ place .lowlevel.pload -x 60 -y 660
 entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)
 place .lowlevel.vxpico -x 510 -y 570
 entry .lowlevel.vypico -width 8 -bg white -textvariable PICOS(Y,current)
-place .lowlevel.vypico -x 280 -y 665
+place .lowlevel.vypico -x 272 -y 665
 
 button .lowlevel.movein -text "Move to IN" -bg gray70 -width 12 -command "picosInPosition"
 button .lowlevel.moveout -text "Move to OUT" -bg gray70 -width 12 -command "picosInitialize"

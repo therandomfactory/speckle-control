@@ -802,7 +802,6 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   debuglog "ROI is $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye)" 
   commandAndor red "setframe roi"
   commandAndor blue "setframe roi"
-  resetAndors roi
   positionZabers roi
   .lowlevel.rmode configure -text "Mode=speckle"
   .lowlevel.bmode configure -text "Mode=speckle"
@@ -910,6 +909,17 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
    .main.abort configure -bg orange -relief raised -fg black
    wm geometry .countdown
    set i 1
+   if { $SCOPE(exptype) == "Zero" || $SCOPE(exptype) == "Dark" } {
+     mimicMode red close
+     mimicMode blue close
+   } else {
+     mimicMode red open
+     mimicMode blue open
+   }
+   commandAndor red "imagename $SCOPE(imagename) $SCOPE(overwrite)"
+   commandAndor blue "imagename $SCOPE(imagename) $SCOPE(overwrite)"
+   commandAndor red "datadir $SCOPE(datadir)"
+   commandAndor blue "datadir $SCOPE(datadir)"
    if { $LASTACQ == "fullframe" } {
       acquireFrames
    } else {
