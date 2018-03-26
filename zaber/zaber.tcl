@@ -92,6 +92,8 @@ global ZABERS
    set handle -1
    if { [info exists ZABERS(sim)] } {
       set handle 1
+     debuglog "Zabers in SIMULATION mode"
+     return
    } else {
       set handle [open $ZABERS(port) RDWR]
       fconfigure $handle -buffering none

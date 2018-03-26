@@ -40,6 +40,10 @@ label .main.bstatus -text test -bg Orange -fg black
 place .main.bstatus -x 20 -y 340
 .main.bstatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD     Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??????"
 
+###TBD
+place .main.astatus -x 1000
+place .main.bstatus -x 1000
+
 frame .lowlevel -bg gray50 -width 620 -height 710
 place .lowlevel -x 0 -y 400
 label .lowlevel.red -text "RED ARM" -bg red -fg black -width 25

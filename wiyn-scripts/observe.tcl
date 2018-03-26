@@ -930,6 +930,8 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
    set bluetemp  [commandAndor blue gettemp]
    mimicMode red temp "[lindex $redtemp 0] degC"
    mimicMode blue temp "[lindex $bluetemp 0] degC"
+   .lowlevel.rcamtemp configure -text "[lindex $redtemp 0] degC"
+   .lowlevel.bcamtemp configure -text "[lindex $bluetemp 0] degC"
    if { $LASTACQ == "fullframe" } {
       acquireFrames
    } else {
