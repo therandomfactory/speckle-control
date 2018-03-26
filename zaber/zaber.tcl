@@ -277,6 +277,21 @@ proc positionZabers { station } {
    }
 }
 
+proc positionSpeckle { arm station } {
+global ZABERS
+   debuglog "Configure $arm Zaber for $station"
+   if { $station == "fullframe" } {
+      if { $ZABERS(A,arm) == $arm } {zaberCommand A wide} 
+      if { $ZABERS(B,arm) == $arm } {zaberCommand B wide} 
+   }
+   if { $station == "roi" } {
+      if { $ZABERS(A,arm) == $arm } {zaberCommand A speckle} 
+      if { $ZABERS(B,arm) == $arm } {zaberCommand B speckle} 
+   }
+}
+
+
+
 proc zaberService { name cmd {a1 ""} {a2 ""} } {
    switch $cmd {
       estop       {zaberStopAll}

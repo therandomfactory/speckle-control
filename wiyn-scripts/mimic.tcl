@@ -23,10 +23,10 @@ set oinpspck  [.mimicNessi.myCanvas create oval 50 50 80 100 -fill yellow]
 set oredshut  [.mimicNessi.myCanvas create oval 50 50 40 80 -fill white]
 set oblueshut [.mimicNessi.myCanvas create oval 50 50 80 40 -fill white]
 
-label .mimicNessi.myCanvas.redfilt -width 10  -text "Red-???" 
+label .mimicNessi.myCanvas.redfilt -width 10  -text "clear" 
 place .mimicNessi.myCanvas.redfilt -x 410 -y 80
 
-label .mimicNessi.myCanvas.bluefilt  -width 10  -text "Blue-???" 
+label .mimicNessi.myCanvas.bluefilt  -width 10  -text "clear" 
 place .mimicNessi.myCanvas.bluefilt -x 306 -y 220
 
 label .mimicNessi.myCanvas.redroi  -width 10  -text "1024x1024" 

@@ -227,14 +227,12 @@ global ANDOR_MODE LASTACQ
     .lowlevel.bmode configure -text "Mode=$name"
     debuglog "Setting arm $arm up for $name"
     if { $name == "wide" && $LASTACQ != "fullframe" } {
-       commandAndor red "setframe fullframe"
-       commandAndor blue "setframe fullframe"
-       positionZabers fullframe
+       commandAndor $arm "setframe fullframe"
+       positionSpeckle $arm fullframe
     }
     if { $name == "speckle" && $LASTACQ != "roi" } {
-       commandAndor red "setframe fullframe"
-       commandAndor blue "setframe fullframe"
-       positionZabers roi
+       commandAndor arm "setframe roi"
+       positionSpeckle $arm roi
      }
     debuglog "$arm setup for $name"
 }
