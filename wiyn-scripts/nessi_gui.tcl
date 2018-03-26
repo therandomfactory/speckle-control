@@ -361,6 +361,27 @@ source $NESSI_DIR/zaber/zaber.tcl
 showstatus "Initializing Filter Wheeels"
 source $NESSI_DIR/oriel/filterWheel.tcl
 
+if { $ZABERS(A,arm) == "red" } {
+  .mbar.tools.m add command -label "zaber red wide" -command "zaberGoto A wide"
+  .mbar.tools.m add command -label "zaber red speckle" -command "zaberGoto A speckle"
+  .mbar.tools.m add command -label "zaber blue wide" -command "zaberGoto B wide"
+  .mbar.tools.m add command -label "zaber blue speckle" -command "zaberGoto B speckle"
+} else {
+  .mbar.tools.m add command -label "zaber red wide" -command "zaberGoto B wide"
+  .mbar.tools.m add command -label "zaber red speckle" -command "zaberGoto B speckle"
+  .mbar.tools.m add command -label "zaber blue wide" -command "zaberGoto A wide"
+  .mbar.tools.m add command -label "zaber blue speckle" -command "zaberGoto A speckle"
+}
+.mbar.tools.m add command -label "zaber input wide" -command "zaberGoto input wide"
+.mbar.tools.m add command -label "zaber input speckle" -command "zaberGoto input speckle"
+
+if { $SCOPE(telescope) == "GEMINI" } {
+  .mbar.tools.m add command -label "zaber focus extend" -command "zaberGoto focus extend"
+  .mbar.tools.m add command -label "zaber focus stow" -command "zaberGoto focus stow"
+  .mbar.tools.m add command -label "zaber pickoff in" -command "zaberGoto pickoff in "
+  .mbar.tools.m add command -label "zaber pickoff out" -command "zaberGoto pickpoff out"
+}
+
 set NESSI(observingGui) 620x540
 source $NESSI_DIR/wiyn-scripts/mimic.tcl
 wm geometry .mimicNessi +660+30

@@ -161,7 +161,7 @@ menu .mbar.help.m
 .mbar.tools.m add command -label "Observing" -command "nessiGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Editor" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "nessistatus"
-
+.
 proc nessiGuiMode { mode } {
 global NESSI
   wm geometry . $NESSI($mode)
