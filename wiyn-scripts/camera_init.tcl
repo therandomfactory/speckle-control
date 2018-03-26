@@ -47,14 +47,21 @@ proc shutdown { {id 0} } {
 #  Globals    :
 #  
 #               CAMERAS	-	Camera id's
-global CAMERAS ANDOR ANDOR_SOCKET
+global CAMERAS ANDOR ANDOR_SOCKET SCOPE
    set it [tk_dialog .d "Exit" "Confirm exit" {} -1 "Cancel" "EXIT"]
    if { $it } {
 #     set camera $CAMERAS($id)
 #     $camera $cooler 2
+     if { $SCOPE(telescope) == "GEMINI" } {
+        debuglog "Moving Gemini mechanisms to stowed positions"
+        picosOutPosition
+        zaberGoto focus stow
+        zaberGoto pickoff out
+     }
      catch { commandAndor red shutdown }
      catch { commandAndor blue shutdown }
      catch { exec xpaset -p ds9 exit }
+     after 5000
      catch { exec pkill -9 tail }
      exit
    }

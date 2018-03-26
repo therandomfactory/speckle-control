@@ -380,6 +380,8 @@ if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus stow" -command "zaberGoto focus stow"
   .mbar.tools.m add command -label "zaber pickoff in" -command "zaberGoto pickoff in "
   .mbar.tools.m add command -label "zaber pickoff out" -command "zaberGoto pickpoff out"
+  .mbar.tools.m add command -label "picos to in " -command "picosInPosition"
+  .mbar.tools.m add command -label "picos to out" -command "picsoOutPosition"
 }
 
 set NESSI(observingGui) 620x540
