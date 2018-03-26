@@ -71,6 +71,13 @@ if { $hend != 1024 } {
    andorPrepDataFrame
 }
 
+proc showstatus { } {
+  foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilterMode GetImageRotate GetKeepCleanTime GetMaximumExposure GetMaximumNumberRingExposureTimes GetMinimumImageLength GetMinimumNumberInSeries GetNumberADChannels GetNumberAmp GetNumberDevices GetNumberFKVShiftSpeeds GetNumberHorizontalSpeeds GetNumberIO GetNumberPreAmpGains GetNumberRingExposureTimes GetNumberVSAmplitudes GetNumberVSSpeeds GetNumberVerticalSpeeds GetReadOutTime GetStartUpTime GetStatus GetTotalNumberImagesAcquired" {
+     set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
+     debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
+  }
+}
+
 
 proc resetCamera { mode } {
 global CAM
@@ -245,6 +252,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          datadir         { set NESSI_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; puts $sock $it }
+         status          { showstatus ; puts $sock "OK"}
          shutter         { set it [andorSetProperty $CAM shutter [lindex $msg 1]] ; puts $sock %$it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
          configure       { set hbin [lindex $msg 1]

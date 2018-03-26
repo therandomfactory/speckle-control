@@ -160,10 +160,16 @@ menu .mbar.help.m
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file:/opt/apogee/doc/user-guide.html &}
 .mbar.tools.m add command -label "Observing" -command "nessiGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Editor" -command "wm deiconify .filters"
+.mbar.tools.m add command -label "Camera status" -command "nessistatus"
 
 proc nessiGuiMode { mode } {
 global NESSI
   wm geometry . $NESSI($mode)
+}
+
+proc nessiStatus { } {
+   commandAndor red showstatus
+   commandAndor blue showstatus
 }
 
 #
@@ -217,7 +223,7 @@ if { [lindex [package version BWidget] end] >= 1.8 } {
  place .main.ltyp -x 20 -y 83
  place .main.lseq -x 20 -y 107
 } else {
- SpinBox .main.exposure -width 7 -$bwkey "Exposure (in seconds) : " -font fixed -$bwfont "fixed"  -range "0.0 1000.0 1" -textvariable SCOPE(exposure)
+ SpinBox .main.exposure -width 7 -$bwkey "Exposure (in seconds) : " -font fixed -$bwfont "fixed"  -range "0.0 32768.0 1" -textvariable SCOPE(exposure)
  place .main.exposure -x 20 -y 20
  SpinBox .main.numexp -width 12 -$bwkey "Number of frames : " -font fixed  -$bwfont "fixed"  -range "1 1000 1" -textvariable SCOPE(numframes)
  place .main.numexp -x 20 -y 50
