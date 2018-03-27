@@ -56,9 +56,9 @@ foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilt
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
 }
 SetExposureTime 0.04
-andorSetProperty $CAM temperature -60
-andorSetProperty $CAM cooler 1
-andorSetProperty $CAM shutter 0
+andorSetProperty $CAM Temperature -60
+andorSetProperty $CAM Cooler 1
+andorSetProperty $CAM Shutter 0
 
 if { $hend != 1024 } {
    set shmid [andorConnectShmem 512 512]
@@ -253,7 +253,17 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; puts $sock $it }
          status          { showstatus ; puts $sock "OK"}
-         shutter         { set it [andorSetProperty $CAM shutter [lindex $msg 1]] ; puts $sock %$it}
+         shutter         { set it [andorSetProperty $CAM Shutter [lindex $msg 1]] ; puts $sock $it}
+         frametransfer   { set it [andorSetProperty $CAM FrameTransferMode [lindex $msg 1]] ; puts $sock $it}
+         outputamp       { set it [andorSetProperty $CAM OutputAmplifier [lindex $msg 1]] ; puts $sock $it}
+         emadvanced      { set it [andorSetProperty $CAM EMAdvanced [lindex $msg 1]] ; puts $sock $it}
+         emccdgain       { set it [andorSetProperty $CAM EMCCDGain [lindex $msg 1]] ; puts $sock $it}
+         hsspeed         { set it [andorSetProperty $CAM HSSpeed [lindex $msg 1] [lindex $msg 2]] ; puts $sock $it}
+         vsspeed         { set it [andorSetProperty $CAM VSSpeed [lindex $msg 1]] ; puts $sock $it}
+         preampgain      { set it [andorSetProperty $CAM PreAmpGain [lindex $msg 1]] ; puts $sock $it}
+         readmode        { set it [andorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}
+         acquisition     { set it [andorSetProperty $CAM AcquisitionMode [lindex $msg 1]] ; puts $sock $it}
+         kineticcycletime { set it [andorSetProperty $CAM KineticCycleTime [lindex $msg 1]] ; puts $sock $it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
          configure       { set hbin [lindex $msg 1]
                            set vbin [lindex $msg 2]
@@ -268,6 +278,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
                            andorConfigure $CAM $hbin $vbin $hstart $hend $vstart $vend $preamp_gain $vertical_speed $ccd_horizontal_speed $em_horizontal_speed
 			   puts $sock "OK"
                          }
+         setupcamera     { set it [andorSetupCamera $CAM [lindex $msg 1]] ; puts $sock $it}
          default         { if { [string range [lindex $msg 0] 0 3] == "Get" } {
                              puts $sock [eval [lindex $msg 0]]
                            } else {

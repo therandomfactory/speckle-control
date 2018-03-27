@@ -756,6 +756,7 @@ int tcl_andorDisplayAvgFFT(ClientData clientData, Tcl_Interp *interp, int argc, 
 
   int width,height,numexp,cameraId;
   int irow;
+  float fvalue;
 
   /* Check number of arguments provided and return an error if necessary */
   if (argc < 5) {
@@ -789,6 +790,7 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
 {
   int status=-1;
   int ivalue = 0;
+  int imode = 0;
   int fvalue = 0.0;
   int cameraId;
 
@@ -800,14 +802,14 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
 
   sscanf(argv[1],"%d",&cameraId);
 
-  if (strcmp(argv[2],"temperature") == 0) {
+  if (strcmp(argv[2],"Temperature") == 0) {
      sscanf(argv[3],"%d",&ivalue);
      status = SetTemperature(ivalue);
      if (status == DRV_SUCCESS) {
         andorSetup[cameraId].target_temperature = ivalue;
      }
   }
-  if (strcmp(argv[2],"cooler") == 0) {
+  if (strcmp(argv[2],"Cooler") == 0) {
      sscanf(argv[3],"%d",&ivalue);
      if (ivalue == 0) {
         CoolerOFF();
@@ -815,11 +817,98 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
         CoolerON();
      }
   }
-  if (strcmp(argv[2],"shutter") == 0) {
+  if (strcmp(argv[2],"Shutter") == 0) {
      sscanf(argv[3],"%d",&ivalue);
      status = SetShutter(1,ivalue,50,50);
      if (status == DRV_SUCCESS) {
         andorSetup[cameraId].shutter = ivalue;
+     }
+  }
+  if (strcmp(argv[2],"FrameTransferMode") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetFrameTransferMode(ivalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"OutputAmplifier") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetOutputAmplifier(ivalue);
+     if (status != DRV_SUCCESS) {
+        andorSetup[cameraId].amplifier = ivalue;
+        return status;
+     }
+  }
+
+
+  if (strcmp(argv[2],"EMAdvanced") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetEMAdvanced(ivalue);
+     if (status != DRV_SUCCESS) {
+        andorSetup[cameraId].em_advanced = ivalue;
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"EMCCDGain") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetEMCCDGain(ivalue);
+     if (status != DRV_SUCCESS) {
+        andorSetup[cameraId].em_gain = ivalue;
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"VSSpeed") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetVSSpeed(ivalue);
+     if (status != DRV_SUCCESS) {
+        andorSetup[cameraId].vertical_speed_index = ivalue;
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"PreAmpGain") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetPreAmpGain(ivalue);
+     if (status != DRV_SUCCESS) {
+        andorSetup[cameraId].preamp_gain_index = ivalue;
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"ReadMode") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetReadMode(ivalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"AcquisitionMode") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetAcquisitionMode(ivalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"KineticCycleTime") == 0) {
+     sscanf(argv[3],"%f",&fvalue);
+     status = SetKineticCycleTime(fvalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"HSSpeed") == 0) {
+     sscanf(argv[3],"%d",&imode);
+     sscanf(argv[4],"%d",&ivalue);
+     status = SetHSSpeed(imode,ivalue);
+     if (status != DRV_SUCCESS) {
+        andorSetup[cameraId].horizontal_speed_index[imode] = ivalue;
+        return status;
      }
   }
 
