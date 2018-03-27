@@ -912,6 +912,31 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
      }
   }
 
+ if (strcmp(argv[2],"NumberAccumulations") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetNumberAccumulations(ivalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
+
+ if (strcmp(argv[2],"AccumulationCycleTime") == 0) {
+     sscanf(argv[3],"%f",&fvalue);
+     status = SetAccumulationCycleTime(fvalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"NumberKinetics") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetNumberKinetics(ivalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
   return TCL_OK;
 }
 

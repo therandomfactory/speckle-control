@@ -263,7 +263,10 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
          preampgain      { set it [andorSetProperty $CAM PreAmpGain [lindex $msg 1]] ; puts $sock $it}
          readmode        { set it [andorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}
          acquisition     { set it [andorSetProperty $CAM AcquisitionMode [lindex $msg 1]] ; puts $sock $it}
-         kineticcycletime { set it [andorSetProperty $CAM KineticCycleTime [lindex $msg 1]] ; puts $sock $it}
+         kineticcycletime      { set it [andorSetProperty $CAM KineticCycleTime [lindex $msg 1]] ; puts $sock $it}
+         numberaccumlations    { set it [andorSetProperty $CAM NumberAccumulations [lindex $msg 1]] ; puts $sock $it}
+         numberkinewtics       { set it [andorSetProperty $CAM NumberKinetics [lindex $msg 1]] ; puts $sock $it}
+         accumulationcycletime { set it [andorSetProperty $CAM AccumulationCycleTime [lindex $msg 1]] ; puts $sock $it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
          configure       { set hbin [lindex $msg 1]
                            set vbin [lindex $msg 2]
