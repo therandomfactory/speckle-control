@@ -906,8 +906,8 @@ proc startsequence { } {
 #               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
  set iseqnum 0
- nessishutter red during
- nessishutter blue during
+ nessishutter red open
+ nessishutter blue open
  while { $iseqnum < $SCOPE(numseq) } {
    incr iseqnum 1
    set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
