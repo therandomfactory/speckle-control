@@ -539,7 +539,7 @@ proc abortsequence { } {
 global STATUS
   set STATUS(abort) 1
   countdown off
-  .main.observe configure -text "Observe" -bg gray -relief raised
+  .main.observe configure -text "Observe" -bg gray -relief raised -command startsequence
   .main.abort configure -bg gray -relief sunken -fg LightGray
   mimicMode red close
   mimicMode blue close
@@ -770,7 +770,7 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
         commandAndor blue "setframe fullframe"
         positionZabers fullframe
   }
-  acquireFrames
+  startsequence
   after 2000
   if { $rdim == "manual" } {
     catch {
@@ -796,18 +796,20 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
         set r [lrange [split $i ",()"] 1 4]
         set ACQREGION(xs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
         set ACQREGION(ys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
-        set ACQREGION(xe) [expr int([lindex $r 0] + [lindex $r 2]/2)]
-        set ACQREGION(ye) [expr int([lindex $r 1] + [lindex $r 3]/2)]
+        set ACQREGION(xe) [expr $ACQREGION(xs) + [lindex $r 2] -1]
+        set ACQREGION(ye) [expr $ACQREGION(ys) + [lindex $r 3] -1]
         puts stdout "selected region $r"
      }
   }
   set CONFIG(geometry.StartCol) [expr $ACQREGION(xs)]
   set CONFIG(geometry.StartRow) [expr $ACQREGION(ys)]
-  set CONFIG(geometry.NumCols) [expr $ACQREGION(xs)+$rdim]
-  set CONFIG(geometry.NumRows) [expr $ACQREGION(ye)-$rdim]
+  set CONFIG(geometry.NumCols) $rdim
+  set CONFIG(geometry.NumRows) $rdim
+  set ACQREGION(geom) $CONFIG(geometry.NumCols)
   debuglog "ROI is $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye)" 
   commandAndor red "setframe roi"
   commandAndor blue "setframe roi"
+  set LASTACQ roi
   positionZabers roi
   .lowlevel.rmode configure -text "Mode=speckle"
   .lowlevel.bmode configure -text "Mode=speckle"
@@ -904,6 +906,8 @@ proc startsequence { } {
 #               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
  set iseqnum 0
+ nessishutter red during
+ nessishutter blue during
  while { $iseqnum < $SCOPE(numseq) } {
    incr iseqnum 1
    set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
@@ -922,16 +926,17 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
      mimicMode red open
      mimicMode blue open
    }
-   commandAndor red "imagename $SCOPE(imagename) $SCOPE(overwrite)"
-   commandAndor blue "imagename $SCOPE(imagename) $SCOPE(overwrite)"
+   commandAndor red "imagename $SCOPE(imagename)_[set SCOPE(seqnum)] $SCOPE(overwrite)"
+   commandAndor blue "imagename $SCOPE(imagename)_[set SCOPE(seqnum)] $SCOPE(overwrite)"
+   incr SCOPE(seqnum) 1
    commandAndor red "datadir $SCOPE(datadir)"
    commandAndor blue "datadir $SCOPE(datadir)"
    set redtemp  [commandAndor red gettemp]
    set bluetemp  [commandAndor blue gettemp]
-   mimicMode red temp "[lindex $redtemp 0] degC"
-   mimicMode blue temp "[lindex $bluetemp 0] degC"
-   .lowlevel.rcamtemp configure -text "[lindex $redtemp 0] degC"
-   .lowlevel.bcamtemp configure -text "[lindex $bluetemp 0] degC"
+   mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
+   mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
+   .lowlevel.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
+   .lowlevel.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
    if { $LASTACQ == "fullframe" } {
       acquireFrames
    } else {
@@ -951,6 +956,8 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
    }
    .main.observe configure -text "Observe" -bg gray -relief raised
    .main.abort configure -bg gray -relief sunken -fg LightGray
+   nessishutter red close
+   nessishutter blue close
    abortsequence
  }
 }

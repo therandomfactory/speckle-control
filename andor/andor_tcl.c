@@ -1005,9 +1005,13 @@ int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **
   andorSetup[cameraId].image.hend =   xend;
   andorSetup[cameraId].image.vstart = ystart;
   andorSetup[cameraId].image.vend =   yend;
+  andorSetup[cameraId].width = xend-xstart+1;
+  andorSetup[cameraId].height = yend-ystart+1;
   andorSetup[cameraId].npix = (xend-xstart+1)*(yend-ystart+1)/ibin/ibin;
 
-  SetImage(ibin,ibin,xstart,xend-xstart+1,ystart,yend-ystart+1);
+  status = SetImage(ibin,ibin,xstart,xend,ystart,yend);
+  printf("status = %d in tcl_andorSetROI, %d,%d,%d,%d,%d,%d\n",status,ibin,ibin,xstart,xend,ystart,yend);
+
   return TCL_OK;
 
 }
@@ -1018,6 +1022,7 @@ int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **
 int tcl_andorPrepDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
         int num;
+        int status=-1;
         unsigned short *SharedMem2;
 	unsigned long error;
 	bool quit;
@@ -1048,13 +1053,15 @@ int tcl_andorPrepDataCube(ClientData clientData, Tcl_Interp *interp, int argc, c
         SetFrameTransferMode(1);
         
         //Setup Image dimensions
-        SetImage(1,1,1,width,1,height);
+        status = SetImage(1,1,1,width,1,height);
+        printf("status = %d in tcl_andorPrepDataCube, %d,%d,%d,%d,%d,%d\n",status,1,1,1,width,1,height);
         return TCL_OK;
 }
 
 int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
         int num;
+        int status=-1;
 	unsigned long error;
 	bool quit;
         int numexp=1;
@@ -1083,7 +1090,8 @@ int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, 
         SetFrameTransferMode(1);
         
         //Setup Image dimensions
-        SetImage(1,1,1,width,1,height);
+        status = SetImage(1,1,1,width,1,height);
+        printf("status = %d in tcl_andorPrepDataCube, %d,%d,%d,%d,%d,%d\n",status,1,1,1,width,1,height);
         return TCL_OK;
 }
 
@@ -1315,6 +1323,8 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
   andorSetup[cameraId].image.hend =   hend;
   andorSetup[cameraId].image.vstart = vstart;
   andorSetup[cameraId].image.vend =   vend;
+  andorSetup[cameraId].width = hend-hstart+1;
+  andorSetup[cameraId].height = vend-vstart+1;
   andorSetup[cameraId].npix = (hend-hstart+1)*(vend-vstart+1)/hbin/vbin;
   andorSetup[cameraId].exposure_time = DFT_ANDOR_EXPOSURE_TIME;
 
@@ -1382,6 +1392,8 @@ int tcl_andorSetupCamera(ClientData clientData, Tcl_Interp *interp, int argc, ch
   status = SetAcquisitionMode(1);
   status = SetFrameTransferMode(1);  //NJS added
   status = SetImage(andorSetup[cameraId].image.hbin,andorSetup[cameraId].image.vbin,andorSetup[cameraId].image.hstart,andorSetup[cameraId].image.hend,andorSetup[cameraId].image.vstart,andorSetup[cameraId].image.vend);
+  printf("status = %d in tcl_andorSetupCamera, %d,%d,%d,%d,%d,%d\n",status,andorSetup[cameraId].image.hbin,andorSetup[cameraId].image.vbin,andorSetup[cameraId].image.hstart,andorSetup[cameraId].image.hend,andorSetup[cameraId].image.vstart,andorSetup[cameraId].image.vend);
+
 /*  status = PrepareAcquisition();
   status = StartAcquisition();
   sleep(1);

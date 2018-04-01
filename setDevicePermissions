@@ -1,0 +1,5 @@
+#!/bin/sh
+andor/usbpermit.tcl
+oriel/usbpermit.tcl
+sudo chmod a+rw /dev/ttyUSB0
+

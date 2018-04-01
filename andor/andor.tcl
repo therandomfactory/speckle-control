@@ -83,13 +83,13 @@ global ANDOR_SOCKET SCOPE
    } else {
      if { [string range $cmd 0 3] == "grab" } {
         if { $echk } {
-           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)_red.fits"
+           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)_[set SCOPE(seqnum)]_red.fits"
            if { [file exists $nrchk] } {
               set it [ tk_dialog .d "File exists" "The file named\n $nrchk\n already exists" {} -1 OK]
               debuglog "Cannot overwrite file $nrchk"
               return 0
             }
-           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)_blue.fits"
+           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)_[set SCOPE(seqnum)]_blue.fits"
            if { [file exists $nbchk] } {
               set it [ tk_dialog .d "File exists" "The file named\n $nbchk\n already exists" {} -1 OK]
               debuglog "Cannot overwrite file $nbchk"
@@ -105,15 +105,17 @@ global ANDOR_SOCKET SCOPE
 } 
 
 proc videomode { } {
-global LASTACQ STATUS
-   commandAndor red "imagename videomode_red 1" 0
-   commandAndor red "imagename videomode_blue 1" 0
+global LASTACQ STATUS SCOPE ACQREGION
+   commandAndor red "imagename videomode 1" 0
+   commandAndor blue "imagename videomode 1" 0
+   exec rm -f $SCOPE(datadir)/videomode_red.fits
+   exec rm -f $SCOPE(datadir)/videomode_blue.fits
    if { $LASTACQ == "fullframe" } {
       commandAndor red "grabframe $SCOPE(exposure)" 0
       commandAndor blue "grabframe $SCOPE(exposure)" 0
    } else {
-      commandAndor red "grabroi $SCOPE(exposure) 1" 0
-      commandAndor blue "grabroi $SCOPE(exposure) 1" 0
+      commandAndor red "grabroi $SCOPE(exposure) $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(geom)" 0
+      commandAndor blue "grabroi $SCOPE(exposure) $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(geom)" 0
    }
    if { $STATUS(abort) == 0 } {
       if { $SCOPE(exposure) > 0.0 } {
@@ -122,24 +124,37 @@ global LASTACQ STATUS
       }
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
-      after [expr int($SCOPE(exposure)*1000)] videomode
+      after [expr int($SCOPE(exposure)*1000)+100] videomode
    } else {
       .main.video configure -relief sunken -fg yellow
       .main.observe configure -fg LightGray -relief sunken -command ""
+      after 1000 nessishutter red close
+      after 1000 nessishutter blue close
    }
 }
   
+proc startvideomode { } {
+global STATUS
+   set STATUS(abort) 0
+   nessishutter red open
+   nessishutter blue open
+   videomode
+}
+
+
 
 
 proc acquireCubes { } {
 global INSTRUMENT SCOPE LASTACQ ACQREGION
    set n [expr $ACQREGION(xe) - $ACQREGION(xs) +1]
    if { $INSTRUMENT(red) } {
-      commandAndor red "grabroi $SCOPE(exposure) $SCOPE(numframes)"
+      commandAndor red "setframe roi"
+      commandAndor red "grabcube $SCOPE(exposure) $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(geom) $SCOPE(numframes)"
       set LASTACQ roi
    }
    if { $INSTRUMENT(blue) } {
-      commandAndor blue "grabroi $SCOPE(exposure) $SCOPE(numframes)"
+      commandAndor blue "setframe roi"
+      commandAndor blue "grabcube $SCOPE(exposure)  $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(geom) $SCOPE(numframes)"
       set LASTACQ roi
    }
 }
@@ -147,10 +162,12 @@ global INSTRUMENT SCOPE LASTACQ ACQREGION
 proc acquireFrames { } {
 global INSTRUMENT SCOPE
    if { $INSTRUMENT(red) } {
+      commandAndor red "setframe fullframe"
       commandAndor red "grabframe $SCOPE(exposure)"
       set LASTACQ fullframe
    }
    if { $INSTRUMENT(blue) } {
+      commandAndor blue "setframe fullframe"
       commandAndor blue "grabframe $SCOPE(exposure)"
       set LASTACQ fullframe
    }

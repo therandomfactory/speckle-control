@@ -62,14 +62,14 @@ button .lowlevel.rtempset -bg gray50 -text "Temp Set" -width 6 -command "andorse
 entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6
 place .lowlevel.rtempset -x 116 -y 30
 place .lowlevel.vrtempset -x 210 -y 33
-label .lowlevel.rcamtemp -bg gray -fg red -text "???.??" -bg gray50
+label .lowlevel.rcamtemp -bg gray -fg blue -text "???.??" -bg gray50
 place .lowlevel.rcamtemp -x 265 -y 33
 
 button .lowlevel.btempset -bg gray50 -text "Temp Set" -width 6 -command "andorsetpoint blue"
 entry .lowlevel.vbtempset -bg white -textvariable ANDOR_CFG(blue,setpoint) -width 6
 place .lowlevel.btempset -x 446 -y 30
 place .lowlevel.vbtempset -x 527 -y 33
-label .lowlevel.bcamtemp -bg gray -fg red -text "???.??" -bg gray50
+label .lowlevel.bcamtemp -bg gray -fg blue -text "???.??" -bg gray50
 place .lowlevel.bcamtemp -x 578 -y 33
 set ANDOR_CFG(red,setpoint) -60
 set ANDOR_CFG(blue,setpoint) -60
@@ -200,8 +200,15 @@ global FWHEELS
 
 proc loadconfig { fname } {
 global NESSI_DIR
-   debuglog "Loading configration from $NESSI_DIR/config-scripts/$fname"
-   source $NESSI_DIR/config-scripts/$fname
+   if { $fname == "user" } {
+      set it [tk_getOpenFile -initialdir $NESSI_DIR/config-scripts]
+      if { $it == "" } {return}
+      debuglog "Loading configration from $it"
+      source $it
+   } else {
+      debuglog "Loading configration from $NESSI_DIR/config-scripts/$fname"
+      source $NESSI_DIR/config-scripts/$fname
+   }
 }
 
 
@@ -247,6 +254,7 @@ global ANDOR_MODE LASTACQ ANDOR_SHUTTER
     .lowlevel.bshut configure -text "Shutter=$name"
     mimicMode $arm $name
     if { $name == "during" } { 
+       mimicMode $arm close
        commandAndor $arm "shutter $ANDOR_SHUTTER(auto)"
     } else { 
        commandAndor $arm "shutter $ANDOR_SHUTTER($name)"
@@ -346,7 +354,7 @@ button .lowlevel.bload -text Load -bg gray70 -width 6 -command "nessiload blue"
 place .lowlevel.bsave -x 420  -y 460
 place .lowlevel.bload -x 515 -y 460
 
-button .main.video -width 5 -height 2 -text "Video" -relief sunken -bg gray -command videomode
+button .main.video -width 5 -height 2 -text "Video" -relief sunken -bg gray -command startvideomode
 place .main.video  -x 100 -y 167
 
 place .main.abort   -x 180 -y 167
@@ -359,6 +367,8 @@ nessimode red wide
 nessimode blue wide
 
 source $NESSI_DIR/wiyn-scripts/mimic.tcl 
+mimicMode red close
+mimicMode blue close
 
 showstatus "Initializing Zabers"
 source $NESSI_DIR/zaber/zaber.tcl 

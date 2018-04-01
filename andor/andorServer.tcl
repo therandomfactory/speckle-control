@@ -58,20 +58,18 @@ foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilt
 SetExposureTime 0.04
 andorSetProperty $CAM Temperature -60
 andorSetProperty $CAM Cooler 1
+
+set shmid [andorConnectShmem 512 512]
+debuglog "$ANDOR_ARM memory buffers @ $shmid"
+initds9 [lindex $shmid 0] 512 512
+andorPrepDataCube
+exec xpaset -p ds9 single
+exec xpaset -p ds9 zoom to fit
+andorPrepDataFrame
 andorSetProperty $CAM Shutter 0
 
-if { $hend != 1024 } {
-   set shmid [andorConnectShmem 512 512]
-   debuglog "$ANDOR_ARM memory buffers @ $shmid"
-   initds9 [lindex $shmid 0] 512 512
-   andorPrepDataCube
-   exec xpaset -p ds9 single
-   exec xpaset -p ds9 zoom to fit
-} else {
-   andorPrepDataFrame
-}
-
 proc showstatus { } {
+global CAM ANDOR_CFG
   foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilterMode GetImageRotate GetKeepCleanTime GetMaximumExposure GetMaximumNumberRingExposureTimes GetMinimumImageLength GetMinimumNumberInSeries GetNumberADChannels GetNumberAmp GetNumberDevices GetNumberFKVShiftSpeeds GetNumberHorizontalSpeeds GetNumberIO GetNumberPreAmpGains GetNumberRingExposureTimes GetNumberVSAmplitudes GetNumberVSSpeeds GetNumberVerticalSpeeds GetReadOutTime GetStartUpTime GetStatus GetTotalNumberImagesAcquired" {
      set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
@@ -112,17 +110,17 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
-      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_.fits 1024 1024 1 1
+      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
       exec xpaset -p ds9 frame 1
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_.fits
+      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
-      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_.fits 1024 1024 1 1
+      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
       exec xpaset -p ds9 frame 2
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_.fits
+      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
 }
 
@@ -134,49 +132,55 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
-      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_.fits $n $n 1 1
+      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $n $n 1 1
       exec xpaset -p ds9 frame 1
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_.fits
+      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorSetROI $ANDOR_CFG(blue) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(blue)
-      andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_.fits $n $n 1 1
+      andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $n $n 1 1
       exec xpaset -p ds9 frame 2
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_.fits
+      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
 }
 
-proc acquireDataCube { exp n } {
+proc acquireDataCube { exp x y npix n } {
 global ANDOR_CFG NESSI_DATADIR ANDOR_ARM ANDOR_ROI
-  debuglog "Starting $ANDOR_ARM full-frame sequence with exposure = $exp"
+  debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   refreshds9 [expr int($exp*2000)] [expr $n*4]
   set t [clock seconds]
   SetExposureTime $exp
+  if { $ANDOR_CFG(red) > -1} {
+     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+  }
+  if { $ANDOR_CFG(blue) > -1} {
+     andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+  }
   set count 0
   while { $count < $n } {
     incr count 1
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
-      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red_.fits 256 256 $count $n
-      andorDisplayFrame $ANDOR_CFG(red) 256 256 1
+      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $npix $npix $count $n
+      andorDisplayFrame $ANDOR_CFG(red) $npix $npix 1
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
-      andorSavedata $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue_.fits 256 256 $count $n
-      andorDisplayFrame $ANDOR_CFG(blue) 256 256 1
+      andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $npix $npix $count $n
+      andorDisplayFrame $ANDOR_CFG(blue) $npix $npix 1
     }
     update idletasks
     after 1
   }
   if { $ANDOR_CFG(red) > -1} {
-    andorDisplayAvgFFT $ANDOR_CFG(red) 256 256 $n
+    andorDisplayAvgFFT $ANDOR_CFG(red) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(red)}
   }
   if { $ANDOR_CFG(blue) > -1} {
-    andorDisplayAvgFFT $ANDOR_CFG(blue) 256 256 $n
+    andorDisplayAvgFFT $ANDOR_CFG(blue) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(blue)}
   }
   debuglog "Finished acquisition"
@@ -185,13 +189,13 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM ANDOR_ROI
 proc andorSaveData { cid fname nx ny count n } {
 global ANDOR_CFG
   switch $ANDOR_CFG(fitsbits) { 
-      default { andorStoreFrame   $cid $fname $nx $ny $count $n }
       short   { andorStoreFrameI2 $cid $fname $nx $ny $count $n }
       long    { andorStoreFrameI4 $cid $fname $nx $ny $count $n }
+      default { andorStoreFrame   $cid $fname $nx $ny $count $n }
   }
 }
 
-
+set ANDOR_CFG(fitsbits) default
 
 
 proc locateStar { steps smooth } {
@@ -211,13 +215,13 @@ global ANDOR_ARM ANDOR_ROI
   set x [lindex $xy 0]
   set y [lindex $xy 1]
   set xs [expr $x - $idim/2]
-  set xe [expr $x + $idim/2]
+  set xe [expr $x + $idim/2 -1]
   if { $xs < 1 } { set xs 1 ; set xe $idim}
-  if { $xe > 1024 } {set xe 1024 ; set xs [expr 1024-$idim+1]}
+  if { $xe > 1024 } {set xe 1024 ; set xs [expr 1024-$idim-1}
   set ys [expr $y - $idim/2]
-  set ye [expr $y + $idim/2]
+  set ye [expr $y + $idim/2 -1]
   if { $ys < 1 } { set yd 1 ; set ye $idim}
-  if { $ye > 1024 } {set ye 1024 ; set ys [expr 1024-$idim+1]}
+  if { $ye > 1024 } {set ye 1024 ; set ys [expr 1024-$idim-1]}
   exec xpaset -p ds9 regions deleteall
   exec echo "box [expr $xs+$idim/2] [expr $ys+$idim/2] $idim $idim 0" | xpaset  ds9 regions
   set ANDOR_ROI(xs) $xs
@@ -234,16 +238,16 @@ proc shutDown { } {
 }
 
 proc doService {sock msg} {
-global TLM SCOPE CAM ANDOR_ARM DATADIR
+global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG
     debuglog "echosrv:$msg"
     switch [lindex $msg 0] {
          shutdown        { shutDown ; puts $sock "OK"; exit }
-         acquire         { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2]" ; puts $sock "Acquiring"}
          reset           { resetCamera [lindex $msg 1] ; puts $sock "OK"}
-         grabframe       { after 10 "acquireDataFrame [lindex $msg 1]" ; puts $sock "OK"}
+         grabframe       { after 10 "acquireDataFrame [lindex $msg 1]" ; puts $sock "Acquiring frame"}
          setroi          { selectROI [lindex $msg 1] ; puts $sock "OK"}
-         grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "OK"}
+         grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "Acquiring roi"}
          version         { puts $sock "1.0" }
+         grabcube        { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Acquiring cube"}
          setframe        { configureFrame [lindex $msg 1] ;  puts $sock "OK"}
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
@@ -293,6 +297,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR
                            }
                          }
     }
+    flush $sock
 }
 
 

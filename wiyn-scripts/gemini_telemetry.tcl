@@ -55,38 +55,38 @@ global GEMINI TELEMETRY
 
 proc simGeminiTelemetry { } {
 global GEMINI TELEMETRY
-   set TELEMETRY($GEMINI(airmass) 1.000
-   set TELEMETRY($GEMINI(azerror) +00:00:00.00
-   set TELEMETRY($GEMINI(azimuth) +90:00:00.00
-   set TELEMETRY($GEMINI(beam) A
-   set TELEMETRY($GEMINI(elerror) +00:00:00.00
-   set TELEMETRY($GEMINI(elevation) +90:00:00.00
-   set TELEMETRY($GEMINI(focus) 0.000
-   set TELEMETRY($GEMINI(framepa) FK5
-   set TELEMETRY($GEMINI(guiding) Off
-   set TELEMETRY($GEMINI(ha) -0.0927
-   set TELEMETRY($GEMINI(humidity) 20.0
-   set TELEMETRY($GEMINI(instraa) 0.000
-   set TELEMETRY($GEMINI(instrpa) 0.000
-   set TELEMETRY($GEMINI(localtime) 14:06:10.7
-   set TELEMETRY($GEMINI(lst) 15:23:07.9
-   set TELEMETRY($GEMINI(mjd) 5.80420042909375e+04
-   set TELEMETRY($GEMINI(offsetdec) 0.000
-   set TELEMETRY($GEMINI(offsetra) -7776000.000
-   set TELEMETRY($GEMINI(programid) None
-   set TELEMETRY($GEMINI(rotator) 0.000
-   set TELEMETRY($GEMINI(targetdec) 0.00000000
-   set TELEMETRY($GEMINI(targetepoch) 2000.0
-   set TELEMETRY($GEMINI(targetframe) FK5
-   set TELEMETRY($GEMINI(targetname) Gemini-North
-   set TELEMETRY($GEMINI(targetra) 0.00000000
-   set TELEMETRY($GEMINI(teldec) +19:47:50.66
-   set TELEMETRY($GEMINI(telescope) Gemini-North
-   set TELEMETRY($GEMINI(telra) 16:01:21.495
-   set TELEMETRY($GEMINI(userfocus) 0.000
-   set TELEMETRY($GEMINI(utc) 00:06:10.7
-   set TELEMETRY($GEMINI(utcdate) 2017-10-16
-   set TELEMETRY($GEMINI(zd) 0.0000
+   set TELEMETRY($GEMINI(airmass)) 1.000
+   set TELEMETRY($GEMINI(azerror)) +00:00:00.00
+   set TELEMETRY($GEMINI(azimuth)) +90:00:00.00
+   set TELEMETRY($GEMINI(beam)) A
+   set TELEMETRY($GEMINI(elerror)) +00:00:00.00
+   set TELEMETRY($GEMINI(elevation)) +90:00:00.00
+   set TELEMETRY($GEMINI(focus)) 0.000
+   set TELEMETRY($GEMINI(framepa)) FK5
+   set TELEMETRY($GEMINI(guiding)) Off
+   set TELEMETRY($GEMINI(ha)) -0.0927
+   set TELEMETRY($GEMINI(humidity)) 20.0
+   set TELEMETRY($GEMINI(instraa)) 0.000
+   set TELEMETRY($GEMINI(instrpa)) 0.000
+   set TELEMETRY($GEMINI(localtime)) 14:06:10.7
+   set TELEMETRY($GEMINI(lst)) 15:23:07.9
+   set TELEMETRY($GEMINI(mjd)) 5.80420042909375e+04
+   set TELEMETRY($GEMINI(offsetdec)) 0.000
+   set TELEMETRY($GEMINI(offsetra)) -7776000.000
+   set TELEMETRY($GEMINI(programid)) None
+   set TELEMETRY($GEMINI(rotator)) 0.000
+   set TELEMETRY($GEMINI(targetdec)) 0.00000000
+   set TELEMETRY($GEMINI(targetepoch)) 2000.0
+   set TELEMETRY($GEMINI(targetframe)) FK5
+   set TELEMETRY($GEMINI(targetname)) Gemini-North
+   set TELEMETRY($GEMINI(targetra)) 0.00000000
+   set TELEMETRY($GEMINI(teldec)) +19:47:50.66
+   set TELEMETRY($GEMINI(telescope)) Gemini-North
+   set TELEMETRY($GEMINI(telra)) 16:01:21.495
+   set TELEMETRY($GEMINI(userfocus)) 0.000
+   set TELEMETRY($GEMINI(utc)) 00:06:10.7
+   set TELEMETRY($GEMINI(utcdate)) 2017-10-16
+   set TELEMETRY($GEMINI(zd)) 0.0000
 
 }
 

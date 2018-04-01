@@ -160,7 +160,7 @@ menu .mbar.help.m
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file:/opt/apogee/doc/user-guide.html &}
 .mbar.tools.m add command -label "Observing" -command "nessiGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Editor" -command "wm deiconify .filters"
-.mbar.tools.m add command -label "Camera status" -command "nessistatus"
+.mbar.tools.m add command -label "Camera status" -command "nessiStatus"
 
 proc nessiGuiMode { mode } {
 global NESSI
@@ -168,8 +168,8 @@ global NESSI
 }
 
 proc nessiStatus { } {
-   commandAndor red showstatus
-   commandAndor blue showstatus
+   commandAndor red status
+   commandAndor blue status
 }
 
 #
