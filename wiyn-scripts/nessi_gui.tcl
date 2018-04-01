@@ -358,6 +358,7 @@ set LASTACQ fullframe
 nessimode red wide
 nessimode blue wide
 
+source $NESSI_DIR/wiyn-scripts/mimic.tcl 
 
 showstatus "Initializing Zabers"
 source $NESSI_DIR/zaber/zaber.tcl 
@@ -389,7 +390,6 @@ if { $SCOPE(telescope) == "GEMINI" } {
 }
 
 set NESSI(observingGui) 620x540
-source $NESSI_DIR/wiyn-scripts/mimic.tcl
 wm geometry .mimicNessi +660+30
 
 if { $SCOPE(telescope) == "WIYN" } {
@@ -478,6 +478,9 @@ place .lowlevel.usein -x 360  -y 620
 place .lowlevel.useout -x 490  -y 620
 showstatus "Initializing PICOs"
 source $NESSI_DIR/picomotor/picomotor.tcl
+showstatus "Connecting to Gemini Telemetry service"
+source $NESSI_DIR/wiyn-scripts/gemini_telemetry.tcl
+geminiConnect north
 
 }
 

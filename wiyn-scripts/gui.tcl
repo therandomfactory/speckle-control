@@ -161,7 +161,7 @@ menu .mbar.help.m
 .mbar.tools.m add command -label "Observing" -command "nessiGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Editor" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "nessistatus"
-.
+
 proc nessiGuiMode { mode } {
 global NESSI
   wm geometry . $NESSI($mode)
@@ -233,6 +233,8 @@ if { [lindex [package version BWidget] end] >= 1.8 } {
 }
 set SCOPE(exptype) Object
 set SCOPE(numaccum) 1
+set SCOPE(numseq) 1
+
 button .main.seldir -width 40 -text "Configure data directory" -command "choosedir data data"
 place .main.seldir -x 20 -y 275
 label .main.lname -bg gray -fg black -text "File name :"

@@ -13,7 +13,10 @@
 set NESSI_DIR $env(NESSI_DIR)
 
 proc loadFiltersConfig { fname } {
-global NESSI_DIR NESCONFIG FWHEELS
+global NESSI_DIR NESCONFIG FWHEELS SCOPE
+   if { $SCOPE(telescope) == "GEMINI" } {  
+      set fname "[set fname].gemini"
+   }
    if { [file exists $NESSI_DIR/$fname] == 0 } {
      errordialog "Filters configuration file $NESSI_DIR/$fname\n does not exist"
    } else {

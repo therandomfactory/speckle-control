@@ -2,21 +2,21 @@
 # for device 1, and 5 MUST BE OUT ON SHUTDOWN, and EXTEND/IN on startup 
 
 set ZABERS(port) /dev/ttyUSB0
-set ZABERS(device)            1
+set ZABERS(focus,device)      1
 set ZABERS(focus,stow)        0
 set ZABERS(focus,extend) 1049869
 
 set ZABERS(pickoff,device)     5
-set ZABERS(pickoff,in)   -120366
+set ZABERS(pickoff,in)     -7366
 set ZABERS(pickoff,out)   270000
 
 set ZABERS(A,device)           4
-set ZABERS(A,speckle)	   30000
-set ZABERS(A,wide)         72000
+set ZABERS(A,speckle)	  270000
+set ZABERS(A,wide)        940060
 
 set ZABERS(B,device)           3
-set ZABERS(B,speckle)	  866667
-set ZABERS(B,wide)        202277
+set ZABERS(B,speckle)	  906667
+set ZABERS(B,wide)        152831
 
 set ZABERS(input,device)        2
 set ZABERS(input,speckle) 1066667

@@ -199,7 +199,7 @@ resolution"
 
 proc zaberSetPos  { name pos } {
 global ZABERS
-   if { $ZABERS(sim) } {
+   if { [info exists ZABERS(sim)] } {
      debuglog "Zaber simulate : $name $pos"
    } else {
      zaberCommand $name  "move abs $pos"
@@ -225,10 +225,10 @@ proc zaberGoto { name pos } {
 global ZABERS
   set newp $ZABERS($name,$pos)
   set res [zaberSetPos $name $newp]
-  if { $name == "input" } {
+  if { $name == "input"  } {
     mimicMode input $pos
   } else {
-    mimicMode $ZABERS($name,arm) $pos
+    catch {mimicMode $ZABERS($name,arm) $pos}
   } 
 }
 
@@ -322,15 +322,25 @@ if { [info exists env(NESSI_SIM)] } {
 loadZaberConfig
 echoZaberConfig
 zaberConnect nessi
-if { $ZABERS(sim) ==  0 } {
+if { [info exists ZABERS(sim)] ==0 } {
   zaberGetProperties A
   zaberGetProperties B
   zaberGetProperties input
   if { $SCOPE(telescope) == "GEMINI" } { zaberGetProperties pickoff ; zaberGetProperties focus }
   zaberPrintProperties
+  zaberCommand A home
+  zaberCommand B home
+  zaberCommand input home
+  after 3000
   zaberGoto A wide
   zaberGoto B wide
   zaberGoto input wide
-  if { $SCOPE(telescope) == "GEMINI" } { zaberCommand pickoff in ; zaberCommand focus extend }
+  if { $SCOPE(telescope) == "GEMINI" } {
+       zaberCommand focus home
+       zaberCommand pickoff home
+       after 2000
+       zaberCommand pickoff in	
+       zaberCommand focus extend 
+  }
 }
 
