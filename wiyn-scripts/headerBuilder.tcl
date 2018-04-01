@@ -414,25 +414,27 @@ global TELEMETRY
 #  Initialisation code from here onwards....
 #
 set NESSI_DIR $env(NESSI_DIR)
-load /usr/local/gwc/lib/libnames.so
-load /usr/local/gwc/lib/libmsg.so
-load /usr/local/gwc/lib/libgwc.so
-connect wiyn tkxpak
-
-###load /usr/local/gui/lib/libxtcs.so
 load $NESSI_DIR/lib/libfitstcl.so
+
+if { $env(TELESCOPE) == "WIYN" } {
+  load $NESSI_DIR/gwc/lib/libnames.so
+  load $NESSI_DIR/gwc/lib/libmsg.so
+  load $NESSI_DIR/gwc/lib/libgwc.so
+  connect wiyn tkxpak
+}
+###load /usr/local/gui/lib/libxtcs.so
 
 source $NESSI_DIR/wiyn-scripts/headerSpecials.tcl
 loadstreamdefs $NESSI_DIR/wiyn-scripts/telem-$TOMPG.conf
 loadhdrdefs $NESSI_DIR/wiyn-scripts/headers.conf
-activatestreams
-subscribestreams
-
-
-foreach i [array names TELEMETRY] {
+if { $env(TELESCOPE) == "WIYN" } {
+  activatestreams
+  subscribestreams
+  foreach i [array names TELEMETRY] {
    if { [lindex [split $i .] 0] != "nessi" } {
      $TOMPG atevent $i "newdata $i" always
    }
+  }
 }
 
 foreach i "LSTHDR ELMAP AZMAP TRACK EPOCH TARGRA 

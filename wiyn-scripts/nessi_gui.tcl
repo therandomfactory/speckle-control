@@ -480,7 +480,19 @@ showstatus "Initializing PICOs"
 source $NESSI_DIR/picomotor/picomotor.tcl
 showstatus "Connecting to Gemini Telemetry service"
 source $NESSI_DIR/wiyn-scripts/gemini_telemetry.tcl
-geminiConnect north
+
+set GEMINITLM(sim) 0
+if { [info exists env(NESSI_SIM)] } {
+   set simdev [split $env(NESSI_SIM) ,]
+   if { [lsearch $simdev geminitlm] > -1 } {
+       set GEMINITLM(sim) 1
+       debuglog "Gemini telemetry in SIMULATION mode"
+       simGeminiTelemetry
+  }
+} else {
+  geminiConnect north
+}
+
 
 }
 

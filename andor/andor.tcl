@@ -75,12 +75,28 @@ global ANDOR_SOCKET INSTRUMENT
    }
 }
 
-proc commandAndor { arm cmd } {
-global ANDOR_SOCKET
+proc commandAndor { arm cmd {echk 1} } {
+global ANDOR_SOCKET SCOPE
    if { $ANDOR_SOCKET($arm) == 0 } {
      debuglog "WARNING : $arm arm camera not connected"
      return 0
    } else {
+     if { [string range $cmd 0 3] == "grab" } {
+        if { $echk } {
+           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)_red.fits"
+           if { [file exists $nrchk] } {
+              set it [ tk_dialog .d "File exists" "The file named\n $nrchk\n already exists" {} -1 OK]
+              debuglog "Cannot overwrite file $nrchk"
+              return 0
+            }
+           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)_blue.fits"
+           if { [file exists $nbchk] } {
+              set it [ tk_dialog .d "File exists" "The file named\n $nbchk\n already exists" {} -1 OK]
+              debuglog "Cannot overwrite file $nbchk"
+              return 0
+            }
+        }
+     }
      debuglog "Commanding Andor $arm : $cmd"
      puts $ANDOR_SOCKET($arm) $cmd
      gets $ANDOR_SOCKET($arm) result
@@ -90,12 +106,14 @@ global ANDOR_SOCKET
 
 proc videomode { } {
 global LASTACQ STATUS
+   commandAndor red "imagename videomode_red 1" 0
+   commandAndor red "imagename videomode_blue 1" 0
    if { $LASTACQ == "fullframe" } {
-      commandAndor red "grabframe $SCOPE(exposure)"
-      commandAndor blue "grabframe $SCOPE(exposure)"
+      commandAndor red "grabframe $SCOPE(exposure)" 0
+      commandAndor blue "grabframe $SCOPE(exposure)" 0
    } else {
-      commandAndor red "grabroi $SCOPE(exposure) 1"
-      commandAndor blue "grabroi $SCOPE(exposure) 1"
+      commandAndor red "grabroi $SCOPE(exposure) 1" 0
+      commandAndor blue "grabroi $SCOPE(exposure) 1" 0
    }
    if { $STATUS(abort) == 0 } {
       if { $SCOPE(exposure) > 0.0 } {
