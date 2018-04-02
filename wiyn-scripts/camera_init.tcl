@@ -30,7 +30,6 @@ global CONFIG panDetector panStatus
 
 proc nessiTelemetryUpdate { } {
 global SCOPE TELEMETRY FITSKEY IMGMETA
-   set SCOPE(target) $SCOPE(title)
    foreach i [array names SCOPE] {
        set TELEMETRY(nessi.scope.$i) $SCOPE($i)
    }

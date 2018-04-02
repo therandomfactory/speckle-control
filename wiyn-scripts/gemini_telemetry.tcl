@@ -54,7 +54,7 @@ global GEMINI TELEMETRY
 }
 
 proc simGeminiTelemetry { } {
-global GEMINI TELEMETRY
+global GEMINI TELEMETRY CACHETELEMETRY
    set TELEMETRY($GEMINI(airmass)) 1.000
    set TELEMETRY($GEMINI(azerror)) +00:00:00.00
    set TELEMETRY($GEMINI(azimuth)) +90:00:00.00
@@ -87,9 +87,23 @@ global GEMINI TELEMETRY
    set TELEMETRY($GEMINI(utc)) 00:06:10.7
    set TELEMETRY($GEMINI(utcdate)) 2017-10-16
    set TELEMETRY($GEMINI(zd)) 0.0000
-
+   set all [lsort [array names GEMINI]]
+   foreach t $all {
+      set CACHETELEMETRY($GEMINI($t))  $TELEMETRY($GEMINI($t))
+   }
 }
 
+proc nessiTelemetryUpdate { } {
+global SCOPE TELEMETRY FITSKEY IMGMETA
+   foreach i [array names SCOPE] {
+       set TELEMETRY(nessi.scope.$i) $SCOPE($i)
+   }
+   foreach i [array names FITSKEY] {
+      if { [info exists IMGMETA([lindex [split $i .] end],value)] } {
+          set TELEMETRY($i) $IMGMETA([lindex [split $i .] end],value)
+      }
+   }
+}
 
 set GEMINICFG(north,ip) 0.0.0.0
 set GEMINICFG(north,port) 0

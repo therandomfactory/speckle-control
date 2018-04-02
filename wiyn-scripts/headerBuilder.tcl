@@ -96,6 +96,7 @@ global TOMPG HEADERS ACTIVE
      kpno_2m   { set type tcs-2m }
      kpno_4m   { set type tcs-4m }
      wiyn      { set type wiyn-nessi }
+     gemini    { set type gemini-speckle }
   }
   foreach i $HEADERS($type) {
      set stream [join [lrange [split $i "."] 0 1] "."]
@@ -106,11 +107,12 @@ global TOMPG HEADERS ACTIVE
 
 
 proc fillheader { args } {
-global TELEMETRY PDEBUG HEADERS TOMPG FITSKEY FITSTXT SEQNUM ACTIVE
+global TELEMETRY PDEBUG HEADERS TOMPG FITSKEY FITSTXT SEQNUM ACTIVE SCOPE
 global FROMSTARTEXP CACHETELEMETRY
   set fhead ""
   nessiTelemetryUpdate
   set type wiyn-nessi
+  if { $SCOPE(telescope) == "GEMINI" } {set type gemini-speckle}
   set fhead "[fitshdrrecord HDR_REV string {3.00 18-Feb-2008} Header-Rev ]\n" 
   foreach i $HEADERS($type) {
      if { $PDEBUG > 1 } {debuglog "processing $i"}
@@ -142,15 +144,18 @@ global FROMSTARTEXP CACHETELEMETRY
      } else {
 ###       set current [$TOMPG info $i]
 ### for testing
-       set value "$TELEMETRY($i)"
+       set value NA
+       catch {set value "$TELEMETRY($i)"}
        if { [info exists FROMSTARTEXP($key)] } { 
           set value $CACHETELEMETRY($i)
        }
        set type string
-       catch {set type "$TELEMETRY($i,t)"}
-       if { $value == "Attribute" } {
-          set type string
-          set value "Not available"
+       if { $SCOPE(telescope) == "wiyn" } {
+          catch {set type "$TELEMETRY($i,t)"}
+          if { $value == "Attribute" } {
+             set type string
+             set value "Not available"
+          }
        }
      }
      set new [fitshdrrecord $key $type $value $text ]
@@ -174,7 +179,7 @@ global FROMSTARTEXP CACHETELEMETRY
   return "$fhead"
 }
 
-proc headerComments { fid } {
+proc notheaderComments { fid } {
 global SCOPE
   set spos [llength [$fid dump -l]]
   set cmt [split [string trim [.main.comment get 0.0 end]] \n]
@@ -256,7 +261,7 @@ proc obsid {  } {
 }
 
 
-proc headerGeometry { fid } {
+proc notheaderGeometry { fid } {
 global IMGSTAT IMGMETA
    set r [fitshdrrecord DATASEC string [calculateXSEC DATASEC] "image portion of frame"]
    $fid put keyword $r
@@ -425,7 +430,7 @@ if { $env(TELESCOPE) == "WIYN" } {
 ###load /usr/local/gui/lib/libxtcs.so
 
 source $NESSI_DIR/wiyn-scripts/headerSpecials.tcl
-loadstreamdefs $NESSI_DIR/wiyn-scripts/telem-$TOMPG.conf
+loadstreamdefs $NESSI_DIR/wiyn-scripts/telem-[string tolower $env(TELESCOPE)].conf
 loadhdrdefs $NESSI_DIR/wiyn-scripts/headers.conf
 if { $env(TELESCOPE) == "WIYN" } {
   activatestreams

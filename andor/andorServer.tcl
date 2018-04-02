@@ -12,6 +12,24 @@ load $NESSI_DIR/lib/libguider.so
 
 source $NESSI_DIR/andor/andor.tcl
 source $NESSI_DIR/andorsConfiguration
+source $NESSI_DIR/wiyn-scripts/headerBuilder.tcl 
+if { $env(TELESCOPE) == "GEMINI" } {
+  set SCOPE(telescope) "GEMINI"
+  set SCOPE(instrument) speckle
+  source $NESSI_DIR/wiyn-scripts/gemini_telemetry.tcl 
+  set GEMINITLM(sim) 0
+  if { [info exists env(NESSI_SIM)] } {
+    set simdev [split $env(NESSI_SIM) ,]
+    if { [lsearch $simdev geminitlm] > -1 } {
+       set GEMINITLM(sim) 1
+       debuglog "Gemini telemetry in SIMULATION mode"
+       simGeminiTelemetry
+   }
+  } else {
+    geminiConnect north
+  }
+}
+
 
 set cameraNum [lindex $argv 0]
 set hstart [lindex $argv 1]
@@ -111,6 +129,7 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
       andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
+      appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p ds9 frame 1
       after 400
       exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
@@ -118,6 +137,7 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
       andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
+      appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p ds9 frame 2
       after 400
       exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
@@ -133,6 +153,7 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
       andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $n $n 1 1
+      appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p ds9 frame 1
       after 400
       exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
@@ -141,6 +162,7 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
       andorSetROI $ANDOR_CFG(blue) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(blue)
       andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $n $n 1 1
+      appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p ds9 frame 2
       after 400
       exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
@@ -176,10 +198,12 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM ANDOR_ROI
     after 1
   }
   if { $ANDOR_CFG(red) > -1} {
+    appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     andorDisplayAvgFFT $ANDOR_CFG(red) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(red)}
   }
   if { $ANDOR_CFG(blue) > -1} {
+    appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     andorDisplayAvgFFT $ANDOR_CFG(blue) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(blue)}
   }

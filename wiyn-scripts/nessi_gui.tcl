@@ -488,6 +488,8 @@ place .lowlevel.usein -x 360  -y 620
 place .lowlevel.useout -x 490  -y 620
 showstatus "Initializing PICOs"
 source $NESSI_DIR/picomotor/picomotor.tcl
+
+if { 0 } {
 showstatus "Connecting to Gemini Telemetry service"
 source $NESSI_DIR/wiyn-scripts/gemini_telemetry.tcl
 
@@ -501,6 +503,7 @@ if { [info exists env(NESSI_SIM)] } {
   }
 } else {
   geminiConnect north
+}
 }
 
 
