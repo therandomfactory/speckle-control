@@ -114,6 +114,7 @@ global CAM ANDOR_ROI ANDOR_CFG
    if { $mode == "fullframe" } {
      debuglog "Configure camera $CAM for fullframe"
      andorConfigure $CAM 1 1 1 1024 1 1024 [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
+     andorPrepDataFrame
    }
    if { $mode == "roi" } {
      debuglog "Configure camera $CAM for ROI : $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye)"
