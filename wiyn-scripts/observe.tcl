@@ -732,6 +732,9 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF
    set CONFIG(geometry.NumRows)   [lindex [split $ANDOR_DEF(fullframe) ,] 3]
    mimicMode red roi 1024x1024
    mimicMode blue roi 1024x1024
+   commandAndor red "setframe fullframe"
+   commandAndor blue "setframe fullframe"
+   set LASTACQ fullframe
 }
 
 
@@ -766,27 +769,30 @@ proc  acquisitionmode { rdim } {
 #               ACQREGION	-	Sub-frame region coordinates
 #               CONFIG	-	GUI configuration
 global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
-  if { $LASTACQ != "fullframe" } {
+  if { $LASTACQ != "fullframe" && $rdim != "manual"} {
         commandAndor red "setframe fullframe"
         commandAndor blue "setframe fullframe"
         positionZabers fullframe
   }
-  startsequence
-  after 2000
+  if { $rdim != "manual" } {
+    startsequence
+    after 2000
+  }
   if { $rdim == "manual" } {
     catch {
       set xcenter 512
       set ycenter 512
-      exec xpaset -p ds9 regions deleteall
       set ACQREGION(xs) [expr int($xcenter-$rdim/2)]
       set ACQREGION(xe) [expr int($xcenter+$rdim/2)]
       set ACQREGION(ys) [expr int($ycenter-$rdim/2)]
       set ACQREGION(ye) [expr int($ycenter+$rdim/2)]
       exec echo "box $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye) | xpaset ds9 regions
+      set rdim 256
     }
+    set rdim $ACQREGION(geom)
     set it [tk_dialog .d "Edit region" "Move the region in the\n image display tool then click OK" {} -1 "OK"]
-    commandAndor red "forceroi ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye)"
-    commandAndor blue "forceroi ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye)"
+    commandAndor red "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
+    commandAndor blue "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
   } else {
     commandAndor red "setroi $rdim"
     commandAndor blue "setroi $rdim"
@@ -813,12 +819,12 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   commandAndor red "setframe roi"
   commandAndor blue "setframe roi"
   set LASTACQ roi
-  positionZabers roi
   .lowlevel.rmode configure -text "Mode=speckle"
   .lowlevel.bmode configure -text "Mode=speckle"
 }
 
 
+set ACQREGION(geom) 256
 
 
 

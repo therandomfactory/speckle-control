@@ -248,6 +248,7 @@ global ANDOR_MODE LASTACQ
     debuglog "$arm setup for $name"
 }
 
+
 proc nessishutter { arm name } {
 global ANDOR_MODE LASTACQ ANDOR_SHUTTER
     .lowlevel.rshut configure -text "Shutter=$name"
@@ -375,7 +376,9 @@ source $NESSI_DIR/zaber/zaber.tcl
 
 showstatus "Initializing Filter Wheeels"
 source $NESSI_DIR/oriel/filterWheel.tcl
-
+  
+.mbar.tools.m add command -label "zabers to wide mode" -command "positionZabers fullframe"
+.mbar.tools.m add command -label "zabers to speckle mode" -command "positionZabers roi"
 if { $ZABERS(A,arm) == "red" } {
   .mbar.tools.m add command -label "zaber red wide" -command "zaberGoto A wide"
   .mbar.tools.m add command -label "zaber red speckle" -command "zaberGoto A speckle"

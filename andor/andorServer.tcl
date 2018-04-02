@@ -52,8 +52,8 @@ if { $handle < 0} {exit}
 
 debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
-
-andorConfigure $CAM 1 1 $hstart $hend $vstart $vend 0 0 0 0
+set ANDOR_CFG(configure) "1 1 1 1024 1 1024 2 2 1 3"
+andorConfigure $CAM 1 1 1 1024 1 1024 [lindex $ANDOR_CFG(configure) 7]  [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9] [lindex $ANDOR_CFG(configure) 10]
 debuglog "Configured camera id $CAM for ccd mode"
 set ANDOR_CFG(red) -1
 set ANDOR_CFG(blue) -1
@@ -96,28 +96,28 @@ global CAM ANDOR_CFG
 
 
 proc resetCamera { mode } {
-global CAM
+global CAM ANDOR_CFG
    andorShutDown
    set handle [andorConnectCamera [expr $CAM+1]]
    if { $mode == "fullframe" } {
      debuglog "Connected to camera $CAM for fullframe, handle = $handle"
-     andorConfigure $CAM 1 1 1 1024 1 1024 0 0 0 0
+     andorConfigure $CAM 1 1 1 1024 1 1024 [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
    }
    if { $mode == "roi" } {
      debuglog "Connected to camera $CAM for ROI, handle = $handle"
-     andorConfigure $CAM 1 1 1 256 1 256 0 0 0 0
+     andorConfigure $CAM 1 1 1 256 1 256 [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
    }
 }
 
 proc configureFrame { mode } {
-global CAM ANDOR_ROI
+global CAM ANDOR_ROI ANDOR_CFG
    if { $mode == "fullframe" } {
      debuglog "Configure camera $CAM for fullframe"
-     andorConfigure $CAM 1 1 1 1024 1 1024 0 0 0 0
+     andorConfigure $CAM 1 1 1 1024 1 1024 [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
    }
    if { $mode == "roi" } {
      debuglog "Configure camera $CAM for ROI : $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye)"
-     andorConfigure $CAM 1 1 $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) 0 0 0 0
+     andorConfigure $CAM 1 1 $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
    }
 }
 
@@ -267,7 +267,7 @@ global ANDOR_ARM ANDOR_ROI
 
 
 proc shutDown { } {
-  debuglog "Shutting down ANdor acqusition servers"
+  debuglog "Shutting down Andor acqusition servers"
   andorShutDown
   exit
 }
@@ -275,6 +275,7 @@ proc shutDown { } {
 proc doService {sock msg} {
 global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG
     debuglog "echosrv:$msg"
+    set ANDOR_CFG([lindex $msg 0]) [lrange $msg 1 end]
     switch [lindex $msg 0] {
          shutdown        { shutDown ; puts $sock "OK"; exit }
          reset           { resetCamera [lindex $msg 1] ; puts $sock "OK"}

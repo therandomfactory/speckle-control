@@ -104,6 +104,15 @@ global ANDOR_SOCKET SCOPE
    return $result
 } 
 
+proc commandCameras { cmd {echk 1} } {
+global INSTRUMENT
+   commandAndor red $cmd $echk
+   if { $INSTRUMENT(clone) } {
+      commandAndor blue $cmd $echk
+   }
+}
+
+
 proc videomode { } {
 global LASTACQ STATUS SCOPE ACQREGION
    commandAndor red "imagename videomode 1" 0
@@ -233,14 +242,14 @@ set ANDOR_DEF(hend)			1024
 set ANDOR_DEF(vstart)			1
 set ANDOR_DEF(vend)			1024
 set ANDOR_DEF(amplifier)		$ANDOR_CCD
-set ANDOR_DEF(ccd_horizontal_speed	0
+set ANDOR_DEF(ccd_horizontal_speed	1
 set ANDOR_DEF(emccd_horizontal_speed)   0
 set ANDOR_DEF(em_advanced)		0
 set ANDOR_DEF(camera_link)		0
 set ANDOR_DEF(head)                 "DU888_BV"
-set ANDOR_DEF(acquisition_mode)     "singel_scan"
-set ANDOR_DEF(int_time)             0.07059
-set ANDOR_DEF(kinetic_time)         0.07059
+set ANDOR_DEF(acquisition_mode)     "single_scan"
+set ANDOR_DEF(int_time)             0.04
+set ANDOR_DEF(kinetic_time)         0.0
 set ANDOR_DEF(num_exposures)        1
 set ANDOR_DEF(exposure_total)       1
 set ANDOR_DEF(read_mode)            "Image"
@@ -260,7 +269,7 @@ set ANDOR_DEF(gain)                 0
 set ANDOR_DEF(em_gain)              0
 set ANDOR_DEF(vclock_amp)           0
 set ANDOR_DEF(vertical_speed)       4.33E-06     
-set ANDOR_DEF(amplifier)            "Electron Multiplying"
+set ANDOR_DEF(amplifier)            "CCD"
 set ANDOR_DEF(preamp_gain)          2.
 set ANDOR_DEF(serial_number)        10244   
 set ANDOR_DEF(target_temperature)   -60.
@@ -285,7 +294,12 @@ set ANDOR_DEF(readout_direction)    -1
 set ANDOR_DEF(eshutter_mode)        -1
 
 
-
+set ANDOR_CFG(vertical_speeds)	    "0.6,1.13,2.2,4.33"
+set ANDOR_CFG(readoutrate,ccd)      "0.1,1.0"
+set ANDOR_CFG(readoutrate,emccd)    "1,10,20,30"
+set ANDOR_CFG(preampgains)          "1,2"
+set ANDOR_CFG(minexposure,ccd)       1.1
+set ANDOR_CFG(minexposure,emccd)     0.015
 	
 set ANDORCODE(DRV_ERROR_CODES) 20001
 set ANDORCODE(DRV_SUCCESS) 20002

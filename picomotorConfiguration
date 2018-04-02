@@ -13,7 +13,7 @@ set PICOS(X,jog+)		10
 set PICOS(X,jog-)		-10
 set PICOS(X,jog--)		-100
 
-set PICOS(Y,ip)         	192.168.0.2
+set PICOS(Y,ip)         	192.168.0.1
 set PICOS(Y,in)	       		1000
 set PICOS(Y,out)      		-1000
 set PICOS(Y,home)     		-3000
