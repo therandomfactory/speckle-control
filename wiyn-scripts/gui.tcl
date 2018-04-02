@@ -146,10 +146,10 @@ menu .mbar.help.m
 .mbar.file.m add command -label "Save" -command savestate
 #.mbar.file.m add command -label "Save As" -command filesaveas
 .mbar.file.m add command -label "Exit" -command shutdown
-.mbar.observe.m add command -label "Single" -command "observe single"
 .mbar.observe.m add command -label "Snap-roi-128" -command "observe region128"
 .mbar.observe.m add command -label "Snap-roi-256" -command "observe region256"
 .mbar.observe.m add command -label "Snap-roi-512" -command "observe region512"
+.mbar.observe.m add command -label "Adjust ROI" -command "observe manual"
 .mbar.observe.m add command -label "Reset full-frame" -command "observe fullframe"
 .mbar.temp.m add command -label "Cooler on" -command "setpoint on"
 .mbar.temp.m add command -label "Cooler off" -command "setpoint off"

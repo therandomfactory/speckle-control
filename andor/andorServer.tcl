@@ -255,6 +255,17 @@ global ANDOR_ARM ANDOR_ROI
   debuglog "$ANDOR_ARM ROI measured as $xs , $xe , $ys , $ye"
 }
 
+proc forceROI { xs xe ys ye } {
+global ANDOR_ARM ANDOR_ROI
+  set ANDOR_ROI(xs) $xs
+  set ANDOR_ROI(xe) $xe
+  set ANDOR_ROI(ys) $ys
+  set ANDOR_ROI(ye) $ye
+  debuglog "$ANDOR_ARM ROI user selected as $xs , $xe , $ys , $ye"
+}
+
+
+
 proc shutDown { } {
   debuglog "Shutting down ANdor acqusition servers"
   andorShutDown
@@ -276,6 +287,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
+         forceroi        { forceROI  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex @$msg 2]]" }
          datadir         { set NESSI_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}

@@ -688,6 +688,7 @@ global SCOPE
       region128 {acquisitionmode 128}
       region256 {acquisitionmode 256}
       region512 {acquisitionmode 512}
+      manual    {acquisitionmode manual}
       multiple {continuousmode $SCOPE(exposure) 999999 $id}
       fullframe {setfullframe}
   }
@@ -784,6 +785,8 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
       exec echo "box $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye) | xpaset ds9 regions
     }
     set it [tk_dialog .d "Edit region" "Move the region in the\n image display tool then click OK" {} -1 "OK"]
+    commandAndor red "forceroi ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye)"
+    commandAndor blue "forceroi ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye)"
   } else {
     commandAndor red "setroi $rdim"
     commandAndor blue "setroi $rdim"
