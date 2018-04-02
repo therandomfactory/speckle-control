@@ -735,6 +735,7 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF
    commandAndor red "setframe fullframe"
    commandAndor blue "setframe fullframe"
    set LASTACQ fullframe
+   set SCOPE(numseq) 1
 }
 
 
