@@ -339,8 +339,8 @@ if { [info exists ZABERS(sim)] ==0 } {
        zaberCommand focus home
        zaberCommand pickoff home
        after 2000
-       zaberCommand pickoff in	
-       zaberCommand focus extend 
+       zaberGoto pickoff out	
+       zaberGoto focus stow 
   }
 }
 

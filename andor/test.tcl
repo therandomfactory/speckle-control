@@ -30,7 +30,7 @@ if { $env(TELESCOPE) == "GEMINI" } {
   }
 }
 
-
+set argv "1 1 1024 1 1024"
 set cameraNum [lindex $argv 0]
 set hstart [lindex $argv 1]
 set hend   [lindex $argv 2]
@@ -347,7 +347,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG
     flush $sock
 }
 
-
+if { 0 } {
 wm withdraw .
 
 # Handles the input from the client and  client shutdown
@@ -400,4 +400,5 @@ set svcPort [expr 2000 + $cameraNum]
 socket -server accept $svcPort
 vwait events    ;# handle events till variable events is set
 
+}
 

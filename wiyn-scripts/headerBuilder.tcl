@@ -1,3 +1,4 @@
+
 #
 #  This file contains the tcl code to provide automated FITS header
 #  construction. The contents of predefined headers are read from a
@@ -146,9 +147,9 @@ global FROMSTARTEXP CACHETELEMETRY
 ### for testing
        set value NA
        catch {set value "$TELEMETRY($i)"}
-       if { [info exists FROMSTARTEXP($key)] } { 
-          set value $CACHETELEMETRY($i)
-       }
+#       if { [info exists FROMSTARTEXP($key)] } { 
+#          set value $CACHETELEMETRY($i)
+#       }
        set type string
        if { $SCOPE(telescope) == "wiyn" } {
           catch {set type "$TELEMETRY($i,t)"}

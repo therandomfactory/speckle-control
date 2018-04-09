@@ -950,7 +950,7 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ
    if { $LASTACQ == "fullframe" } {
       acquireFrames
    } else {
-      acquireCubes
+   acquireCubes
    }
    set now [clock seconds]
    set FRAME 0

@@ -31,18 +31,22 @@ proc updateGeminiTelemetry { } {
 global GEMINI GEMINICFG TELEMETRY
    set all [lsort [array names GEMINI]]
    foreach t $all {
-      puts $GEMINICFG(handle) "get $t"
+      puts $GEMINICFG(handle) "get $t\n"
    }
    after 500
    while { [gets $GEMINICFG(handle) rec] > -1 } {
       if { [info exists GEMINI([lindex $rec 1])] } {
         set TELEMETRY($GEMINI([lindex $rec 1])) [lindex $rec 2]
-#        debuglog "Got $rec"
+        debuglog "Got $rec"
       } else {
         debuglog "Got unknown $rec"
       }
    }
    echoGeminiTelemetry
+   set all [lsort [array names GEMINI]]
+#   foreach i $all {
+#      set CACHETELEMETRY($GEMINI($t)) $TELEMETRY($GEMINI($t))
+#   }
 }
 
 proc echoGeminiTelemetry { } {
@@ -94,7 +98,8 @@ global GEMINI TELEMETRY CACHETELEMETRY
 }
 
 proc nessiTelemetryUpdate { } {
-global SCOPE TELEMETRY FITSKEY IMGMETA
+global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
+   updateGeminiTelemetry
    foreach i [array names SCOPE] {
        set TELEMETRY(nessi.scope.$i) $SCOPE($i)
    }
@@ -103,10 +108,61 @@ global SCOPE TELEMETRY FITSKEY IMGMETA
           set TELEMETRY($i) $IMGMETA([lindex [split $i .] end],value)
       }
    }
+  set TELEMETRY(nessi.andor.head) "iXon"
+  set TELEMETRY(nessi.andor.acquisition_mode) $ANDOR_CFG(acquisition)
+  set TELEMETRY(nessi.andor.kinetic_time) $ANDOR_CFG(kineticcycletime)
+  set TELEMETRY(nessi.andor.num_exposures) $ANDOR_CFG(numseq)
+  set TELEMETRY(nessi.andor.exposure_total) [expr $ANDOR_CFG(numseq)*$ANDOR_CFG(setexposure)]
+  set TELEMETRY(nessi.andor.read_mode) $ANDOR_CFG(readmode)
+  set TELEMETRY(nessi.andor.fullframe) [lrange $ANDOR_CFG(configure) 2 5]
+  set TELEMETRY(nessi.andor.hbin) [lindex $ANDOR_CFG(configure) 0]
+  set TELEMETRY(nessi.andor.vbin) [lindex $ANDOR_CFG(configure) 1]
+  set TELEMETRY(nessi.andor.roi) [lrange $ANDOR_CFG(configure) 2 5]
+  set TELEMETRY(nessi.andor.datatype) $ANDOR_CFG(fitsbits)
+  set TELEMETRY(nessi.andor.em_gain) $ANDOR_CFG(emccdgain)
+  set TELEMETRY(nessi.andor.vertical_speed) [lindex $ANDOR_CFG(verticalspeeds) $ANDOR_CFG(vsspeed)]
+  set TELEMETRY(nessi.andor.amplifier) $ANDOR_CFG(outputamp)
+  set TELEMETRY(nessi.andor.preamp_gain) $ANDOR_CFG(preampgain)
+  set TELEMETRY(nessi.andor.serial_number) $ANDOR_CFG($CAM,SerialNumber)
+  set TELEMETRY(nessi.andor.target_temperature) $ANDOR_CFG(temperature)
+  set TELEMETRY(nessi.andor.inputzaber) $ANDOR_CFG(inputzaber)
+  set TELEMETRY(nessi.andor.fieldzaber) $ANDOR_CFG(fieldzaber)
+  set TELEMETRY(nessi.andor.numaccum)  $ANDOR_CFG(numberaccumulations)
+  set TELEMETRY(nessi.andor.frametransfer) $ANDOR_CFG(frametransfer)
+  set TELEMETRY(nessi.andor.numberkinetics) $ANDOR_CFG(numberkinetics)
+  set TELEMETRY(nessi.andor.accumulationcycletime) $ANDOR_CFG(accumulationcycletime)
+  set TELEMETRY(nessi.andor.ccdtemp) $ANDOR_CFG(ccdtemp)
+  set TELEMETRY(nessi.andor.filter) $ANDOR_CFG(filter)
 }
 
-set GEMINICFG(north,ip) 0.0.0.0
-set GEMINICFG(north,port) 0
+set ANDOR_CFG(verticalspeeds) "0 0 0 0"
+set CAM 0
+set ANDOR_CFG(acquisition) 0
+set ANDOR_CFG(kineticcycletime) 0.0
+set ANDOR_CFG(numseq) 1
+set ANDOR_CFG(setexposure) 0.0
+set ANDOR_CFG(readmode) 0
+set ANDOR_CFG(configure) "1 1 1 1024 1 1024 0 0 0 0"
+set ANDOR_CFG(fitsbits) default
+set ANDOR_CFG(emccdgain) 0
+set ANDOR_CFG(vsspeed) 0
+set ANDOR_CFG(outputamp) 0
+set ANDOR_CFG(preampgain) 0
+set ANDOR_CFG(0,SerialNumber) 12345
+set ANDOR_CFG(1,SerialNumber) 54321
+set ANDOR_CFG(temperature) 0.0
+set ANDOR_CFG(inputzaber) "NA"
+set ANDOR_CFG(fieldzaber) "NA"
+set ANDOR_CFG(numberaccumulations) 0
+set ANDOR_CFG(frametransfer) 0
+set ANDOR_CFG(numberkinetics) 0
+set ANDOR_CFG(accumulationcycletime) 0.0
+set ANDOR_CFG(ccdtemp) 0.0
+set ANDOR_CFG(filter) "NA"
+
+
+set GEMINICFG(north,ip) 10.2.44.60
+set GEMINICFG(north,port) 7283
 
 set GEMINI(airmass) tcs.telescope.airmass
 set GEMINI(azimuth) tcs.azimuth.mapper
