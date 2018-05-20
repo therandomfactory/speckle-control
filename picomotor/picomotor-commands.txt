@@ -1,60 +1,38 @@
-Common Commands
-Syntax 	Command 								Manual Page
-AIN <device> <channel> 		Read/Display Analog Input 			61
-DEF 				Load Default Parameters 			62
-DIAG <driver> 			Display Diagnostics Byte from Device 		62
-IN <device> <channel> 		Query State of Digital Inputs 			89
-LOCK 				Lock Out Other Input Devices 			63
-MAP <joystick-device>=<driver> 	Set/Display Device-to-Joystick Mappings 	64
-OUT <device> <channel>=<value> 	Set Digital Output 				65
-SAV 				Save Parameters 				65
-UNLOCK 				Unlock Other Input Devices 			66
-VER 				Query Firmware Version 				66
+*IDN? 	Identification string query 
+*RCL 	Recall parameters *RST Reset instrument +
+AB 	Abort motion 				+
+AC 	Set acceleration 			+
+AC?	Get acceleration 			+
+DH	Define home position
+DH?	Get home position
+MC 	Motor check
+MD? 	Get motion done status
+MV	Move indefinitely
+MV?	Get motion direction
+PA 	Move to a target position
+PA? 	Get destination position
+PR	Move relative
+PR? 	Get destination position 		+
+QM 	Set motor type 				+
+QM? 	Get motor type 				+
+RS 	Reset the controller 			+
+SA 	Set controller address 			+
+SA? 	Get controller address 			+
+SC 	Scan RS-485 network 			+
+SC? 	Get RS-485 network controller addresses +
+SD? 	Get scan status 			+
+SM 	Save to non-volatile memory 		+
+ST 	Stop motion 				+	
+TB?	Get error message 			+
+TE? 	Get error number 			+
+TP? 	Get position 				+
+VA 	Set velocity 				+
+VA? 	Get velocity 				+
+VE? 	Firmware version string query 		+
+XX 	Purge memory ZZ Set configuration register +
+ZZ? 	Get configuration register 		+
 
-
-Picomotor Control Commands
-Syntax 				Command 					Manual Page
-Set 				Absolute Position 				67
-ACC [<driver>] [<motor>] 	Query Motor Acceleration 			68
-ACC <driver> <motor>=<value> 	Set Motor Acceleration 				69
-CHL [<driver>] 			Query Motor Channel 				70
-CHL <driver>=<motor> 		Set Motor Channel 				71
-DRT 				Query Driver Type 				71
-FIN <driver> 			Find Index Mark in Forward Direction 		72
-FLI <driver> 			Find Forward Limit 				72
-FOR <driver> [=<value>] [G] 	Set Direction to Forward 			73
-GO [<driver>] 			Start Motion 					74
-HAL [<driver>] 			Stop Motion Smoothly 				75
-MOF [<driver>] 			Disable Motor Driver 				75
-MON [<driver>] 			Enable Motor Driver 				76
-MPV [<driver>[<motor>]] 	Query Minimum Profile Velocity 			77
-MPV <driver> <motor>=<value> 	Set Minimum Profile Velocity 			78
-NOS <driver> 			Disable Closed-Loop Mode 			79
-POS [<driver>] 			Query Motor Position 				79
-POS <driver>=<value> 		Set Motor Position 				80
-REL <driver> <value> [G] 	Set Relative Position 				81
-REV <driver> [= <value>] [G] 	Set Direction to Reverse 			82
-RIN <driver> 			Find Index Mark in Reverse Direction 		83
-RLI <driver> 			Find Reverse Limit 				83
-SER <driver> 			Enable Closed-Loop Mode 			84
-STA [<driver>] 			Query Device Status 				84
-STO [<driver>] 			Stop Motion 					85
-TYP [<driver>] [<motor>] 	Query Motor Type 				85
-TYP <driver> <motor>=<type> 	Set Motor Type 					86
-VEL [<driver>] [<motor>] 	Query Motor Velocity 				87
-VEL <driver> <motor>=<value> 	Set Motor Velocity 				88
-
-Ethernet Connectivity Commands
-Syntax 				Command					 	Manual Page
-HOSTNAME [<name>] 		Set/Display Hostname 				95
-IPADDR [=<addr>] 		Set/Display IP Address 				95
-IPMODE [=<mode>] 		Set Display/IP Mode 				96
-NETMASK [=<addr>] 		Set/Display Network Mask 			96
-GATEWAY [=<addr>] 		Set/Display Gateway Address 			96
-DNSSRVR [=<addr>] 		Set/Display DNS Server Address 			97
-PASSWD <value> <value> 		Set Password 					97
-ECHO <port-name> <setting> 	Set Port Echo 					98
-MACADDR 			Display MAC Address 				98
-
-
+Motor commands :
+  
+  [motor][command][value]
 

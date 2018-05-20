@@ -53,16 +53,16 @@ global PICOS
 }
 
 
-proc picoConnect { axis } {
+proc picosConnect { axis } {
 global PICOS
    set handle -1
-   set handle [socket $PICOS($axis,ip) 23]
+   set handle [socket $PICOS(ip) 23]
    fconfigure $s -buffering line
    if { $handle < 0 } {
      errordialog "Failed to connect to Picomotor at  $PICOS($axis,ip)"
    } else {
      debuglog "Picomotor connected to port $PICOS($axis,ip) - OK"
-     set PICOS($axis,handle) $handle
+     set PICOS(handle) $handle
    }
    return $handle
 }
@@ -82,10 +82,10 @@ global PICOS
      }
      set PICOS($axis,current) $PICOS($axis,position)
    } else {
-     debuglog "Sending PICO command $cmd"
-     puts $PICOS($axis,handle) $cmd
+     debuglog "Sending PICO command $axis $cmd"
+     puts $PICOS(handle) "$PICOS($axis) $cmd"
      after 100
-     gets $PICOS($axis,handle) rec
+     gets $PICOS(handle) rec
    }
    return $rec
 } 
@@ -94,26 +94,16 @@ proc picoSet { axis par {value ""} } {
 global PICOS
    debuglog "PICO command set $axis $par $value"
    switch $par {
-      enable         { set res [picoCommand $axis MON] }
-      disable        { set res [picoCommand $axis MOF] }
-      stop           { set res [picoCommand $axis STO] }
-      default        { set res [picoCommand $axis DEF] }
-      reverse        { set res [picoCommand $axis REV] }
-      poslimit       { set res [picoCommand $axis FLI] }
-      neglimit       { set res [picoCommand $axis RLI] }
-      forward        { set res [picoCommand $axis FOR] }
-      position       { set res [picoCommand $axis "POS A1=$value G"] }
-      acceleration   { set res [picoCommand $axis "ACC M0=$value"] }
-      offset         { set res [picoCommand $axis "REL A1=$value G"] }
-      stop           { set res [picoCommand $axis STO] }
-      query          { set res [picoCommand $axis "CHL $value" }
-      velocity       { set res [picoCommand $axis "VEL M0=$value"] }
-      reset          { set res [picoCommand $axis INI] }
-      readanalog     { set res [picoCommand $axis "AIN $value" }
-      in             { set res [picoCommand $axis "POS A1=$PICOS($axis,in) G"] }
-      out            { set res [picoCommand $axis "POS A1=$PICOS($axis,out) G"] }
-      home           { set res [picoCommand $axis "POS A1=$PICOS($axis,home) G"] }
-      engineer       { set res [picoCommand $axis "POS A1=$PICOS($axis,engineer) G"] }
+      disable        { set res [picoCommand $axis AB] }
+      stop           { set res [picoCommand $axis ST] }
+      position       { set res [picoCommand $axis "PA"] }
+      acceleration   { set res [picoCommand $axis "AC"] }
+      offset         { set res [picoCommand $axis "PR"] }
+      velocity       { set res [picoCommand $axis "VA] }
+      reset          { set res [picoCommand $axis "RS"] }
+      in             { set res [picoCommand $axis "PA $PICOS($axis,in)"] }
+      out            { set res [picoCommand $axis "PA $PICOS($axis,out)"] }
+      home           { set res [picoCommand $axis "PA $PICOS($axis,home)"] }
   }
 }
 
@@ -150,10 +140,12 @@ global PICOS
      debuglog "SIM $axis,$par = $PICOS($axis,$par)"
    } else {
      switch $par {
-        acceleration   { set PICOS($axis,acceleration) [lindex [split [picoCommand $axis ACC] "="] 1] }
-        position       { set PICOS($axis,position)     [lindex [split [picoCommand $axis POS] "="] 1] }
-        velocity       { set PICOS($axis,velocity)     [lindex [split [picoCommand $axis VEL] "="] 1] }
-        status         { set PICOS($axis,status)       [lindex [split [picoCommand $axis STA] "="] 1] }
+        acceleration   { set PICOS($axis,acceleration) [lindex [split [picoCommand $axis AC?] "="] 1] }
+        position       { set PICOS($axis,position)     [lindex [split [picoCommand $axis TP?] "="] 1] }
+        velocity       { set PICOS($axis,velocity)     [lindex [split [picoCommand $axis VA?] "="] 1] }
+        status         { set PICOS($axis,status)       [lindex [split [picoCommand $axis MD?] "="] 1] }
+        home           { set PICOS($axis,home)         [lindex [split [picoCommand $axis DH?] "="] 1] }
+        ident          { set PICOS($axis,ident)        [lindex [split [picoCommand $axis *IDN?] "="] 1] }
       }
    }
    debuglog "Got PICO $axis $par = $PICOS($axis,$par)"
@@ -201,8 +193,7 @@ if { [info exists env(NESSI_SIM)] } {
        set PICOS(X,position) 0 
        set PICOS(Y,position) 0
    } else {
-       picoConnect X
-       picoConnect Y
+       picosConnect 
    }
 }
 
