@@ -59,9 +59,9 @@ global PICOS
    set handle [socket $PICOS(ip) 23]
    fconfigure $s -buffering line
    if { $handle < 0 } {
-     errordialog "Failed to connect to Picomotor at  $PICOS($axis,ip)"
+     errordialog "Failed to connect to Picomotor at  $PICOS(ip)"
    } else {
-     debuglog "Picomotor connected to port $PICOS($axis,ip) - OK"
+     debuglog "Picomotor connected to port $PICOS(ip) - OK"
      set PICOS(handle) $handle
    }
    return $handle
