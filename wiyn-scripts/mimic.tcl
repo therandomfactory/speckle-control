@@ -34,6 +34,7 @@ global MOFF XO YO NESSI_DIR
   place .mimicNessi.myCanvas.redtemp -x [expr $XO+716] -y  [expr $YO+140]
   label .mimicNessi.myCanvas.bluetemp  -width 10  -text "0.0 deg" 
   place .mimicNessi.myCanvas.bluetemp -x [expr $XO+266] -y  [expr $YO+560]
+  updateMimic
 }
 
 
