@@ -10,29 +10,29 @@
 #
 
 
-set NESSI_DIR $env(NESSI_DIR)
+set SPECKLE_DIR $env(SPECKLE_DIR)
 
 proc loadFiltersConfig { fname } {
-global NESSI_DIR NESCONFIG FWHEELS SCOPE
+global SPECKLE_DIR NESCONFIG FWHEELS SCOPE
    if { $SCOPE(telescope) == "GEMINI" } {  
       set fname "[set fname].gemini"
    }
-   if { [file exists $NESSI_DIR/$fname] == 0 } {
-     errordialog "Filters configuration file $NESSI_DIR/$fname\n does not exist"
+   if { [file exists $SPECKLE_DIR/$fname] == 0 } {
+     errordialog "Filters configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
-     source $NESSI_DIR/filtersConfiguration
+     source $SPECKLE_DIR/filtersConfiguration
      set NESCONFIG(picoChange) 0
    }
 }
 
 proc saveFiltersConfig { fname } {
-global NESSI_DIR  NESCONFIG FWHEELS
-   set fcfg [open $NESSI_DIR/$fname w]
+global SPECKLE_DIR  NESCONFIG FWHEELS
+   set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh
    echoFiltersConfig $fcfg
    close $fcfg
    set NESCONFIG(picoChange) 0
-   debuglog "Saved Filters configuration in $NESSI_DIR/$fname"
+   debuglog "Saved Filters configuration in $SPECKLE_DIR/$fname"
 }
 
 proc logFiltersConfig { } {
@@ -64,7 +64,7 @@ global FILTERWHEEL FWHEELS MAXFILTERS
   set result [setOrielFilter $FWHEELS($id,handle) $n]
   set msg [split $result \n]
   if { [string range [lindex $msg 3] 0 9] == "USB error:" } {
-    set it [ tk_dialog .d "NESSI Filter Wheel $id" "$result" {} -1 OK]
+    set it [ tk_dialog .d "SPECKLE Filter Wheel $id" "$result" {} -1 OK]
   } else {
     .filters.f$id$n configure -bg green -relief sunken -activebackground green
     mimicMode $id filter $FWHEELS($id,$n)
@@ -103,7 +103,7 @@ set FWHEELS(focusoffset) 0
 set MAXFILTERS 6
 destroy .filters
 toplevel .filters -bg gray
-wm title .filters "NESSI Filter Wheels control"
+wm title .filters "SPECKLE Filter Wheels control"
 label .filters.lpos   -text "Red Position" -bg gray -fg black
 label .filters.lname  -text "Red Filter Name" -bg gray -fg black
 label .filters.lfocus -text "Red Focus offset" -bg gray -fg black
@@ -235,7 +235,7 @@ proc setOrielFilter { id n } {
 
 
 loadFiltersConfig filtersConfiguration
-load $env(NESSI_DIR)/lib/liboriel.so
+#### in gui.tcl now load $env(SPECKLE_DIR)/lib/liboriel.so
 
 foreach p "1 2 3 4 5 6" {
   if { $FWHEELS(red,$p) == "clear" } {
@@ -248,8 +248,8 @@ foreach p "1 2 3 4 5 6" {
 
 
 set FWHEELS(sim) 0
-if { [info exists env(NESSI_SIM)] } {
-   set simdev [split $env(NESSI_SIM) ,]
+if { [info exists env(SPECKLE_SIM)] } {
+   set simdev [split $env(SPECKLE_SIM) ,]
    if { [lsearch $simdev filter] > -1 } {
        set FWHEELS(sim) 1
        debuglog "Filter wheels in SIMULATION mode"

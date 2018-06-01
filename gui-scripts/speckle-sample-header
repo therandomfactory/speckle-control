@@ -1,0 +1,347 @@
+
+Existing Andor Fits headers from Solis saved files:
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    3 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+NAXIS3  =                  100 / length of data axis 3                          
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+HEAD    = 'DU888_BV'           / Head model                                     
+ACQMODE = 'Frame Transfer'     / Acquisition mode                               
+ACT     =             0.041195 / Integration cycle time                         
+KCT     =             0.041195 / Kinetic cycle time                             
+NUMACC  =                    1 / Number of integrations                         
+NUMKIN  =                  100 / Series length                                  
+READMODE= 'Image   '           / Readout mode                                   
+IMGRECT = '1, 1024, 1024, 1'   / Image format                                   
+HBIN    =                    1 / Horizontal binning                             
+VBIN    =                    1 / Vertical binning                               
+SUBRECT = '1, 1024, 1024, 1'   / Subimage format                                
+DATATYPE= 'Counts  '           / Data type                                      
+XTYPE   = 'Pixel number'       / Calibration type                               
+XUNIT   =                    0 / Calibration units                              
+RAYWAVE =                 422. / Rayleigh Wavelength  X                          
+CALBWVNM=                    1 / Wave calibration     X                           
+TRIGGER = 'Internal'           / Trigger mode                                   
+CALIB   = '0,1,0,0 '           / Calibration          X                          
+DLLVER  = '4.28.30001.0'       / Software Version     X                          
+EXPOSURE=              0.04002 / Total Exposure Time start and end 
+TEMP    =                 -60. / Temperature                                    
+READTIME=         3.333333E-08 / Pixel readout time                             
+OPERATN =                    0 / Type of system      X                           
+GAIN    =                  750 / Gain                                           
+EMREALGN=                    0 / EM Real Gain                                   
+VCLKAMP =                    0 / Vertical Clock Amplitude                       
+VSHIFT  =             1.13E-06 / Vertical Shift Speed                           
+OUTPTAMP= 'Electron Multiplying' / Output Amplifier                            
+PREAMP  =                   2. / Pre Amplifier Gain                             
+SERNO   =                10244 / Serial Number                                  
+UNSTTEMP=                -999. / Unstabilized Temperature  x                      
+BLCLAMP =                    T / Baseline Clamp            x                     
+PRESCAN  =                    0 / Prescans                                       
+FLIPX   =                    0 / Horizontally Flipped     x                      
+FLIPY   =                    0 / Vertically Flipped       x                      
+CNTCVTMD=                    0 / Count Convert Mode       x                      
+CNTCVT  =                    1 / Count Convert            x                     
+DTNWLGTH=                 550. / Detection Wavelength     x                      
+SNTVTY  =              5.10122 / Sensitivity               x                     
+SPSNFLTR=                    0 / Spurious Noise Filter Mode x                    
+THRSHLD =                   0. / Threshold                  x                    
+PCNTENLD=                    0 / Photon Counting Enabled     x                   
+NSETHSLD=                    0 / Number of Photon Counting Thresholds x           
+PTNTHLD1=                   0. / Photon Counting Threshold 1          x          
+PTNTHLD2=                   0. / Photon Counting Threshold 2          x          
+PTNTHLD3=                   0. / Photon Counting Threshold 3          x          
+PTNTHLD4=                   0. / Photon Counting Threshold 4          x          
+AVGFTRMD=                    0 / Averaging Filter Mode                x          
+AVGFCTR =                    1 / Averaging factor                     x          
+FRMCNT  =                    1 / Frame Count                                    
+PORTMODE=                   -1 / Port Readout Mode                              
+LSHEIGHT=                    0 / Exposure Window Height               x          
+LSSPEED =                   0. / Line Scan Speed                      x         
+LSALTDIR=                    0 / Alternating Readout Direction        x          
+LSCTRL  =                    0 / Scan Speed Control                   x          
+LSDIR   =                   -1 / Readout Direction                    x          
+USERTXT1= '        '           / User text                                      
+USERTXT2= '        '           / User text                                      
+USERTXT3= '        '           / User text                                      
+USERTXT4= '        '           / User text                                      
+DATE    = '2016-10-05T07:45:14' / file creation date (YYYY-MM-DDThh:mm:ss)      
+FRAME   = '2016-10-05T07:45:14.000' / Start of Frame Exposure                   
+ESHTMODE=                   -1 / Electronic Shuttering Mode                     
+HIERARCH PREAMPGAINTEXT = 'Gain 2  ' / Pre-Amplifier Gain                       
+HIERARCH SPECTROGRAPHSERIAL = '        ' / Spectrograph Serial                  
+HIERARCH SHAMROCKISACTIVE =  0 / Shamrock is active                             
+HIERARCH SPECTROGRAPHNAME = 'Spectrograph_None' / Spectrograph name             
+HIERARCH SPECTROGRAPHISACTIVE = 1 / Spectrograph is active                      
+HIERARCH IRIGDATAAVAILABLE = 0 / IRIG Availability                              
+IRIGDATA= '        '           / IRIG Timestamp                                 
+END 
+
+
+
+
+1 of 23
+ 
+ 
+ 
+Example header (NOAO) 
+ 
+**Default Andor Camera Header **
+SIMPLE  = T                                 / file does conform to FITS standard
+BITPIX  = -32                                    / number of bits per data pixel
+NAXIS   = 3                                                / number of data axes
+NAXIS1  = 1024                                           / length of data axis 1
+NAXIS2  = 1024                                           / length of data axis 2
+NAXIS3  = 100                                            / length of data axis 3
+EXTEND  = T                                / FITS dataset may contain extensions
+COMMENT FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+HEAD    = 'DU888_BV'                                                / Head model
+ACQMODE = 'Frame Transfer'                                    / Acquisition mode
+ACT     = 0.041195                                      / Integration cycle time
+KCT     = 0.041195                                          / Kinetic cycle time
+NUMACC  = 1                                             / Number of integrations
+NUMKIN  = 100                                                    / Series length
+READMODE= 'Image   '                                              / Readout mode
+IMGRECT = '1, 1024, 1024, 1'                                      / Image format
+HBIN    = 1                                                 / Horizontal binning
+VBIN    = 1                                                   / Vertical binning
+SUBRECT = '1, 1024, 1024, 1'                                   / Subimage format
+DATATYPE= 'Counts  '                                                 / Data type
+XTYPE   = 'Pixel number'                                      / Calibration type
+XUNIT   = 0                                                  / Calibration units
+RAYWAVE = 422.                                             / Rayleigh Wavelength
+CALBWVNM= 1                                                   / Wave calibration
+TRIGGER = 'Internal'                                              / Trigger mode
+CALIB   = '0,1,0,0 '                                               / Calibration
+DLLVER  = '4.28.30001.0'                                      / Software Version
+EXPOSURE= 0.04002                                          / Total Exposure Time
+TEMP    = -60.                                                     / Temperature
+READTIME= 3.333333E-08                                      / Pixel readout time
+OPERATN = 0                                                     / Type of system
+GAIN    = 750                                                             / Gain
+EMREALGN= 0                                                       / EM Real Gain
+VCLKAMP = 0                                           / Vertical Clock Amplitude
+VSHIFT  = 1.13E-06                                        / Vertical Shift Speed
+OUTPTAMP= 'Electron Multiplying'                              / Output Amplifier
+PREAMP  = 2.                                                / Pre Amplifier Gain
+SERNO   = 10244                                                  / Serial Number
+UNSTTEMP= -999.                                       / Unstabilized Temperature
+BLCLAMP = T                                                     / Baseline Clamp
+PRECAN  = 0                                                           / Prescans
+FLIPX   = 0                                               / Horizontally Flipped
+FLIPY   = 0                                                 / Vertically Flipped
+CNTCVTMD= 0                                                 / Count Convert Mode
+CNTCVT  = 1                                                      / Count Convert
+DTNWLGTH= 550.                                            / Detection Wavelength
+SNTVTY  = 5.10122                                                  / Sensitivity
+SPSNFLTR= 0                                         / Spurious Noise Filter Mode
+THRSHLD = 0.                                                         / Threshold
+PCNTENLD= 0                                            / Photon Counting Enabled
+NSETHSLD= 0                               / Number of Photon Counting Thresholds
+PTNTHLD1= 0.                                       / Photon Counting Threshold 1
+PTNTHLD2= 0.                                       / Photon Counting Threshold 2
+PTNTHLD3= 0.                                       / Photon Counting Threshold 3
+PTNTHLD4= 0.                                       / Photon Counting Threshold 4
+AVGFTRMD= 0                                              / Averaging Filter Mode
+AVGFCTR = 1                                                   / Averaging factor
+FRMCNT  = 1                                                        / Frame Count
+PORTMODE= -1                                                 / Port Readout Mode
+LSHEIGHT= 0                                             / Exposure Window Height
+LSSPEED = 0.                                                   / Line Scan Speed
+LSALTDIR= 0                                      / Alternating Readout Direction
+LSCTRL  = 0                                                 / Scan Speed Control
+LSDIR   = -1                                                 / Readout Direction
+USERTXT1= '        '                                                 / User text
+USERTXT2= '        '                                                 / User text
+USERTXT3= '        '                                                 / User text
+USERTXT4= '        '                                                 / User text
+DATE    = '2016-10-05T07:45:14'       / file creation date (YYYY-MM-DDThh:mm:ss)
+FRAME   = '2016-10-05T07:45:14.000'                    / Start of Frame Exposure
+ESHTMODE= -1                                        / Electronic Shuttering Mode
+PREAMPGA= 'Gain 2  '                                        / Pre-Amplifier Gain
+SPECTROG= '        '                                       / Spectrograph Serial
+SHAMROCK= 0                                                 / Shamrock is active
+SPECTROG= 'Spectrograph_None'                                / Spectrograph name
+SPECTROG= 1                                             / Spectrograph is active
+IRIGDATA= 0                                                  / IRIG Availability
+IRIGDATA= '        '                                            / IRIG Timestamp
+END                                                                           
+
+** NOAO DRAFT STANDARD HEADER **
+
+KEYWORD DEFINITION
+EXTEND Required FITS keyword when there are extensions
+NEXTEND Number of extensions
+COMMENT FITS (Flexible Image Transport System) format defined in
+Astronomy and
+COMMENT Astrophysics Supplement Series v44/p363, v44/p371,
+v73/p359, v73/p365.
+COMMENT Contact the NASA Science Office of Standards and Technology
+for the
+COMMENT FITS Definition document #100 and other FITS information.
+
+LOCATION INFORMATION
+COORDS Coordinate System
+BZERO Offset data range to that of unsigned long
+BSCALE Default scaling factor
+BITPIX Number of bits per pixel data
+CREATOR Data-taking program
+OBSERVAT Originating Observatory
+TELESCOP Telescope used for observation
+LATITUDE Observatory Latitude [deg]
+LONGITUD Observatory Longitude [deg west]
+
+TELESCOPE INFORMATION
+TELRA Telescope pointing right ascension (hr)
+TELDEC Telescope pointing declination (deg)
+TELRAOFF Telescope RA offset
+TELDECOF Telescope DEC offset
+TELEQUIN Telescope pointing coordinate system equinox
+TELRADEC Telescope pointing coordinate system type
+EPOCH Epoch of telescope coords
+TARGRA Telescope target RA
+TARGDEC Telescope target DEC
+TARGROFF Telescope target RA offset
+TARGDOFF Telescope target DEC offset
+EQUINOX Default coordinate system Equinox (same as TELEQUIN)
+RA Telescope RA (same as TELRA)
+DEC Telescope DEC (same as TELDEC)
+RAOFFST Telescope RA offset (same as TARGROFF)
+DECOFFST Telescope DEC offset (same as TARGDOFF)
+RADECSYS Default coordinate system type
+ZD Zenith Distance [deg]
+AIRMASS Airmass at start of exposure
+ELMAP mapper elevation
+AZMAP mapper azimuth
+TRACK tracking
+CORRCTOR Correctors in the optical path
+ADC ADC Identification
+TELFOCUS Telescope focus (microns)
+ROTPORT Tertiary fold position
+FOLDPOS Tertiary port selection
+ROTANGLE WNIR (or MNIR) rotator angle, degrees CW from N
+ROTOFF WNIR (or MNIR) rotator angle offset
+FFINTEN1 Flatfield lamps intensity bank1
+FFPOWER1 Flatfield lamps power bank1
+FFINTEN2 Flatfield lamps intensity bank2
+FFPOWER2 Flatfield lamps power bank2
+
+OBSERVING RUN INFORMATION
+OBSERVER Observer(s)
+PROPOSER Principal Investigator(s)
+PROPOSAL Proposal title
+PROPID Observing Proposal ID
+
+GENERIC INSTRUMENT INFORMATION
+DETECTOR CCD Detector name
+INSTID Instrument ID Code
+INSTRUME Instrument Name
+DETSIZE Detector size for DETSEC
+NCCDS Number of CCDs in the detector
+NAMPS Number of Amplifiers
+DEWTEM Dewar Tank Temperature [C]
+CCDTEMn CCD temperature (closest to focal plane) [C]
+DEWTEMn Dewar temperature [C]
+RECNO NOAO archive sequence number
+EXPID Exposure identifier
+RECID archive ID for observation
+OBSID Observation-ID
+CCDNAME CCD name
+CCDSIZE CCD size
+CCDXBIN Column Binning on detector
+CCDYBIN Row Binning on detector
+CCDSUM On chip summation (X,Y)
+CONTROLR Detector contoller name
+OBJECT Object title
+IMGTYPE Image type code (tflat, sflat, dark, etc)
+OBSTYPE Observation type (calib, object)
+IMAGETYP Type of picture (object, dark, etc.)
+HDR_REV Header-Rev
+MJDHDR MJD of header creation
+LSTHDR Local Sidereal Time of header creation
+TIMESYS Default time system
+DATE-OBS Date of start of observation in UTC
+TIME-OBS Time of start of observation UTC
+MJD-OBS MJD at start of exposure
+JD Julian Date at start of obs
+LST-OBS LST of exposure start
+EXPTIME Exposure time (sec)
+OBSTIME Active observing time (sec)
+UTSHUT UT of shutter close
+DARKTIME Total dark time of observation (sec)
+UT Universal Time (start of exposure)
+ENDTIME UT end of exposure
+READTIME CCD readout time (sec)
+FILTER Filter name
+FILENAME Original file name
+CCDSEC CCD section
+AMPSEC Amplifier section
+DATASEC Data section
+DETSEC Detector section
+ORIGSEC Original size full frame
+BIASSEC Bias section
+TRIMSEC Trim section
+PREFLASH Preflash time (sec)
+GAIN Gain (electrons per adu)
+RDNOISE Read Noise (electrons)
+SATURATE Maximum good data value (ADU)
+PIXSIZE1 Pixel size for axis 1 (microns)
+PIXSIZE2 Pixel size for axis 2 (microns)
+PIXSCAL1 Pixel scale for axis 1 (arcsec/pixel)
+PIXSCAL2 Pixel scale for axis 2 (arcsec/pixel)
+RAPANGLE Position angle of RA axis (deg)
+DECPANGL Position angle of DEC axis (deg)
+DATATYP Data type (integer, float, signed, unsigned bits)
+WCSATRM WCS
+WCSDIM WCS dimensionality
+CTYPE1 Coordinate type
+CTYPE2 Coordinate type
+WAT0_001 Coordinate system
+WAT1_001
+WAT2_001
+CHECKSUM Header checksum
+DATASUM Data checksum
+CHECKVER Checksum version
+PCOUNT Number of bytes following image matrix
+GCOUNT Number of groups
+PV2_1 Projection parameter 1
+CRPIX1 Coordinate reference pixel in X
+CRPIX2 Coordinate reference pixel in Y
+CD1_1 Coordinate scale matrix [degrees / pixel]
+CD1_2 Coordinate scale matrix [degrees / pixel]
+CD2_1 Coordinate scale matrix [degrees / pixel]
+CD2_2 Coordinate scale matrix [degrees / pixel]
+LONPOLE Native Longitude of Celestial Plane
+CRVAL1 R.A. of reference pixel [deg]
+CRVAL2 Declination of reference pixel [deg]
+LATPOLE Celestial Latitude of native pole
+HISTORY WCS parameters updated
+ORIGIN FITS file originator
+BPM Bad pixel mask
+EXTNAME Extension name
+INHERIT Inherits global header
+EXTVER Extension version
+IMAGESWV Image creation software version
+KWDICT Keyword dictionary
+
+INSTRUMENT SPECIFIC INFO
+AMPNAME Amplifier name
+DWELL sample integration time, microseconds
+INITTIME software/hardware initialization (sec)
+DEWAR Dewar identification
+PREPTIME CCD preparation time (sec)
+MOPSEQ MOPINFO-sequence
+MOPDATE MOPINFO-timestamp
+TOTTIME Total time spent in task (sec)
+FILPOSn Filter position
+POSA from oss.secondary.posa
+POSB from oss.secondary.posb
+POSC from oss.secondary.posc
+CAMTEMP Camera temperature
+
+

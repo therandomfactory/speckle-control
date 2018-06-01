@@ -317,10 +317,10 @@ global FLOG
    }
 }
 
-source $env(NESSI_DIR)/andorsConfiguration
+source $env(SPECKLE_DIR)/andorsConfiguration
 
 set PXS_SNAPSHOT(nd) 0
-set PXS_EXEC $env(NESSI_DIR)/bin
+set PXS_EXEC $env(SPECKLE_DIR)/bin
 set PXS_ATTR "BinningX BinningY ExposureValue Height PixelFormat RegionX RegionY Width"
 set PXS_GEOMETRY(IXon)    "1024 1024 13.0 13.0"
 set PXS_GEOMETRY(IXonROI) " 256 256 13.0 13.0"
@@ -356,7 +356,7 @@ foreach cam "1 2" {
   wm withdraw .
   toplevel .cam$cam
   wm geometry .cam$cam 430x350+30+30
-  wm title .cam$cam "NESSI Camera Control - $PXS_CONFIG($cam,shmid)"
+  wm title .cam$cam "Speckle Camera Control - $PXS_CONFIG($cam,shmid)"
 
   label .cam$cam.lnam -text "Camera type : Andor IXon"
   label .cam$cam.luid -text "Camera Id : $PXS_CONFIG($cam,shmid) "
@@ -448,19 +448,19 @@ foreach cam "1 2" {
 }
 
 set imred [image create photo -height 64 -width 64]
-$imred read $env(NESSI_DIR)/andor/andor-red -format gif
+$imred read $env(SPECKLE_DIR)/andor/andor-red -format gif
 label .cam2.im -image $imred
 place .cam2.im -x 335 -y 2
 
 set imblue [image create photo -height 64 -width 64]
-$imblue read $env(NESSI_DIR)/andor/andor-blue -format gif
+$imblue read $env(SPECKLE_DIR)/andor/andor-blue -format gif
 label .cam1.im -image $imblue
 place .cam1.im -x 335 -y 2
 
 
 ####load /usr/local/gui/lib/shared/libxtcs.so
 ####source /usr/local/gui/tclsrc/scripts/gstar/xgsc_usno.tk
-source $env(NESSI_DIR)/wiyn-scripts/xpak_header.tcl
+source $env(SPECKLE_DIR)/gui-scripts/xpak_header.tcl
 puts stdout "Configuring camera - please wait"
 
 if { [pxlFullFrame 1] == 0 } {

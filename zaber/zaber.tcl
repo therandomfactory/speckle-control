@@ -11,33 +11,33 @@
 # A = blue
 # B = red
 
-set NESSI_DIR $env(NESSI_DIR)
+set SPECKLE_DIR $env(SPECKLE_DIR)
 
 #source ../util/common.tcl
 proc errordialog { msg} {puts stdout $msg}
 
 proc loadZaberConfig { {fname zabersConfiguration} } {
-global NESSI_DIR ZABERS SCOPE
+global SPECKLE_DIR ZABERS SCOPE
    if { $SCOPE(telescope) == "GEMINI" } {  
       set fname "[set fname].gemini"
    }
-   if { [file exists $NESSI_DIR/$fname] == 0 } {
-     errordialog "Zaber configuration file $NESSI_DIR/$fname\n does not exist"
+   if { [file exists $SPECKLE_DIR/$fname] == 0 } {
+     errordialog "Zaber configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
-     source $NESSI_DIR/$fname
+     source $SPECKLE_DIR/$fname
      set NESCONFIG(zaberChange) 0
-     debuglog "Loaded Zaber configuration from $NESSI_DIR/$fname"
+     debuglog "Loaded Zaber configuration from $SPECKLE_DIR/$fname"
    }
 }
 
 proc saveZaberConfig { fname } {
-global NESSI_DIR ZABERS
-   set fcfg [open $NESSI_DIR/$fname w]
+global SPECKLE_DIR ZABERS
+   set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh
    echoZaberConfig $fcfg
    close $fcfg
    set NESCONFIG(zaberChange) 0
-   debuglog "Saved Zaber configuration in $NESSI_DIR/$fname"
+   debuglog "Saved Zaber configuration in $SPECKLE_DIR/$fname"
 }
 
 proc logZaberConfig { } {
@@ -87,7 +87,7 @@ global ZABERS ZPROPERTIES SCOPE
 }
 
 
-proc zaberConnect { name } {
+proc zaberConnect { } {
 global ZABERS
    set handle -1
    if { [info exists ZABERS(sim)] } {
@@ -116,7 +116,16 @@ global ZABERS
    close $ZABERS(handle)
 }
 
-
+proc homeZabers { } {
+global SCOPE
+   zaberCommand A home
+   zaberCommand B home
+   zaberCommand input home
+   if { $SCOPE(telescope) == "GEMINI" } {
+      zaberCommand focus home
+      zaberCommand pickof home
+   }
+}
 
 proc zaberCommand { name cmd } {
 global ZABERS ZPROP ZNAME ZSIMPROP
@@ -139,6 +148,30 @@ global ZABERS ZPROP ZNAME ZSIMPROP
      errordialog "Zaber handle not valid in zaberCommand - $handle"
   }
 }
+
+proc zaberCheck { } {
+global ZABERS
+  foreach s "A B input" {
+    zaberCommand $s "get pos"
+    zaberReader $ZABERS(handle)
+    set ZABERS($s,readpos) $ZABERS($s,pos)
+    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,speckle)] < 5 } {set ZABERS($s,readpos) "speckle"}
+    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,wide)] < 5 } {set ZABERS($s,readpos) "wide"}
+  }
+  if { $SCOPE(telescope) == "GEMINI" } { 
+    zaberCommand focus "get pos"
+    zaberReader $ZABERS(handle)
+    set ZABERS(focus,readpos) $ZABERS(focus,pos)
+    if { [expr abs($ZABERS(focus,pos) - $ZABERS(focus,extend)] < 5 } {set ZABERS(focus,readpos) "extend"}
+    if { [expr abs($ZABERS(focus,pos) - $ZABERS(focus,stow)] < 5 } {set ZABERS(focus,readpos) "stow"}
+    zaberCommand pickoff "get pos"
+    zaberReader $ZABERS(handle)
+    set ZABERS(pickoff,readpos) $ZABERS(pickoff,pos)
+    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,in)] < 5 } {set ZABERS(pickoff,readpos) "in"}
+    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,out)] < 5 } {set ZABERS(pickoff,readpos) "out"}
+  }
+}
+
 
 proc zaberReader { fh } {
 global ZABERS ZPROP ZNAME ZSIMPROP
@@ -312,8 +345,8 @@ proc zaberService { name cmd {a1 ""} {a2 ""} } {
    }
 }
 
-if { [info exists env(NESSI_SIM)] } {
-   set simdev [split $env(NESSI_SIM) ,]
+if { [info exists env(SPECKLE_SIM)] } {
+   set simdev [split $env(SPECKLE_SIM) ,]
    if { [lsearch $simdev zaber] > -1 } {
        set ZABERS(sim) 1
    }
@@ -321,7 +354,7 @@ if { [info exists env(NESSI_SIM)] } {
 
 loadZaberConfig
 echoZaberConfig
-zaberConnect nessi
+zaberConnect
 if { [info exists ZABERS(sim)] ==0 } {
   zaberGetProperties A
   zaberGetProperties B

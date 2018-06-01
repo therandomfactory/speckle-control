@@ -1,14 +1,14 @@
 
-set NESSI_DIR $env(NESSI_DIR)
+set SPECKLE_DIR $env(SPECKLE_DIR)
 
-set NESSI_DIR $env(NESSI_DIR)
-load $NESSI_DIR/lib/andorTclInit.so
-load $NESSI_DIR/lib/libfitstcl.so
-load $NESSI_DIR/lib/libccd.so
-load $NESSI_DIR/lib/libguider.so
+set SPECKLE_DIR $env(SPECKLE_DIR)
+load $SPECKLE_DIR/lib/andorTclInit.so
+load $SPECKLE_DIR/lib/libfitstcl.so
+load $SPECKLE_DIR/lib/libccd.so
+load $SPECKLE_DIR/lib/libguider.so
 
-source $NESSI_DIR/andor/andor.tcl
-source $NESSI_DIR/andorsConfiguration
+source $SPECKLE_DIR/andor/andor.tcl
+source $SPECKLE_DIR/andorsConfiguration
 
 set ncam [GetAvailableCameras]
 puts stdout "Detected $ncam cameras"

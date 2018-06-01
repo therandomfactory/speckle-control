@@ -31,7 +31,7 @@ global ZABERS
    }
 }
 
-load $env(NESSI_DIR)/lib/libzaber.so
+load $env(SPECKLE_DIR)/lib/libzaber.so
 set ZABERS(rotator,speed) 10
 set ZABERS(rotator,unit) 3
 set ZABERS(rotatorName) "rotator"

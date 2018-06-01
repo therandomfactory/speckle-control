@@ -10,29 +10,29 @@
 #
 
 
-set NESSI_DIR $env(NESSI_DIR)
+set SPECKLE_DIR $env(SPECKLE_DIR)
 set PICOS(ipoll) 1000
 
 proc loadPicosConfig { {fname picomotorConfiguration} } {
-global NESSI_DIR NESCONFIG PICOS
-   if { [file exists $NESSI_DIR/$fname] == 0 } {
-     errordialog "Picos configuration file $NESSI_DIR/$fname\n does not exist"
+global SPECKLE_DIR SPKCONFIG PICOS
+   if { [file exists $SPECKLE_DIR/$fname] == 0 } {
+     errordialog "Picos configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
-     source $NESSI_DIR/$fname
-     set NESCONFIG(picoChange) 0
+     source $SPECKLE_DIR/$fname
+     set SPKCONFIG(picoChange) 0
    }
    logPicosConfig
    debuglog "Loaded PICO configuration"
 }
 
 proc savePicosConfig { fname } {
-global NESSI_DIR  NESCONFIG PICOS
-   set fcfg [open $NESSI_DIR/$fname w]
+global SPECKLE_DIR  SPKCONFIG PICOS
+   set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh
    echoPicosConfig $fcfg
    close $fcfg
-   set NESCONFIG(picoChange) 0
-   debuglog "Saved Picos configuration in $NESSI_DIR/$fname"
+   set SPKCONFIG(picoChange) 0
+   debuglog "Saved Picos configuration in $SPECKLE_DIR/$fname"
 }
 
 proc logPicosConfig { } {
@@ -165,12 +165,12 @@ global PICOS
 
 
 proc picoUseCurrentPos { station } {
-global PICOS NESCONFIG
+global PICOS SPKCONFIG
    set PICOS(X,$station) [picoGet X position]
    debuglog "picomotor X $station set to $PICOS(X,$station)"
    set PICOS(Y,$station) [picoGet Y position]
    debuglog "picomotor Y $station set to $PICOS(Y,$station)"
-   set NESCONFIG(picoChange) 1
+   set SPKCONFIG(picoChange) 1
 }
 
 
@@ -186,8 +186,8 @@ Supported commands :
 
 loadPicosConfig
 set PICOS(sim) 0
-if { [info exists env(NESSI_SIM)] } {
-   set simdev [split $env(NESSI_SIM) ,]
+if { [info exists env(SPECKLE_SIM)] } {
+   set simdev [split $env(SPECKLE_SIM) ,]
    if { [lsearch $simdev picomotor] > -1 } {
        set PICOS(sim) 1
        set PICOS(X,position) 0 

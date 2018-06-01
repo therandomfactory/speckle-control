@@ -4,22 +4,22 @@ proc debuglog { msg } {
 }
 
 
-set NESSI_DIR $env(NESSI_DIR)
-load $NESSI_DIR/lib/andorTclInit.so
-load $NESSI_DIR/lib/libfitstcl.so
-load $NESSI_DIR/lib/libccd.so
-load $NESSI_DIR/lib/libguider.so
+set SPECKLE_DIR $env(SPECKLE_DIR)
+load $SPECKLE_DIR/lib/andorTclInit.so
+load $SPECKLE_DIR/lib/libfitstcl.so
+load $SPECKLE_DIR/lib/libccd.so
+load $SPECKLE_DIR/lib/libguider.so
 
-source $NESSI_DIR/andor/andor.tcl
-source $NESSI_DIR/andorsConfiguration
-source $NESSI_DIR/wiyn-scripts/headerBuilder.tcl 
+source $SPECKLE_DIR/andor/andor.tcl
+source $SPECKLE_DIR/andorsConfiguration
+source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl 
 if { $env(TELESCOPE) == "GEMINI" } {
   set SCOPE(telescope) "GEMINI"
   set SCOPE(instrument) speckle
-  source $NESSI_DIR/wiyn-scripts/gemini_telemetry.tcl 
+  source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl 
   set GEMINITLM(sim) 0
-  if { [info exists env(NESSI_SIM)] } {
-    set simdev [split $env(NESSI_SIM) ,]
+  if { [info exists env(SPECKLE_SIM)] } {
+    set simdev [split $env(SPECKLE_SIM) ,]
     if { [lsearch $simdev geminitlm] > -1 } {
        set GEMINITLM(sim) 1
        debuglog "Gemini telemetry in SIMULATION mode"
@@ -36,7 +36,7 @@ set hstart [lindex $argv 1]
 set hend   [lindex $argv 2]
 set vstart [lindex $argv 3]
 set vend   [lindex $argv 4]
-set NESSI_DATADIR $env(NESSI_DATADIR)
+set SPECKLE_DATADIR $env(SPECKLE_DATADIR)
 
 debuglog "Establishing server for camera $cameraNum"
 debuglog "hstart =  $hstart"
@@ -124,57 +124,57 @@ global CAM ANDOR_ROI ANDOR_CFG
 }
 
 proc acquireDataFrame { exp } {
-global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM
     debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
     set t [clock seconds]
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
-      andorStoreFrame $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
-      appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+      andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
+      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p ds9 frame 1
       exec xpaset -p ds9 zoom to fit
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+      exec xpaset -p ds9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
-      andorStoreFrame $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
-      appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
+      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p ds9 frame 2
       exec xpaset -p ds9 zoom to fit
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      exec xpaset -p ds9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
 }
 
 proc acquireDataROI { exp x y n } {
-global ANDOR_CFG NESSI_DATADIR ANDOR_ARM
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM
     debuglog "Starting $ANDOR_ARM ROI sequence with exposure = $exp"
     set t [clock seconds]
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
-      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $n $n 1 1
-      appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+      andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $n $n 1 1
+      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p ds9 frame 1
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+      exec xpaset -p ds9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorSetROI $ANDOR_CFG(blue) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(blue)
-      andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $n $n 1 1
-      appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $n $n 1 1
+      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p ds9 frame 2
       after 400
-      exec xpaset -p ds9 file $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      exec xpaset -p ds9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
 }
 
 proc acquireDataCube { exp x y npix n } {
-global ANDOR_CFG NESSI_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p ds9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=512,ydim=512,bitpix=32\\\]
@@ -193,24 +193,24 @@ global ANDOR_CFG NESSI_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI
     incr count 1
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
-      andorSaveData $ANDOR_CFG(red) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $npix $npix $count $n
+      andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $npix $npix $count $n
       andorDisplayFrame $ANDOR_CFG(red) $npix $npix 1
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
-      andorSaveData $ANDOR_CFG(blue) $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $npix $npix $count $n
+      andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $npix $npix $count $n
       andorDisplayFrame $ANDOR_CFG(blue) $npix $npix 1
     }
     update idletasks
     after 1
   }
   if { $ANDOR_CFG(red) > -1} {
-    appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     andorDisplayAvgFFT $ANDOR_CFG(red) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(red)}
   }
   if { $ANDOR_CFG(blue) > -1} {
-    appendHeader $NESSI_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     andorDisplayAvgFFT $ANDOR_CFG(blue) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(blue)}
   }
@@ -297,7 +297,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG
          whicharm        { puts $sock $ANDOR_ARM }
          forceroi        { forceROI  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex @$msg 2]]" }
-         datadir         { set NESSI_DATADIR [lindex $msg 1] ; puts $sock "OK"}
+         datadir         { set SPECKLE_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set SCOPE(datadir) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; set ANDOR_CFG(ccdtemp) $it ; puts $sock $it }
          status          { showstatus ; puts $sock "OK"}

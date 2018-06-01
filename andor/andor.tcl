@@ -34,9 +34,9 @@ global ANDOR_CFG
 }
 
 proc initds9 { shmid width height } {
-global NESSI_DIR
+global SPECKLE_DIR
   debuglog "Configuring ds9"
-  exec xpaset -p ds9 source $NESSI_DIR/andor/ds9refresher.tcl
+  exec xpaset -p ds9 source $SPECKLE_DIR/andor/ds9refresher.tcl
   exec xpaset -p ds9 shm array shmid $shmid \\\[xdim=$width,ydim=$height,bitpix=32\\\]
 }
 
@@ -137,16 +137,16 @@ global LASTACQ STATUS SCOPE ACQREGION
    } else {
       .main.video configure -relief sunken -fg yellow
       .main.observe configure -fg LightGray -relief sunken -command ""
-      after 1000 nessishutter red close
-      after 1000 nessishutter blue close
+      after 1000 speckleshutter red close
+      after 1000 speckleshutter blue close
    }
 }
   
 proc startvideomode { } {
 global STATUS
    set STATUS(abort) 0
-   nessishutter red open
-   nessishutter blue open
+   speckleshutter red open
+   speckleshutter blue open
    videomode
 }
 
@@ -183,17 +183,17 @@ global INSTRUMENT SCOPE
 }
    
 proc resetAndors { mode } {
-global INSTRUMENT NESSI_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
+global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
    debuglog "Resetting Andors for $mode" 
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
    if { $mode == "fullframe" } {
-     exec xterm -e "$NESSI_DIR/andor/andorServer.tcl 1 1 1024 1 1024" &
-     exec xterm -e "$NESSI_DIR/andor/andorServer.tcl 2 1 1024 1 1024" &
+     exec xterm -e "$SPECKLE_DIR/andor/andorServer.tcl 1 1 1024 1 1024" &
+     exec xterm -e "$SPECKLE_DIR/andor/andorServer.tcl 2 1 1024 1 1024" &
      set LASTACQ fullframe
    } else {
-     exec xterm -e "$NESSI_DIR/andor/andorServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
-     exec xterm -e "$NESSI_DIR/andor/andorServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -e "$SPECKLE_DIR/andor/andorServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -e "$SPECKLE_DIR/andor/andorServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }
