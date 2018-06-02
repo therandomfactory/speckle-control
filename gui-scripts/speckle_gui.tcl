@@ -26,9 +26,9 @@ place .mbar.config -x 380 -y 0
 
 
 
-checkbutton .main.bred -bg gray -text "RED ARM" -variable INSTRUMENT(red)
+checkbutton .main.bred -bg gray -text "RED ARM" -variable INSTRUMENT(red)  -highlightthickness 0
 place .main.bred -x 350 -y 22
-checkbutton .main.bblue -bg gray -text "BLUE ARM" -variable INSTRUMENT(blue)
+checkbutton .main.bblue -bg gray -text "BLUE ARM" -variable INSTRUMENT(blue)  -highlightthickness 0
 place .main.bblue -x 450 -y 22
 label .main.astatus -text test -fg black -bg LightBlue
 place .main.astatus -x 20 -y 315
@@ -43,13 +43,13 @@ place .main.astatus -x 1000
 place .main.bstatus -x 1000
 
 frame .lowlevel -bg gray -width 620 -height 710
-place .lowlevel -x 0 -y 400
+place .lowlevel -x 0 -y 360
 label .lowlevel.red -text "RED ARM" -bg red -fg black -width 25
-place .lowlevel.red -x 20 -y 0
+place .lowlevel.red -x 20 -y 3
 label .lowlevel.blue -text "BLUE ARM" -bg LightBlue -fg black -width 25
-place .lowlevel.blue -x 420 -y 0
-checkbutton .lowlevel.clone -bg gray -text "Clone settings" -variable INSTRUMENT(clone)
-place .lowlevel.clone -x 240 -y 0
+place .lowlevel.blue -x 420 -y 3
+checkbutton .lowlevel.clone -bg gray -text "Clone settings" -variable INSTRUMENT(clone)  -highlightthickness 0
+place .lowlevel.clone -x 240 -y 3
 
 label .lowlevel.lemgain  -bg gray -text "EM Gain"
 SpinBox .lowlevel.emgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red"
@@ -68,12 +68,12 @@ place .lowlevel.input -x 280 -y 270
 set INSTRUMENT(clone) 0
 
 button .lowlevel.rtempset -bg gray -text "Temp Set" -width 6 -command "andorsetpoint red"
-entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6
+entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6  -justify right
 place .lowlevel.rtempset -x 126 -y 28
 place .lowlevel.vrtempset -x 210 -y 33
 
 button .lowlevel.btempset -bg gray -text "Temp Set" -width 6 -command "andorsetpoint blue"
-entry .lowlevel.vbtempset -bg white -textvariable ANDOR_CFG(blue,setpoint) -width 6
+entry .lowlevel.vbtempset -bg white -textvariable ANDOR_CFG(blue,setpoint) -width 6  -justify right
 place .lowlevel.btempset -x 524 -y 28
 place .lowlevel.vbtempset -x 610 -y 33
 set ANDOR_CFG(red,setpoint) -60
@@ -100,7 +100,7 @@ set ZABERS(input,target) 0
 set TELEMETRY(speckle.mode.andor) "widefield"
 
 button .lowlevel.zagoto -bg gray -text "Move to" -width 8 -command "zaberEngpos A"
-entry .lowlevel.vzagoto -bg white -textvariable ZABERS(A,target) -width 10
+entry .lowlevel.vzagoto -bg white -textvariable ZABERS(A,target) -width 10  -justify right
 place .lowlevel.zagoto -x 20 -y 300
 place .lowlevel.vzagoto -x 130 -y 302
 button .lowlevel.zawide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos A wide"
@@ -111,7 +111,7 @@ button .lowlevel.zahome -bg gray -text "Set HOME to current" -width 20 -command 
 place .lowlevel.zahome -x 20 -y 420
 
 button .lowlevel.zigoto -bg gray -text "Move to" -width 8 -command "zaberEngpos input"
-entry .lowlevel.vzigoto -bg white -textvariable ZABERS(B,target) -width 10
+entry .lowlevel.vzigoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right
 place .lowlevel.zigoto -x 220 -y 300
 place .lowlevel.vzigoto -x 330 -y 302
 button .lowlevel.ziwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos input wide"
@@ -122,7 +122,7 @@ button .lowlevel.zihome -bg gray -text "Set HOME to current" -width 20 -command 
 place .lowlevel.zihome -x 220 -y 420
 
 button .lowlevel.zbgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos B"
-entry .lowlevel.vzbgoto -bg white -textvariable ZABERS(B,target) -width 10
+entry .lowlevel.vzbgoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right
 place .lowlevel.zbgoto -x 420 -y 300
 place .lowlevel.vzbgoto -x 530 -y 302
 button .lowlevel.zbwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos B wide"
@@ -316,8 +316,13 @@ global INSTRUMENT
    }
 }
 
-checkbutton .lowlevel.emccd  -bg gray -text "EMCCD" -variable INSTRUMENT(red,emccd) -command "checkemccdgain red"
-checkbutton .lowlevel.hgain  -bg gray -text "High Gain" -command "checkemccdgain red" -variable INSTRUMENT(red,highgain) -command "checkemccdgain red" 
+
+proc showprogress { x } {
+   .lowlevel.p configure -value $x
+}
+
+checkbutton .lowlevel.emccd  -bg gray -text "EMCCD" -variable INSTRUMENT(red,emccd) -command "checkemccdgain red"  -highlightthickness 0
+checkbutton .lowlevel.hgain  -bg gray -text "High Gain" -variable INSTRUMENT(red,highgain) -command "checkemccdgain red"  -highlightthickness 0
 label .lowlevel.lvspeed  -bg gray -text "VSpeed"
 SpinBox .lowlevel.vspeed -width 4  -bg gray   -range "0 1000 1" -textvariable INSTRUMENT(red,vspeed)
 label .lowlevel.lemhs  -bg gray -text "EMCCD HS" 
@@ -338,8 +343,8 @@ place .lowlevel.lccdhs -x 20 -y 260
 place .lowlevel.ccdhs -x 120 -y 260
 
 
-checkbutton .lowlevel.bemccd  -bg gray -text "EMCCD" -variable INSTRUMENT(blue,emccd) -command "checkemccdgain blue"
-checkbutton .lowlevel.bhgain  -bg gray -text "High Gain" -variable INSTRUMENT(blue,highgain) -command "checkemccdgain blue"
+checkbutton .lowlevel.bemccd  -bg gray -text "EMCCD" -variable INSTRUMENT(blue,emccd) -command "checkemccdgain blue" -highlightthickness 0
+checkbutton .lowlevel.bhgain  -bg gray -text "High Gain" -variable INSTRUMENT(blue,highgain) -command "checkemccdgain blue" -highlightthickness 0
 label .lowlevel.lbvspeed  -bg gray -text "Vspeed"
 SpinBox .lowlevel.bvspeed -width 4  -bg gray   -range "0 1000 1" -textvariable INSTRUMENT(blue,vspeed)
 label .lowlevel.lbemhs  -bg gray -text "EMCCD HS" 
@@ -382,12 +387,13 @@ place .main.video  -x 100 -y 167
 place .main.abort   -x 180 -y 167
 text .main.comment -height 16 -width 50 
 label .main.lcomment -text "Comments :" -bg gray
-checkbutton .main.clrcomment -bg gray -variable SCOPE(autoclrcmt) -text "Auto-clear"
+checkbutton .main.clrcomment -bg gray -variable SCOPE(autoclrcmt) -text "Auto-clear"  -highlightthickness 0
 place .main.comment -x 560 -y 50
 place .main.lcomment -x 560 -y 23
 place .main.clrcomment -x 640 -y 23
 
-
+ttk::progressbar .lowlevel.p -orient horizontal -length 900  -mode determinate
+place .lowlevel.p -x 20 -y 130
 
 #set INSTRUMENT(red) 1
 #set INSTRUMENT(blue) 1
@@ -450,7 +456,7 @@ wm geometry . 936x1100
 label .lowlevel.pickoff -text "PICK-OFF" -bg white
 place .lowlevel.pickoff -x 735 -y 276
 button .lowlevel.zpgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos pickoff"
-entry .lowlevel.vzpgoto -bg white -textvariable ZABERS(pickoff,target) -width 10
+entry .lowlevel.vzpgoto -bg white -textvariable ZABERS(pickoff,target) -width 10  -justify right
 place .lowlevel.zpgoto -x 670 -y 305
 place .lowlevel.vzpgoto -x 780 -y 307
 button .lowlevel.zpin -bg gray -text "Set IN to current" -width 20 -command "zaberConfigurePos pickoff in "
@@ -466,7 +472,7 @@ place .lowlevel.pkload -x 768 -y 430
 label .lowlevel.focus -text "FOCUS" -bg white
 place .lowlevel.focus -x 735 -y 506
 button .lowlevel.zfgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos focus"
-entry .lowlevel.vzfgoto -bg white -textvariable ZABERS(focus,target) -width 10
+entry .lowlevel.vzfgoto -bg white -textvariable ZABERS(focus,target) -width 10  -justify right
 place .lowlevel.zfgoto -x 670 -y 535
 place .lowlevel.vzfgoto -x 780 -y 537
 button .lowlevel.zfin -bg gray -text "Set EXTEND to current" -width 20 -command "zaberConfigurePos focus extend "
@@ -504,9 +510,9 @@ button .lowlevel.pload -text Load -bg gray70 -width 12 -command "loadPicosConfig
 place .lowlevel.psave -x 420  -y 660
 place .lowlevel.pload -x 60 -y 660
 
-entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)
+entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)  -justify right
 place .lowlevel.vxpico -x 510 -y 570
-entry .lowlevel.vypico -width 8 -bg white -textvariable PICOS(Y,current)
+entry .lowlevel.vypico -width 8 -bg white -textvariable PICOS(Y,current)  -justify right
 place .lowlevel.vypico -x 272 -y 665
 
 showstatus "Initializing PICOs"

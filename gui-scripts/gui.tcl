@@ -181,7 +181,7 @@ set iy 10
 foreach item "target ProgID ra dec telescope instrument" {
    label .main.l$item -bg gray -fg black -text $item
    place .main.l$item -x 300 -y $iy
-   entry .main.v$item -bg white -fg black -relief sunken -width 12 -textvariable SCOPE($item)
+   entry .main.v$item -bg white -fg black -relief sunken -width 12 -textvariable SCOPE($item) -justify right
    place .main.v$item -x 400 -y $iy
    incr iy 24 
 }
@@ -235,11 +235,11 @@ set SCOPE(exptype) Object
 set SCOPE(numaccum) 1
 set SCOPE(numseq) 1
 
-button .main.seldir -width 36 -text "Configure data directory" -command "choosedir data data"
-place .main.seldir -x 20 -y 300
+button .main.seldir -width 38 -text "Configure data directory" -command "choosedir data data"
+place .main.seldir -x 20 -y 286
 label .main.lname -bg gray -fg black -text "File name :"
 place .main.lname -x 20 -y 135
-entry .main.imagename -width 18 -bg white -fg black -textvariable SCOPE(imagename)
+entry .main.imagename -width 18 -bg white -fg black -textvariable SCOPE(imagename) -justify right
 place .main.imagename -x 100 -y 135
 
 label .main.rcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
@@ -253,7 +253,7 @@ place .main.bcamtemp -x 453 -y 2
 
 
 .main.imagename insert 0 test
-entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum)
+entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right
 place .main.seqnum -x 270 -y 135
 set SCOPE(seqnum) 1
 button .main.observe -width 5 -height 2 -text "Observe" -bg gray -command startsequence
@@ -262,20 +262,20 @@ place .main.observe -x 20  -y 167
 place .main.abort   -x 120 -y 167
 
 label .main.lsim -text "Simulate :" -bg gray
-checkbutton .main.simandor -bg gray  -text "Andors" -variable ANDORS(sim)
-checkbutton .main.simzaber -bg gray  -text "Zabers" -variable ZABERS(sim)
-checkbutton .main.simfilter -bg gray  -text "Filters" -variable FWHEELS(sim)
-checkbutton .main.simtlm -bg gray  -text "Telemetry" -variable SPKTELEM(sim)
-place .main.lsim -x 20 -y 247
-place .main.simandor -x 150 -y 247
-place .main.simzaber -x 250 -y 247
-place .main.simfilter -x 50 -y 272
-place .main.simtlm -x 150 -y 272
+checkbutton .main.simandor -bg gray  -text "Andors" -variable ANDORS(sim) -highlightthickness 0
+checkbutton .main.simzaber -bg gray  -text "Zabers" -variable ZABERS(sim) -highlightthickness 0
+checkbutton .main.simfilter -bg gray  -text "Filters" -variable FWHEELS(sim) -highlightthickness 0
+checkbutton .main.simtlm -bg gray  -text "Telemetry" -variable SPKTELEM(sim) -highlightthickness 0
+place .main.lsim -x 20 -y 227
+place .main.simandor -x 150 -y 227
+place .main.simzaber -x 250 -y 227
+place .main.simfilter -x 250 -y 252
+place .main.simtlm -x 150 -y 252
 
 
 if { $SCOPE(telescope) == "GEMINI" } {
-  checkbutton .main.simpico -bg gray  -text "Picos" -variable PICOS(sim)
-  place .main.simpico -x 250 -y 272
+  checkbutton .main.simpico -bg gray  -text "Picos" -variable PICOS(sim) -highlightthickness 0
+  place .main.simpico -x 85 -y 227
 }
    
 menubutton .main.rawiq -text "DQ - image" -width 21 -fg black -bg gray -menu .main.rawiq.m -relief raised
@@ -284,7 +284,7 @@ menu .main.rawiq.m
 .main.rawiq.m add command -label "RAWIQ 70%" -command "dataquality rawiq 70"
 .main.rawiq.m add command -label "RAWIQ 85%" -command "dataquality rawiq 85"
 .main.rawiq.m add command -label "RAWIQ ANY" -command "dataquality rawiq ANY"
-place .main.rawiq -x 360 -y 200
+place .main.rawiq -x 362 -y 200
 
 menubutton .main.rawcc -text "DQ - cloud" -width 21 -fg black -bg gray -menu .main.rawcc.m -relief raised
 menu .main.rawcc.m
@@ -292,7 +292,7 @@ menu .main.rawcc.m
 .main.rawcc.m add command -label "RAWCC 50%" -command "dataquality rawcc 70"
 .main.rawcc.m add command -label "RAWCC 80%" -command "dataquality rawcc 80"
 .main.rawcc.m add command -label "RAWCC ANY" -command "dataquality rawcc ANY"
-place .main.rawcc -x 360 -y 230
+place .main.rawcc -x 362 -y 230
 
 menubutton .main.rawwv -text "DQ - water" -width 21 -fg black -bg gray -menu .main.rawwv.m -relief raised
 menu .main.rawwv.m
@@ -300,7 +300,7 @@ menu .main.rawwv.m
 .main.rawwv.m add command -label "RAWWV 50%" -command "dataquality rawwv 50"
 .main.rawwv.m add command -label "RAWWV 80%" -command "dataquality rawwv 80"
 .main.rawwv.m add command -label "RAWWV ANY" -command "dataquality rawwv ANY"
-place .main.rawwv -x 360 -y 260
+place .main.rawwv -x 362 -y 260
 
 menubutton .main.rawbg -text "DQ - bg" -width 21 -fg black -bg gray -menu .main.rawbg.m -relief raised
 menu .main.rawbg.m
@@ -308,7 +308,7 @@ menu .main.rawbg.m
 .main.rawbg.m add command -label "RAWBG 50%" -command "dataquality rawbg 50"
 .main.rawbg.m add command -label "RAWBG 80%" -command "dataquality rawbg 80"
 .main.rawbg.m add command -label "RAWBG ANY" -command "dataquality rawbg ANY"
-place .main.rawbg -x 360 -y 290
+place .main.rawbg -x 362 -y 290
 
 proc dataquality { type value } {
 global DATAQUAL DATAQUALT
