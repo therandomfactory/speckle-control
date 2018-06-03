@@ -53,13 +53,13 @@ place .lowlevel.clone -x 240 -y 3
 
 label .lowlevel.lemgain  -bg gray -text "EM Gain"
 SpinBox .lowlevel.emgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red"
-place .lowlevel.lemgain -x 230 -y 103
-place .lowlevel.emgain -x 284 -y 100
+place .lowlevel.lemgain -x 220 -y 103
+place .lowlevel.emgain -x 274 -y 100
 
 label .lowlevel.lbemgain  -bg gray -text "EM Gain"
 SpinBox .lowlevel.bemgain -width 4  -bg gray  -range "0 1000 1" -textvariable INSTRUMENT(blue,emgain) -command "checkemccdgain blue"
-place .lowlevel.lbemgain -x 626 -y 103
-place .lowlevel.bemgain -x 680 -y 100
+place .lowlevel.lbemgain -x 616 -y 103
+place .lowlevel.bemgain -x 670 -y 100
 
 
 
@@ -293,8 +293,8 @@ global DATAQUAL ZABERS
      set pfieldzaber $ZABERS(B,readpos)
      set pfilter $FWHEELS(blue,$FWHEELS(blue,position))
    }
-   commandAndor positiontelem "$pinutzaber $pfieldzaber $pfilter"
-   commandAndor dqtelemetry "$DATAQUAL(iq) $DATAQUAL(cc) $DATAQAL(wv) $DATAQUAL(bg)"
+   commandAndor $arm positiontelem "$pinutzaber $pfieldzaber $pfilter"
+   commandAndor $arm dqtelemetry "$DATAQUAL(iq) $DATAQUAL(cc) $DATAQAL(wv) $DATAQUAL(bg)"
 }
 
 
@@ -316,13 +316,55 @@ global INSTRUMENT
    }
 }
 
+proc cameraStatuses { } {
+global CAMSTATUS
+  foreach cam "red blue" {
+    set camstatus [commandAndor $cam status]
+    if { $camstatus != 0 } {
+      set i 0
+      foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
+        set CAMSTATUS($cam,$p) [lindex $camstatus $i]
+        incr i 1
+      }
+    }
+  }
+  wm deiconify .camerastatus
+}
+
 
 proc showprogress { x } {
    .lowlevel.p configure -value $x
 }
 
+
+toplevel .camerastatus -width 400 -height 300 -bg gray
+wm title .camerastatus "Camera Configurations" 
+label .camerastatus.lred -text "Red Arm" -bg gray
+label .camerastatus.lblue -text "Blue Arm" -bg gray
+place .camerastatus.lred -x 200 -y 10
+place .camerastatus.lblue -x 300 -y 10
+
+set iy 40
+foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
+   label .camerastatus.l[set p] -text $p  -bg gray
+   label .camerastatus.vred[set p] -textvariable CAMSTATUS(red,$p) -bg gray -fg NavyBlue
+   label .camerastatus.vblue[set p] -textvariable CAMSTATUS(blue,$p) -bg gray -fg NavyBlue
+   place .camerastatus.l[set p] -x 20 -y $iy
+   place .camerastatus.vred[set p] -x 220 -y $iy
+   place .camerastatus.vblue[set p] -x 320 -y $iy
+   incr iy 25
+}
+button .camerastatus.done -text "Close" -fg black -bg orange -width 45 -command "wm withdraw .camerastatus"
+place .camerastatus.done -x 20 -y 400
+wm geometry .camerastatus 430x440+20+20
+foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
+   set CAMSTATUS(red,$p) "???"
+   set CAMSTATUS(blue,$p) "???"
+}
+
 checkbutton .lowlevel.emccd  -bg gray -text "EMCCD" -variable INSTRUMENT(red,emccd) -command "checkemccdgain red"  -highlightthickness 0
 checkbutton .lowlevel.hgain  -bg gray -text "High Gain" -variable INSTRUMENT(red,highgain) -command "checkemccdgain red"  -highlightthickness 0
+checkbutton .lowlevel.aemccd  -bg gray -text "Auto Set" -variable INSTRUMENT(red,autoemccd) -highlightthickness 0
 label .lowlevel.lvspeed  -bg gray -text "VSpeed"
 SpinBox .lowlevel.vspeed -width 4  -bg gray   -range "0 1000 1" -textvariable INSTRUMENT(red,vspeed)
 label .lowlevel.lemhs  -bg gray -text "EMCCD HS" 
@@ -331,6 +373,7 @@ label .lowlevel.lccdhs  -bg gray -text "CCD HS"
 SpinBox .lowlevel.ccdhs -width 4  -bg gray  -range "0 30 1" -textvariable INSTRUMENT(red,ccdhs)
 place .lowlevel.emccd -x 20 -y 100
 place .lowlevel.hgain -x 120 -y 100
+place .lowlevel.aemccd -x 330 -y 100
 
 
 place .lowlevel.lvspeed -x 20 -y 200
@@ -345,6 +388,7 @@ place .lowlevel.ccdhs -x 120 -y 260
 
 checkbutton .lowlevel.bemccd  -bg gray -text "EMCCD" -variable INSTRUMENT(blue,emccd) -command "checkemccdgain blue" -highlightthickness 0
 checkbutton .lowlevel.bhgain  -bg gray -text "High Gain" -variable INSTRUMENT(blue,highgain) -command "checkemccdgain blue" -highlightthickness 0
+checkbutton .lowlevel.abemccd  -bg gray -text "Auto Set" -variable INSTRUMENT(red,autoemccd) -highlightthickness 0
 label .lowlevel.lbvspeed  -bg gray -text "Vspeed"
 SpinBox .lowlevel.bvspeed -width 4  -bg gray   -range "0 1000 1" -textvariable INSTRUMENT(blue,vspeed)
 label .lowlevel.lbemhs  -bg gray -text "EMCCD HS" 
@@ -353,6 +397,7 @@ label .lowlevel.lbccdhs  -bg gray -text "CCD HS"
 SpinBox .lowlevel.bccdhs -width 4  -bg gray  -range "0 30 1" -textvariable INSTRUMENT(blue,ccdhs)
 place .lowlevel.bemccd -x 420 -y 100
 place .lowlevel.bhgain -x 520 -y 100
+place .lowlevel.abemccd -x 730 -y 100
 
 
 place .lowlevel.lbvspeed -x 420 -y 200

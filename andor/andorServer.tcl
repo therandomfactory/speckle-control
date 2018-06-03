@@ -52,9 +52,15 @@ if { $handle < 0} {exit}
 
 debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
+set ANDOR_CFG($CAM,OutputAmplifier) 1
+set ANDOR_CFG($CAM,PreAmpGain) 2
+set ANDOR_CFG($CAM,VSSpeed) 2
+set ANDOR_CFG($CAM,HSSpeed) 1
+set ANDOR_CFG($CAM,EMHSSpeed) 3
 set ANDOR_CFG(configure) "1 1 1 1024 1 1024 2 2 1 3"
-andorConfigure $CAM 1 1 1 1024 1 1024 [lindex $ANDOR_CFG(configure) 7]  [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9] [lindex $ANDOR_CFG(configure) 10]
+andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
 debuglog "Configured camera id $CAM for ccd mode"
+
 set ANDOR_CFG(red) -1
 set ANDOR_CFG(blue) -1
 set ANDOR_CFG($CAM,SerialNumber) "X-[GetCameraSerialNumber]"
@@ -95,7 +101,12 @@ global CAM ANDOR_CFG
      set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
   }
-}
+  foreach i "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
+     debuglog "$CAM : $i = $ANDOR_CFG($CAM,$i)"
+  }
+  lappend s $ANDOR_CFG($CAM,$i)
+  return $s
+} 
 
 
 proc resetCamera { mode } {
@@ -104,11 +115,11 @@ global CAM ANDOR_CFG
    set handle [andorConnectCamera [expr $CAM+1]]
    if { $mode == "fullframe" } {
      debuglog "Connected to camera $CAM for fullframe, handle = $handle"
-     andorConfigure $CAM 1 1 1 1024 1 1024 [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
+     andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
    }
    if { $mode == "roi" } {
      debuglog "Connected to camera $CAM for ROI, handle = $handle"
-     andorConfigure $CAM 1 1 1 256 1 256 [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
+     andorConfigure $CAM 1 1 1 256 1 256 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
    }
 }
 
@@ -116,12 +127,12 @@ proc configureFrame { mode } {
 global CAM ANDOR_ROI ANDOR_CFG
    if { $mode == "fullframe" } {
      debuglog "Configure camera $CAM for fullframe"
-     andorConfigure $CAM 1 1 1 1024 1 1024 [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
+     andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
      andorPrepDataFrame
    }
    if { $mode == "roi" } {
      debuglog "Configure camera $CAM for ROI : $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye)"
-     andorConfigure $CAM 1 1 $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) [lindex $ANDOR_CFG(configure) 6]  [lindex $ANDOR_CFG(configure) 7] [lindex $ANDOR_CFG(configure) 8] [lindex $ANDOR_CFG(configure) 9]
+     andorConfigure $CAM 1 1 $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
    }
 }
 
@@ -299,29 +310,29 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          grabcube        { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Acquiring cube"}
          setframe        { configureFrame [lindex $msg 1] ;  puts $sock "OK"}
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
-         setemccd        { SetEMCCDGain [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
          forceroi        { forceROI  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex @$msg 2]]" }
          datadir         { set SPECKLE_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set SCOPE(datadir) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; set ANDOR_CFG(ccdtemp) $it ; puts $sock $it }
-         status          { showstatus ; puts $sock "OK"}
-         shutter         { set it [andorSetProperty $CAM Shutter [lindex $msg 1]] ; puts $sock $it}
-         frametransfer   { set it [andorSetProperty $CAM FrameTransferMode [lindex $msg 1]] ; puts $sock $it}
-         outputamp       { set it [andorSetProperty $CAM OutputAmplifier [lindex $msg 1]] ; puts $sock $it}
-         emadvanced      { set it [andorSetProperty $CAM EMAdvanced [lindex $msg 1]] ; puts $sock $it}
-         emccdgain       { set it [andorSetProperty $CAM EMCCDGain [lindex $msg 1]] ; puts $sock $it}
-         hsspeed         { set it [andorSetProperty $CAM HSSpeed [lindex $msg 1] [lindex $msg 2]] ; puts $sock $it}
-         vsspeed         { set it [andorSetProperty $CAM VSSpeed [lindex $msg 1]] ; puts $sock $it}
-         preampgain      { set it [andorSetProperty $CAM PreAmpGain [lindex $msg 1]] ; puts $sock $it}
-         readmode        { set it [andorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}
-         acquisition     { set it [andorSetProperty $CAM AcquisitionMode [lindex $msg 1]] ; puts $sock $it}
-         kineticcycletime      { set it [andorSetProperty $CAM KineticCycleTime [lindex $msg 1]] ; puts $sock $it}
-         numberaccumlations    { set it [andorSetProperty $CAM NumberAccumulations [lindex $msg 1]] ; puts $sock $it}
-         numberkinetics        { set it [andorSetProperty $CAM NumberKinetics [lindex $msg 1]] ; puts $sock $it}
-         accumulationcycletime { set it [andorSetProperty $CAM AccumulationCycleTime [lindex $msg 1]] ; puts $sock $it}
+         status          { set it [showstatus] ; puts $sock $it}
+         shutter         { set it [cAndorSetProperty $CAM Shutter [lindex $msg 1]] ; puts $sock $it}
+         frametransfer   { set it [cAndorSetProperty $CAM FrameTransferMode [lindex $msg 1]] ; puts $sock $it}
+         outputamp       { set it [cAndorSetProperty $CAM OutputAmplifier [lindex $msg 1]] ; puts $sock $it}
+         emadvanced      { set it [cAndorSetProperty $CAM EMAdvanced [lindex $msg 1]] ; puts $sock $it}
+         emccdgain       { set it [cAndorSetProperty $CAM EMCCDGain [lindex $msg 1]] ; puts $sock $it}
+         hsspeed         { set it [cAndorSetProperty $CAM HSSpeed [lindex $msg 1] [lindex $msg 2]] ; puts $sock $it}
+         vsspeed         { set it [cAndorSetProperty $CAM VSSpeed [lindex $msg 1]] ; puts $sock $it}
+         preampgain      { set it [cAndorSetProperty $CAM PreAmpGain [lindex $msg 1]] ; puts $sock $it}
+         readmode        { set it [cAndorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}
+         acquisition     { set it [cAndorSetProperty $CAM AcquisitionMode [lindex $msg 1]] ; puts $sock $it}
+         kineticcycletime      { set it [cAndorSetProperty $CAM KineticCycleTime [lindex $msg 1]] ; puts $sock $it}
+         numberaccumlations    { set it [cAndorSetProperty $CAM NumberAccumulations [lindex $msg 1]] ; puts $sock $it}
+         numberkinetics        { set it [cAndorSetProperty $CAM NumberKinetics [lindex $msg 1]] ; puts $sock $it}
+         accumulationcycletime { set it [cAndorSetProperty $CAM AccumulationCycleTime [lindex $msg 1]] ; puts $sock $it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
+         settemperature  { SetTemerature [lindex $msg 1] ; puts $sock "OK"}
          positiontelem   { set TELEMETRY(speckle.andor.inputzaber [lindex $msg 1]
                            set TELEMETRY(speckle.andor.fieldzaber) [lindex $msg 2]
                            set TELEMETRY(speckle.andor.filter) [lindex $msg 3]
@@ -344,6 +355,13 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
                            set ccd_horizontal_speed [lindex $msg 9]
                            set em_horizontal_speed [lindex $msg 10]
                            andorConfigure $CAM $hbin $vbin $hstart $hend $vstart $vend $preamp_gain $vertical_speed $ccd_horizontal_speed $em_horizontal_speed
+                           set ANDOR_CFG($CAM,PreAmpGain) $preamp_gain
+                           set ANDOR_CFG($CAM,VSSpeed) $vertical_speed
+                           if { $ANDOR_CFG($CAM,OutputAmplifier) == 0 } {
+                             set ANDOR_CFG($CAM,EMHSSpeed) $em_horizontal_speed
+                           } else {
+                             set ANDOR_CFG($CAM,HSSpeed) $ccd_horizontal_speed
+                           }
 			   puts $sock "OK"
                          }
          setupcamera     { set it [andorSetupCamera $CAM [lindex $msg 1]] ; puts $sock $it}
@@ -361,6 +379,14 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
     flush $sock
 }
 
+proc cAndorSetProperty { cam prop val } {
+global ANDOR_CFG
+   set res [andorSetProperty $cam $prop $val]
+   if { $res == 0 } {
+     set ANDOR_CFG($cam,$prop) $val
+   }
+   return $res
+}
 
 wm withdraw .
 

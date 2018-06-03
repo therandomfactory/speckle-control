@@ -66,15 +66,10 @@ load $libs/liboriel.so
 #
 
 showstatus "Loading FitsTcl"
-if { $tcl_platform(os) != "Darwin" } {
-  load $libs/libfitstcl.so
-  set dl so
-} else {
-  set dl dylib
-}
+load $libs/libfitstcl.so
 
 # Prepare for Ccd image buffering package
-package ifneeded ccd 1.0       [load $libs/libccd.$dl]
+package ifneeded ccd 1.0       [load $libs/libccd.so]
 
 # Load packages provided by dynamically loadable libraries
 showstatus "Loading CCD package"
@@ -160,17 +155,14 @@ menu .mbar.help.m
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file:/opt/apogee/doc/user-guide.html &}
 .mbar.tools.m add command -label "Observing" -command "speckleGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Editor" -command "wm deiconify .filters"
-.mbar.tools.m add command -label "Camera status" -command "speckleStatus"
+.mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
 
 proc speckleGuiMode { mode } {
 global SPECKLE
   wm geometry . $SPECKLE($mode)
 }
 
-proc speckleStatus { } {
-   commandAndor red status
-   commandAndor blue status
-}
+
 
 #
 #  Initialize telescope/user variables
@@ -190,47 +182,30 @@ foreach item "target ProgID ra dec telescope instrument" {
 #  Create main observation management widgets
 #
 #
-if { $tcl_platform(os) != "Darwin" } {
-   set bwkey label
-   set bwfont labelfont
-} else {
-   set bwkey text
-   set bwfont font
-}
+set bwkey text
+set bwfont font
+SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right
+place .main.exposure -x 100 -y 20
+SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right
+place .main.numexp -x 100 -y 50
+set opts "Object Focus Acquire Flat SkyFlat Dark Zero"
+ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype) -justify right
+SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right
+place .main.numseq -x 100 -y 106
+label .main.laccum -text "Accum." -bg gray
+SpinBox .main.numaccum -width 10   -range "1 10000 1" -textvariable SCOPE(numaccum) -justify right
+place .main.exptype -x 100 -y 80
+place .main.numaccum -x 250 -y 106
+label .main.lexp -text Exposure -bg gray
+label .main.lnum -text "Num. Frames" -bg gray
+label .main.lseq -text "Num. Seq." -bg gray
+label .main.ltyp -text "Exp. Type" -bg gray
+place .main.laccum -x 200 -y 106
+place .main.lexp -x 20 -y 23
+place .main.lnum -x 20 -y 53
+place .main.ltyp -x 20 -y 83
+place .main.lseq -x 20 -y 107
 
-if { [lindex [package version BWidget] end] >= 1.8 } {
- set bwkey text
- set bwfont font
- SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right
- place .main.exposure -x 100 -y 20
- SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right
- place .main.numexp -x 100 -y 50
- set opts "Object Focus Acquire Flat SkyFlat Dark Zero"
- ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype) -justify right
- SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right
- place .main.numseq -x 100 -y 106
- label .main.laccum -text "Accum." -bg gray
- SpinBox .main.numaccum -width 10   -range "1 10000 1" -textvariable SCOPE(numaccum) -justify right
- place .main.exptype -x 100 -y 80
- place .main.numaccum -x 250 -y 106
- label .main.lexp -text Exposure -bg gray
- label .main.lnum -text "Num. Frames" -bg gray
- label .main.lseq -text "Num. Seq." -bg gray
- label .main.ltyp -text "Exp. Type" -bg gray
- place .main.laccum -x 200 -y 106
- place .main.lexp -x 20 -y 23
- place .main.lnum -x 20 -y 53
- place .main.ltyp -x 20 -y 83
- place .main.lseq -x 20 -y 107
-} else {
- SpinBox .main.exposure -width 7 -$bwkey "Exposure (in seconds) : " -font fixed -$bwfont "fixed"  -range "0.0 32768.0 1" -textvariable SCOPE(exposure)
- place .main.exposure -x 20 -y 20
- SpinBox .main.numexp -width 12 -$bwkey "Number of frames : " -font fixed  -$bwfont "fixed"  -range "1 1000 1" -textvariable SCOPE(numframes)
- place .main.numexp -x 20 -y 50
- set opts "Object Focus Acquire Flat SkyFlat Dark Zero"
- ComboBox .main.exptype -width 15 -$bwkey "Exposure type : " -font fixed -$bwfont "fixed"  -values "$opts" -textvariable SCOPE(exptype)
- place .main.exptype -x 20 -y 80
-}
 set SCOPE(exptype) Object
 set SCOPE(numaccum) 1
 set SCOPE(numseq) 1
@@ -345,7 +320,7 @@ set ACQREGION(ye) 256
 set LASTACQ none
 
 #
-#  Set up the default structures for temperaure control/plotting
+#  Set up the default structures for temperature control/plotting
 #
 set LASTTEMP 0.0
 set TIMES "0"
