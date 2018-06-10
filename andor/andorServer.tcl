@@ -66,9 +66,9 @@ debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
 set ANDOR_CFG($CAM,OutputAmplifier) 0
 set ANDOR_CFG($CAM,PreAmpGain) 2
-set ANDOR_CFG($CAM,VSSpeed) 2
-set ANDOR_CFG($CAM,HSSpeed) 1
-set ANDOR_CFG($CAM,EMHSSpeed) 3
+set ANDOR_CFG($CAM,VSSpeed) 0
+set ANDOR_CFG($CAM,HSSpeed) 0
+set ANDOR_CFG($CAM,EMHSSpeed) 0
 set ANDOR_CFG(configure) "1 1 1 1024 1 1024 2 2 1 3"
 andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
 debuglog "Configured camera id $CAM for ccd mode"
@@ -108,17 +108,15 @@ andorPrepDataFrame
 cAndorSetProperty $CAM Shutter 0
 cAndorSetProperty $CAM FrameTransferMode 1
 cAndorSetProperty $CAM OutputAmplifier 0
-cAndorSetProperty $CAM EMAdvanced 0
+cAndorSetProperty $CAM EMAdvanced 1
 cAndorSetProperty $CAM EMCCDGain 1
-####cAndorSetProperty $CAM HSSpeed 1 1
-####cAndorSetProperty $CAM HSSpeed 0 3
-cAndorSetProperty $CAM VSSpeed 2
+cAndorSetProperty $CAM VSSpeed 0
 cAndorSetProperty $CAM PreAmpGain 0
 cAndorSetProperty $CAM ReadMode 4
 cAndorSetProperty $CAM AcquisitionMode 1
 cAndorSetProperty $CAM KineticCycleTime 0.0
 cAndorSetProperty $CAM NumberAccumulations 1
-cAndorSetProperty $CAM NumberKinetics 1
+cAndorSetProperty $CAM NumberKinetics 100
 cAndorSetProperty $CAM AccumulationCycleTime 0.0
 
 
@@ -153,13 +151,14 @@ global CAM ANDOR_CFG
 }
 
 proc configureFrame { mode } {
-global CAM ANDOR_ROI ANDOR_CFG
+global CAM ANDOR_ROI ANDOR_CFG SCOPE
    if { $mode == "fullframe" } {
      debuglog "Configure camera $CAM for fullframe"
      andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
      andorPrepDataFrame
      cAndorSetProperty $CAM AcquisitionMode 1
-     cAndorSetProperty $CAM OutputAmplifier 1
+     cAndorSetProperty $CAM OutputAmplifier 0
+     set SCOPE(numframes) 1
    }
    if { $mode == "roi" } {
      debuglog "Configure camera $CAM for ROI : $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye)"
@@ -223,7 +222,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM
     }
 }
 
-proc acquireDataCube { exp x y npix n } {
+proc OldacquireDataCube { exp x y npix n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   if { $ANDOR_ARM == "blue" } {
@@ -239,15 +238,17 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI
      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
   }
   set count 0
+  set dofft 1
+  andorStartAcq;
   while { $count < $n } {
     incr count 1
     if { $ANDOR_CFG(red) > -1} {
-      andorGetData $ANDOR_CFG(red)
+      andorGetFrameN $ANDOR_CFG(red) $count
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $npix $npix $count $n
       andorDisplayFrame $ANDOR_CFG(red) $npix $npix 1
     }
     if { $ANDOR_CFG(blue) > -1 } {
-      andorGetData $ANDOR_CFG(blue)
+      andorGetFrameN $ANDOR_CFG(blue) $count
       andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $npix $npix $count $n
       andorDisplayFrame $ANDOR_CFG(blue) $npix $npix 1
     }
@@ -274,6 +275,43 @@ global ANDOR_CFG
       long    { andorStoreFrameI4 $cid $fname $nx $ny $count $n }
       default { andorStoreFrame   $cid $fname $nx $ny $count $n }
   }
+}
+
+proc acquireDataCube { exp x y npix n } {
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI
+  debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
+  if { $ANDOR_ARM == "blue" } {
+    exec xpaset -p ds9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=512,ydim=512,bitpix=32\\\]
+  }
+  refreshds9 [expr int($exp*2000)] [expr $n*4]
+  set t [clock seconds]
+  SetExposureTime $exp
+  if { $ANDOR_CFG(red) > -1} {
+     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+  }
+  if { $ANDOR_CFG(blue) > -1} {
+     andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+  }
+  set count 0
+  set dofft 1
+  if { $ANDOR_CFG(red) > -1} {
+      andorGetDataCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $dofft
+  }
+  if { $ANDOR_CFG(blue) > -1 } {
+      andorGetDataCube $ANDOR_CFG(blue) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $dofft
+  }
+  update idletasks
+  if { $ANDOR_CFG(red) > -1} {
+    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+    andorDisplayAvgFFT $ANDOR_CFG(red) $npix $npix $n
+    catch {andorAbortAcq $ANDOR_CFG(red)}
+  }
+  if { $ANDOR_CFG(blue) > -1} {
+    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+    andorDisplayAvgFFT $ANDOR_CFG(blue) $npix $npix $n
+    catch {andorAbortAcq $ANDOR_CFG(blue)}
+  }
+  debuglog "Finished acquisition"
 }
 
 set ANDOR_CFG(fitsbits) default
@@ -361,7 +399,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          readmode        { set it [cAndorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}
          acquisition     { set it [cAndorSetProperty $CAM AcquisitionMode [lindex $msg 1]] ; puts $sock $it}
          kineticcycletime      { set it [cAndorSetProperty $CAM KineticCycleTime [lindex $msg 1]] ; puts $sock $it}
-         numberaccumlations    { set it [cAndorSetProperty $CAM NumberAccumulations [lindex $msg 1]] ; puts $sock $it}
+         numberaccumulations    { set it [cAndorSetProperty $CAM NumberAccumulations [lindex $msg 1]] ; puts $sock $it}
          numberkinetics        { set it [cAndorSetProperty $CAM NumberKinetics [lindex $msg 1]] ; puts $sock $it}
          accumulationcycletime { set it [cAndorSetProperty $CAM AccumulationCycleTime [lindex $msg 1]] ; puts $sock $it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}

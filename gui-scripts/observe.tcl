@@ -917,8 +917,13 @@ proc startsequence { } {
 #               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
  set iseqnum 0
+ .lowlevel.p configure -value 0.0
  speckleshutter red open
  speckleshutter blue open
+ commandAndor red "numberkinetics $SCOPE(numframes)"
+ commandAndor blue "numberkinetics $SCOPE(numframes)"
+ commandAndor red "numberaccumulations $SCOPE(numaccum)"
+ commandAndor blue "numberaccumulations $SCOPE(numaccum)"
  while { $iseqnum < $SCOPE(numseq) } {
   set ifrmnum 0
   while { $ifrmnum < $SCOPE(numframes) } {
@@ -954,17 +959,19 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
    } else {
       set TELEMETRY(speckle.andor.mode) "speckle"
       acquireCubes
+      set ifrmnum $SCOPE(numframes)
    }
    set now [clock seconds]
    set FRAME 0
    set REMAINING 0
-   countdown [expr int($SCOPE(exposure)*$SCOPE(numframes))]
+#   countdown [expr int($SCOPE(exposure)*$SCOPE(numframes))]
    while { $i <= $SCOPE(numframes) && $STATUS(abort) == 0 } {
       set FRAME $i
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-      after [expr int($SCOPE(exposure)*1000)+60]
+      after [expr int($SCOPE(exposure)*1000)+5]
       incr i 1
+      .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
       update
    }
    .main.observe configure -text "Observe" -bg gray -relief raised

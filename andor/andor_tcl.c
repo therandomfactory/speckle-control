@@ -34,6 +34,7 @@ int outputAvgA[1024*1024];
 int outputAvgB[1024*1024];
 float imageFrame[1024*1024];
 float fitsROI[512*512];
+float fitsTimings[3000000];
 unsigned int imageFrameI4[1024*1024];
 unsigned int fitsROI4[512*512];
 unsigned short imageFrameI2[1024*1024];
@@ -44,13 +45,16 @@ static at_32 cameraB;
 static at_32 numCameras;
 andor_setup andorSetup[2];
 fitsfile *fptr;       /* pointer to the FITS file, defined in fitsio.h */
+int append_fitsTimings(int numexp);
 
 int Shmem_id = 0;
 void dofft(int width, int height, int *imageData, int* outputData);
 void addavg(at_32 *im, at_32 *avg, int n);
 void calcavg(at_32 *avg, int n, int numexp);
 void copyline (int *tobuf, int *frombuf, int count, int offset);
-void create_fits_header(Tcl_Interp *interp, fitsfile *fptr);
+void create_fits_header(fitsfile *fptr);
+int cAndorStoreFrame(int cameraId, char *filename, int iexp,int numexp);
+int cAndorDisplayFrame(int cameraId, int ifft);
 
 int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -67,6 +71,7 @@ int tcl_andorDisplayAvgFFT(ClientData clientData, Tcl_Interp *interp, int argc, 
 int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorGetAcquiredNum(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorSetCropMode(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorWaitForData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -160,6 +165,7 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorAbortAcq", (Tcl_CmdProc *) tcl_andorAbortAcquisition, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetData", (Tcl_CmdProc *) tcl_andorGetAcquiredData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetFrame", (Tcl_CmdProc *) tcl_andorGetOldestFrame, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorGetFrameN", (Tcl_CmdProc *) tcl_andorGetAcquiredNum, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSetROI", (Tcl_CmdProc *) tcl_andorSetROI, NULL, NULL);
   Tcl_CreateCommand(interp, "andorPrepDataCube", (Tcl_CmdProc *) tcl_andorPrepDataCube, NULL, NULL);
   Tcl_CreateCommand(interp, "andorLocateStar", (Tcl_CmdProc *) tcl_andorLocateStar, NULL, NULL);
@@ -219,7 +225,7 @@ int tcl_andorConnectShmem(ClientData clientData, Tcl_Interp *interp, int argc, c
     SharedMemAPro = SharedMemA + width*height/2;
     SharedMemB  = SharedMemA + width/2;
     SharedMemBPro = SharedMemAPro + width/2;
-    sprintf(result,"%ld %d %ld %ld %ld %ld",Shmem_id, Shmem_size,SharedMemA,SharedMemAPro,SharedMemB,SharedMemBPro);
+    sprintf(result,"%d %d %d %d %d %d",Shmem_id, Shmem_size,SharedMemA,SharedMemAPro,SharedMemB,SharedMemBPro);
     Tcl_SetResult(interp,result,TCL_STATIC);
     return TCL_OK;
 }
@@ -311,7 +317,7 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
           return TCL_ERROR;
     }
 
-    create_fits_header(interp, fptr);
+    create_fits_header(fptr);
  
     fits_close_file(fptr, &status);                /* close the file */
     if (status != 0) {
@@ -347,7 +353,8 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
          return TCL_ERROR;
      }
      if (iexp == numexp) {
-        create_fits_header(interp, fptr);
+        create_fits_header(fptr);
+        append_fitsTimings(numexp);
         fits_close_file(fptr, &status);                /* close the file */
         if (status != 0) {
             sprintf(result,"fits close error %d",status);
@@ -358,6 +365,135 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
   }  
 
   return TCL_OK;
+}
+
+int cAndorStoreFrame(int cameraId, char *filename, int iexp,int numexp)
+{
+  int width,height;
+  int irow,iw,ih,ipix;
+  int status;
+  int *copyFrom;
+  int bitpix   =  FLOAT_IMG; /* 32-bit unsigned int pixel values       */
+  long naxes3[3];   
+  long naxes[2];
+  int fpixel=1;
+  int nelements;
+
+
+  width = andorSetup[cameraId].width;
+  height = andorSetup[cameraId].height;
+
+   if ( cameraId == 0 ) {
+     copyFrom = &imageDataA;
+     if (width < 1024) {
+       for (iw=0;iw<width;iw++) {
+       for (ih=0;ih<height;ih++) {
+         fitsROI[iw+ih*width] = (float)imageDataA[iw+ih*width];
+       }
+       }
+     }
+   }
+   if ( cameraId == 1 ) {
+     copyFrom = &imageDataB;
+     if (width < 1024) {
+       for (iw=0;iw<width;iw++) {
+       for (ih=0;ih<height;ih++) {
+         fitsROI[iw+ih*width] = (float)imageDataB[iw+ih*width];
+       }
+       }
+     }
+  }
+
+  if ( numexp == 1 ) {
+    status = 0;         /* initialize status before calling fitsio routines */ 
+    fits_create_file(&fptr, filename, &status); /* create new FITS file */
+    if (status != 0) {
+         return status;
+    }
+    naxes[0]=width;
+    naxes[1]=height;
+    fpixel=1;
+    nelements = naxes[0] * naxes[1];          /* number of pixels to write */
+
+    fits_create_img(fptr,  bitpix, 2, naxes, &status);
+    if (status != 0) {
+          return status;
+    }
+   
+    if (width < 1024) {
+      fits_write_img(fptr, TFLOAT, fpixel, nelements, &fitsROI, &status);
+    } else {
+      if ( cameraId == 0 ) {
+        for (ipix=0;ipix<1024*1024;ipix++) {
+            imageFrame[ipix] = (float)imageDataA[ipix];
+        }
+      }
+      if ( cameraId == 1 ) {
+        for (ipix=0;ipix<1024*1024;ipix++) {
+            imageFrame[ipix] = (float)imageDataB[ipix];
+        }
+      }
+      fits_write_img(fptr, TFLOAT, fpixel, nelements, &imageFrame, &status);
+    }
+
+    if (status != 0) {
+          return status;
+    }
+
+    create_fits_header(fptr);
+ 
+    fits_close_file(fptr, &status);                /* close the file */
+    if (status != 0) {
+          return status;
+    }
+   } else {
+     status=0;
+     naxes3[0]=width;
+     naxes3[1]=height;
+     naxes3[2]=numexp;
+     if ( iexp == 1) {
+        fits_create_file(&fptr, filename, &status); /* create new FITS file */
+        if (status != 0) {
+            return status;
+        }
+        fits_create_img(fptr,  bitpix, 3, naxes3, &status);
+        if (status != 0) {
+            return status;
+        }
+     }
+     fpixel=width*height*(iexp-1)+1;
+     nelements = naxes3[0] * naxes3[1];          /* number of pixels to write */
+     fits_write_img(fptr, TFLOAT, fpixel, nelements, &fitsROI, &status);
+     if (status != 0) {
+         return status;
+     }
+     if (iexp == numexp) {
+        create_fits_header(fptr);
+        append_fitsTimings(numexp);
+        fits_close_file(fptr, &status);                /* close the file */
+        if (status != 0) {
+            return status;
+        }
+     }
+  }  
+
+  return TCL_OK;
+}
+
+
+int append_fitsTimings(int numexp)
+{
+   int status=0;
+   int hdutype;
+   char extname[] = "Frame timings";           /* extension name */
+   char *ttype[] = { "Time" };
+   char *tform[] = { "F20.4" };
+   char *tunit[] = { "seconds" };
+
+   fits_movabs_hdu(fptr, 2, &hdutype, &status);
+   fits_create_tbl(fptr, BINARY_TBL, numexp, 1, ttype, tform, tunit, extname, &status);
+   fits_write_col(fptr, TFLOAT, 1, 1, 1, numexp, fitsTimings, &status);
+
 }
 
 int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
@@ -447,7 +583,7 @@ int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, c
           return TCL_ERROR;
     }
 
-    create_fits_header(interp, fptr);
+    create_fits_header(fptr);
  
     fits_close_file(fptr, &status);                /* close the file */
     if (status != 0) {
@@ -483,7 +619,8 @@ int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, c
          return TCL_ERROR;
      }
      if (iexp == numexp) {
-        create_fits_header(interp, fptr);
+        create_fits_header(fptr);
+        append_fitsTimings(numexp);
         fits_close_file(fptr, &status);                /* close the file */
         if (status != 0) {
             sprintf(result,"fits close error %d",status);
@@ -583,7 +720,7 @@ int tcl_andorStoreFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, c
           return TCL_ERROR;
     }
 
-    create_fits_header(interp, fptr);
+    create_fits_header(fptr);
  
     fits_close_file(fptr, &status);                /* close the file */
     if (status != 0) {
@@ -619,7 +756,8 @@ int tcl_andorStoreFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, c
          return TCL_ERROR;
      }
      if (iexp == numexp) {
-        create_fits_header(interp, fptr);
+        create_fits_header(fptr);
+        append_fitsTimings(numexp);
         fits_close_file(fptr, &status);                /* close the file */
         if (status != 0) {
             sprintf(result,"fits close error %d",status);
@@ -646,7 +784,7 @@ int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, cha
    int xmaxat, ymaxat;
    int image_width,image_height;
    double maxsum, csum, vmin,vpeak;
-   char starpos[16];
+   char starpos[256];
 
    xmaxat = 0;
    ymaxat = 0;
@@ -693,7 +831,7 @@ int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, cha
       }
     }
     vpeak = csum / (double)(smoothing*smoothing);
-    sprintf(starpos,"%d %d %d",xmaxat,ymaxat,vmin,vpeak);
+    sprintf(starpos,"%d %d %lf %lf",xmaxat,ymaxat,vmin,vpeak);
     Tcl_AppendResult (interp,starpos,(char *) NULL);
     return TCL_OK;
 }
@@ -752,6 +890,55 @@ int tcl_andorDisplayFrame(ClientData clientData, Tcl_Interp *interp, int argc, c
     return TCL_OK;
 }
 
+
+int cAndorDisplayFrame(int cameraId, int ifft)
+{
+
+  int width,height;
+  int irow;
+
+  width =  andorSetup[cameraId].width;
+  height =  andorSetup[cameraId].height;
+
+  if ( cameraId == 0 ) {
+    if ( ifft == 1) {
+      dofft(width,height,imageDataA,outputData);
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMemAPro + irow*width*2, outputData + irow*width, width*4, 0);
+      }
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMemA + irow*width*2, imageDataA + irow*width, width*4, 0);
+      }
+      addavg(outputData,outputAvgA,width*height);
+    } else {
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMemA + irow*width*2, imageDataA + irow*width, width*4, 0);
+      }
+    }
+  }
+
+
+   if ( cameraId == 1 ) {
+    if ( ifft == 1) {
+      dofft(width,height,imageDataB,outputData);
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMemBPro + irow*width*2, outputData + irow*width, width*4, 0);
+      }
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMemB + irow*width*2, imageDataB + irow*width, width*4, 0);
+      }
+      addavg(outputData,outputAvgB,width*height);
+    } else {
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMemB + irow*width*2, imageDataB + irow*width, width*4, 0);
+      }
+    }
+  }
+
+    return TCL_OK;
+}
+
+
 void copyline (int *tobuf, int *frombuf, int count, int offset) {
    memcpy(tobuf+offset,frombuf,count);
 }
@@ -796,7 +983,7 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
   int status=-1;
   int ivalue = 0;
   int imode = 0;
-  int fvalue = 0.0;
+  float fvalue = 0.0;
   int cameraId;
 
   /* Check number of arguments provided and return an error if necessary */
@@ -1111,46 +1298,95 @@ int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, 
 
 int tcl_andorGetDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
-        int num;
-        unsigned short *SharedMem2;
-	unsigned long error;
-	bool quit;
-        int numexp=1000;
-	char choice;
-        int count=0;
-        int i,j;
- 	float fChoice;
-        float exposure=0.04;
-	int width, height;
+  int cameraId;
+  int numexp;
+  int num=0;
+  int ngot=0;
+  int iseq=0;
+  int status;
+  int numpix=0;
+  int ifft=0;
+  int count;
+  long deltat;
+  struct timespec tm1,tm2;
+  char filename[1024];
 
-	while (count < numexp) {
-			StartAcquisition();
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 4) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," cameraId numexp filename ifft\"", (char *)NULL);
+     return TCL_ERROR;
+  }
 
-			int status;
+  sscanf(argv[1],"%d",&cameraId);
+  sscanf(argv[2],"%d",&numexp);
+  sscanf(argv[3],"%s",&filename);
+  sscanf(argv[4],"%d",&ifft);
 
+  if ( cameraId == 0 ) {
+     status = SetCurrentCamera(cameraA);
+  } else {
+     status = SetCurrentCamera(cameraB);
+  }
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select camera - %d",cameraId);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  num=0;
+  ngot=0;
+  count=0;
+  clock_gettime(CLOCK_REALTIME,&tm1);
+  printf("Start at : %ld\n",tm1.tv_sec);
+  StartAcquisition();
+  GetStatus(&status);
+  while (count < numexp) {
+		while(status==DRV_ACQUIRING) {
+                    GetTotalNumberImagesAcquired(&num);
+                    if ( num > ngot ) {
+                      if (num ==1 ) {
+                        clock_gettime(CLOCK_REALTIME,&tm1);
+                        printf("Acq Start at : %ld\n",tm1.tv_sec);
+                      }
+                      ngot = num;
+ 		      if ( cameraId == 0 ) {
+		          status = GetOldestImage(imageDataA, andorSetup[cameraId].npix);
+		      } else {
+			  status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
+		      }
+//		      if (status != DRV_SUCCESS) {
+//	                sprintf(result,"Failed to get acquired data %d",status);
+//		        Tcl_SetResult(interp,result,TCL_STATIC);
+//		        return TCL_ERROR;
+//	   	      }
+                      count  = count+1;
+                      printf("frame %d, status=%d\n",ngot,status);
+                      fflush(NULL);
+                      cAndorStoreFrame(cameraId, filename, ngot ,numexp);                                   
+                      cAndorDisplayFrame(cameraId, ifft);
+                    }
+                    usleep(5000);
+                    clock_gettime(CLOCK_REALTIME,&tm2);
+                    deltat = tm2.tv_sec - tm1.tv_sec;
+                    fitsTimings[count-1] = (float)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
+                    if (deltat > 50) {
+                         count=numexp;
+                         AbortAcquisition();
+                    }
+                    GetStatus(&status);
+		}
+                usleep(5000);
+                clock_gettime(CLOCK_REALTIME,&tm2);
+                deltat = tm2.tv_sec - tm1.tv_sec;
+                if (deltat > 50) {
+                   count=numexp;
+                   AbortAcquisition();
+                }
+  }
 
-			//Loop until acquisition finished
-			GetStatus(&status);
-			while(status==DRV_ACQUIRING) {
-                              GetTotalNumberImagesAcquired(&num);
-                              GetStatus(&status);
-                       }
-			GetAcquiredData(imageDataA, width*height);
-                        dofft(width,height,imageDataA,outputData);
-                        memcpy(SharedMemAPro,outputData,width*height*4);
-                        memcpy(SharedMemA,imageDataA,width*height*4);
-                        addavg(outputData,outputAvgA,width*height);
-                         count  = count+1;
-                         printf(".");
-                         fflush(stdout);
+  printf("\nAcq End at : %ld\n",tm2.tv_sec);
+  printf("%ld milliseconds per frame\n",(tm2.tv_sec-tm1.tv_sec)*1000/numexp);
 
-	}
-        calcavg(outputAvgA,width*height,numexp);
-        memcpy(SharedMemA,outputAvgA,width*height*4);
-
-	//Shut down CCD
-	AbortAcquisition();
-        return TCL_OK;
+  return TCL_OK;
 }
 
 
@@ -1552,6 +1788,48 @@ int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc
 }
 
 
+int tcl_andorGetAcquiredNum(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+  int cameraId=0;
+  int num;
+  int got=0;
+  struct timespec tm;
+
+  sscanf(argv[1],"%d",&cameraId);
+
+  if ( cameraId == 0 ) {
+     status = SetCurrentCamera(cameraA);
+  } else {
+     status = SetCurrentCamera(cameraB);
+  }
+  sscanf(argv[2],"%d",&num);
+
+  GetStatus(&status);
+  while(status==DRV_ACQUIRING && (got < num)) {
+     GetTotalNumberImagesAcquired(&num);
+     GetStatus(&status);
+     usleep(1000);
+  }
+
+  clock_gettime(CLOCK_REALTIME,&tm);
+  fitsTimings[num-1] = (double)(tm.tv_sec) + (double)tm.tv_nsec/1000000000.;
+
+  if ( cameraId == 0 ) {
+     status = GetAcquiredData(imageDataA, andorSetup[cameraId].npix);
+  } else {
+     status = GetAcquiredData(imageDataB, andorSetup[cameraId].npix);
+  }
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to get acquired data %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
+
+
+
 int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
   int status=0;
@@ -1781,7 +2059,7 @@ int tcl_UnlockUsbMutex(ClientData clientData, Tcl_Interp *interp, int argc, char
 #endif
 
 
-void create_fits_header(Tcl_Interp *interp, fitsfile *fptr)
+void create_fits_header(fitsfile *fptr)
 {
     char *text;
     int status;
@@ -1795,66 +2073,17 @@ void create_fits_header(Tcl_Interp *interp, fitsfile *fptr)
 
     status = 0;
     fits_write_key(fptr, TSTRING, "CREATOR", "Linux ANDOR CCD control", "Speckle Data-taking program", &status);
-/*
-    text = Tcl_GetVar2(interp, "SCOPE", "site", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "OBSERVAT", text, "Observatory Site", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "name", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "TELESCOP", text, "Telescope Name",&status);
-    text = Tcl_GetVar2(interp, "SCOPE", "latitude", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "LATITUDE", text, "[deg] Observatory Latitude", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "longitude", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "LONGITUD", text, "[deg west] Observatory Longtiude", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "camera", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "INSTRUME", text, "Instrument", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "detector", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "DETECTOR", text, "CCD Detector ID", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "instrument", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "INSTID", text, "Instrument ID Code", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "observer", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "OBSERVER", text, "Observer(s)", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "target", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "OBJECT", text, "Target Name",&status);
-    text = Tcl_GetVar2(interp, "SCOPE", "imagetype", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "OBSTYPE", text, "Image type code", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "exposure", TCL_GLOBAL_ONLY); 
-    sscanf(text,"%f", &fvar);
-    fits_write_key_fixflt(fptr, "EXPTIME", fvar, 2, "[sec] Exposure time", &status);
-    fits_write_key(fptr, TSTRING, "TIMESYS", "UTC", "Time System is UTC", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "obsdate", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "DATE-OBS", text, "Date of start of observation", &status);
-    text = Tcl_GetVar2(interp, "SCOPE", "obstime", TCL_GLOBAL_ONLY); 
-    fits_write_key(fptr, TSTRING, "TIME-OBS", text, "Time of start of observation", &status);
- */
     t = time(NULL);
     gmt = gmtime(&t);
-
     utcday = (double)(gmt->tm_mday) + ((double)(gmt->tm_hour) + (double)(gmt->tm_min)/60.0
                                    + (double)(gmt->tm_sec)/3600.0) / 24.0 ;
-
     utcmon = gmt->tm_mon + 1;
-
     utcyear = gmt->tm_year + 1900;
-
     cal_mjd(utcmon, utcday, utcyear, &mjdobs);
-
     jdobs = mjdobs + 2415020.0;
-
     mjdobs = jdobs - 2400000.5;
-
     fits_write_key_fixdbl( fptr, "MJD-OBS", mjdobs, 6, "MJD at start of obs", &status);
     fits_write_key_fixdbl( fptr, "JD", jdobs, 5, "Julian Date at start of obs", &status);
-
-/*
-    text = Tcl_GetVar2(interp, "CAMSTATUS", "Temperature", TCL_GLOBAL_ONLY); 
-    sscanf(text,"%f", &fvar);
-    fits_write_key_fixflt(fptr, "CCDTEMP", fvar, 1, "[C] CCD temperature at readout", &status);
-    text = Tcl_GetVar2(interp, "CAMSTATUS", "BinX", TCL_GLOBAL_ONLY); 
-    sscanf(text,"%d", &ivar);
-    fits_write_key(fptr, TSHORT, "CCDXBIN", &ivar, "Column Binning on detector", &status);
-    text = Tcl_GetVar2(interp, "CAMSTATUS", "BinY", TCL_GLOBAL_ONLY); 
-    sscanf(text,"%d", &ivar);
-    fits_write_key(fptr, TSHORT, "CCDYBIN", &ivar, "Row Binning on detector", &status);
- */
 
 }
 
