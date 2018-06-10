@@ -355,8 +355,9 @@ wm withdraw .tplot
 #
 #  Call the camera setup code, and the telescope setup code
 #
-showstatus "Initializing camera"
+showstatus "Initializing cameras"
 source  $SPECKLE_DIR/gui-scripts/camera_init.tcl
+resetAndors fullframe
 set STATUS(busy) 0
 
 

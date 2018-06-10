@@ -313,7 +313,7 @@ global TOMPG
 
 
 proc appendHeader { imgname } {
-global SPECKLEHDRLOG SCOPE env 
+global SPECKLEHDRLOG SCOPE env TELEMETRY
   set hdr [fillheader $env(TELESCOPE)-$SCOPE(instrument)]
   puts $SPECKLEHDRLOG "$hdr"
   set fid [fits open $imgname]
@@ -327,7 +327,7 @@ global SPECKLEHDRLOG SCOPE env
      headerGeometry $fid
   }
   if { [info proc headerAstrometry] == "headerAstrometry" } {
-     headerAstrometry $fid
+     headerAstrometry $fid $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec) 
   }
   if { [info proc header$SCOPE(instrument)] == "header$SCOPE(instrument)" } {
      eval {header$SCOPE(instrument) $fid}
@@ -339,6 +339,9 @@ global SPECKLEHDRLOG SCOPE env
   }
   fits close $fid
 }
+
+set TELEMETRY(tcs.telescope.ra) 12:00:00
+set TELEMETRY(tcs.telescope.dec) 00:00:00
 
 proc jdtout { jd } {
   set f [expr $jd - int($jd) + 0.29166666]
@@ -422,12 +425,6 @@ global TELEMETRY
 set SPECKLE_DIR $env(SPECKLE_DIR)
 load $SPECKLE_DIR/lib/libfitstcl.so
 
-if { $env(TELESCOPE) == "WIYN" } {
-  load $SPECKLE_DIR/gwc/lib/libnames.so
-  load $SPECKLE_DIR/gwc/lib/libmsg.so
-  load $SPECKLE_DIR/gwc/lib/libgwc.so
-  connect wiyn tkxpak
-}
 ###load /usr/local/gui/lib/libxtcs.so
 
 source $SPECKLE_DIR/gui-scripts/headerSpecials.tcl
@@ -435,13 +432,8 @@ source $SPECKLE_DIR/gui-scripts/astrometry.tcl
 loadstreamdefs $SPECKLE_DIR/gui-scripts/telem-[string tolower $env(TELESCOPE)].conf
 loadhdrdefs $SPECKLE_DIR/gui-scripts/headers.conf
 if { $env(TELESCOPE) == "WIYN" } {
-  activatestreams
-  subscribestreams
-  foreach i [array names TELEMETRY] {
-   if { [lindex [split $i .] 0] != "speckle" } {
-     $TOMPG atevent $i "newdata $i" always
-   }
-  }
+  source $SPECKLE_DIR/gui-scripts/redisquery.tcl
+  redisConnect
 }
 
 foreach i "LSTHDR ELMAP AZMAP TRACK EPOCH TARGRA 

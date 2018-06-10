@@ -316,13 +316,14 @@ global INSTRUMENT
    }
 }
 
+
 proc cameraStatuses { } {
 global CAMSTATUS
   foreach cam "red blue" {
     set camstatus [commandAndor $cam status]
     if { $camstatus != 0 } {
       set i 0
-      foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
+      foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
         set CAMSTATUS($cam,$p) [lindex $camstatus $i]
         incr i 1
       }
@@ -337,15 +338,15 @@ proc showprogress { x } {
 }
 
 
-toplevel .camerastatus -width 400 -height 300 -bg gray
-wm title .camerastatus "Camera Configurations" 
+toplevel .camerastatus -width 400 -height 520 -bg gray
+wm title .camerastatus "Camera Configrations" 
 label .camerastatus.lred -text "Red Arm" -bg gray
 label .camerastatus.lblue -text "Blue Arm" -bg gray
 place .camerastatus.lred -x 200 -y 10
 place .camerastatus.lblue -x 300 -y 10
 
 set iy 40
-foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
+foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
    label .camerastatus.l[set p] -text $p  -bg gray
    label .camerastatus.vred[set p] -textvariable CAMSTATUS(red,$p) -bg gray -fg NavyBlue
    label .camerastatus.vblue[set p] -textvariable CAMSTATUS(blue,$p) -bg gray -fg NavyBlue
@@ -355,9 +356,9 @@ foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpee
    incr iy 25
 }
 button .camerastatus.done -text "Close" -fg black -bg orange -width 45 -command "wm withdraw .camerastatus"
-place .camerastatus.done -x 20 -y 400
-wm geometry .camerastatus 430x440+20+20
-foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
+place .camerastatus.done -x 20 -y 475
+wm geometry .camerastatus 430x520+20+20
+foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
    set CAMSTATUS(red,$p) "???"
    set CAMSTATUS(blue,$p) "???"
 }
@@ -486,7 +487,7 @@ if { $SCOPE(telescope) == "GEMINI" } {
 
 
 set SPECKLE(observingGui) 936x540
-wm geometry .mimicNessi +660+30
+wm geometry .mimicSpeckle +660+30
 
 if { $SCOPE(telescope) == "WIYN" } {
    .lowlevel configure -height 520 -width 936

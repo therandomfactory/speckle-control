@@ -1,10 +1,12 @@
 
 
 proc updateds9wcs { ra dec } {
-global SCOPE ACQREGION PSCALES ANDOR_CFG
+global SCOPE ACQREGION PSCALES ANDOR_CFG PI
+  set radeg [expr [hms_to_radians $ra]*180/$PI]
+  set decdeg [expr [dms_to_radians $dec]*180/$PI]
   set fout [open /tmp/pakwcs.wcs w]
-  puts $fout "CRVAL1 $ra"
-  puts $fout "CRVAL2 $dec"
+  puts $fout "CRVAL1 $radeg"
+  puts $fout "CRVAL2 $decdeg"
   puts $fout "CRPIX1 [expr $ACQREGION(geom)/$ACQREGION(bin)/2]"
   puts $fout "CRPIX2 [expr $ACQREGION(geom)/$ACQREGION(bin)/2]"
   puts $fout "CD1_1 [expr $PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ACQREGION(bin)]"              
@@ -22,13 +24,14 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG
 }
 
 proc headerAstrometry { fid ra dec } {
+global ACQREGION SCOPE PSCALES ANDOR_CFG
   set r [fitshdrrecord  CRVAL1	 string "$ra"	"R.A. of reference pixel \[deg\]"]
   $fid put keyword $r
   set r [fitshdrrecord  CRVAL2	 string "$dec"	"Declination of reference pixel \[deg\]"]
   $fid put keyword $r
   set r [fitshdrrecord  CRPIX1	 integer [expr $ACQREGION(geom)/$ACQREGION(bin)/2]	"Coordinate reference pixel in X"]
   $fid put keyword $r
-  set r [fitshdrrecord  CRPIX2	 integer [expr $ACQREGION(geom)/$AQQREGION(bin)/2]	"Coordinate reference pixel in Y"]
+  set r [fitshdrrecord  CRPIX2	 integer [expr $ACQREGION(geom)/$ACQREGION(bin)/2]	"Coordinate reference pixel in Y"]
   $fid put keyword $r
   set r [fitshdrrecord  CD1_1	 double [expr $PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ACQREGION(bin)]  "Coordinate scale matrix \[degrees / pixel\]"]           
   $fid put keyword $r

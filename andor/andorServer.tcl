@@ -3,16 +3,26 @@ proc debuglog { msg } {
    puts stdout $msg
 }
 
+proc cAndorSetProperty { cam prop val } {
+global ANDOR_CFG
+   set res [andorSetProperty $cam $prop $val]
+   if { $res == "" } {
+     set ANDOR_CFG($cam,$prop) $val
+   }
+   return $res
+}
+
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
 load $SPECKLE_DIR/lib/andorTclInit.so
 load $SPECKLE_DIR/lib/libfitstcl.so
 load $SPECKLE_DIR/lib/libccd.so
 load $SPECKLE_DIR/lib/libguider.so
-
+set ckey [string tolower $env(TELESCOPE)]
 source $SPECKLE_DIR/andor/andor.tcl
-source $SPECKLE_DIR/andorsConfiguration
+source $SPECKLE_DIR/andorsConfiguration.[set ckey]
 source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl 
+source $SPECKLE_DIR/gui-scripts/camera_init.tcl 
 if { $env(TELESCOPE) == "GEMINI" } {
   set SCOPE(telescope) "GEMINI"
   set SCOPE(instrument) speckle
@@ -28,6 +38,8 @@ if { $env(TELESCOPE) == "GEMINI" } {
   } else {
     geminiConnect north
   }
+} else {
+  set SCOPE(telescope) WIYN
 }
 
 
@@ -52,7 +64,7 @@ if { $handle < 0} {exit}
 
 debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
-set ANDOR_CFG($CAM,OutputAmplifier) 1
+set ANDOR_CFG($CAM,OutputAmplifier) 0
 set ANDOR_CFG($CAM,PreAmpGain) 2
 set ANDOR_CFG($CAM,VSSpeed) 2
 set ANDOR_CFG($CAM,HSSpeed) 1
@@ -82,8 +94,8 @@ foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilt
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
 }
 SetExposureTime 0.04
-andorSetProperty $CAM Temperature -60
-andorSetProperty $CAM Cooler 1
+cAndorSetProperty $CAM Temperature -60
+cAndorSetProperty $CAM Cooler 1
 
 set shmid [andorConnectShmem 512 512]
 debuglog "$ANDOR_ARM memory buffers @ $shmid"
@@ -93,7 +105,22 @@ andorPrepDataCube
 exec xpaset -p ds9 single
 exec xpaset -p ds9 zoom to fit
 andorPrepDataFrame
-andorSetProperty $CAM Shutter 0
+cAndorSetProperty $CAM Shutter 0
+cAndorSetProperty $CAM FrameTransferMode 1
+cAndorSetProperty $CAM OutputAmplifier 0
+cAndorSetProperty $CAM EMAdvanced 0
+cAndorSetProperty $CAM EMCCDGain 1
+####cAndorSetProperty $CAM HSSpeed 1 1
+####cAndorSetProperty $CAM HSSpeed 0 3
+cAndorSetProperty $CAM VSSpeed 2
+cAndorSetProperty $CAM PreAmpGain 0
+cAndorSetProperty $CAM ReadMode 4
+cAndorSetProperty $CAM AcquisitionMode 1
+cAndorSetProperty $CAM KineticCycleTime 0.0
+cAndorSetProperty $CAM NumberAccumulations 1
+cAndorSetProperty $CAM NumberKinetics 1
+cAndorSetProperty $CAM AccumulationCycleTime 0.0
+
 
 proc showstatus { } {
 global CAM ANDOR_CFG
@@ -101,10 +128,12 @@ global CAM ANDOR_CFG
      set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
   }
-  foreach i "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
+  foreach i "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime" {
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,$i)"
+     lappend s $ANDOR_CFG($CAM,$i)
   }
-  lappend s $ANDOR_CFG($CAM,$i)
+  set t [andorGetProperty $CAM timings]
+  foreach x $t { lappend s $x }
   return $s
 } 
 
@@ -129,10 +158,14 @@ global CAM ANDOR_ROI ANDOR_CFG
      debuglog "Configure camera $CAM for fullframe"
      andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
      andorPrepDataFrame
+     cAndorSetProperty $CAM AcquisitionMode 1
+     cAndorSetProperty $CAM OutputAmplifier 1
    }
    if { $mode == "roi" } {
      debuglog "Configure camera $CAM for ROI : $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye)"
      andorConfigure $CAM 1 1 $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
+     cAndorSetProperty $CAM AcquisitionMode 3
+     cAndorSetProperty $CAM OutputAmplifier 0
    }
 }
 
@@ -147,7 +180,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p ds9 frame 1
       exec xpaset -p ds9 zoom to fit
-      exec xpsaet -p ds9 cmap $ANDOR_CFG(cmap)
+      exec xpaset -p ds9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p ds9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     }
@@ -157,7 +190,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p ds9 frame 2
       exec xpaset -p ds9 zoom to fit
-      exec xpsaet -p ds9 cmap $ANDOR_CFG(cmap)
+      exec xpaset -p ds9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p ds9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
@@ -174,7 +207,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $n $n 1 1
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p ds9 frame 1
-      exec xpsaet -p ds9 cmap $ANDOR_CFG(cmap)
+      exec xpaset -p ds9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p ds9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     }
@@ -184,7 +217,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM
       andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $n $n 1 1
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p ds9 frame 2
-      exec xpsaet -p ds9 cmap $ANDOR_CFG(cmap)
+      exec xpaset -p ds9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p ds9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
@@ -312,7 +345,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
          forceroi        { forceROI  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}
-         locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex @$msg 2]]" }
+         locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex $msg 2]]" }
          datadir         { set SPECKLE_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set SCOPE(datadir) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; set ANDOR_CFG(ccdtemp) $it ; puts $sock $it }
@@ -322,7 +355,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          outputamp       { set it [cAndorSetProperty $CAM OutputAmplifier [lindex $msg 1]] ; puts $sock $it}
          emadvanced      { set it [cAndorSetProperty $CAM EMAdvanced [lindex $msg 1]] ; puts $sock $it}
          emccdgain       { set it [cAndorSetProperty $CAM EMCCDGain [lindex $msg 1]] ; puts $sock $it}
-         hsspeed         { set it [cAndorSetProperty $CAM HSSpeed [lindex $msg 1] [lindex $msg 2]] ; puts $sock $it}
+         hsspeed         { set it [cAndorSetProperty $CAM HSSpeed "[lindex $msg 1] [lindex $msg 2]"] ; puts $sock $it}
          vsspeed         { set it [cAndorSetProperty $CAM VSSpeed [lindex $msg 1]] ; puts $sock $it}
          preampgain      { set it [cAndorSetProperty $CAM PreAmpGain [lindex $msg 1]] ; puts $sock $it}
          readmode        { set it [cAndorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}
@@ -332,7 +365,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          numberkinetics        { set it [cAndorSetProperty $CAM NumberKinetics [lindex $msg 1]] ; puts $sock $it}
          accumulationcycletime { set it [cAndorSetProperty $CAM AccumulationCycleTime [lindex $msg 1]] ; puts $sock $it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
-         settemperature  { SetTemerature [lindex $msg 1] ; puts $sock "OK"}
+         settemperature  { SetTemperature [lindex $msg 1] ; puts $sock "OK"}
          positiontelem   { set TELEMETRY(speckle.andor.inputzaber [lindex $msg 1]
                            set TELEMETRY(speckle.andor.fieldzaber) [lindex $msg 2]
                            set TELEMETRY(speckle.andor.filter) [lindex $msg 3]
@@ -379,14 +412,6 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
     flush $sock
 }
 
-proc cAndorSetProperty { cam prop val } {
-global ANDOR_CFG
-   set res [andorSetProperty $cam $prop $val]
-   if { $res == 0 } {
-     set ANDOR_CFG($cam,$prop) $val
-   }
-   return $res
-}
 
 wm withdraw .
 
@@ -439,5 +464,4 @@ proc accept {sock addr port} {
 set svcPort [expr 2000 + $cameraNum]
 socket -server accept $svcPort
 vwait events    ;# handle events till variable events is set
-
 

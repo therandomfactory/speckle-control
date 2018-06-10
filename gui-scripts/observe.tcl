@@ -800,6 +800,7 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   }
   mimicMode red roi [set rdim]x[set rdim]
   mimicMode blue roi [set rdim]x[set rdim]
+  exec xpaset -p ds9 regions system physical
   set reg [split [exec xpaget ds9 regions] \n]
   foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
@@ -919,12 +920,12 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
  speckleshutter red open
  speckleshutter blue open
  while { $iseqnum < $SCOPE(numseq) } {
+  set ifrmnum 0
+  while { $ifrmnum < $SCOPE(numframes) } {
    incr iseqnum 1
+   incr ifrmnum 1
    set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
    set STATUS(abort) 0
-   if { $SCOPE(lobias) > 0 && $SCOPE(hibias) > 0 } {
-      set_biascols $SCOPE(lobias) $SCOPE(hibias)
-   }
    .main.observe configure -text "working" -bg green -relief sunken
    .main.abort configure -bg orange -relief raised -fg black
    wm geometry .countdown
@@ -971,6 +972,7 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
    speckleshutter red close
    speckleshutter blue close
    abortsequence
+  }
  }
 }
 

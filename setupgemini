@@ -2,7 +2,7 @@
 
 export TELESCOPE=GEMINI
 export SPECKLE_DIR=$HOME/speckle-control
-export PKG_CONFIG_PATH=$SPECKLE_DIR/pkgconfig
+export PKG_CONFIG_PATH=$SPECKLE_DIR/lib/pkgconfig
 export PATH=${SPECKLE_DIR}/bin:${PATH}
 export LD_LIBRARY_PATH=${SPECKLE_DIR}/lib:${LD_LIBRARY_PATH}
 export SPECKLE_DATADIR=$HOME/data

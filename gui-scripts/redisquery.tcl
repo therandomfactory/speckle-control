@@ -118,7 +118,7 @@ global TELEMETRY
 
 proc redisConnect { } {
   global REDIS
-   set handle [socket $REDIS(ip) 6379]
+   set handle [socket -async $REDIS(ip) 6379]
    fconfigure $handle -buffering line
    fconfigure $handle -blocking 0
    set REDIS(handle) $handle

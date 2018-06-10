@@ -240,7 +240,7 @@ int tcl_andor[set fname](ClientData clientData, Tcl_Interp *interp, int argc, ch
   sscanf(argv\[1\],\"%f\", &fvalue);
   status = [set fname](fvalue);
   if (status == DRV_SUCCESS) \{
-     sprintf(result,\"%d\",fvalue);
+     sprintf(result,\"%f\",fvalue);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_OK;
   \}

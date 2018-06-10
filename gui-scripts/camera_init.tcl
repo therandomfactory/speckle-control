@@ -74,8 +74,8 @@ set CAMSTATUS(Temperature) -100.0
 set CAMSTATUS(CoolerMode) 1
 set SCOPE(latitude) 31:57:11.78
 set SCOPE(longitude) 07:26:27.97
-set SCOPE(camera) "SPECKLE"
-set SCOPE(instrument) SPECKLE
+set SCOPE(camera) "Andor iXon Ultra"
+set SCOPE(instrument) speckle
 set SCOPE(observer) ""
 set SCOPE(target) test
 set SCOPE(imagetype) OBJECT
@@ -90,10 +90,9 @@ set SCOPE(shutter) 1
 set now [split [exec  date -u +%Y-%m-%d,%T] ,]
 set SCOPE(readout-delay) 999
 set SCOPE(obsdate) [exec date -u +%Y-%m-%dT%H:%M:%S.0]
-set SCOPE(obstime) [lindex [getlocaltime] 3]
+set SCOPE(obstime) [lindex $now 1]
 
 source $SPECKLE_DIR/andor/andor.tcl
-resetAndors fullframe
 
 ####
 ####For use with internal andor server version

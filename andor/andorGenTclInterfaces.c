@@ -1079,7 +1079,7 @@ int tcl_andorFilter_SetMode(ClientData clientData, Tcl_Interp *interp, int argc,
   sscanf(argv[1],"%f", &fvalue);
   status = Filter_SetMode(fvalue);
   if (status == DRV_SUCCESS) {
-     sprintf(result,"%d",fvalue);
+     sprintf(result,"%f",fvalue);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_OK;
   }
@@ -1103,7 +1103,7 @@ int tcl_andorFilter_SetThreshold(ClientData clientData, Tcl_Interp *interp, int 
   sscanf(argv[1],"%f", &fvalue);
   status = Filter_SetThreshold(fvalue);
   if (status == DRV_SUCCESS) {
-     sprintf(result,"%d",fvalue);
+     sprintf(result,"%f",fvalue);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_OK;
   }
@@ -1151,7 +1151,7 @@ int tcl_andorSetAccumulationCycleTime(ClientData clientData, Tcl_Interp *interp,
   sscanf(argv[1],"%f", &fvalue);
   status = SetAccumulationCycleTime(fvalue);
   if (status == DRV_SUCCESS) {
-     sprintf(result,"%d",fvalue);
+     sprintf(result,"%f",fvalue);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_OK;
   }
@@ -1391,7 +1391,7 @@ int tcl_andorSetCountConvertWavelength(ClientData clientData, Tcl_Interp *interp
   sscanf(argv[1],"%f", &fvalue);
   status = SetCountConvertWavelength(fvalue);
   if (status == DRV_SUCCESS) {
-     sprintf(result,"%d",fvalue);
+     sprintf(result,"%f",fvalue);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_OK;
   }
@@ -1631,7 +1631,7 @@ int tcl_andorSetExposureTime(ClientData clientData, Tcl_Interp *interp, int argc
   sscanf(argv[1],"%f", &fvalue);
   status = SetExposureTime(fvalue);
   if (status == DRV_SUCCESS) {
-     sprintf(result,"%d",fvalue);
+     sprintf(result,"%f",fvalue);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_OK;
   }
@@ -1991,7 +1991,7 @@ int tcl_andorSetKineticCycleTime(ClientData clientData, Tcl_Interp *interp, int 
   sscanf(argv[1],"%f", &fvalue);
   status = SetKineticCycleTime(fvalue);
   if (status == DRV_SUCCESS) {
-     sprintf(result,"%d",fvalue);
+     sprintf(result,"%f",fvalue);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_OK;
   }
@@ -2519,7 +2519,7 @@ int tcl_andorSetTriggerLevel(ClientData clientData, Tcl_Interp *interp, int argc
   sscanf(argv[1],"%f", &fvalue);
   status = SetTriggerLevel(fvalue);
   if (status == DRV_SUCCESS) {
-     sprintf(result,"%d",fvalue);
+     sprintf(result,"%f",fvalue);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_OK;
   }

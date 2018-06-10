@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <tcl.h>
-#include <tk.h>
+#include "tcl.h"
+#include "tk.h"
 #include <math.h>
 #include <time.h>
 #include <stdlib.h>
@@ -645,12 +645,13 @@ int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, cha
    int line, pixel, ii,jj;
    int xmaxat, ymaxat;
    int image_width,image_height;
-   double maxsum, csum;
+   double maxsum, csum, vmin,vpeak;
    char starpos[16];
 
    xmaxat = 0;
    ymaxat = 0;
    maxsum = 0.0;
+   vmin = 100000;
 
    if ( argc < 4 ) {
            Tcl_AppendResult (interp, "wrong # args: should be \"", argv[0],
@@ -686,9 +687,13 @@ int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, cha
            ymaxat = line;
            maxsum = csum;
         }
+        if ( cframe[line * image_width + pixel] < vmin) {
+           vmin = cframe[line * image_width + pixel];
+        }
       }
     }
-    sprintf(starpos,"%d %d ",xmaxat,ymaxat);
+    vpeak = csum / (double)(smoothing*smoothing);
+    sprintf(starpos,"%d %d %d",xmaxat,ymaxat,vmin,vpeak);
     Tcl_AppendResult (interp,starpos,(char *) NULL);
     return TCL_OK;
 }
@@ -948,6 +953,7 @@ int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
   float fvalue = 0.0;
   int cameraId;
   float SensorTemp,TargetTemp,AmbientTemp,CoolerVolts,temperature;
+  float texposure,taccumulate,tkinetics;
   int precision,mintemp,maxtemp;
 
   /* Check number of arguments provided and return an error if necessary */
@@ -968,7 +974,14 @@ int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
      return TCL_OK;
   }
 
-  return TCL_OK;
+  if (strcmp(argv[2],"timings") == 0) {
+     status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
+     sprintf(result,"%f %f %f",texposure,taccumulate,tkinetics);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  return TCL_ERROR;
 }
 
 int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
@@ -1781,7 +1794,7 @@ void create_fits_header(Tcl_Interp *interp, fitsfile *fptr)
     time_t t;
 
     status = 0;
-    fits_write_key(fptr, TSTRING, "CREATOR", "Linux ANDOR CCD control", "NESSI Data-taking program", &status);
+    fits_write_key(fptr, TSTRING, "CREATOR", "Linux ANDOR CCD control", "Speckle Data-taking program", &status);
 /*
     text = Tcl_GetVar2(interp, "SCOPE", "site", TCL_GLOBAL_ONLY); 
     fits_write_key(fptr, TSTRING, "OBSERVAT", text, "Observatory Site", &status);
@@ -1844,8 +1857,5 @@ void create_fits_header(Tcl_Interp *interp, fitsfile *fptr)
  */
 
 }
-
-
-
 
 
