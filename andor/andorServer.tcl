@@ -282,6 +282,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p ds9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=512,ydim=512,bitpix=32\\\]
+    exec xpaset -p ds9 cmap grey
   }
   refreshds9 [expr int($exp*2000)] [expr $n*4]
   set t [clock seconds]
@@ -347,7 +348,8 @@ global ANDOR_ARM ANDOR_ROI
   set ANDOR_ROI(xe) $xe
   set ANDOR_ROI(ys) $ys
   set ANDOR_ROI(ye) $ye
-  debuglog "$ANDOR_ARM ROI measured as $xs , $xe , $ys , $ye"
+  debuglog "$ANDOR_ARM ROI measured as $xs , $xe , $ys , $ye [lrange $xy 2 3]"
+  return "$xy"
 }
 
 proc forceROI { xs xe ys ye } {
@@ -375,7 +377,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          shutdown        { shutDown ; puts $sock "OK"; exit }
          reset           { resetCamera [lindex $msg 1] ; puts $sock "OK"}
          grabframe       { after 10 "acquireDataFrame [lindex $msg 1]" ; puts $sock "Acquiring frame"}
-         setroi          { selectROI [lindex $msg 1] ; puts $sock "OK"}
+         setroi          { set res [selectROI [lindex $msg 1]] ; puts $sock "$res"}
          grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "Acquiring roi"}
          version         { puts $sock "1.0" }
          grabcube        { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Acquiring cube"}
