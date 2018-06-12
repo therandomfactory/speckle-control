@@ -993,7 +993,7 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
 
 proc updateDatabase { } {
 global SCOPE CAMSTATUS TELEMETRY FWHEELS LASTACQ
-  set sql "INSERT INTO Speckle_Observations VALUES (NOW6),'$SCOPE(programid)','$TELEMETRY(tcs.target.name)','$SCOPE(imagename)','$LASTACQ',$CAMSTATUS(PreAmpGain,$CAMSTATUS($EMCCGain),$SCOPE(red.bias),$SCOPE(red,peak),$SCOPE(blue,bias),$SCOPE(blue,peak),$SCOPE(exposure),$SCOPE(exposureStart),$SCOPE(exposureEnd),'$FWHEELS(red,$FWHEELS(red,position)','$FWHEELS(blue,$FWHEELS(blue,position)',$SCOPE(numframes),$TELEMETRY(tcs.weather.iq),$TELEMETRY(tcs.weather.cc),$TELEMETRY(tcs.weather.wv),$TELEMETRY(tcs.weather.bg));"
+  set sql "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(programid)','$TELEMETRY(tcs.target.name)','$SCOPE(imagename)','$LASTACQ',$CAMSTATUS(PreAmpGain,$CAMSTATUS($EMCCGain),$SCOPE(red.bias),$SCOPE(red,peak),$SCOPE(blue,bias),$SCOPE(blue,peak),$SCOPE(exposure),$SCOPE(exposureStart),$SCOPE(exposureEnd),'$FWHEELS(red,$FWHEELS(red,position)','$FWHEELS(blue,$FWHEELS(blue,position)',$SCOPE(numframes),$TELEMETRY(tcs.weather.iq),$TELEMETRY(tcs.weather.cc),$TELEMETRY(tcs.weather.wv),$TELEMETRY(tcs.weather.bg));"
 }
 
 set SCOPE(red,bias) 0
