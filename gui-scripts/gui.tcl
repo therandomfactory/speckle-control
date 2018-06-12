@@ -286,8 +286,9 @@ menu .main.rawbg.m
 place .main.rawbg -x 362 -y 290
 
 proc dataquality { type value } {
-global DATAQUAL DATAQUALT
+global DATAQUAL DATAQUALT TELEMETRY
    set DATAQUAL($type) $value
+   set TELEMETRY(tcs.weather.$type) $value
    .main.[set type] configure -text "DQ $DATAQUALT($type) : $value"
 }
 

@@ -795,8 +795,12 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
     commandAndor red "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
     commandAndor blue "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
   } else {
-    commandAndor red "setroi $rdim"
-    commandAndor blue "setroi $rdim"
+    set resr [commandAndor red "setroi $rdim"]
+    set SCOPE(red,bias) [lindex $resr 2]
+    set SCOPE(red,peak) [lindex $resr 3]
+    set resb commandAndor blue "setroi $rdim"]
+    set SCOPE(blue,bias) [lindex $resr 2]
+    set SCOPE(blue,peak) [lindex $resr 3]
   }
   mimicMode red roi [set rdim]x[set rdim]
   mimicMode blue roi [set rdim]x[set rdim]
@@ -917,6 +921,7 @@ proc startsequence { } {
 #               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
  set iseqnum 0
+ set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
  .lowlevel.p configure -value 0.0
  speckleshutter red open
  speckleshutter blue open
@@ -974,14 +979,27 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
       .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
       update
    }
+   set SCOPE(exposureEnd) [expr [clock milliseconds]/1000.0]
    .main.observe configure -text "Observe" -bg gray -relief raised
    .main.abort configure -bg gray -relief sunken -fg LightGray
    speckleshutter red close
    speckleshutter blue close
    abortsequence
+   updateDatabase
   }
  }
 }
+
+
+proc updateDatabase { } {
+global SCOPE CAMSTATUS TELEMETRY FWHEELS LASTACQ
+  set sql "INSERT INTO Speckle_Observations VALUES (NOW6),'$SCOPE(programid)','$TELEMETRY(tcs.target.name)','$SCOPE(imagename)','$LASTACQ',$CAMSTATUS(PreAmpGain,$CAMSTATUS($EMCCGain),$SCOPE(red.bias),$SCOPE(red,peak),$SCOPE(blue,bias),$SCOPE(blue,peak),$SCOPE(exposure),$SCOPE(exposureStart),$SCOPE(exposureEnd),'$FWHEELS(red,$FWHEELS(red,position)','$FWHEELS(blue,$FWHEELS(blue,position)',$SCOPE(numframes),$TELEMETRY(tcs.weather.iq),$TELEMETRY(tcs.weather.cc),$TELEMETRY(tcs.weather.wv),$TELEMETRY(tcs.weather.bg));"
+}
+
+set SCOPE(red,bias) 0
+set SCOPE(blue,bias) 0
+set SCOPE(red,peak) 0
+set SCOPE(blue,peak) 0
 
 
 

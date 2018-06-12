@@ -1,0 +1,29 @@
+DROP TABLE IF EXISTS Speckle_Observations;
+CREATE TABLE Speckle_Observations (
+  date_time     DATETIME(6),
+  programId     varchar,
+  targetName    varchar,
+  filename      varchar,
+  filetype      varchar,
+  preampGain   	int,
+  emccdGain     int,
+  biasEstimate  int,
+  peakEstimate  int,
+  sampleTime    float,
+  exposureStart double,
+  exposureEnd   double,
+  redFilter     varchar,
+  blueFilter    varchar,
+  numSamples    int,
+  dqImage     	int,
+  dqCloud     	int,
+  dqWater    	int,
+  dqBG    	int,
+  PRIMARY KEY (date_time)
+);
+
+INSERT INTO Speckle_Observations VALUES (NOW6),'$programId','$targetName','$filename','$filetype',$preampGain,$emccdGain,$biasEstimate,$peakEstimate,
+$sampleTime,$exposureStart,$exposureEnd,'$redFilter','$blueFilter'$numSamples,$dqImage,$dqCloud,$dqWater,$dqBG);
+
+
+
