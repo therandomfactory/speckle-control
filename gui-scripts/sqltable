@@ -12,8 +12,14 @@ CREATE TABLE Speckle_Observations (
   sampleTime    float,
   exposureStart double,
   exposureEnd   double,
-  redFilter     char(32),
-  blueFilter    char(32),
+  Filter        char(32),
+  amplifier     char(32),
+  numAccum      int,
+  window        char(32),
+  colBinning    int,
+  rowBinning    int,
+  RA            char(20),
+  Dec           char(20),
   numSamples    int,
   dqImage     	int,
   dqCloud     	int,
@@ -22,8 +28,31 @@ CREATE TABLE Speckle_Observations (
   PRIMARY KEY (date_time)
 );
 
-INSERT INTO Speckle_Observations VALUES (NOW6),'$programId','$targetName','$filename','$filetype',$preampGain,$emccdGain,$biasEstimate,$peakEstimate,
-$sampleTime,$exposureStart,$exposureEnd,'$redFilter','$blueFilter'$numSamples,$dqImage,$dqCloud,$dqWater,$dqBG);
+INSERT INTO Speckle_Observations VALUES (NOW6),
+'$SCOPE(ProgID)',
+'$TELEMETRY(speckle.scope.target)',
+'$ANDOR_CFG(imagename)',
+'$TELEMETRY(scope.speckle.datatype)',
+$TELEMETRY(speckle.andor.preamp_gain),
+$TELEMETRY(speckle.andor.em_gain),
+$TELEMETRY(speckle.andor.bias),
+$TELEMETRY(speckle.andor.peak),
+$TELEMETRY(speckle.andor.int_time),
+$TELEMETRY(speckle.andor.exposureStart),
+$TELEMETRY(speckle.andor.exposureEnd),
+'$TELEMETRY(speckle.scope.[set arm]Filter)',
+'ANDOR_CFG(OutputAmplifier)',
+$TELEMETRY(speckle.andor.numexp),
+$TELEMETRY(speckle.andor.numaccum),
+$TELEMETRY(speckle.andor.hbin),
+$TELEMETRY(speckle.andor.vbin),
+$TELEMETRY(tcs.telescoep.ra),
+$TELEMETRY(tcs.telescope.dec),
+$TELEMETRY(tcs.weather.rawiq)
+$TELEMETRY(tcs.weather.rawcc),
+$TELEMETRY(tcs.weather.rawwv),
+$TELEMETRY(tcs.weather.rawbg)
+);
 
 
 
