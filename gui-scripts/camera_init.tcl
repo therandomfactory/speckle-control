@@ -38,6 +38,9 @@ global SCOPE TELEMETRY FITSKEY IMGMETA
           set TELEMETRY($i) $IMGMETA([lindex [split $i .] end],value)
       }
    }
+   if { $SCOPE(telescope) == "wiyn" } {
+      redisUpdate
+   }
 }
 
 proc shutdown { {id 0} } {
