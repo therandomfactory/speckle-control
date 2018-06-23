@@ -181,7 +181,8 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9
       andorGetData $ANDOR_CFG(red)
       andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
-      exec xpaset -p $DS9 frame 1
+      updateDatabase
+      exec xpaset -p $DS9 frame 2
       exec xpaset -p $DS9 zoom to fit
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
@@ -191,6 +192,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9
       andorGetData $ANDOR_CFG(blue)
       andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      updateDatabase
       exec xpaset -p $DS9 frame 2
       exec xpaset -p $DS9 zoom to fit
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
@@ -219,7 +221,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9
       andorGetData $ANDOR_CFG(blue)
       andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $n $n 1 1
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
-      exec xpaset -p $DS9 frame 2
+      exec xpaset -p $DS9 frame 1
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
