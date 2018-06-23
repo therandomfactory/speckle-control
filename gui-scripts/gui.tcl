@@ -209,6 +209,7 @@ place .main.lseq -x 20 -y 107
 set SCOPE(exptype) Object
 set SCOPE(numaccum) 1
 set SCOPE(numseq) 1
+set SCOPE(imagename) "N[exec date +%Y%m%d]"
 
 button .main.seldir -width 38 -text "Configure data directory" -command "choosedir data data"
 place .main.seldir -x 20 -y 286
@@ -223,11 +224,6 @@ label .main.bcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
 place .main.bcamtemp -x 453 -y 2
 
 
-
-
-
-
-.main.imagename insert 0 test
 entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right
 place .main.seqnum -x 270 -y 135
 set SCOPE(seqnum) 1

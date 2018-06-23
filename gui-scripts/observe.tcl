@@ -964,8 +964,12 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
      mimicMode red open
      mimicMode blue open
    }
-   commandAndor red "imagename $SCOPE(imagename)_[set SCOPE(seqnum)] $SCOPE(overwrite)"
-   commandAndor blue "imagename $SCOPE(imagename)_[set SCOPE(seqnum)] $SCOPE(overwrite)"
+   commandAndor red "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+   commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+   if { $LASTACQ == "fullframe" && $SCOPE(numframes) > 1 } {
+     commandAndor red "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
+     commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
+   }
    incr SCOPE(seqnum) 1
    commandAndor red "datadir $SCOPE(datadir)"
    commandAndor blue "datadir $SCOPE(datadir)"
