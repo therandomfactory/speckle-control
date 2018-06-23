@@ -69,7 +69,7 @@ set ANDOR_CFG($CAM,PreAmpGain) 2
 set ANDOR_CFG($CAM,VSSpeed) 0
 set ANDOR_CFG($CAM,HSSpeed) 0
 set ANDOR_CFG($CAM,EMHSSpeed) 0
-set ANDOR_CFG($CAM,hbin ) 1
+set ANDOR_CFG($CAM,hbin) 1
 set ANDOR_CFG($CAM,vbin) 1
 set ANDOR_CFG(configure) "1 1 1 1024 1 1024 2 2 1 3"
 andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
@@ -287,12 +287,16 @@ proc acquireDataCube { exp x y npix n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   if { $ANDOR_ARM == "blue" } {
+    exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
+    exec xpaset -p $DS9 zoom to fit
   }
   if { $ANDOR_ARM == "red" } {
+    exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
+    exec xpaset -p $DS9 zoom to fit
   }
   refreshads9 [expr int($exp*2000)] [expr $n*4]
   set t [clock seconds]
@@ -327,7 +331,6 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9
   debuglog "Finished acquisition"
 }
 
-set ANDOR_CFG(fitsbits) $FITSBITS(LONG_IMG)
 set FITSBITS(SHORT_IMG)    16
 set FITSBITS(LONG_IMG)     32
 set FITSBITS(FLOAT_IMG)   -32
@@ -335,6 +338,7 @@ set FITSBITS(FLOAT_IMG)   -32
 #set FITSBITS(LONGLONG_IMG) 64
 #set FITSBITS(BYTE_IMG)     8 
 #set FITSBITS(DOUBLE_IMG)  -64
+set ANDOR_CFG(fitsbits) $FITSBITS(LONG_IMG)
 
 
 proc updateDatabase { } {

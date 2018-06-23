@@ -167,8 +167,8 @@ int Andortclinit_Init(Tcl_Interp *interp)
  */
   Tcl_CreateCommand(interp, "andorConnectShmem", (Tcl_CmdProc *) tcl_andorConnectShmem, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplayFrame", (Tcl_CmdProc *) tcl_andorDisplayFrame, NULL, NULL);
-  Tcl_CreateCommand(interp, "andorConnectShmemRed", (Tcl_CmdProc *) tcl_andorConnectShmemRed, NULL, NULL);
-  Tcl_CreateCommand(interp, "andorConnectShmemBlue", (Tcl_CmdProc *) tcl_andorConnectShmemBlue, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorConnectShmemred", (Tcl_CmdProc *) tcl_andorConnectShmemRed, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorConnectShmemblue", (Tcl_CmdProc *) tcl_andorConnectShmemBlue, NULL, NULL);
   Tcl_CreateCommand(interp, "andorShutDown", (Tcl_CmdProc *) tcl_andorShutDown, NULL, NULL);
   Tcl_CreateCommand(interp, "andorFakeData", (Tcl_CmdProc *) tcl_andorFakeData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplaySingleFFT", (Tcl_CmdProc *) tcl_andorDisplaySingleFFT, NULL, NULL);
@@ -1024,7 +1024,7 @@ int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, cha
         }
       }
     }
-    vpeak = csum / (double)(smoothing*smoothing);
+    vpeak = maxsum / (double)(smoothing*smoothing);
     sprintf(starpos,"%d %d %lf %lf",xmaxat,ymaxat,vmin,vpeak);
     Tcl_AppendResult (interp,starpos,(char *) NULL);
     return TCL_OK;

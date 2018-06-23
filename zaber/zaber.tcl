@@ -232,7 +232,7 @@ resolution"
 
 proc zaberSetPos  { name pos } {
 global ZABERS
-   if { [info exists ZABERS(sim)] } {
+   if { $ZABERS(sim)] } {
      debuglog "Zaber simulate : $name $pos"
    } else {
      zaberCommand $name  "move abs $pos"
@@ -355,7 +355,7 @@ if { [info exists env(SPECKLE_SIM)] } {
 loadZaberConfig
 echoZaberConfig
 zaberConnect
-if { [info exists ZABERS(sim)] ==0 } {
+if { $ZABERS(sim) } {
   zaberGetProperties A
   zaberGetProperties B
   zaberGetProperties input
