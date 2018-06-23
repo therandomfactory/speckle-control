@@ -802,6 +802,7 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
     set SCOPE(blue,bias) [lindex $resr 2]
     set SCOPE(blue,peak) [lindex $resr 3]
   }
+  set chk [checkgain]
   mimicMode red roi [set rdim]x[set rdim]
   mimicMode blue roi [set rdim]x[set rdim]
   exec xpaset -p ds9 regions system physical
@@ -829,10 +830,26 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   .lowlevel.bmode configure -text "Mode=speckle"
 }
 
+proc checkgain { {table table.dat} } {
+global SCOPE SPECKLE_DIR
+  catch {
+   set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $SCOPE(red,bias) $SCOPE(red,peak)]
+   if { [lindex [split $res \n] 6] == "Changes to EM Gain are recommended." } {
+     set it [tk_dialog .d "RED CAMERA EM GAIN" $res {} -1 "OK"]
+   }
+   set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $SCOPE(blue,bias) $SCOPE(blue,peak)]
+   if { [lindex [split $res \n] 6] == "Changes to EM Gain are recommended." } {
+     set it [tk_dialog .d "BLUE CAMERA EM GAIN" $res {} -1 "OK"]
+   }
+  }
+}
+
 
 set ACQREGION(geom) 256
-
-
+set SCOPE(red,bias) 0
+set SCOPE(blue,bias) 0
+set SCOPE(red,peak) 1
+set SCOPE(blue,peak) 1
 
 
 #---------------------------------------------------------------------------
