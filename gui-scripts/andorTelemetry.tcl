@@ -1,7 +1,7 @@
 
 
 proc updateAndorTelemetry { arm } {
-global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR
+global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE
    set TELEMETRY(speckle.andor.head) "Andor iXon Emccd"
    if { $ANDOR_CFG($arm,EMCCDGain) > 0 } {
      set TELEMETRY(speckle.andor.acquisition_mode) "CCD"
@@ -18,6 +18,7 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR
    set TELEMETRY(speckle.andor.roi) "$ANDOR_ROI(xs),$ANDOR_ROI(xe),$ANDOR_ROI(ys),$ANDOR_ROI(ye)"
    set TELEMETRY(speckle.andor.vbin) $ANDOR_CFG($arm,vbin)
    set TELEMETRY(speckle.andor.datatype) $ANDOR_CFG($arm,fitsbits)
+   set TELEMETRY(speckle.andor.filter) $SCOPE(filter)
    set dll [string range [file tail [glob $SPECKLE_DIR/lib/libUSBI2C.so.*.0]] 13 end]
    set TELEMETRY(speckle.andor.sw_version) $dll
    set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG($arm,KineticCycleTime) * $ANDOR_CFG($arm,ExposureTime) * $ANDOR_CFG($arm,NumberAccumulations)]
@@ -38,6 +39,7 @@ set ANDOR_CFG(red,hbin) 1
 set ANDOR_CFG(red,vbin) 1
 set ANDOR_CFG(blue,hbin) 1
 set ANDOR_CFG(blue,vbin) 1
+set SCOPE(filter) "clear"
 set TELEMETRY(speckle.andor.head) "Andor iXon Emccd"
 set TELEMETRY(speckle.andor.acquisition_mode) "CCD"
 set TELEMETRY(speckle.andor.int_time) 1.0
