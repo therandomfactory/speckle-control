@@ -312,11 +312,13 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9
   update idletasks
   if { $ANDOR_CFG(red) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+    updateDatabase
     andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(red)}
   }
   if { $ANDOR_CFG(blue) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+    updateDatabase
     andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(blue)}
   }
@@ -331,6 +333,18 @@ set FITSBITS(FLOAT_IMG)   -32
 #set FITSBITS(LONGLONG_IMG) 64
 #set FITSBITS(BYTE_IMG)     8 
 #set FITSBITS(DOUBLE_IMG)  -64
+
+
+proc updateDatabase { } {
+global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
+   set finsert [open /tmp/insert_$ANDOR_ARM.sql w]
+   set amp "CCD Amplifier"
+   if { $ANDOR_CFG($ANDOR_ARM,OutputAmplifier) == 0 } { set amp "ECMMD Amplifier" }
+   puts $finsert "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(ProgID)','$TELEMETRY(speckle.scope.target)','$ANDOR_CFG(imagename)','$TELEMETRY(speckle.scope.datatype)',$TELEMETRY(speckle.andor.preamp_gain),$TELEMETRY(speckle.andor.em_gain),$TELEMETRY(speckle.andor.bias),$TELEMETRY(speckle.andor.peak),$TELEMETRY(speckle.andor.int_time),$TELEMETRY(speckle.andor.exposureStart),$TELEMETRY(speckle.andor.exposureEnd),'$SCOPE(filter)','$amp',$TELEMETRY(speckle.andor.numexp),$TELEMETRY(speckle.andor.numaccum),'$TELEMETRY(speckle.andor.roi)',$TELEMETRY(speckle.andor.hbin),$TELEMETRY(speckle.andor.vbin),'$TELEMETRY(tcs.telescope.ra)','$TELEMETRY(tcs.telescope.dec)',$TELEMETRY(tcs.weather.rawiq),$TELEMETRY(tcs.weather.rawcc),$TELEMETRY(tcs.weather.rawwv),$TELEMETRY(tcs.weather.rawbg));"
+   close $finsert
+   catch {exec mysql speckle --user=root < /tmp/insert_$ANDOR_ARM.sql >& /tmp/insert_$ANDOR_ARM.log &}
+}
+
 
 
 proc locateStar { steps smooth } {
@@ -432,6 +446,8 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
                            set TELEMETRY(speckle.andor.rawbg) [lindex $msg 4]
                            puts $sock "OK"
                          }
+         programid       { set SCOPE(ProgID) [lindex $msg 1] ; puts $sock "OK" }
+         filter          { set SCOPE(filter) [lindex $msg 1] ; puts $sock "OK" }
          configure       { set hbin [lindex $msg 1]
                            set vbin [lindex $msg 2]
                            set vstart [lindex $msg 3]
