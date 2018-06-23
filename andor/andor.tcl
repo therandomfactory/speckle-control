@@ -45,6 +45,20 @@ proc refreshds9 { delta count } {
   exec xpaset -p ds9 tcl refresher
 }
 
+proc initads9 { shmid width height } {
+global SPECKLE_DIR DS9
+  debuglog "Configuring ds9"
+  exec xpaset -p $DS9 source $SPECKLE_DIR/andor/ds9refresher.tcl
+  exec xpaset -p $DS9 shm array shmid $shmid \\\[xdim=$width,ydim=$height,bitpix=32\\\]
+}
+
+proc refreshads9 { delta count } {
+global DS9
+  exec xpaset -p $DS9 tcl \{refinit $delta $count\}
+  exec xpaset -p $DS9 tcl refresher
+}
+
+
 proc connectToAndors { } {
 global ANDOR_SOCKET INSTRUMENT
    set ANDOR_SOCKET(red) 0
