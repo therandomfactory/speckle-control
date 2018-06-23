@@ -216,6 +216,28 @@ global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
    debuglog "Andor reset complete"
 }
 
+
+proc resetSingleAndors { mode } {
+global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
+   debuglog "Resetting Andors for $mode" 
+   catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
+   catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
+   if { $mode == "fullframe" } {
+     exec xterm -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
+     exec xterm -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
+     set LASTACQ fullframe
+   } else {
+     exec xterm -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     set LASTACQ roi
+     set SCOPE(numframes) 1000
+   }
+   after 15000
+   connectToAndors
+   debuglog "Andor reset complete"
+}
+
+
 set ANDOR_MODES(readout) 		"full_vertical_binning multi_track random_track single_track image"
 set ANDOR_MODES(acquisition)		"single_scan accumulate kinetics fast_kinetics run_till_abort"
 set ANDOR_MODES(shutter) 		"auto open close"
