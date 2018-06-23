@@ -31,7 +31,7 @@ global TELEMETRY STREAMS PDEBUG FITSKEY FITSTXT
          set cstream [lindex $rec 1]
          if { $PDEBUG } {debuglog "Definition of $cstream"}
        } else {
-         set TELEMETRY($cstream.[lindex $rec 0]) "Attribute"
+         set TELEMETRY($cstream.[lindex $rec 0]) "NA"
          set FITSKEY($cstream.[lindex $rec 0]) [lindex $rec 1]
          set FITSTXT($cstream.[lindex $rec 0]) [lrange $rec 2 end]
          if { $PDEBUG } {debuglog "   parameter  $cstream.[lindex $rec 0]"}
@@ -108,10 +108,11 @@ global TOMPG HEADERS ACTIVE
 
 
 proc fillheader { args } {
-global TELEMETRY PDEBUG HEADERS TOMPG FITSKEY FITSTXT SEQNUM ACTIVE SCOPE
+global TELEMETRY PDEBUG HEADERS TOMPG FITSKEY FITSTXT SEQNUM ACTIVE SCOPE ANDOR_ARM
 global FROMSTARTEXP CACHETELEMETRY
   set fhead ""
   speckleTelemetryUpdate
+  updateAndorTelemetry $ANDOR_ARM
   set type wiyn-speckle
   if { $SCOPE(telescope) == "GEMINI" } {set type gemini-speckle}
   set fhead "[fitshdrrecord HDR_REV string {3.00 18-Feb-2008} Header-Rev ]\n" 
@@ -180,7 +181,7 @@ global FROMSTARTEXP CACHETELEMETRY
   return "$fhead"
 }
 
-proc notheaderComments { fid } {
+proc headerComments { fid } {
 global SCOPE
   set spos [llength [$fid dump -l]]
   set cmt [split [string trim [.main.comment get 0.0 end]] \n]
