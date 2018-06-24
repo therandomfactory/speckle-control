@@ -12,6 +12,10 @@ foreach item "target ProgID ra dec telescope instrument" {
    incr iy 24 
 }
 
+.main.vtarget configure -textvariable TELEMETRY(tcs.target.name)
+.main.vra configure -textvariable TELEMETRY(tcs.telescope.ra)
+.main.vdec configure -textvariable TELEMETRY(tcs.telescope.dec)
+
 
 menubutton .mbar.config -text "Configurations" -fg black -bg gray -menu .mbar.config.m
 menu .mbar.config.m
@@ -194,7 +198,7 @@ set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
 #  Do the actual setup of the GUI, to sync it with the camera status
 #
 proc savespecklegui { } {
-global SCOPE
+global SCOPE env
    set fout [open $env(HOME)/.specklegui w]
    foreach i [array names SCOPE] {
       puts $fout "set SCOPE($i) \"$SCOPE($i)\""

@@ -156,12 +156,12 @@ global LASTACQ STATUS SCOPE ACQREGION
           mimicMode red open
           mimicMode blue open
       }
-      .main.video configure -relief raised -fg black
-      .main.observe configure -fg black -relief raised -command startsequence
-      after [expr int($SCOPE(exposure)*1000)+100] videomode
-   } else {
       .main.video configure -relief sunken -fg yellow
       .main.observe configure -fg LightGray -relief sunken -command ""
+      after [expr int($SCOPE(exposure)*1000)+100] videomode
+   } else {
+      .main.video configure -relief raised -fg black
+      .main.observe configure -fg black -relief raised -command startsequence
       after 1000 speckleshutter red close
       after 1000 speckleshutter blue close
    }
