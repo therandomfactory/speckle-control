@@ -149,10 +149,10 @@ menu .mbar.help.m
 .mbar.temp.m add command -label "Cooler on" -command "setpoint on"
 .mbar.temp.m add command -label "Cooler off" -command "setpoint off"
 .mbar.temp.m add command -label "Cooler to ambient" -command  {set ok [confirmaction "Ramp temperature to ambient"] ; if {$ok} {setpoint amb}}
-.mbar.temp.m add command -label "Plot averaged temps" -command {set RAWTEMP 0}
-.mbar.temp.m add command -label "Plot raw temps" -command {set RAWTEMP 1}
+#.mbar.temp.m add command -label "Plot averaged temps" -command {set RAWTEMP 0}
+#.mbar.temp.m add command -label "Plot raw temps" -command {set RAWTEMP 1}
 .mbar.tools.m add command -label "Engineering" -command "speckleGuiMode engineeringGui"
-.mbar.help.m add command -label "Users Guide" -command {exec firefox file:/opt/apogee/doc/user-guide.html &}
+.mbar.help.m add command -label "Users Guide" -command {exec firefox file://$SPECKLE_DIR/doc/user-guide.html &}
 .mbar.tools.m add command -label "Observing" -command "speckleGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Editor" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
@@ -320,6 +320,7 @@ set ACQREGION(ys) 1
 set ACQREGION(ye) 256
 set LASTACQ none
 
+if { 0 } {
 #
 #  Set up the default structures for temperature control/plotting
 #
@@ -350,7 +351,7 @@ $TEMPWIDGET xtext Sample
 $TEMPWIDGET ytext Temp.
 place .tplot.plot -x 0 -y 0
 wm withdraw .tplot
-
+}
 
 #
 #
