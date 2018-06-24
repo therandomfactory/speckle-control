@@ -169,8 +169,8 @@ global FROMSTARTEXP CACHETELEMETRY
      }
   }
   set fhead "$fhead[fitshdrrecord OBSID string [obsid] Observation-ID]\n"
-  set fhead "$fhead[fitshdrrecord SPKLESEQ integer $SEQNUM SPECKLENFO-sequence]\n"
-  set fhead "$fhead[fitshdrrecord SPKLEDAT string [lrange [exec date] 1 3] SPECKLENFO-timestamp]"
+  set fhead "$fhead[fitshdrrecord SPECKLESEQ integer $SEQNUM SPECKLENFO-sequence]\n"
+  set fhead "$fhead[fitshdrrecord SPECKLEDAT string [lrange [exec date] 1 3] SPECKLENFO-timestamp]"
   if { [string trim [lindex $args 1]] != "" } {
     set fdbg [open [lindex $args 1] w]
     puts $fdbg "$fhead"
@@ -181,10 +181,10 @@ global FROMSTARTEXP CACHETELEMETRY
   return "$fhead"
 }
 
-proc headerComments { fid } {
+proc notheaderComments { fid } {
 global SCOPE
   set spos [llength [$fid dump -l]]
-  set cmt [split $SCOPE(comments) \n]
+  set cmt [split [string trim [.main.comment get 0.0 end]] \n]
   if { $cmt != "" } {
     foreach l $cmt {
       incr spos 1

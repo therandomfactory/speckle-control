@@ -90,7 +90,7 @@ global ZABERS ZPROPERTIES SCOPE
 proc zaberConnect { } {
 global ZABERS
    set handle -1
-   if { [info exists ZABERS(sim)] } {
+   if { $ZABERS(sim) } {
       set handle 1
      debuglog "Zabers in SIMULATION mode"
      return
@@ -137,7 +137,7 @@ global ZABERS ZPROP ZNAME ZSIMPROP
          set ZPROP [lindex $cmd 1]
      }
      if { [lindex $cmd 0] == "move" } { set ZPROP pos }
-     if { [info exists ZABERS(sim)] && [lindex $cmd 0] == "set" } {
+     if { $ZABERS(sim) && [lindex $cmd 0] == "set" } {
         set ZSIMPROP [lindex $cmd 2]
      } else {
        debuglog "Sending zaber command /$ZABERS($name,device) $cmd"
@@ -175,7 +175,7 @@ global ZABERS
 
 proc zaberReader { fh } {
 global ZABERS ZPROP ZNAME ZSIMPROP
-  if { [info exists ZABERS(sim)] && $ZSIMPROP != "" } {
+  if { $ZABERS(sim) && $ZSIMPROP != "" } {
     set ZABERS($ZNAME,$ZPROP) $ZSIMPROP
   } else {
     if { ![eof $fh] } {

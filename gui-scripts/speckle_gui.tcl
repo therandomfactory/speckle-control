@@ -279,7 +279,7 @@ global ANDOR_MODE LASTACQ ANDOR_SHUTTER
 proc andorsetpoint { arm } {
 global ANDOR_CFG
    debuglog "Set $arm camera temperature setpoint to $ANDOR_CFG($arm,setpoint)"
-   commandAndor $arm "setTemperature $ANDOR_CFG($arm,setpoint)"
+   commandAndor $arm "settemperature $ANDOR_CFG($arm,setpoint)"
 }
 
 proc specklesynctelem { arm } {
@@ -294,14 +294,14 @@ global DATAQUAL ZABERS
      set pfilter $FWHEELS(blue,$FWHEELS(blue,position))
    }
    commandAndor $arm positiontelem "$pinutzaber $pfieldzaber $pfilter"
-   commandAndor $arm dqtelemetry "$DATAQUAL(iq) $DATAQUAL(cc) $DATAQAL(wv) $DATAQUAL(bg)"
+   commandAndor $arm dqtelemetry "$DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQAL(rawwv) $DATAQUAL(rawbg)"
 }
 
 
 proc checkemccdgain { arm } {
 global INSTRUMENT
    debuglog "Set $arm camera EMCCD gain to $INSTRUMENT($arm,emccd)"
-   commandAndor $arm "setEMCCDGain $INSTRUMENT($arm,emccd)"
+   commandAndor $arm "emccdgain $INSTRUMENT($arm,emccd)"
    if { $INSTRUMENT($arm,highgain) == 0 || $INSTRUMENT($arm,emccd) == 0 } {
       if { $INSTRUMENT($arm,emgain) > 300 } {set INSTRUMENT($arm,emgain) 300}
       .mbar configure -bg gray
@@ -310,8 +310,10 @@ global INSTRUMENT
       if { $INSTRUMENT($arm,emgain) > 300 } {
          debuglog "$arm camera EMCCD gain >300 WARNING"
          .mbar configure -bg orange
+         commandAndor $arm "emadvanced 1"
       } else {
          .mbar configure -bg gray
+         commandAndor $arm "emadvanced 0"
       }
    }
 }

@@ -75,9 +75,9 @@ proc choosedir { type name} {
 #               CALS	-	Calibration run parmaeters
 #               CATALOGS	-	Catalog configurations
 #               SCOPE	-	Telescope parameters, gui setup
-global CALS CATALOGS SCOPE
+global CALS CATALOGS SCOPE env
    if { $type == "data" } {
-     set cfg [tk_chooseDirectory -initialdir $SCOPE(datadir)/$name]
+     set cfg [tk_chooseDirectory -initialdir $env(HOME)/data]
      set SCOPE(datadir) $cfg
      .main.seldir configure -text "$cfg"
    } else {

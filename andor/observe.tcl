@@ -936,7 +936,7 @@ proc startsequence { } {
 #               FRAME	-	Frame number in a sequence
 #               STATUS	-	Exposure status
 #               DEBUG	-	Set to 1 for verbose logging
-global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER
+global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY
  set iseqnum 0
  set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
  .lowlevel.p configure -value 0.0
@@ -948,13 +948,6 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPE
  commandAndor blue "numberaccumulations $SCOPE(numaccum)"
  commandAndor red "programid $SCOPE(ProgID)"
  commandAndor blue "programid $SCOPE(ProgID)"
- commandAndor red "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
- commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
- commandAndor red "filter $SPECKLE_FILTER(red,current)"
- commandAndor blue "filter $SPECKLE_FILTER(blue,current)"
- set cmt [string trim [.main.comment get 0.0 end]]
- commandAndor red "comments $cmt"
- commandAndor blue "comments $cmt"
  while { $iseqnum < $SCOPE(numseq) } {
   set ifrmnum 0
   while { $ifrmnum < $SCOPE(numframes) } {
@@ -1017,7 +1010,6 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPE
    abortsequence
   }
  }
- if { $SCOPE(autoclrcmt) } {.main.comment delete 0.0 end }
 }
 
 

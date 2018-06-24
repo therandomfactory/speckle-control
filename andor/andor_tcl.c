@@ -27,8 +27,8 @@ struct shmid_ds Shmem_buf;
 unsigned int *SharedMemAPro;
 unsigned int *SharedMemB;
 unsigned int *SharedMemBPro;
-unsigned int *SharedMemRed;
-unsigned int *SharedMemBlue;
+unsigned int *SharedMem0;
+unsigned int *SharedMem1;
 
 
 int imageDataA[1024*1024];
@@ -70,8 +70,8 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
 int tcl_andorSetupCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorConnectShmem(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorConnectShmemRed(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
-int tcl_andorConnectShmemBlue(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorConnectShmem0(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorConnectShmem1(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStartAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorSelectCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -167,8 +167,8 @@ int Andortclinit_Init(Tcl_Interp *interp)
  */
   Tcl_CreateCommand(interp, "andorConnectShmem", (Tcl_CmdProc *) tcl_andorConnectShmem, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplayFrame", (Tcl_CmdProc *) tcl_andorDisplayFrame, NULL, NULL);
-  Tcl_CreateCommand(interp, "andorConnectShmemred", (Tcl_CmdProc *) tcl_andorConnectShmemRed, NULL, NULL);
-  Tcl_CreateCommand(interp, "andorConnectShmemblue", (Tcl_CmdProc *) tcl_andorConnectShmemBlue, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorConnectShmem0", (Tcl_CmdProc *) tcl_andorConnectShmem0, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorConnectShmem1", (Tcl_CmdProc *) tcl_andorConnectShmem1, NULL, NULL);
   Tcl_CreateCommand(interp, "andorShutDown", (Tcl_CmdProc *) tcl_andorShutDown, NULL, NULL);
   Tcl_CreateCommand(interp, "andorFakeData", (Tcl_CmdProc *) tcl_andorFakeData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplaySingleFFT", (Tcl_CmdProc *) tcl_andorDisplaySingleFFT, NULL, NULL);
@@ -249,7 +249,7 @@ int tcl_andorConnectShmem(ClientData clientData, Tcl_Interp *interp, int argc, c
     return TCL_OK;
 }
 
-int tcl_andorConnectShmemRed(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+int tcl_andorConnectShmem0(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
   int width,height;
   int Shmem_size;
@@ -266,14 +266,14 @@ int tcl_andorConnectShmemRed(ClientData clientData, Tcl_Interp *interp, int argc
     if (Shmem_id < 0) {
         Shmem_id = shmget(7771, Shmem_size, IPC_CREAT|0666);
     }
-    SharedMemRed  = (unsigned int *) shmat(Shmem_id, NULL, 0);
-    sprintf(result,"%d %d %d %d %d %d",Shmem_id, Shmem_size,SharedMemRed);
+    SharedMem0  = (unsigned int *) shmat(Shmem_id, NULL, 0);
+    sprintf(result,"%d %d %d %d %d %d",Shmem_id, Shmem_size,SharedMem0);
     Tcl_SetResult(interp,result,TCL_STATIC);
     return TCL_OK;
 }
 
 
-int tcl_andorConnectShmemBlue(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+int tcl_andorConnectShmem1(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
   int width,height;
   int Shmem_size;
@@ -290,8 +290,8 @@ int tcl_andorConnectShmemBlue(ClientData clientData, Tcl_Interp *interp, int arg
     if (Shmem_id < 0) {
         Shmem_id = shmget(7772, Shmem_size, IPC_CREAT|0666);
     }
-    SharedMemBlue  = (unsigned int *) shmat(Shmem_id, NULL, 0);
-    sprintf(result,"%d %d %d %d %d %d",Shmem_id, Shmem_size,SharedMemBlue);
+    SharedMem1  = (unsigned int *) shmat(Shmem_id, NULL, 0);
+    sprintf(result,"%d %d %d %d %d %d",Shmem_id, Shmem_size,SharedMem1);
     Tcl_SetResult(interp,result,TCL_STATIC);
     return TCL_OK;
 }
@@ -1103,7 +1103,7 @@ int cAndorDisplaySingle(int cameraId, int ifft)
       addavg(outputData,outputAvgA,width*height);
     }
     for ( irow=0;irow<width;irow++) {
-      copyline(SharedMemRed + irow*width, imageDataA + irow*width, width*4, 0);
+      copyline(SharedMem0 + irow*width, imageDataA + irow*width, width*4, 0);
     }
   }
 
@@ -1113,7 +1113,7 @@ int cAndorDisplaySingle(int cameraId, int ifft)
       addavg(outputData,outputAvgB,width*height);
     }
     for ( irow=0;irow<width;irow++) {
-       copyline(SharedMemBlue + irow*width, imageDataB + irow*width, width*4, 0);
+       copyline(SharedMem1 + irow*width, imageDataB + irow*width, width*4, 0);
     }
   }
 
@@ -1232,13 +1232,13 @@ int tcl_andorDisplaySingleFFT(ClientData clientData, Tcl_Interp *interp, int arg
     if ( cameraId == 0 ) {
       calcavg(outputAvgA,width*height,numexp);
       for ( irow=0;irow<width;irow++) {
-        copyline(SharedMemRed, outputAvgA + irow*width, width*4, 0);
+        copyline(SharedMem0, outputAvgA + irow*width, width*4, 0);
       }
     }
     if ( cameraId == 1 ) {
       calcavg(outputAvgB,width*height,numexp);
       for ( irow=0;irow<width;irow++) {
-        copyline(SharedMemBlue, outputAvgB + irow*width, width*4, 0);
+        copyline(SharedMem1, outputAvgB + irow*width, width*4, 0);
       }
     }
   } else { 

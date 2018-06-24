@@ -80,7 +80,7 @@ package require BWidget
 proc getlocaltime { } {exec date}
 
 
-set SCOPE(datadir) $env(HOME)
+set SCOPE(datadir) $env(HOME)/data
 
 #
 #  Define globals for temperature control
@@ -401,6 +401,8 @@ trace variable SCOPE w watchscope
 #
 #  Reset to the last used configuration if available
 #
+set SCOPE(datadir) $env(HOME)/data
+
 
 if { [file exists $env(HOME)/.apgui.tcl] } {
    source $env(HOME)/.apgui.tcl

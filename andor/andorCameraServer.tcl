@@ -4,10 +4,14 @@ proc debuglog { msg } {
 }
 
 proc cAndorSetProperty { cam prop val } {
-global ANDOR_CFG
+global ANDOR_CFG ANDOR_ARM
    set res [andorSetProperty $cam $prop $val]
    if { $res == "" } {
      set ANDOR_CFG($cam,$prop) $val
+     set ANDOR_CFG($ANDOR_ARM,$prop) $val
+   } else {
+     set ANDOR_CFG($cam,$prop) "fail -$res"
+     set ANDOR_CFG($ANDOR_ARM,$prop) "fail - $val"
    }
    return $res
 }
@@ -99,7 +103,7 @@ SetExposureTime 0.04
 cAndorSetProperty $CAM Temperature -60
 cAndorSetProperty $CAM Cooler 1
 
-set shmid [andorConnectShmem[set ANDOR_ARM] 1024 1024]
+set shmid [andorConnectShmem[set CAM] 1024 1024]
 debuglog "$ANDOR_ARM memory buffers @ $shmid"
 
 set DS9 ds9[set ANDOR_ARM]
@@ -122,7 +126,11 @@ cAndorSetProperty $CAM KineticCycleTime 0.0
 cAndorSetProperty $CAM NumberAccumulations 1
 cAndorSetProperty $CAM NumberKinetics 100
 cAndorSetProperty $CAM AccumulationCycleTime 0.0
+cAndorSetProperty $CAM ExposureTime 0.04
+cAndorSetProperty $CAM SetTemperature -60
 
+set ANDOR_CFG($ANDOR_ARM,EMCCDGain) 0
+set ANDOR_CFG($ANDOR_ARM,EMAdvanced) 0
 
 proc showstatus { } {
 global CAM ANDOR_CFG
@@ -173,13 +181,17 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE
 }
 
 proc acquireDataFrame { exp } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
     set t [clock seconds]
+    set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
+    set TELEMETRY(speckle.andor.numexp) 1
+    set TELEMETRY(speckle.andor.numberkinetics) 0
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       andorGetData $ANDOR_CFG(red)
       andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
+      set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       updateDatabase
       exec xpaset -p $DS9 frame 2
@@ -191,6 +203,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9
     if { $ANDOR_CFG(blue) > -1 } {
       andorGetData $ANDOR_CFG(blue)
       andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
+      set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       updateDatabase
       exec xpaset -p $DS9 frame 2
@@ -284,7 +297,7 @@ global ANDOR_CFG
 }
 
 proc acquireDataCube { exp x y npix n } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 frame 1
@@ -299,7 +312,9 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9
     exec xpaset -p $DS9 zoom to fit
   }
   refreshads9 [expr int($exp*2000)] [expr $n*4]
-  set t [clock seconds]
+  set TELEMETRY(speckle.andor.numexp) $n
+  set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
+  set TELEMETRY(speckle.andor.numberkinetics) $n
   SetExposureTime $exp
   if { $ANDOR_CFG(red) > -1} {
      andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
@@ -316,6 +331,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9
       andorGetSingleCube $ANDOR_CFG(blue) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $ANDOR_CFG(fitsbits) $dofft
   }
   update idletasks
+  set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
   if { $ANDOR_CFG(red) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     updateDatabase
@@ -346,7 +362,7 @@ global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
    set finsert [open /tmp/insert_$ANDOR_ARM.sql w]
    set amp "CCD Amplifier"
    if { $ANDOR_CFG($ANDOR_ARM,OutputAmplifier) == 0 } { set amp "ECMMD Amplifier" }
-   puts $finsert "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(ProgID)','$TELEMETRY(speckle.scope.target)','$ANDOR_CFG(imagename)','$TELEMETRY(speckle.scope.datatype)',$TELEMETRY(speckle.andor.preamp_gain),$TELEMETRY(speckle.andor.em_gain),$TELEMETRY(speckle.andor.bias),$TELEMETRY(speckle.andor.peak),$TELEMETRY(speckle.andor.int_time),$TELEMETRY(speckle.andor.exposureStart),$TELEMETRY(speckle.andor.exposureEnd),'$SCOPE(filter)','$amp',$TELEMETRY(speckle.andor.numexp),$TELEMETRY(speckle.andor.numaccum),'$TELEMETRY(speckle.andor.roi)',$TELEMETRY(speckle.andor.hbin),$TELEMETRY(speckle.andor.vbin),'$TELEMETRY(tcs.telescope.ra)','$TELEMETRY(tcs.telescope.dec)',$TELEMETRY(tcs.weather.rawiq),$TELEMETRY(tcs.weather.rawcc),$TELEMETRY(tcs.weather.rawwv),$TELEMETRY(tcs.weather.rawbg));"
+   puts $finsert "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(ProgID)','$TELEMETRY(speckle.scope.target)','$ANDOR_CFG(imagename)','$TELEMETRY(speckle.scope.datatype)',$TELEMETRY(speckle.andor.preamp_gain),$TELEMETRY(speckle.andor.em_gain),$TELEMETRY(speckle.andor.bias_estimate),$TELEMETRY(speckle.andor.peak_estimate),$TELEMETRY(speckle.andor.int_time),$TELEMETRY(speckle.andor.exposureStart),$TELEMETRY(speckle.andor.exposureEnd),'$SCOPE(filter)','$amp',$TELEMETRY(speckle.andor.numexp),$TELEMETRY(speckle.andor.numaccum),'$TELEMETRY(speckle.andor.roi)',$TELEMETRY(speckle.andor.hbin),$TELEMETRY(speckle.andor.vbin),'$TELEMETRY(tcs.telescope.ra)','$TELEMETRY(tcs.telescope.dec)',$TELEMETRY(tcs.weather.rawiq),$TELEMETRY(tcs.weather.rawcc),$TELEMETRY(tcs.weather.rawwv),$TELEMETRY(tcs.weather.rawbg));"
    close $finsert
    catch {exec mysql speckle --user=root < /tmp/insert_$ANDOR_ARM.sql >& /tmp/insert_$ANDOR_ARM.log &}
 }
@@ -372,11 +388,11 @@ global ANDOR_ARM ANDOR_ROI DS9
   set xs [expr $x - $idim/2]
   set xe [expr $x + $idim/2 -1]
   if { $xs < 1 } { set xs 1 ; set xe $idim}
-  if { $xe > 1024 } {set xe 1024 ; set xs [expr 1024-$idim-1}
+  if { $xe > 1024 } {set xe 1024 ; set xs [expr 1024-$idim+1]}
   set ys [expr $y - $idim/2]
   set ye [expr $y + $idim/2 -1]
-  if { $ys < 1 } { set yd 1 ; set ye $idim}
-  if { $ye > 1024 } {set ye 1024 ; set ys [expr 1024-$idim-1]}
+  if { $ys < 1 } { set ys 1 ; set ye $idim}
+  if { $ye > 1024 } {set ye 1024 ; set ys [expr 1024-$idim+1]}
   exec xpaset -p $DS9 regions deleteall
   exec echo "box [expr $xs+$idim/2] [expr $ys+$idim/2] $idim $idim 0" | xpaset  $DS9 regions
   set ANDOR_ROI(xs) $xs
@@ -446,14 +462,15 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
                            set TELEMETRY(speckle.andor.filter) [lindex $msg 3]
                            puts $sock "OK"
                          }
-         dqtelemetry     { set TELEMETRY(speckle.andor.rawiq) [lindex $msg 1]
-                           set TELEMETRY(speckle.andor.rawcc) [lindex $msg 2]
-                           set TELEMETRY(speckle.andor.rawwv) [lindex $msg 3]
-                           set TELEMETRY(speckle.andor.rawbg) [lindex $msg 4]
+         dqtelemetry     { set TELEMETRY(tcs.weather.rawiq) [lindex $msg 1]
+                           set TELEMETRY(tcs.weather.rawcc) [lindex $msg 2]
+                           set TELEMETRY(tcs.weather.rawwv) [lindex $msg 3]
+                           set TELEMETRY(tcs.weather.rawbg) [lindex $msg 4]
                            puts $sock "OK"
                          }
          programid       { set SCOPE(ProgID) [lindex $msg 1] ; puts $sock "OK" }
          filter          { set SCOPE(filter) [lindex $msg 1] ; puts $sock "OK" }
+         comments        { set SCOPE(comments) [lrange $msg 1 end] ;  puts $sock "OK" }
          configure       { set hbin [lindex $msg 1]
                            set vbin [lindex $msg 2]
                            set vstart [lindex $msg 3]
@@ -475,10 +492,10 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
 			   puts $sock "OK"
                          }
          setupcamera     { set it [andorSetupCamera $CAM [lindex $msg 1]] ; puts $sock $it}
-         default         { if { [string range [lindex $msg 0] 0 3] == "Get" } {
+         default         { if { [string range [lindex $msg 0] 0 2] == "Get" } {
                              puts $sock [eval [lindex $msg 0]]
                            } else {
-                             if { [string range [lindex $msg 0] 0 3] == "Set" } {
+                             if { [string range [lindex $msg 0] 0 2] == "Set" } {
                                 puts $sock [eval [lindex $msg 0] [lindex $msg 1]]
                              } else {
                                 puts $sock "ERROR: unknown $msg"
