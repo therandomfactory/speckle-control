@@ -158,10 +158,12 @@ global LASTACQ STATUS SCOPE ACQREGION
       }
       .main.video configure -relief sunken -fg yellow
       .main.observe configure -fg LightGray -relief sunken -command ""
+      .main.abort configure -fg black -relief raised
       after [expr int($SCOPE(exposure)*1000)+100] videomode
    } else {
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
+      .main.abort configure -fg gray -relief sunken
       after 1000 speckleshutter red close
       after 1000 speckleshutter blue close
    }

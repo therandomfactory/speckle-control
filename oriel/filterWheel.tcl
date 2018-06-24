@@ -68,6 +68,12 @@ global FILTERWHEEL FWHEELS MAXFILTERS
   } else {
     .filters.f$id$n configure -bg green -relief sunken -activebackground green
     mimicMode $id filter $FWHEELS($id,$n)
+    if { $id == "red" } {
+      .lowlevel.rfilter configure -text "Filter = $FWHEELS(red,$n)"
+    }
+    if { $id == "blue" } {
+      .lowlevel.bfilter configure -text "Filter = $FWHEELS(blue,$n)"
+    }
     set FWHEELS($id,position) $n
     if { [info proc adjustTeleFocus] != "" } {
        set delta  [expr $FWHEELS($id,$FWHEELS($id,position),focus) - $FWHEELS(focusoffset)]

@@ -150,7 +150,7 @@ place .lowlevel.bmode -x 420 -y 70
 .lowlevel.bmode.m add command -label "Speckle" -command "specklemode blue speckle"
 .lowlevel.bmode.m add command -label "Custom" -command "specklemode blue custom"
 
-menubutton .lowlevel.rfilter -text "Filter = clear"  -width 10 -bg gray80 -menu .lowlevel.rfilter.m -relief raised
+menubutton .lowlevel.rfilter -text "Filter = clear"  -width 16 -bg gray80 -menu .lowlevel.rfilter.m -relief raised
 menu .lowlevel.rfilter.m
 place .lowlevel.rfilter -x 118 -y 70
 .lowlevel.rfilter.m add command -label "i" -command "specklefilter red Red-I"
@@ -160,7 +160,7 @@ place .lowlevel.rfilter -x 118 -y 70
 .lowlevel.rfilter.m add command -label "clear" -command "specklefilter red clear"
 .lowlevel.rfilter.m add command -label "block" -command "specklefilter red block"
 
-menubutton .lowlevel.bfilter -text "Filter = clear"  -width 10 -bg gray80 -menu .lowlevel.bfilter.m -relief raised
+menubutton .lowlevel.bfilter -text "Filter = clear"  -width 16 -bg gray80 -menu .lowlevel.bfilter.m -relief raised
 menu .lowlevel.bfilter.m
 place .lowlevel.bfilter -x 518 -y 70
 .lowlevel.bfilter.m add command -label "u" -command "specklefilter blue Blue-U"
