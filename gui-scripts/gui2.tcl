@@ -22,7 +22,7 @@ if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
 }
 set now [clock seconds]
 set FLOG [open /tmp/speckleLog_[set now].log w]
-exec xterm -e tail -f /tmp/speckleLog_[set now].log &
+exec xterm -geometry +1100+800 -e tail -f /tmp/speckleLog_[set now].log &
 
 proc debuglog { msg } {
 global FLOG

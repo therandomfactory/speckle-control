@@ -234,12 +234,12 @@ global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
    if { $mode == "fullframe" } {
-     exec xterm -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
-     exec xterm -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
+     exec xterm -geometry +20+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
+     exec xterm -geometry +540+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
      set LASTACQ fullframe
    } else {
-     exec xterm -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
-     exec xterm -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry +20+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry +540+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }
