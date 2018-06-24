@@ -936,7 +936,7 @@ proc startsequence { } {
 #               FRAME	-	Frame number in a sequence
 #               STATUS	-	Exposure status
 #               DEBUG	-	Set to 1 for verbose logging
-global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER
+global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
  set iseqnum 0
  set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
  .lowlevel.p configure -value 0.0
@@ -946,8 +946,12 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPE
  commandAndor blue "numberkinetics $SCOPE(numframes)"
  commandAndor red "numberaccumulations $SCOPE(numaccum)"
  commandAndor blue "numberaccumulations $SCOPE(numaccum)"
+ commandAndor red "emccdgain $INSTRUMENT(red,emccd)"
+ commandAndor blue "emccdgain $INSTRUMENT(blue,emccd)"
  commandAndor red "programid $SCOPE(ProgID)"
  commandAndor blue "programid $SCOPE(ProgID)"
+ commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
+ commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
  commandAndor red "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor red "filter $SPECKLE_FILTER(red,current)"

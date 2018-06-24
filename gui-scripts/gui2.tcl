@@ -227,7 +227,7 @@ place .main.bcamtemp -x 453 -y 2
 
 
 
-.main.imagename insert 0 test
+.main.imagename insert 0 "N[exec date +%Y%m%d]"
 entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right
 place .main.seqnum -x 270 -y 135
 set SCOPE(seqnum) 1
@@ -258,7 +258,7 @@ menu .main.rawiq.m
 .main.rawiq.m add command -label "RAWIQ 20%" -command "dataquality rawiq 20"
 .main.rawiq.m add command -label "RAWIQ 70%" -command "dataquality rawiq 70"
 .main.rawiq.m add command -label "RAWIQ 85%" -command "dataquality rawiq 85"
-.main.rawiq.m add command -label "RAWIQ ANY" -command "dataquality rawiq ANY"
+.main.rawiq.m add command -label "RAWIQ ANY" -command "dataquality rawiq 0"
 place .main.rawiq -x 362 -y 200
 
 menubutton .main.rawcc -text "DQ - cloud" -width 21 -fg black -bg gray -menu .main.rawcc.m -relief raised
@@ -266,7 +266,7 @@ menu .main.rawcc.m
 .main.rawcc.m add command -label "RAWCC 50%" -command "dataquality rawcc 50"
 .main.rawcc.m add command -label "RAWCC 50%" -command "dataquality rawcc 70"
 .main.rawcc.m add command -label "RAWCC 80%" -command "dataquality rawcc 80"
-.main.rawcc.m add command -label "RAWCC ANY" -command "dataquality rawcc ANY"
+.main.rawcc.m add command -label "RAWCC ANY" -command "dataquality rawcc 0"
 place .main.rawcc -x 362 -y 230
 
 menubutton .main.rawwv -text "DQ - water" -width 21 -fg black -bg gray -menu .main.rawwv.m -relief raised
@@ -274,7 +274,7 @@ menu .main.rawwv.m
 .main.rawwv.m add command -label "RAWWV 20%" -command "dataquality rawwv 20"
 .main.rawwv.m add command -label "RAWWV 50%" -command "dataquality rawwv 50"
 .main.rawwv.m add command -label "RAWWV 80%" -command "dataquality rawwv 80"
-.main.rawwv.m add command -label "RAWWV ANY" -command "dataquality rawwv ANY"
+.main.rawwv.m add command -label "RAWWV ANY" -command "dataquality rawwv 0"
 place .main.rawwv -x 362 -y 260
 
 menubutton .main.rawbg -text "DQ - bg" -width 21 -fg black -bg gray -menu .main.rawbg.m -relief raised
@@ -282,7 +282,7 @@ menu .main.rawbg.m
 .main.rawbg.m add command -label "RAWBG 20%" -command "dataquality rawbg 20"
 .main.rawbg.m add command -label "RAWBG 50%" -command "dataquality rawbg 50"
 .main.rawbg.m add command -label "RAWBG 80%" -command "dataquality rawbg 80"
-.main.rawbg.m add command -label "RAWBG ANY" -command "dataquality rawbg ANY"
+.main.rawbg.m add command -label "RAWBG ANY" -command "dataquality rawbg 0"
 place .main.rawbg -x 362 -y 290
 
 proc dataquality { type value } {
@@ -292,7 +292,7 @@ global DATAQUAL DATAQUALT TELEMETRY
    .main.[set type] configure -text "DQ $DATAQUALT($type) : $value"
 }
 
-foreach q "rawbg rawcc rawwv rawiq" { set DATAQUAL($q) UNKNOWN }
+foreach q "rawbg rawcc rawwv rawiq" { set DATAQUAL($q) 0 }
 set DATAQUALT(rawiq) image
 set DATAQUALT(rawcc) cloud
 set DATAQUALT(rawwv) water

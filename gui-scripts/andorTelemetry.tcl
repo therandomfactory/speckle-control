@@ -87,10 +87,10 @@ set TELEMETRY(speckle.andor.peak_estimate) 0
 set TELEMETRY(speckle.andor.exposureStart) [clock milliseconds]
 set TELEMETRY(speckle.andor.exposureEnd) [clock milliseconds]
 set TELEMETRY(speckle.scope.site) $SCOPE(telescope)
-set TELEMETRY(tcs.weather.rawiq) "UNKNOWN"
-set TELEMETRY(tcs.weather.rawcc) "UNKNOWN"
-set TELEMETRY(tcs.weather.rawwv) "UNKNOWN"
-set TELEMETRY(tcs.weather.rawbg) "UNKNOWN"
+set TELEMETRY(tcs.weather.rawiq) 0
+set TELEMETRY(tcs.weather.rawcc) 0
+set TELEMETRY(tcs.weather.rawwv) 0
+set TELEMETRY(tcs.weather.rawbg) 0
 set SCOPE(numexp) 1
 
 
