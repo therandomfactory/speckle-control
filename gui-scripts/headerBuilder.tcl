@@ -184,13 +184,12 @@ global FROMSTARTEXP CACHETELEMETRY
 proc headerComments { fid } {
 global SCOPE
   set spos [llength [$fid dump -l]]
-  set cmt [split $SCOPE(comments) \n]
+  set cmt [split $SCOPE(comments) "|"]
   if { $cmt != "" } {
     foreach l $cmt {
       incr spos 1
       $fid insert keyword $spos "COMMENT   $l" 0
     }
-    if { $SCOPE(autoclrcmt) } {.main.comment delete 0.0 end }
   }
 }
 

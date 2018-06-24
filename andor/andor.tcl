@@ -118,6 +118,17 @@ global ANDOR_SOCKET SCOPE
    return $result
 } 
 
+proc flushAndors { } {
+global ANDOR_SOCKET
+   if { $ANDOR_SOCKET(red) > 0 } {
+      while { [gets $ANDOR_SOCKET(red) result] > -1 } {set x 1}
+   }
+   if { $ANDOR_SOCKET(blue) > 0 } {
+      while { [gets $ANDOR_SOCKET(blue) result] > -1 } {set x 1}
+   }
+}
+
+
 proc commandCameras { cmd {echk 1} } {
 global INSTRUMENT
    commandAndor red $cmd $echk

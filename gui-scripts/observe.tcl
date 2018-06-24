@@ -770,12 +770,15 @@ proc  acquisitionmode { rdim } {
 #               ACQREGION	-	Sub-frame region coordinates
 #               CONFIG	-	GUI configuration
 global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
-  if { $LASTACQ != "fullframe" && $rdim != "manual"} {
+  puts stdout "rdim == $rdim"
+  if { $rdim != "manual"} {
         commandAndor red "setframe fullframe"
         commandAndor blue "setframe fullframe"
 ###        positionZabers fullframe
   }
+  set SCOPE(numframes) 1
   if { $rdim != "manual" } {
+    set LASTACQ "fullframe"
     startsequence
     after 2000
   }
@@ -956,7 +959,7 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPE
  commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor red "filter $SPECKLE_FILTER(red,current)"
  commandAndor blue "filter $SPECKLE_FILTER(blue,current)"
- set cmt [string trim [.main.comment get 0.0 end]]
+ set cmt [join [split [string trim [.main.comment get 0.0 end]] \n] "|"]
  commandAndor red "comments $cmt"
  commandAndor blue "comments $cmt"
  while { $iseqnum < $SCOPE(numseq) } {
@@ -986,6 +989,7 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPE
    incr SCOPE(seqnum) 1
    commandAndor red "datadir $SCOPE(datadir)"
    commandAndor blue "datadir $SCOPE(datadir)"
+####   flushAndors
    set redtemp  [commandAndor red gettemp]
    set bluetemp  [commandAndor blue gettemp]
    mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"

@@ -302,13 +302,13 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
-    exec xpaset -p $DS9 cmap Heat
+    exec xpaset -p $DS9 cmap Cool
     exec xpaset -p $DS9 zoom to fit
   }
   if { $ANDOR_ARM == "red" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
-    exec xpaset -p $DS9 cmap Cool
+    exec xpaset -p $DS9 cmap Heat
     exec xpaset -p $DS9 zoom to fit
   }
   refreshads9 [expr int($exp*2000)] [expr $n*4]
