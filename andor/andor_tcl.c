@@ -659,11 +659,10 @@ int append_fitsTimings(int numexp)
    int hdutype;
    char extname[] = "Frame timings";           /* extension name */
    char *ttype[] = { "Time" };
-   char *tform[] = { "F20.4" };
+   char *tform[] = { "E1000" };
    char *tunit[] = { "seconds" };
 
-   fits_movabs_hdu(fptr, 2, &hdutype, &status);
-   fits_create_tbl(fptr, BINARY_TBL, numexp, 1, ttype, tform, tunit, extname, &status);
+   fits_create_tbl(fptr, BINARY_TBL, numexp, 1, ttype, &tform, tunit, extname, &status);
    fits_write_col(fptr, TFLOAT, 1, 1, 1, numexp, fitsTimings, &status);
 
 }

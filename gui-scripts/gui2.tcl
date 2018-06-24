@@ -405,9 +405,9 @@ trace variable SCOPE w watchscope
 set SCOPE(datadir) $env(HOME)/data
 
 
-if { [file exists $env(HOME)/.apgui.tcl] } {
-   source $env(HOME)/.apgui.tcl
-}
+#if { [file exists $env(HOME)/.apgui.tcl] } {
+#   source $env(HOME)/.apgui.tcl
+#}
 
 #
 #  Fix the date
