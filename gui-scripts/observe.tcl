@@ -736,6 +736,7 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF
    commandAndor blue "setframe fullframe"
    set LASTACQ fullframe
    set SCOPE(numseq) 1
+   set SCOPE(numframes) 1
 }
 
 
@@ -776,6 +777,7 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
         commandAndor blue "setframe fullframe"
 ###        positionZabers fullframe
   }
+  set SCOPE(numseq) 1
   set SCOPE(numframes) 1
   if { $rdim != "manual" } {
     set LASTACQ "fullframe"
@@ -941,6 +943,7 @@ proc startsequence { } {
 #               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
  set iseqnum 0
+ redisUpdate
  set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
  .lowlevel.p configure -value 0.0
  speckleshutter red open
@@ -949,8 +952,8 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPE
  commandAndor blue "numberkinetics $SCOPE(numframes)"
  commandAndor red "numberaccumulations $SCOPE(numaccum)"
  commandAndor blue "numberaccumulations $SCOPE(numaccum)"
- commandAndor red "emccdgain $INSTRUMENT(red,emccd)"
- commandAndor blue "emccdgain $INSTRUMENT(blue,emccd)"
+ commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
+ commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
  commandAndor red "programid $SCOPE(ProgID)"
  commandAndor blue "programid $SCOPE(ProgID)"
  commandAndor red "emadvanced $INSTRUMENT(red,highgain)"

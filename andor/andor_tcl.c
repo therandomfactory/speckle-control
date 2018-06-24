@@ -1023,7 +1023,7 @@ int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, cha
         }
       }
     }
-    vpeak = maxsum / (double)(smoothing*smoothing);
+    vpeak = maxsum / (double)(smoothing*smoothing/4);
     sprintf(starpos,"%d %d %lf %lf",xmaxat,ymaxat,vmin,vpeak);
     Tcl_AppendResult (interp,starpos,(char *) NULL);
     return TCL_OK;

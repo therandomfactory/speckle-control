@@ -48,8 +48,8 @@ label .lowlevel.red -text "RED ARM" -bg red -fg black -width 25
 place .lowlevel.red -x 20 -y 3
 label .lowlevel.blue -text "BLUE ARM" -bg LightBlue -fg black -width 25
 place .lowlevel.blue -x 420 -y 3
-checkbutton .lowlevel.clone -bg gray -text "Clone settings" -variable INSTRUMENT(clone)  -highlightthickness 0
-place .lowlevel.clone -x 240 -y 3
+#checkbutton .lowlevel.clone -bg gray -text "Clone settings" -variable INSTRUMENT(clone)  -highlightthickness 0
+#place .lowlevel.clone -x 240 -y 3
 
 label .lowlevel.lemgain  -bg gray -text "EM Gain"
 SpinBox .lowlevel.emgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red"
@@ -325,7 +325,7 @@ global CAMSTATUS
     set camstatus [commandAndor $cam status]
     if { $camstatus != 0 } {
       set i 0
-      foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
+      foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime  EMCCDGain EMAdvancedTExposure TAccumulate TKinetics" {
         set CAMSTATUS($cam,$p) [lindex $camstatus $i]
         incr i 1
       }
@@ -563,6 +563,12 @@ entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)  -justi
 place .lowlevel.vxpico -x 510 -y 570
 entry .lowlevel.vypico -width 8 -bg white -textvariable PICOS(Y,current)  -justify right
 place .lowlevel.vypico -x 272 -y 665
+
+if { $SCOPE(telescope) == "WIYN" } {
+  source $SPECKLE_DIR/gui-scripts/redisquery.tcl
+  redisConnect
+  redisUpdate
+}
 
 showstatus "Initializing PICOs"
 source $SPECKLE_DIR/picomotor/picomotor.tcl

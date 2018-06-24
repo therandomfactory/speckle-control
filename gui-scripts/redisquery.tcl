@@ -111,7 +111,7 @@ global TELEMETRY
       if { [lindex $res 0] == "timestamp" || [string range $res 0 3] == "tcs." } {
          set id $res
          gets $fh res ; gets $fh res
-         set TELEMETRY($id) $res
+         set TELEMETRY($id) [string trim $res "\{\}"]
       }
     }
 }
