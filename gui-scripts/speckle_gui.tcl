@@ -500,6 +500,11 @@ if { $SCOPE(telescope) == "WIYN" } {
    .lowlevel configure -height 520 -width 936
    wm geometry . 936x900
    set SPECKLE(engineeringGui) 936x900
+   source $SPECKLE_DIR/gui-scripts/redisquery.tcl
+   redisConnect
+   redisUpdate
+
+
 } else {
 
 set SPECKLE(engineeringGui) 936x1100
@@ -567,12 +572,6 @@ entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)  -justi
 place .lowlevel.vxpico -x 510 -y 570
 entry .lowlevel.vypico -width 8 -bg white -textvariable PICOS(Y,current)  -justify right
 place .lowlevel.vypico -x 272 -y 665
-
-if { $SCOPE(telescope) == "WIYN" } {
-  source $SPECKLE_DIR/gui-scripts/redisquery.tcl
-  redisConnect
-  redisUpdate
-}
 
 showstatus "Initializing PICOs"
 source $SPECKLE_DIR/picomotor/picomotor.tcl

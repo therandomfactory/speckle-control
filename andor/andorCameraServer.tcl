@@ -183,6 +183,7 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE
 proc acquireDataFrame { exp } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
+    redisUpdate
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
     set t [clock seconds]
     set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
@@ -218,6 +219,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
 proc acquireDataROI { exp x y n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9
     debuglog "Starting $ANDOR_ARM ROI sequence with exposure = $exp"
+    redisUpdate
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
     set t [clock seconds]
     SetExposureTime $exp
@@ -301,6 +303,7 @@ global ANDOR_CFG
 proc acquireDataCube { exp x y npix n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
+  redisUpdate
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 frame 1
