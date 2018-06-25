@@ -27,7 +27,7 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM
    set TELEMETRY(speckle.andor.amplifier) $ANDOR_CFG($arm,OutputAmplifier)
    set TELEMETRY(speckle.andor.preamp_gain) $ANDOR_CFG($arm,PreAmpGain)
    set TELEMETRY(speckle.andor.serial_number) $ANDOR_CFG($CAM,SerialNumber) 
-   set TELEMETRY(speckle.andor.target_temperature) $ANDOR_CFG($arm,SetTemperature)
+   set TELEMETRY(speckle.andor.target_temperature) [lindex $ANDOR_CFG($arm,SetTemperature) 0]
    set TELEMETRY(speckle.andor.ccdtemp) $ANDOR_CFG(ccdtemp) 
    set TELEMETRY(speckle.andor.prescans) 0
    set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(bias)
