@@ -78,8 +78,10 @@ proc choosedir { type name} {
 global CALS CATALOGS SCOPE env
    if { $type == "data" } {
      set cfg [tk_chooseDirectory -initialdir $env(HOME)/data]
-     set SCOPE(datadir) $cfg
-     .main.seldir configure -text "$cfg"
+     if { $cfg != "" } {
+       set SCOPE(datadir) $cfg
+       .main.seldir configure -text "$cfg"
+     }
    } else {
      set cfg [tk_chooseDirectory -initialdir $CALS(home)/$name]
    }
