@@ -65,13 +65,13 @@ global PI
       set dms [string trim $dms "-"]
    }
    set f [split $dms ":"]
-   set r [expr $s * ([lindex $f 0] + [lindex $f 1]/60.0 + [lindex $f 2]/3600.0 )/180. * $PI]
+   set r [expr $s * ([scan %d [lindex $f 0]] + [scan %d [lindex $f 1]]/60.0 + [scan %d [lindex $f 2]]/3600.0 )/180. * $PI]
 }
 
 proc hms_to_radians { hms } {
 global PI
    set f [split $hms ":"]
-   set r [expr ([lindex $f 0] + [lindex $f 1]/60.0 + [lindex $f 2]/3600.0 )/12. * $PI]
+   set r [expr ([scan %d [lindex $f 0]] + [scan %d [lindex $f 1]]/60.0 + [scan %d [lindex $f 2]]/3600.0 )/12. * $PI]
 }
 
 

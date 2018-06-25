@@ -956,19 +956,19 @@ global ANDOR_CCD ANDOR_EMCCD
  commandAndor red "programid $SCOPE(ProgID)"
  commandAndor blue "programid $SCOPE(ProgID)"
  if { $INSTRUMENT(red,emccd) } {
-   commandAndor red "outputamp $ANDOR_EMCCD"
+#   commandAndor red "outputamp $ANDOR_EMCCD"
    commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
    commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
- } else {
-   commandAndor red "outputamp $ANDOR_CCD"
- }
+# } else {
+#   commandAndor red "outputamp $ANDOR_CCD"
+# }
  if { $INSTRUMENT(blue,emccd) } {
-   commandAndor blue "outputamp $ANDOR_EMCCD"
+#   commandAndor blue "outputamp $ANDOR_EMCCD"
    commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
    commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
- } else {
-   commandAndor blue "outputamp $ANDOR_CCD"
- }
+# } else {
+#   commandAndor blue "outputamp $ANDOR_CCD"
+# }
  commandAndor red "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor red "filter $SPECKLE_FILTER(red,current)"

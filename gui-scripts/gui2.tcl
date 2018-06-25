@@ -154,7 +154,7 @@ menu .mbar.help.m
 .mbar.tools.m add command -label "Engineering" -command "speckleGuiMode engineeringGui"
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file://$SPECKLE_DIR/doc/user-guide.html &}
 .mbar.tools.m add command -label "Observing" -command "speckleGuiMode observingGui"
-.mbar.tools.m add command -label "Filter Editor" -command "wm deiconify .filters"
+.mbar.tools.m add command -label "Filter Selection" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
 
 proc speckleGuiMode { mode } {
