@@ -184,7 +184,6 @@ proc acquireDataFrame { exp } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
     redisUpdate
-    updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
     set t [clock seconds]
     set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
     set TELEMETRY(speckle.andor.numexp) 1
@@ -214,13 +213,13 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
+    updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
 }
 
 proc acquireDataROI { exp x y n } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     debuglog "Starting $ANDOR_ARM ROI sequence with exposure = $exp"
     redisUpdate
-    updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
     set t [clock seconds]
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
@@ -243,6 +242,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
+    updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
 }
 
 proc OldacquireDataCube { exp x y npix n } {
@@ -304,7 +304,6 @@ proc acquireDataCube { exp x y npix n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   redisUpdate
-  updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
@@ -317,6 +316,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 cmap Heat
     exec xpaset -p $DS9 zoom to fit
   }
+  updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
   refreshads9 [expr int($exp*2000)] [expr $n*4]
   set TELEMETRY(speckle.andor.numexp) $n
   set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
