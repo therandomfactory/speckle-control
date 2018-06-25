@@ -1,4 +1,4 @@
-
+set PI 3.141592653589
 
 proc updateds9wcs { ra dec } {
 global SCOPE ACQREGION PSCALES ANDOR_CFG PI
@@ -25,7 +25,7 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI
 }
 
 proc headerAstrometry { fid ra dec } {
-global ACQREGION SCOPE PSCALES ANDOR_CFG
+global ACQREGION SCOPE PSCALES ANDOR_CFG PI
   set radeg [expr [hms_to_radians $ra]*180/$PI]
   set decdeg [expr [dms_to_radians $dec]*180/$PI]
   set r [fitshdrrecord  CRVAL1	 string "$radeg"	"R.A. of reference pixel \[deg\]"]
@@ -57,6 +57,7 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG
 }
 
 proc dms_to_radians { dms } {
+global PI
    set t [string trim $dms "+ "]
    set s 1
    if { [string range $t 0 0] == "-" } {
@@ -64,20 +65,21 @@ proc dms_to_radians { dms } {
       set dms [string trim $dms "-"]
    }
    set f [split $dms ":"]
-   set r [expr $s * ([lindex $f 0] + [lindex $f 1]/60.0 + [lindex $f 2]/3600.0 )/180. * 3.1415826535]
+   set r [expr $s * ([lindex $f 0] + [lindex $f 1]/60.0 + [lindex $f 2]/3600.0 )/180. * $PI]
 }
 
 proc hms_to_radians { hms } {
+global PI
    set f [split $hms ":"]
-   set r [expr ([lindex $f 0] + [lindex $f 1]/60.0 + [lindex $f 2]/3600.0 )/12. * 3.1415826535]
+   set r [expr ([lindex $f 0] + [lindex $f 1]/60.0 + [lindex $f 2]/3600.0 )/12. * $PI]
 }
 
 
 
-set PSCALES(WIYN,fullframe) 	[expr 0.0813/3600./180.*3.1415926535]
-set PSCALES(WIYN,speckle) 	[expr 0.0182/3600./180.*3.1415926535]
-set PSCALES(GEMINI,fullframe) 	[expr 0.0725/3600./180.*3.1415926535]
-set PSCALES(GEMINI,speckle)	[expr 0.0096/3600./180.*3.1415926535]
+set PSCALES(WIYN,fullframe) 	[expr 0.0813/3600./180.*$PI]
+set PSCALES(WIYN,speckle) 	[expr 0.0182/3600./180.*$PI]
+set PSCALES(GEMINI,fullframe) 	[expr 0.0725/3600./180.*$PI]
+set PSCALES(GEMINI,speckle)	[expr 0.0096/3600./180.*$PI]
 set ACQREGION(geom) 1024
 set ACQREGION(bin) 1
 set ANDOR_CFG(frame) fullframe

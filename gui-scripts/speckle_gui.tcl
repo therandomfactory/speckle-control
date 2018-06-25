@@ -507,6 +507,8 @@ if { $SCOPE(telescope) == "WIYN" } {
 
 } else {
 
+proc redisUpdate { } { }
+
 set SPECKLE(engineeringGui) 936x1100
 wm geometry . 936x1100
 .lowlevel configure -height 700 -width 936
