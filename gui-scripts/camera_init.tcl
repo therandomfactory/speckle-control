@@ -38,7 +38,7 @@ global SCOPE TELEMETRY FITSKEY IMGMETA
           set TELEMETRY($i) $IMGMETA([lindex [split $i .] end],value)
       }
    }
-   if { $SCOPE(telescope) == "wiyn" } {
+   if { $SCOPE(telescope) == "WIYN" } {
       redisUpdate
    }
 }
@@ -60,7 +60,7 @@ global CAMERAS ANDOR ANDOR_SOCKET SCOPE
         zaberGoto focus stow
         zaberGoto pickoff out
      }
-     savestate
+     savespecklegui
      catch { commandAndor red shutdown }
      catch { commandAndor blue shutdown }
      catch { exec xpaset -p ds9 exit }

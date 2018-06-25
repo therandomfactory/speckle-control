@@ -20,14 +20,17 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI
   puts $fout "RADECSYS 'FK5'"
   puts $fout "EQUINOX 2000."
   close $fout
-  exec xpaset -p ds9 wcs replace /tmp/pakwcs.wcs
+  exec xpaset -p ds9red wcs replace /tmp/pakwcs.wcs
+  exec xpaset -p ds9blue wcs replace /tmp/pakwcs.wcs
 }
 
 proc headerAstrometry { fid ra dec } {
 global ACQREGION SCOPE PSCALES ANDOR_CFG
-  set r [fitshdrrecord  CRVAL1	 string "$ra"	"R.A. of reference pixel \[deg\]"]
+  set radeg [expr [hms_to_radians $ra]*180/$PI]
+  set decdeg [expr [dms_to_radians $dec]*180/$PI]
+  set r [fitshdrrecord  CRVAL1	 string "$radeg"	"R.A. of reference pixel \[deg\]"]
   $fid put keyword $r
-  set r [fitshdrrecord  CRVAL2	 string "$dec"	"Declination of reference pixel \[deg\]"]
+  set r [fitshdrrecord  CRVAL2	 string "$decdeg"	"Declination of reference pixel \[deg\]"]
   $fid put keyword $r
   set r [fitshdrrecord  CRPIX1	 integer [expr $ACQREGION(geom)/$ACQREGION(bin)/2]	"Coordinate reference pixel in X"]
   $fid put keyword $r
@@ -43,7 +46,7 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG
   $fid put keyword $r
   set r [fitshdrrecord  CTYPE1	 string 'RA--TAN'	"Coordinate type"]
   $fid put keyword $r
-  set r [fitshdrrecord  CTYPE2	 string  'DEC--TAN'"	"Coordinate type"]
+  set r [fitshdrrecord  CTYPE2	 string  'DEC--TAN'	"Coordinate type"]
   $fid put keyword $r
   set r [fitshdrrecord  WCSNAME  string 'FK5'	"World coordinate system type"]
   $fid put keyword $r
@@ -74,7 +77,7 @@ proc hms_to_radians { hms } {
 set PSCALES(WIYN,fullframe) 	[expr 0.0813/3600./180.*3.1415926535]
 set PSCALES(WIYN,speckle) 	[expr 0.0182/3600./180.*3.1415926535]
 set PSCALES(GEMINI,fullframe) 	[expr 0.0725/3600./180.*3.1415926535]
-set PSCALES(GEMINI,fullframe)	[expr 0.0096/3600./180.*3.1415926535]
+set PSCALES(GEMINI,speckle)	[expr 0.0096/3600./180.*3.1415926535]
 set ACQREGION(geom) 1024
 set ACQREGION(bin) 1
 set ANDOR_CFG(frame) fullframe

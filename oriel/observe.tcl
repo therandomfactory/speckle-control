@@ -969,7 +969,6 @@ global ANDOR_CCD ANDOR_EMCCD
  } else {
    commandAndor blue "outputamp $ANDOR_CCD"
  }
- }
  commandAndor red "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor red "filter $SPECKLE_FILTER(red,current)"

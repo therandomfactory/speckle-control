@@ -942,6 +942,7 @@ proc startsequence { } {
 #               STATUS	-	Exposure status
 #               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
+global ANDOR_CCD ANDOR_EMCCD
  set iseqnum 0
  redisUpdate
  set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
@@ -952,12 +953,22 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPE
  commandAndor blue "numberkinetics $SCOPE(numframes)"
  commandAndor red "numberaccumulations $SCOPE(numaccum)"
  commandAndor blue "numberaccumulations $SCOPE(numaccum)"
- commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
- commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
  commandAndor red "programid $SCOPE(ProgID)"
  commandAndor blue "programid $SCOPE(ProgID)"
- commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
- commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
+ if { $INSTRUMENT(red,emccd) } {
+   commandAndor red "outputamp $ANDOR_EMCCD"
+   commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
+   commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
+ } else {
+   commandAndor red "outputamp $ANDOR_CCD"
+ }
+ if { $INSTRUMENT(blue,emccd) } {
+   commandAndor blue "outputamp $ANDOR_EMCCD"
+   commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
+   commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
+ } else {
+   commandAndor blue "outputamp $ANDOR_CCD"
+ }
  commandAndor red "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor red "filter $SPECKLE_FILTER(red,current)"
