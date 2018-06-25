@@ -811,15 +811,27 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   mimicMode red roi [set rdim]x[set rdim]
   mimicMode blue roi [set rdim]x[set rdim]
   exec xpaset -p ds9red regions system physical
+  exec xpaset -p ds9blue regions system physical
   set reg [split [exec xpaget ds9red regions] \n]
   foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
         set r [lrange [split $i ",()"] 1 4]
-        set ACQREGION(xs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
-        set ACQREGION(ys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
-        set ACQREGION(xe) [expr $ACQREGION(xs) + [lindex $r 2] -1]
-        set ACQREGION(ye) [expr $ACQREGION(ys) + [lindex $r 3] -1]
-        puts stdout "selected region $r"
+        set ACQREGION(rxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
+        set ACQREGION(rys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
+        set ACQREGION(rxe) [expr $ACQREGION(xs) + [lindex $r 2] -1]
+        set ACQREGION(rye) [expr $ACQREGION(ys) + [lindex $r 3] -1]
+        puts stdout "selected red region $r"
+     }
+  }
+  set reg [split [exec xpaget ds9blue regions] \n]
+  foreach i $reg {
+     if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
+        set r [lrange [split $i ",()"] 1 4]
+        set ACQREGION(bxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
+        set ACQREGION(bys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
+        set ACQREGION(bxe) [expr $ACQREGION(xs) + [lindex $r 2] -1]
+        set ACQREGION(bye) [expr $ACQREGION(ys) + [lindex $r 3] -1]
+        puts stdout "selected red region $r"
      }
   }
   set CONFIG(geometry.StartCol) [expr $ACQREGION(xs)]
@@ -1026,7 +1038,7 @@ global ANDOR_CCD ANDOR_EMCCD
       set FRAME $i
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-      after [expr int($SCOPE(exposure)*1000)+5]
+      after [expr int($SCOPE(exposure)*1000)+4]
       incr i 1
       .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
       update

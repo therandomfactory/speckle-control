@@ -185,12 +185,12 @@ global INSTRUMENT SCOPE LASTACQ ACQREGION
    set n [expr $ACQREGION(xe) - $ACQREGION(xs) +1]
    if { $INSTRUMENT(red) } {
       commandAndor red "setframe roi"
-      commandAndor red "grabcube $SCOPE(exposure) $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(geom) $SCOPE(numframes)"
+      commandAndor red "grabcube $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) $SCOPE(numframes)"
       set LASTACQ roi
    }
    if { $INSTRUMENT(blue) } {
       commandAndor blue "setframe roi"
-      commandAndor blue "grabcube $SCOPE(exposure)  $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(geom) $SCOPE(numframes)"
+      commandAndor blue "grabcube $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) $SCOPE(numframes)"
       set LASTACQ roi
    }
 }
