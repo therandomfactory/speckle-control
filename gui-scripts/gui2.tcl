@@ -139,9 +139,9 @@ menu .mbar.tools.m
 menu .mbar.help.m
 #.mbar.file.m add command -label "Open" -command fileopen
 .mbar.file.m add command -label "Save"  -command savespecklegui
-.mbar.file.m.add command -label "ushort image format" -command "setfitsbits ushort"
-.mbar.file.m.add command -label "ulong  image format" -command "setfitsbits ulong"
-.mbar.file.m.add command -label "float  image format" -command "setfitsbits float"
+.mbar.file.m.add command -label "ushort image format" -command "setfitsbits USHORT_IMG"
+.mbar.file.m.add command -label "ulong  image format" -command "setfitsbits ULONG_IMG"
+.mbar.file.m.add command -label "float  image format" -command "setfitsbits FLOAT_IMG"
 
 #.mbar.file.m add command -label "Save As" -command filesaveas
 .mbar.file.m add command -label "Exit" -command shutdown
@@ -162,6 +162,15 @@ menu .mbar.help.m
 .mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
 .mbar.tools.m add command -label "Plot timings" -command "plotTimings"
 
+set FITSBITS(SHORT_IMG)    16
+set FITSBITS(LONG_IMG)     32
+set FITSBITS(FLOAT_IMG)   -32
+set FITSBITS(USHORT_IMG)   20
+set FITSBITS(ULONG_IMG)    40
+### not supported
+#set FITSBITS(LONGLONG_IMG) 64
+#set FITSBITS(BYTE_IMG)     8 
+#set FITSBITS(DOUBLE_IMG)  -64
 
 
 proc plotTimings { } {
@@ -178,6 +187,12 @@ proc plotTimings { } {
    }
 }
 
+
+proc setfitsbits { type } {
+global FITSBITS
+   commandAndor red "fitsbits $type"   
+   commandAndor blue "fitsbits $type"
+}
 
 
 
