@@ -139,9 +139,9 @@ menu .mbar.tools.m
 menu .mbar.help.m
 #.mbar.file.m add command -label "Open" -command fileopen
 .mbar.file.m add command -label "Save"  -command savespecklegui
-.mbar.file.m.add command -label "ushort image format" -command "setfitsbits USHORT_IMG"
-.mbar.file.m.add command -label "ulong  image format" -command "setfitsbits ULONG_IMG"
-.mbar.file.m.add command -label "float  image format" -command "setfitsbits FLOAT_IMG"
+.mbar.file.m.add command -label "USHORT" image format" -command "setfitsbits USHORT_IMG"
+.mbar.file.m.add command -label "ULONG"  image format" -command "setfitsbits ULONG_IMG"
+.mbar.file.m.add command -label "FLOAT"  image format" -command "setfitsbits FLOAT_IMG"
 
 #.mbar.file.m add command -label "Save As" -command filesaveas
 .mbar.file.m add command -label "Exit" -command shutdown
