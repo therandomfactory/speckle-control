@@ -70,9 +70,9 @@ debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
 set ANDOR_CFG($CAM,OutputAmplifier) 0
 set ANDOR_CFG($CAM,PreAmpGain) 2
-set ANDOR_CFG($CAM,VSSpeed) 0
+set ANDOR_CFG($CAM,VSSpeed) 1
 set ANDOR_CFG($CAM,HSSpeed) 0
-set ANDOR_CFG($CAM,EMHSSpeed) 0
+set ANDOR_CFG($CAM,EMHSSpeed) 1
 set ANDOR_CFG($CAM,hbin) 1
 set ANDOR_CFG($CAM,vbin) 1
 set ANDOR_CFG(configure) "1 1 1 1024 1 1024 2 2 1 3"
@@ -196,7 +196,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       updateDatabase
       exec xpaset -p $DS9 frame 2
-      exec xpaset -p $DS9 zoom to fit
+      if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
@@ -208,7 +208,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       updateDatabase
       exec xpaset -p $DS9 frame 2
-      exec xpaset -p $DS9 zoom to fit
+      if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
@@ -308,13 +308,13 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
-    exec xpaset -p $DS9 zoom to fit
+    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   if { $ANDOR_ARM == "red" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
-    exec xpaset -p $DS9 zoom to fit
+    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
   refreshads9 [expr int($exp*2000)] [expr $n*4]
@@ -477,6 +477,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          programid       { set SCOPE(ProgID) [lindex $msg 1] ; puts $sock "OK" }
          filter          { set SCOPE(filter) [lindex $msg 1] ; puts $sock "OK" }
          comments        { set SCOPE(comments) [lrange $msg 1 end] ;  puts $sock "OK" }
+         autofitds9      { set ANDOR_CFG(fitsds9) [lindex $msg 1] ;  puts $sock "OK" }
          configure       { set hbin [lindex $msg 1]
                            set vbin [lindex $msg 2]
                            set vstart [lindex $msg 3]

@@ -41,7 +41,7 @@ float fitsROI[1024*1024];
 unsigned long fitsROI_ulong[1024*1024];
 float fitsROI_float[1024*1024];
 unsigned short fitsROI_ushort[1024*1024];
-float fitsTimings[3000000];
+double fitsTimings[3000000];
 unsigned int imageFrameI4[1024*1024];
 unsigned int fitsROI4[512*512];
 unsigned short imageFrameI2[1024*1024];
@@ -659,11 +659,11 @@ int append_fitsTimings(int numexp)
    int hdutype;
    char extname[] = "Frame timings";           /* extension name */
    char *ttype[] = { "Time" };
-   char *tform[] = { "E1000" };
+   char *tform[] = { "1D" };
    char *tunit[] = { "seconds" };
 
    fits_create_tbl(fptr, BINARY_TBL, numexp, 1, ttype, &tform, tunit, extname, &status);
-   fits_write_col(fptr, TFLOAT, 1, 1, 1, numexp, fitsTimings, &status);
+   fits_write_col(fptr, TDOUBLE, 1, 1, 1, numexp, fitsTimings, &status);
 
 }
 

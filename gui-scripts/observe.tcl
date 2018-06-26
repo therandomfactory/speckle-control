@@ -967,6 +967,8 @@ global ANDOR_CCD ANDOR_EMCCD
  commandAndor blue "numberaccumulations $SCOPE(numaccum)"
  commandAndor red "programid $SCOPE(ProgID)"
  commandAndor blue "programid $SCOPE(ProgID)"
+ commandAndor red "autofitds9 $INSTRUMENT(red,fitds9)"
+ commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
  if { $INSTRUMENT(red,emccd) } {
 #   commandAndor red "outputamp $ANDOR_EMCCD"
    commandAndor red "emadvanced $INSTRUMENT(red,highgain)"

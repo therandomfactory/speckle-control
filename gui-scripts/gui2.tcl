@@ -138,7 +138,11 @@ menu .mbar.temp.m
 menu .mbar.tools.m
 menu .mbar.help.m
 #.mbar.file.m add command -label "Open" -command fileopen
-.mbar.file.m add command -label "Save" -command savespecklegui
+.mbar.file.m add command -label "Save"  -command savespecklegui
+.mbar.file.m.add command -label "ushort image format" -command "setfitsbits ushort"
+.mbar.file.m.add command -label "ulong  image format" -command "setfitsbits ulong"
+.mbar.file.m.add command -label "float  image format" -command "setfitsbits float"
+
 #.mbar.file.m add command -label "Save As" -command filesaveas
 .mbar.file.m add command -label "Exit" -command shutdown
 .mbar.observe.m add command -label "Snap-roi-128" -command "observe region128"
@@ -156,13 +160,68 @@ menu .mbar.help.m
 .mbar.tools.m add command -label "Observing" -command "speckleGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Selection" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
+.mbar.tools.m add command -label "Plot timings" -command "plotTimings"
+
+
+
+proc plotTimings { } {
+   set it [tk_getOpenFile -initialdir $env(HOME)/data]
+   if { [file exists $it] } {
+      set fh [fits open $it]
+      $fh move +1
+      set times [$fh get table]
+      set fout [open /tmp/timings w]
+      foreach i $times { puts $fout $i }
+      close $fout
+      fits close $fh
+      exec echo "plot \"/tmp/timings\"" | gnuplot -p
+   }
+}
+
+
+
 
 proc speckleGuiMode { mode } {
 global SPECKLE
   wm geometry . $SPECKLE($mode)
 }
 
+proc validInteger {win event X oldX min max} {
+        # Make sure min<=max
+        if {$min > $max} {
+            set tmp $min; set min $max; set max $tmp
+        }
+        # Allow valid integers, empty strings, sign without number
+        # Reject Octal numbers, but allow a single "0"
+        # Which signes are allowed ?
+        if {($min <= 0) && ($max >= 0)} {   ;# positive & negative sign
+            set pattern {^[+-]?(()|0|([1-9][0-9]*))$}
+        } elseif {$max < 0} {               ;# negative sign
+            set pattern {^[-]?(()|0|([1-9][0-9]*))$}
+        } else {                            ;# positive sign
+            set pattern {^[+]?(()|0|([1-9][0-9]*))$}
+        }
+        # Weak integer checking: allow empty string, empty sign, reject octals
+        set weakCheck [regexp $pattern $X]
+        # if weak check fails, continue with old value
+        if {! $weakCheck} {set X $oldX}
+        # Strong integer checking with range
+        set strongCheck [expr {[string is int -strict $X] && ($X >= $min) && ($X <= $max)}]
 
+        switch $event {
+            key {
+                $win configure -bg [expr {$strongCheck ? "white" : "yellow"}]
+                return $weakCheck
+            }
+            focusout {
+                if {! $strongCheck} {$win configure -bg red}
+                return $strongCheck
+            }
+            default {
+                return 1
+            }
+        }
+} 
 
 #
 #  Initialize telescope/user variables
@@ -178,22 +237,23 @@ foreach item "target ProgID ra dec telescope instrument" {
    incr iy 24 
 }
 
+ -validate all -vcmd {validInteger %W %V %P %s
 #
 #  Create main observation management widgets
 #
 #
 set bwkey text
 set bwfont font
-SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right
+SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right -validate all -vcmd {validFloat %W %V %P %s 0.0 1048.75}
 place .main.exposure -x 100 -y 20
-SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right
+SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 30000}
 place .main.numexp -x 100 -y 50
 set opts "Object Focus Acquire Flat SkyFlat Dark Zero"
 ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype) -justify right
-SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right
+SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 1000}
 place .main.numseq -x 100 -y 106
 label .main.laccum -text "Accum." -bg gray
-SpinBox .main.numaccum -width 10   -range "1 10000 1" -textvariable SCOPE(numaccum) -justify right
+SpinBox .main.numaccum -width 10   -range "1 10000 1" -textvariable SCOPE(numaccum) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 1000}
 place .main.exptype -x 100 -y 80
 place .main.numaccum -x 250 -y 106
 label .main.lexp -text Exposure -bg gray
@@ -228,7 +288,7 @@ place .main.bcamtemp -x 453 -y 2
 
 
 .main.imagename insert 0 "N[exec date +%Y%m%d]"
-entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right
+entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 999999}
 place .main.seqnum -x 270 -y 135
 set SCOPE(seqnum) 1
 button .main.observe -width 5 -height 2 -text "Observe" -bg gray -command startsequence
@@ -433,12 +493,13 @@ focus .
 #  Stop the user from destroying the windows by accident
 #
 
-wm protocol .countdown WM_DELETE_WINDOW {wm withdraw .countdown}
-wm protocol .status WM_DELETE_WINDOW {wm withdraw .status}
-wm protocol .       WM_DELETE_WINDOW {wm withdraw .status}
+wm protocol .countdown WM_DELETE_WINDOW {wm iconify .countdown}
+wm protocol .status WM_DELETE_WINDOW {wm iconify .status}
+wm protocol .       WM_DELETE_WINDOW {wm iconify .status}
+wm protocol .mimicSpeckle WM_DELETE_WINDOW {wm iconify .status}
+wm protocol .camerastatus WM_DELETE_WINDOW {wm iconify .status}
+wm protocol .filters WM_DELETE_WINDOW {wm iconify .status}
 
-#ap7p  set_biascols 1 7, set bic 4
-#kx260 set_biascols 1 5, set bic 2
 
 speckleGuiMode observingGui
 
