@@ -291,8 +291,8 @@ set ANDOR_DEF(hend)			1024
 set ANDOR_DEF(vstart)			1
 set ANDOR_DEF(vend)			1024
 set ANDOR_DEF(amplifier)		$ANDOR_CCD
-set ANDOR_DEF(ccd_horizontal_speed	1
-set ANDOR_DEF(emccd_horizontal_speed)   0
+set ANDOR_DEF(ccd_horizontal_speed	0
+set ANDOR_DEF(emccd_horizontal_speed)   1
 set ANDOR_DEF(em_advanced)		0
 set ANDOR_DEF(camera_link)		0
 set ANDOR_DEF(head)                 "DU888_BV"
@@ -320,32 +320,20 @@ set ANDOR_DEF(vclock_amp)           0
 set ANDOR_DEF(vertical_speed)       4.33E-06     
 set ANDOR_DEF(amplifier)            "CCD"
 set ANDOR_DEF(preamp_gain)          2.
-set ANDOR_DEF(serial_number)        10244   
 set ANDOR_DEF(target_temperature)   -60.
-set ANDOR_DEF(base_clamp)           T    
+set ANDOR_DEF(base_clamp)           1  
 set ANDOR_DEF(prescans)             0
 set ANDOR_DEF(flipx)                0
 set ANDOR_DEF(flipy)                0
 set ANDOR_DEF(convert_mode)         0
 set ANDOR_DEF(conversion)           1    
 set ANDOR_DEF(sensitivity)          4.17358
-set ANDOR_DEF(spurious_filter)      0
-set ANDOR_DEF(threshold)            0.
-set ANDOR_DEF(photon_counting)      0  
-set ANDOR_DEF(nphoton_thresh)       0
 set ANDOR_DEF(frame_count)          1       
-set ANDOR_DEF(port_readout)         -1            
-set ANDOR_DEF(exp_window_height)    0    
-set ANDOR_DEF(linescan_speed)       0.           
-set ANDOR_DEF(alternate_readout)    0
-set ANDOR_DEF(scanspeed_control)    0            
-set ANDOR_DEF(readout_direction)    -1                      
-set ANDOR_DEF(eshutter_mode)        -1
 
 
-set ANDOR_CFG(vertical_speeds)	    "0.6,1.13,2.2,4.33"
-set ANDOR_CFG(readoutrate,ccd)      "0.1,1.0"
-set ANDOR_CFG(readoutrate,emccd)    "1,10,20,30"
+set ANDOR_CFG(vertical_speeds)	    "4.33,2.2,1.13,0.6"
+set ANDOR_CFG(readoutrate,ccd)      "1.0,0.1"
+set ANDOR_CFG(readoutrate,emccd)    "30,20,10,1"
 set ANDOR_CFG(preampgains)          "1,2"
 set ANDOR_CFG(minexposure,ccd)       1.1
 set ANDOR_CFG(minexposure,emccd)     0.015
