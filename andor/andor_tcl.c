@@ -36,6 +36,8 @@ int imageDataB[1024*1024];
 int outputData[1024*1024];
 int outputAvgA[1024*1024];
 int outputAvgB[1024*1024];
+int getLucky0[1024*1024];
+int getLucky1[1024*1024];
 float imageFrame[1024*1024];
 float fitsROI[1024*1024];
 unsigned long fitsROI_ulong[1024*1024];
@@ -75,6 +77,9 @@ int tcl_andorConnectShmem1(ClientData clientData, Tcl_Interp *interp, int argc, 
 int tcl_andorStartAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorSelectCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorClearLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorDisplayLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorAccumulateLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorDisplayFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorFakeData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorDisplaySingleFFT(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -171,7 +176,10 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorConnectShmem1", (Tcl_CmdProc *) tcl_andorConnectShmem1, NULL, NULL);
   Tcl_CreateCommand(interp, "andorShutDown", (Tcl_CmdProc *) tcl_andorShutDown, NULL, NULL);
   Tcl_CreateCommand(interp, "andorFakeData", (Tcl_CmdProc *) tcl_andorFakeData, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorClearLucky", (Tcl_CmdProc *) tcl_andorClearLucky, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplaySingleFFT", (Tcl_CmdProc *) tcl_andorDisplaySingleFFT, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorDisplayLucky", (Tcl_CmdProc *) tcl_andorDisplayLucky, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorAccumlateLucky", (Tcl_CmdProc *) tcl_andorAccumulateLucky, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplayAvgFFT", (Tcl_CmdProc *) tcl_andorDisplayAvgFFT, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStoreFrame", (Tcl_CmdProc *) tcl_andorStoreFrame, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStoreFrameI2", (Tcl_CmdProc *) tcl_andorStoreFrameI2, NULL, NULL);
@@ -662,7 +670,7 @@ int append_fitsTimings(int numexp)
    char *tform[] = { "1D" };
    char *tunit[] = { "seconds" };
 
-   fits_create_tbl(fptr, BINARY_TBL, numexp, 1, ttype, &tform, tunit, extname, &status);
+   fits_create_tbl(fptr, BINARY_TBL, numexp, 1, ttype, tform, tunit, extname, &status);
    fits_write_col(fptr, TDOUBLE, 1, 1, 1, numexp, fitsTimings, &status);
 
 }
@@ -1247,6 +1255,39 @@ int tcl_andorDisplaySingleFFT(ClientData clientData, Tcl_Interp *interp, int arg
   return TCL_OK;
 }
 
+int tcl_andorDisplayLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+
+  int width,height,numexp,cameraId;
+  int irow;
+  float fvalue;
+  int ifft=1;
+
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 5) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId width height\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+  sscanf(argv[1],"%d",&cameraId);
+  sscanf(argv[2],"%d",&width);
+  sscanf(argv[3],"%d",&height);
+
+  if ( cameraId == 0 ) {
+      calcavg(outputAvgA,width*height,numexp);
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMem0 + irow*width, getLucky0 + irow*width, width*4, 0);
+      }
+  }
+  if ( cameraId == 1 ) {
+      calcavg(outputAvgB,width*height,numexp);
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMem1 + irow*width, getLucky1 + irow*width, width*4, 0);
+      }
+  }
+
+  return TCL_OK;
+}
+
 
 int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
@@ -1566,6 +1607,89 @@ int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, 
         printf("status = %d in tcl_andorPrepDataCube, %d,%d,%d,%d,%d,%d\n",status,1,1,1,width,1,height);
         return TCL_OK;
 }
+
+int tcl_andorClearLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+    int ipix;
+    for (ipix=0;ipix<1024*1024;ipix++) {
+       getLucky0[ipix]=0;
+       getLucky1[ipix]=0;
+    }
+}
+
+int tcl_andorAccumulateLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+    int maxsum,i,j,xmaxat,ymaxat,idim,isum;
+    int line,pixel;
+    int ithresh;
+    int cameraId;
+    int status;
+    unsigned int *cframe;
+    int ii,jj,csum,destx,desty;
+
+    if (argc < 3) {
+      Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," cameraId idim thresh\"", (char *)NULL);
+      return TCL_ERROR;
+    }
+
+  sscanf(argv[1],"%d",&cameraId);
+  sscanf(argv[2],"%d",&idim);
+  sscanf(argv[3],"%d",&ithresh);
+
+  if ( cameraId == 0 ) {
+     status = SetCurrentCamera(cameraA);
+     cframe = &imageDataA;
+  } else {
+     status = SetCurrentCamera(cameraB);
+     cframe = &imageDataB;
+  }
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select camera - %d",cameraId);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+
+    xmaxat = 0;
+    ymaxat = 0;
+    maxsum = 0.0;
+    for (line = 4; line <= idim-4; line=line++) {
+       for (pixel = 4; pixel <= idim-4; pixel=pixel++) {
+        isum = 0;
+        for (ii=-4;ii<=4;ii++) {
+          for (jj=-4;jj<=4;jj++) {
+             isum = isum + cframe[(line+ii) * idim + pixel+jj];
+          }
+        }
+        if (isum > maxsum) {
+           xmaxat = pixel;
+           ymaxat = line;
+           maxsum = csum;
+        }
+       }
+    }
+
+    if (maxsum/89 > ithresh) {
+      for (line = 0;line<idim; line=line++) {
+         for (line = 0; pixel<idim; pixel=pixel++) {
+             destx = xmaxat-line+idim/2;
+             desty = ymaxat-pixel+idim/2;
+             if (destx > 0 && destx < idim && desty > 0 && desty < idim) {
+               if (cameraId == 0) {
+                 getLucky0[destx+desty*idim] = getLucky0[destx+desty*idim] + cframe[line+pixel*idim];
+               }
+               if (cameraId == 0) {
+                 getLucky1[destx+desty*idim] = getLucky1[destx+desty*idim] + cframe[line+pixel*idim];
+               }
+             }
+         }
+      }
+    }
+    sprintf(result,"%d",ithresh);
+    Tcl_SetResult(interp,result,TCL_STATIC);
+    return TCL_OK;
+}
+
+
 
 
 int tcl_andorGetDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
