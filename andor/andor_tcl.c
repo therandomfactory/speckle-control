@@ -1231,13 +1231,13 @@ int tcl_andorDisplaySingleFFT(ClientData clientData, Tcl_Interp *interp, int arg
     if ( cameraId == 0 ) {
       calcavg(outputAvgA,width*height,numexp);
       for ( irow=0;irow<width;irow++) {
-        copyline(SharedMem0, outputAvgA + irow*width, width*4, 0);
+        copyline(SharedMem0 + irow*width, outputAvgA + irow*width, width*4, 0);
       }
     }
     if ( cameraId == 1 ) {
       calcavg(outputAvgB,width*height,numexp);
       for ( irow=0;irow<width;irow++) {
-        copyline(SharedMem1, outputAvgB + irow*width, width*4, 0);
+        copyline(SharedMem1 + irow*width, outputAvgB + irow*width, width*4, 0);
       }
     }
   } else { 
