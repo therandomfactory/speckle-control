@@ -429,7 +429,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CODE CAM
 
 proc printreadoutcfgs { } {
     set amp CCD
-    foreach hsspeed "30Mhz 20Mhz 10Mhz 1Mhz" {
+    foreach hsspeed "1MHz 100KHz" {
       foreach vsspeed "4.33usec 2.2usec 1.13usec 0.6sec" {
         foreach preamp "1 2" {
          foreach vsamplitude "normal +1 +2 +3 +4" {
@@ -439,7 +439,7 @@ proc printreadoutcfgs { } {
       }
     }
     set amp EMCCD
-    foreach hsspeed "1Mhz 0.1Mhz" {
+    foreach hsspeed "30MHz 20MHz 10MHz 1MHz" {
       foreach vsspeed "4.33usec 2.2usec 1.13usec 0.6sec" {
         foreach preamp "1 2" {
          foreach vsamplitude "normal +1 +2 +3 +4" {
@@ -456,7 +456,7 @@ proc printreadoutcfgs { } {
 proc testreadoutcfgs { } {
 global ANDOR_RET
     set amp CCD
-    foreach hsspeed "30Mhz 20Mhz 10Mhz 1Mhz" {
+    foreach hsspeed "1Mhz 100KHz" {
       foreach vsspeed "4.33usec 2.2usec 1.13usec 0.6sec" {
         foreach preamp "1 2" {
          foreach vsamplitude "normal +1 +2 +3 +4" {
@@ -466,7 +466,7 @@ global ANDOR_RET
       }
     }
     set amp EMCCD
-    foreach hsspeed "1Mhz 0.1Mhz" {
+    foreach hsspeed "30MHz 20MHz 10MHz 1MHz" {
       foreach vsspeed "4.33usec 2.2usec 1.13usec 0.6sec" {
         foreach preamp "1 2" {
          foreach vsamplitude "normal +1 +2 +3 +4" {
