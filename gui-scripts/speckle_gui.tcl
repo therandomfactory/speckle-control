@@ -100,11 +100,18 @@ place .lowlevel.bshut -x 420 -y 30
 
 checkbutton .lowlevel.rautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(red,fitsds9) -highlightthickness 0
 checkbutton .lowlevel.bautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(blue,fitsds9) -highlightthickness 0
-place .lowlevel.rautofit -x 220 -y 30
-place .lowlevel.rautofit -x 620 -y 30
+place .lowlevel.rautofit -x 280 -y 33
+place .lowlevel.bautofit -x 680 -y 33
+
+checkbutton .lowlevel.rfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(red,frametransfer) -highlightthickness 0
+checkbutton .lowlevel.bfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(blue,frametransfer) -highlightthickness 0
+place .lowlevel.rfxfer -x 220 -y 3
+place .lowlevel.bfxfer -x 620 -y 3
+set ANDOR_CFG(red,frametransfer) 1
+set ANDOR_CFG(blue,frametransfer) 1
+
 set INSTRUMENT(red,fitsds9) 0
 set INSTRUMENT(blue,fitsds9) 0
-
 set ZABERS(A,target) 0
 set ZABERS(B,target) 0
 set ZABERS(input,target) 0
@@ -381,11 +388,35 @@ checkbutton .lowlevel.emccd  -bg gray -text "EMCCD" -variable INSTRUMENT(red,emc
 checkbutton .lowlevel.hgain  -bg gray -text "High Gain" -variable INSTRUMENT(red,highgain) -command "checkemccdgain red"  -highlightthickness 0
 checkbutton .lowlevel.aemccd  -bg gray -text "Auto Set" -variable INSTRUMENT(red,autoemccd) -highlightthickness 0
 label .lowlevel.lvspeed  -bg gray -text "VSpeed"
-SpinBox .lowlevel.vspeed -width 4  -bg gray   -range "0 4 1" -textvariable INSTRUMENT(red,vspeed) -validate all -vcmd {validInteger %W %V %P %s 0 4}
+
+menubutton .lowlevel.vspeed -width 12 -text "0.6 usec" -fg black -bg gray -menu .lowlevel.vspeed.m -relief raised
+menu .lowlevel.vspeed.m
+.lowlevel.vspeed.m  add command -label "0.6 usec"  -command "andorset vspeed red VSSpeed 0"
+.lowlevel.vspeed.m  add command -label "1.13 usec"  -command "andorset vspeed red VSSpeed 1"
+.lowlevel.vspeed.m  add command -label "2.2 usec"  -command "andorset vspeed red VSSpeed 2"
+.lowlevel.vspeed.m  add command -label "4.33 usec"  -command "andorset vspeed red VSSpeed 3"
+
+menubutton .lowlevel.emhs  -width 12 -text "30 MHz" -fg black -bg gray -menu .lowlevel.emhs.m -relief raised
+menu .lowlevel.emhs.m
+.lowlevel.emhs.m  add command -label "30 MHz"  -command "andorset emhs red EMHSSpeed 0"
+.lowlevel.emhs.m  add command -label "20 MHz"  -command "andorset emhs red EMHSSpeed 1"
+.lowlevel.emhs.m  add command -label "10 MHz"  -command "andorset emhs red EMHSSpeed 2"
+.lowlevel.emhs.m  add command -label "1 MHz"   -command "andorset emhs red EMHSSpeed 3"
+
+menubutton .lowlevel.ccdhs -width 12  -text "1 MHz" -fg black -bg gray -menu .lowlevel.ccdhs.m -relief raised
+menu .lowlevel.ccdhs.m
+.lowlevel.ccdhs.m  add command -label "1 MHz"  -command "andorset ccdhs red HSSpeed 0"
+.lowlevel.ccdhs.m  add command -label "100 KHz"  -command "andorset ccdhs red HSSpeed 1"
+
+
+#SpinBox .lowlevel.vspeed -width 4  -bg gray   -range "0 4 1" -textvariable INSTRUMENT(red,vspeed) -validate all -vcmd {validInteger %W %V %P %s 0 4}
 label .lowlevel.lemhs  -bg gray -text "EMCCD HS" 
-SpinBox .lowlevel.emhs -width 4  -bg gray   -range "0 30 1" -textvariable INSTRUMENT(red,emhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
+#SpinBox .lowlevel.emhs -width 4  -bg gray   -range "0 30 1" -textvariable INSTRUMENT(red,emhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
 label .lowlevel.lccdhs  -bg gray -text "CCD HS" 
-SpinBox .lowlevel.ccdhs -width 4  -bg gray  -range "0 30 1" -textvariable INSTRUMENT(red,ccdhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
+#SpinBox .lowlevel.ccdhs -width 4  -bg gray  -range "0 30 1" -textvariable INSTRUMENT(red,ccdhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
+
+
+
 place .lowlevel.emccd -x 20 -y 100
 place .lowlevel.hgain -x 120 -y 100
 place .lowlevel.aemccd -x 330 -y 100
@@ -405,11 +436,51 @@ checkbutton .lowlevel.bemccd  -bg gray -text "EMCCD" -variable INSTRUMENT(blue,e
 checkbutton .lowlevel.bhgain  -bg gray -text "High Gain" -variable INSTRUMENT(blue,highgain) -command "checkemccdgain blue" -highlightthickness 0
 checkbutton .lowlevel.abemccd  -bg gray -text "Auto Set" -variable INSTRUMENT(red,autoemccd) -highlightthickness 0
 label .lowlevel.lbvspeed  -bg gray -text "Vspeed"
-SpinBox .lowlevel.bvspeed -width 4  -bg gray   -range "0 4 1" -textvariable INSTRUMENT(blue,vspeed) -validate all -vcmd {validInteger %W %V %P %s 0 4}
+
+
+#SpinBox .lowlevel.bvspeed -width 4  -bg gray   -range "0 4 1" -textvariable INSTRUMENT(blue,vspeed) -validate all -vcmd {validInteger %W %V %P %s 0 4}
 label .lowlevel.lbemhs  -bg gray -text "EMCCD HS" 
-SpinBox .lowlevel.bemhs -width 4  -bg gray  -range "0 3 1" -textvariable INSTRUMENT(blue,emhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
+#SpinBox .lowlevel.bemhs -width 4  -bg gray  -range "0 3 1" -textvariable INSTRUMENT(blue,emhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
 label .lowlevel.lbccdhs  -bg gray -text "CCD HS" 
-SpinBox .lowlevel.bccdhs -width 4  -bg gray  -range "0 3 1" -textvariable INSTRUMENT(blue,ccdhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
+#SpinBox .lowlevel.bccdhs -width 4  -bg gray  -range "0 3 1" -textvariable INSTRUMENT(blue,ccdhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
+
+
+menubutton .lowlevel.bvspeed  -width 12 -text "0.6 usec" -fg black -bg gray -menu .lowlevel.bvspeed.m -relief raised
+menu .lowlevel.bvspeed.m
+.lowlevel.bvspeed.m  add command -label "0.6 usec"  -command "andorset bvspeed blue VSSpeed 0"
+.lowlevel.bvspeed.m  add command -label "1.13 usec"  -command "andorset bvspeed blue VSSpeed 1"
+.lowlevel.bvspeed.m  add command -label "2.2 usec"  -command "andorset bvspeed blue VSSpeed 2"
+.lowlevel.bvspeed.m  add command -label "4.33 usec"  -command "andorset bvspeed blue VSSpeed 3"
+
+menubutton .lowlevel.bemhs  -width 12 -text "30 MHz" -fg black -bg gray -menu .lowlevel.bemhs.m -relief raised
+menu .lowlevel.bemhs.m
+.lowlevel.bemhs.m  add command -label "30 MHz"  -command "andorset bemhs blue EMHSSpeed 0"
+.lowlevel.bemhs.m  add command -label "20 MHz"  -command "andorset bemhs blue EMHSSpeed 1"
+.lowlevel.bemhs.m  add command -label "10 MHz"  -command "andorset bemhs blue EMHSSpeed 2"
+.lowlevel.bemhs.m  add command -label "1 MHz"   -command "andorset bemhs blue EMHSSpeed 3"
+
+menubutton .lowlevel.bccdhs  -width 12 -text "1 MHz" -fg black -bg gray -menu .lowlevel.bccdhs.m -relief raised
+menu .lowlevel.bccdhs.m
+.lowlevel.bccdhs.m  add command -label "1 MHz"  -command "andorset bccdhs blue HSSpeed 0"
+.lowlevel.bccdhs.m  add command -label "100 KHz"  -command "andorset bccdhs blue HSSpeed 1"
+
+proc andorset { w arm item value } {
+global ANDOR_CFG
+  set ANDOR_CFG($arm,$item) $value
+  .lowlevel.$w configure -text $ANDOR_CFG($item,$value)
+}
+
+set ANDOR_CFG(VSSpeed,0) "0.6 usec"
+set ANDOR_CFG(VSSpeed,1) "1.13 usec"
+set ANDOR_CFG(VSSpeed,2) "2.2 usec"
+set ANDOR_CFG(VSSpeed,3) "4.33 usec"
+set ANDOR_CFG(EMHSSpeed,0) "30 MHz"
+set ANDOR_CFG(EMHSSpeed,1) "20 MHz"
+set ANDOR_CFG(EMHSSpeed,2) "10 MHz"
+set ANDOR_CFG(EMHSSpeed,3) "1 MHz"
+set ANDOR_CFG(HSSpeed,0) "1 MHz"
+set ANDOR_CFG(HSSpeed,1) "100 KHz"
+
 place .lowlevel.bemccd -x 420 -y 100
 place .lowlevel.bhgain -x 520 -y 100
 place .lowlevel.abemccd -x 730 -y 100

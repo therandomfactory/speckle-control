@@ -91,7 +91,7 @@ proc zaberConnect { } {
 global ZABERS
    set handle -1
    if { $ZABERS(sim) } {
-      set handle 1
+     set ZABERS(handle) -1
      debuglog "Zabers in SIMULATION mode"
      return
    } else {
@@ -144,8 +144,6 @@ global ZABERS ZPROP ZNAME ZSIMPROP
        set result [puts $ZABERS(handle) "/$ZABERS($name,device) $cmd\r\n"]
        after 100 update
      }
-  } else {
-     errordialog "Zaber handle not valid in zaberCommand - $handle"
   }
 }
 
@@ -355,7 +353,7 @@ if { [info exists env(SPECKLE_SIM)] } {
 loadZaberConfig
 echoZaberConfig
 zaberConnect
-if { $ZABERS(sim) } {
+if { $ZABERS(sim) == 0 } {
   zaberGetProperties A
   zaberGetProperties B
   zaberGetProperties input

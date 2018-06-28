@@ -138,10 +138,10 @@ menu .mbar.temp.m
 menu .mbar.tools.m
 menu .mbar.help.m
 #.mbar.file.m add command -label "Open" -command fileopen
-.mbar.file.m add command -label "Save"  -command savespecklegui
-.mbar.file.m.add command -label "USHORT" image format" -command "setfitsbits USHORT_IMG"
-.mbar.file.m.add command -label "ULONG"  image format" -command "setfitsbits ULONG_IMG"
-.mbar.file.m.add command -label "FLOAT"  image format" -command "setfitsbits FLOAT_IMG"
+.mbar.file.m add command -label "Save"  -command "savespecklegui"
+.mbar.file.m add command -label "USHORT image format" -command "setfitsbits USHORT_IMG"
+.mbar.file.m add command -label "ULONG  image format" -command "setfitsbits ULONG_IMG"
+.mbar.file.m add command -label "FLOAT image format" -command "setfitsbits FLOAT_IMG"
 
 #.mbar.file.m add command -label "Save As" -command filesaveas
 .mbar.file.m add command -label "Exit" -command shutdown
@@ -238,6 +238,40 @@ proc validInteger {win event X oldX min max} {
         }
 } 
 
+
+proc validFloat {win event X oldX min max} {
+        # Make sure min<=max
+        if {$min > $max} {
+            set tmp $min; set min $max; set max $tmp
+        }
+        # Allow valid integers, empty strings, sign without number
+        # Reject Octal numbers, but allow a single "0"
+        # Which signes are allowed ?
+        set pattern {^[+]?(()|0|([1-9].[0-9]*))$}
+        # Weak integer checking: allow empty string, empty sign, reject octals
+        set weakCheck [regexp $pattern $X]
+        # if weak check fails, continue with old value
+        if {! $weakCheck} {set X $oldX}
+        # Strong integer checking with range
+        set strongCheck [expr {[string is int -strict $X] && ($X >= $min) && ($X <= $max)}]
+
+        switch $event {
+            key {
+                $win configure -bg [expr {$strongCheck ? "white" : "yellow"}]
+                return $weakCheck
+            }
+            focusout {
+                if {! $strongCheck} {$win configure -bg red}
+                return $strongCheck
+            }
+            default {
+                return 1
+            }
+        }
+} 
+
+
+
 #
 #  Initialize telescope/user variables
 #
@@ -252,7 +286,7 @@ foreach item "target ProgID ra dec telescope instrument" {
    incr iy 24 
 }
 
- -validate all -vcmd {validInteger %W %V %P %s
+
 #
 #  Create main observation management widgets
 #
