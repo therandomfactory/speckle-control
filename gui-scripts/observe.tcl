@@ -962,13 +962,15 @@ global ANDOR_CCD ANDOR_EMCCD
  .lowlevel.p configure -value 0.0
  speckleshutter red open
  speckleshutter blue open
- commandAndor red "numberkinetics $SCOPE(numframes)"
+ commandAndor red  "frametransfer $ANDOR_CFG(red,frametransfer)"
+ commandAndor blue "frametransfer $ANDOR_CFG(blue,frametransfer)"
+ commandAndor red  "numberkinetics $SCOPE(numframes)"
  commandAndor blue "numberkinetics $SCOPE(numframes)"
- commandAndor red "numberaccumulations $SCOPE(numaccum)"
+ commandAndor red  "numberaccumulations $SCOPE(numaccum)"
  commandAndor blue "numberaccumulations $SCOPE(numaccum)"
- commandAndor red "programid $SCOPE(ProgID)"
+ commandAndor red  "programid $SCOPE(ProgID)"
  commandAndor blue "programid $SCOPE(ProgID)"
- commandAndor red "autofitds9 $INSTRUMENT(red,fitds9)"
+ commandAndor red  "autofitds9 $INSTRUMENT(red,fitds9)"
  commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
  if { $INSTRUMENT(red,emccd) } {
 #   commandAndor red "outputamp $ANDOR_EMCCD"
