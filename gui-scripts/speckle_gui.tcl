@@ -343,12 +343,13 @@ global CAMSTATUS
     set camstatus [commandAndor $cam status]
     if { $camstatus != 0 } {
       set i 0
-      foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime  EMCCDGain EMAdvanced TExposure TAccumulate TKinetics" {
+      foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime EMCCDGain EMAdvanced TExposure TAccumulate TKinetics" {
         set CAMSTATUS($cam,$p) [lindex $camstatus $i]
         incr i 1
       }
     }
   }
+  syncgui
   wm deiconify .camerastatus
 }
 
@@ -468,7 +469,32 @@ proc andorset { w arm item value } {
 global ANDOR_CFG
   set ANDOR_CFG($arm,$item) $value
   .lowlevel.$w configure -text $ANDOR_CFG($item,$value)
+  switch $item {
+      VSSpeed    { commandAndor $arm "vsspeed $value" }
+      HSSpeed    { commandAndor $arm "hsspeed 1 $value" }
+      EMHSSpeed  { commandAndor $arm "hsspeed 0 $value" }
+      PreAmpGain { commandAndor $arm "preampgain $value" }
+      OuputAmplifier { commandAndor $arm "outputamp $value" }
+  }
 }
+
+proc syncgui  { } {
+global CAMSTATUS ANDOR_CFG
+   .lowlevel.vspeed -configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(red,VSSpeed))
+   .lowlevel.bvspeed -configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUSblue,VSSpeed))
+   if { $CAMSTATUS(red,OutputAmplifier) == 1 } {
+     .lowlevel.ccdhs -configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(red,HSSpeed))
+   } else {
+     .lowlevel.emhs -configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(red,EMHSSpeed))
+   }
+   if { $CAMSTATUS(blue,OutputAmplifier) == 1 } {
+     .lowlevel.bccdhs -configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(blue,HSSpeed))
+   } else {
+     .lowlevel.bemhs -configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(blue,EMHSSpeed))
+   }
+}
+
+
 
 set ANDOR_CFG(VSSpeed,0) "0.6 usec"
 set ANDOR_CFG(VSSpeed,1) "1.13 usec"

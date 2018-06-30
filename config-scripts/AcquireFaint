@@ -1,4 +1,5 @@
-
+set INSTRUMENT(red,highgain) 1
+set INSTRUMENT(blue,highgain) 1
 set INSTRUMENT(red,emccdgain) 1000
 set INSTRUMENT(blue,emccdgain) 1000
 set SCOPE(exposure) 1.0

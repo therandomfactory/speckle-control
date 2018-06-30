@@ -1,6 +1,6 @@
-
+set SCOPE(numframes) 1000
 commandAndors SetNumberKinetics 1000
 commandAndors SetFrameTransferMode $ANDORCODE(AC_ACQMODE_FRAMETRANSFER)
-commandAndors emccdMode
+commandAndors outputamp 0
 
 

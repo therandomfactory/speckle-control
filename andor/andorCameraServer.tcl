@@ -559,6 +559,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          frametransfer   { set it [cAndorSetProperty $CAM FrameTransferMode [lindex $msg 1]] ; puts $sock $it}
          outputamp       { set it [cAndorSetProperty $CAM OutputAmplifier [lindex $msg 1]] ; puts $sock $it}
          emadvanced      { set it [cAndorSetProperty $CAM EMAdvanced [lindex $msg 1]] ; puts $sock $it}
+         baseclamp       { set it [SetBaseLineClamp [lindex $msg 1]] ; puts $sock $it}
          emccdgain       { set it [cAndorSetProperty $CAM EMCCDGain [lindex $msg 1]] ; puts $sock $it}
          hsspeed         { set it [cAndorSetProperty $CAM HSSpeed [lindex $msg 1] [lindex $msg 2]] ; puts $sock $it}
          vsspeed         { set it [cAndorSetProperty $CAM VSSpeed [lindex $msg 1]] ; puts $sock $it}
