@@ -550,7 +550,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex $msg 2]]" }
          datadir         { set SPECKLE_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set SCOPE(datadir) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
-         gettemp         { set it [andorGetProperty $CAM temperature] ; set ANDOR_CFG(ccdtemp) $it ; puts $sock $it }
+         gettemp         { set it [andorGetProperty $CAM temperature] ; set ANDOR_CFG(ccdtemp) [lindex $it 0] ; puts $sock $it }
          status          { set it [showstatus] ; puts $sock $it}
          shutter         { set it [cAndorSetProperty $CAM Shutter [lindex $msg 1]] ; puts $sock $it}
          frametransfer   { set it [cAndorSetProperty $CAM FrameTransferMode [lindex $msg 1]] ; puts $sock $it}

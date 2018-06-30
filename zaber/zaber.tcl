@@ -78,8 +78,8 @@ global ZABERS ZPROPERTIES SCOPE
        puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)"
      }
    }
-   puts $fd "Property		A	B	input	pickoff		focus"
    if { $SCOPE(telescope) == "GEMINI" } {
+     puts $fd "Property		A	B	input	pickoff		focus"
      foreach p [split $ZPROPERTIES \n] {
        puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)	$ZABERS(pickoff,$p)	$ZABERS(focus,$p)"
      }
@@ -304,14 +304,14 @@ global ZABERS
 proc positionZabers { station } {
    debuglog "Configure Zabers for $station"
    if { $station == "fullframe" } {
-      zaberCommand A wide   
-      zaberCommand B wide
-      zaberCommand input wide
+      zaberGoto A wide   
+      zaberGoto B wide
+      zaberGoto input wide
    }
    if { $station == "roi" } {
-      zaberCommand A speckle  
-      zaberCommand B speckle
-      zaberCommand input speckle
+      zaberGoto A speckle  
+      zaberGoto B speckle
+      zaberGoto input speckle
    }
 }
 
@@ -319,12 +319,12 @@ proc positionSpeckle { arm station } {
 global ZABERS
    debuglog "Configure $arm Zaber for $station"
    if { $station == "fullframe" } {
-      if { $ZABERS(A,arm) == $arm } {zaberCommand A wide} 
-      if { $ZABERS(B,arm) == $arm } {zaberCommand B wide} 
+      if { $ZABERS(A,arm) == $arm } {zaberGoto A wide} 
+      if { $ZABERS(B,arm) == $arm } {zaberGoto B wide} 
    }
    if { $station == "roi" } {
-      if { $ZABERS(A,arm) == $arm } {zaberCommand A speckle} 
-      if { $ZABERS(B,arm) == $arm } {zaberCommand B speckle} 
+      if { $ZABERS(A,arm) == $arm } {zaberGoto A speckle} 
+      if { $ZABERS(B,arm) == $arm } {zaberGoto B speckle} 
    }
 }
 

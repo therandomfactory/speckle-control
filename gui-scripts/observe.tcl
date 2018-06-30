@@ -972,10 +972,13 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  commandAndor blue "programid $SCOPE(ProgID)"
  commandAndor red  "autofitds9 $INSTRUMENT(red,fitds9)"
  commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
+ commandAndor red  "vsspeed $ANDOR_CFG(red,VSSpeed)"
+ commandAndor blue "vsspeed $ANDOR_CFG(blue,VSSpeed)"
  if { $INSTRUMENT(red,emccd) } {
 #   commandAndor red "outputamp $ANDOR_EMCCD"
    commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
    commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
+   commandAndor red "hsspeed 0 $ANDOR_CFG(red,EMHSSpeed)"
 # } else {
 #   commandAndor red "outputamp $ANDOR_CCD"
 # }
@@ -983,6 +986,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
 #   commandAndor blue "outputamp $ANDOR_EMCCD"
    commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
    commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
+   commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
 # } else {
 #   commandAndor blue "outputamp $ANDOR_CCD"
 # }
@@ -1021,8 +1025,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    commandAndor red "datadir $SCOPE(datadir)"
    commandAndor blue "datadir $SCOPE(datadir)"
 ####   flushAndors
-   set redtemp  [commandAndor red gettemp]
-   set bluetemp  [commandAndor blue gettemp]
+   set redtemp  [lindex [commandAndor red gettemp] 0]
+   set bluetemp  [lindex [commandAndor blue gettemp] 0]
    mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
    mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
    .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
