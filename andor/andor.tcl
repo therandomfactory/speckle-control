@@ -149,7 +149,7 @@ global LASTACQ STATUS SCOPE ACQREGION
       commandAndor blue "grabframe $SCOPE(exposure)" 0
    } else {
       commandAndor red "grabroi $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom)" 0
-      commandAndor blue "grabroi $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom)" 0
+      commandAndor blue "grabroi $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom)" 0
    }
    if { $STATUS(abort) == 0 } {
       if { $SCOPE(exposure) > 0.0 } {
