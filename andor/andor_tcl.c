@@ -1372,6 +1372,22 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
      }
   }
 
+  if (strcmp(argv[2],"VSAmplitude") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetVSAmplitude(ivalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
+  if (strcmp(argv[2],"BaselineClamp") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetBaselineClamp(ivalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+
   if (strcmp(argv[2],"PreAmpGain") == 0) {
      sscanf(argv[3],"%d",&ivalue);
      status = SetPreAmpGain(ivalue);

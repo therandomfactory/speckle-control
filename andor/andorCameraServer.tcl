@@ -125,6 +125,7 @@ cAndorSetProperty $CAM OutputAmplifier 0
 cAndorSetProperty $CAM EMAdvanced 1
 cAndorSetProperty $CAM EMCCDGain 1
 cAndorSetProperty $CAM VSSpeed 1
+cAndorSetProperty $CAM VSAmplitude 0
 cAndorSetProperty $CAM PreAmpGain 1
 cAndorSetProperty $CAM HSSpeed 1 0
 cAndorSetProperty $CAM HSSpeed 0 1
@@ -384,48 +385,48 @@ global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
 proc configReadout { amp hsspeed vsspeed vsamplitude preampgain emgain emgainmode } {
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CODE CAM
    if { $amp == $ANDOR_CCD } {
-      set res [cAndorSetProperty $CAM SetOutputAmplifier $amp]
+      set res [cAndorSetProperty $CAM OutputAmplifier $amp]
       if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res}
       switch hsspeed { 
-          1Mhz    { set res [cAndorSetProperty $CAM SetHSSpeed 1 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          0.1Mhz  { set res [cAndorSetProperty $CAM SetHSSpeed 1 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          1Mhz    { set res [cAndorSetProperty $CAM HSSpeed 1 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          0.1Mhz  { set res [cAndorSetProperty $CAM HSSpeed 1 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
       }
    }
    if { $amp == $ANDOR_EMCCD } {
-      set res [cAndorSetProperty $CAM SetOutputAmplifier $amp]
+      set res [cAndorSetProperty $CAM OutputAmplifier $amp]
       if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res}
       switch hsspeed { 
-          30Mhz  { set res [cAndorSetProperty $CAM SetHSSpeed 0 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          20Mhz  { set res [cAndorSetProperty $CAM SetHSSpeed 0 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          10Mhz  { set res [cAndorSetProperty $CAM SetHSSpeed 0 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          1Mhz   { set res [cAndorSetProperty $CAM SetHSSpeed 0 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          30Mhz  { set res [cAndorSetProperty $CAM HSSpeed 0 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          20Mhz  { set res [cAndorSetProperty $CAM HSSpeed 0 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          10Mhz  { set res [cAndorSetProperty $CAM HSSpeed 0 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          1Mhz   { set res [cAndorSetProperty $CAM HSSpeed 0 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
       }
-      set res [cAndorSetProperty $CAM SetEMCCDGain $emgain]
+      set res [cAndorSetProperty $CAM EMCCDGain $emgain]
       if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res}
       switch $emgainmode {
-          255     { set res [cAndorSetProperty $CAM SetEMGainMode  0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          4095    { set res [cAndorSetProperty $CAM SetEMGainMode  1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          linear  { set res [cAndorSetProperty $CAM SetEMGainMode  2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          real    { set res [cAndorSetProperty $CAM SetEMGainMode  3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          255     { set res [cAndorSetProperty $CAM EMGainMode  0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          4095    { set res [cAndorSetProperty $CAM EMGainMode  1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          linear  { set res [cAndorSetProperty $CAM EMGainMode  2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          real    { set res [cAndorSetProperty $CAM EMGainMode  3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
       }
    }
    switch vsspeed { 
-	  4.33usec   { set res [cAndorSetProperty $CAM SetVSSpeed 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          2.2usec    { set res [cAndorSetProperty $CAM SetVSSpeed 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          1.13usec   { set res [cAndorSetProperty $CAM SetVSSpeed 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          0.6usec    { set res [cAndorSetProperty $CAM SetVSSpeed 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+	  4.33usec   { set res [cAndorSetProperty $CAM VSSpeed 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          2.2usec    { set res [cAndorSetProperty $CAM VSSpeed 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          1.13usec   { set res [cAndorSetProperty $CAM VSSpeed 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          0.6usec    { set res [cAndorSetProperty $CAM VSSpeed 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
    }
    switch vsamplitude { 
-	  normal   { set res [cAndorSetProperty $CAM SetVSAmplitude 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          +1       { set res [cAndorSetProperty $CAM SetVSAmplitude 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          +2       { set res [cAndorSetProperty $CAM SetVSAmplitude 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          +3       { set res [cAndorSetProperty $CAM SetVSAmplitude 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          +4       { set res [cAndorSetProperty $CAM SetVSAmplitude 4] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+	  normal   { set res [cAndorSetProperty $CAM VSAmplitude 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          +1       { set res [cAndorSetProperty $CAM VSAmplitude 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          +2       { set res [cAndorSetProperty $CAM VSAmplitude 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          +3       { set res [cAndorSetProperty $CAM VSAmplitude 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          +4       { set res [cAndorSetProperty $CAM VSAmplitude 4] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
    }
    switch preampgain { 
-	  1        { set res [cAndorSetProperty $CAM SetPreAmpGain 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          2        { set res [cAndorSetProperty $CAM SetPreAmpGain 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-	  3        { set res [cAndorSetProperty $CAM SetPreAmpGain 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+	  1        { set res [cAndorSetProperty $CAM PreAmpGain 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          2        { set res [cAndorSetProperty $CAM PreAmpGain 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+	  3        { set res [cAndorSetProperty $CAM PreAmpGain 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
    }
    return "OK"
 }
@@ -563,6 +564,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          emccdgain       { set it [cAndorSetProperty $CAM EMCCDGain [lindex $msg 1]] ; puts $sock $it}
          hsspeed         { set it [cAndorSetProperty $CAM HSSpeed [lindex $msg 1] [lindex $msg 2]] ; puts $sock $it}
          vsspeed         { set it [cAndorSetProperty $CAM VSSpeed [lindex $msg 1]] ; puts $sock $it}
+         vsamplitude     { set it [cAndorSetProperty $CAM VSAmplitude [lindex $msg 1]] ; puts $sock $it}
          preampgain      { set it [cAndorSetProperty $CAM PreAmpGain [lindex $msg 1]] ; puts $sock $it}
          readmode        { set it [cAndorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}
          acquisition     { set it [cAndorSetProperty $CAM AcquisitionMode [lindex $msg 1]] ; puts $sock $it}
