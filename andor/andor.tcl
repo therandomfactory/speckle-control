@@ -170,10 +170,12 @@ global LASTACQ STATUS SCOPE ACQREGION
 }
   
 proc startvideomode { } {
-global STATUS
+global STATUS SCOPE
    set STATUS(abort) 0
    speckleshutter red open
    speckleshutter blue open
+   commandAndor red "datadir $SCOPE(datadir)"
+   commandAndor blue "datadir $SCOPE(datadir)"
    videomode
 }
 

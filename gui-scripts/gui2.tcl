@@ -253,16 +253,11 @@ proc validFloat {win event X oldX min max} {
         # if weak check fails, continue with old value
         if {! $weakCheck} {set X $oldX}
         # Strong integer checking with range
-        set strongCheck [expr {[string is int -strict $X] && ($X >= $min) && ($X <= $max)}]
 
         switch $event {
             key {
-                $win configure -bg [expr {$strongCheck ? "white" : "yellow"}]
+                $win configure -bg [expr {$weakCheck ? "white" : "yellow"}]
                 return $weakCheck
-            }
-            focusout {
-                if {! $strongCheck} {$win configure -bg red}
-                return $strongCheck
             }
             default {
                 return 1
@@ -293,7 +288,7 @@ foreach item "target ProgID ra dec telescope instrument" {
 #
 set bwkey text
 set bwfont font
-SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right -validate all -vcmd {validFloat %W %V %P %s 0.0 1048.75}
+SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right
 place .main.exposure -x 100 -y 20
 SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 30000}
 place .main.numexp -x 100 -y 50

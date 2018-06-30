@@ -98,8 +98,8 @@ place .lowlevel.bshut -x 420 -y 30
 .lowlevel.bshut.m add command -label "Shutter=Open" -command "speckleshutter blue open"
 
 
-checkbutton .lowlevel.rautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(red,fitsds9) -highlightthickness 0
-checkbutton .lowlevel.bautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(blue,fitsds9) -highlightthickness 0
+checkbutton .lowlevel.rautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(red,fitds9) -highlightthickness 0
+checkbutton .lowlevel.bautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(blue,fitds9) -highlightthickness 0
 place .lowlevel.rautofit -x 280 -y 33
 place .lowlevel.bautofit -x 680 -y 33
 
@@ -110,8 +110,8 @@ place .lowlevel.bfxfer -x 620 -y 3
 set ANDOR_CFG(red,frametransfer) 1
 set ANDOR_CFG(blue,frametransfer) 1
 
-set INSTRUMENT(red,fitsds9) 0
-set INSTRUMENT(blue,fitsds9) 0
+set INSTRUMENT(red,fitds9) 0
+set INSTRUMENT(blue,fitds9) 0
 set ZABERS(A,target) 0
 set ZABERS(B,target) 0
 set ZABERS(input,target) 0

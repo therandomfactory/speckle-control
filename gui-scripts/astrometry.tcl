@@ -3,7 +3,7 @@ proc updateds9wcs { ra dec } {
 global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
   set radeg [hms_to_radians $ra]*180/$PI]
   set decdeg [dms_to_radians $dec]*180/$PI]
-  set fout [open /tmp/pakwcs.wcs w]
+  set fout [open /tmp/[set ANDOR_ARM]wcs.wcs w]
   puts $fout "CRVAL1 $decdeg"
   puts $fout "CRVAL2 $radeg"
   puts $fout "CRPIX1 [expr $ACQREGION(geom)/$ACQREGION(bin)/2]"
@@ -21,7 +21,7 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
   puts $fout "RADECSYS 'FK5'"
   puts $fout "EQUINOX 2000."
   close $fout
-  exec xpaset -p $DS9  wcs replace /tmp/pakwcs.wcs
+  exec xpaset -p $DS9  wcs replace /tmp/[set ANDOR_ARM]wcs.wcs
 }
 
 

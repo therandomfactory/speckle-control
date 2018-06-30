@@ -20,6 +20,7 @@ global ANDOR_CFG ANDOR_ARM
    return $res
 }
 
+wm withdraw .
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
 load $SPECKLE_DIR/lib/andorTclInit.so
@@ -72,6 +73,7 @@ if { $handle < 0} {exit}
 
 debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
+set ANDOR_CFG(fitds9) 0
 set ANDOR_CFG($CAM,OutputAmplifier) 0
 set ANDOR_CFG($CAM,PreAmpGain) 2
 set ANDOR_CFG($CAM,VSSpeed) 1
@@ -198,7 +200,6 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
-      updateDatabase
       exec xpaset -p $DS9 frame 2
       if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
@@ -210,7 +211,6 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
-      updateDatabase
       exec xpaset -p $DS9 frame 2
       if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
@@ -218,6 +218,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
+    updateDatabase
 }
 
 proc acquireDataROI { exp x y n } {
@@ -344,16 +345,15 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
   if { $ANDOR_CFG(red) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
-    updateDatabase
     andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(red)}
   }
   if { $ANDOR_CFG(blue) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
-    updateDatabase
     andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(blue)}
   }
+  updateDatabase
   debuglog "Finished acquisition"
 }
 
@@ -398,7 +398,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CODE CAM
           10Mhz  { set res [cAndorSetProperty $CAM SetHSSpeed 0 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
           1Mhz   { set res [cAndorSetProperty $CAM SetHSSpeed 0 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
       }
-      set res [cAndorSetProperty $CAM SetEMCCDGain $emgain] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+      set res [cAndorSetProperty $CAM SetEMCCDGain $emgain]
+      if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res}
       switch $emgainmode {
           255     { set res [cAndorSetProperty $CAM SetEMGainMode  0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
           4095    { set res [cAndorSetProperty $CAM SetEMGainMode  1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }

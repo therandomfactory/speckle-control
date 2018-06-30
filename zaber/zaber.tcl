@@ -230,7 +230,7 @@ resolution"
 
 proc zaberSetPos  { name pos } {
 global ZABERS
-   if { $ZABERS(sim)] } {
+   if { $ZABERS(sim) } {
      debuglog "Zaber simulate : $name $pos"
    } else {
      zaberCommand $name  "move abs $pos"
