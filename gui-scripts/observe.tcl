@@ -1030,10 +1030,12 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    if { $LASTACQ == "fullframe" } {
       set TELEMETRY(speckle.andor.mode) "widefield"
       acquireFrames
+      set perframe $SCOPE(exposure)
    } else {
       set TELEMETRY(speckle.andor.mode) "speckle"
       acquireCubes
       set ifrmnum $SCOPE(numframes)
+      set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
    }
    set now [clock seconds]
    set FRAME 0
@@ -1043,7 +1045,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
       set FRAME $i
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-      after [expr int($SCOPE(exposure)*1000)+3]
+      after [expr int($perframe*1000)+3]
       incr i 1
       .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
       update
