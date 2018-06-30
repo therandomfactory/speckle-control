@@ -239,32 +239,23 @@ proc validInteger {win event X oldX min max} {
 } 
 
 
-proc validFloat {win event X oldX min max} {
-        # Make sure min<=max
-        if {$min > $max} {
-            set tmp $min; set min $max; set max $tmp
-        }
-        # Allow valid integers, empty strings, sign without number
-        # Reject Octal numbers, but allow a single "0"
-        # Which signes are allowed ?
-        set pattern {^[+]?(()|0|([1-9].[0-9]*))$}
-        # Weak integer checking: allow empty string, empty sign, reject octals
-        set weakCheck [regexp $pattern $X]
-        # if weak check fails, continue with old value
-        if {! $weakCheck} {set X $oldX}
-        # Strong integer checking with range
-
+proc validFloat {win event X oldX} {
+        set strongCheck [expr {[string is double -strict $X]}]
+        if {! $strongCheck} {set X $oldX}
         switch $event {
             key {
-                $win configure -bg [expr {$weakCheck ? "white" : "yellow"}]
-                return $weakCheck
+                $win configure -bg [expr {$strongCheck ? "white" : "yellow"}]
+                return $strongCheck
+            }
+            focusout {
+                if {! $strongCheck} {$win configure -bg red}
+                return $strongCheck
             }
             default {
                 return 1
             }
         }
 } 
-
 
 
 #
@@ -288,7 +279,7 @@ foreach item "target ProgID ra dec telescope instrument" {
 #
 set bwkey text
 set bwfont font
-SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right
+SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right -validate all -vcmd {validFloat %W %V %P %s}
 place .main.exposure -x 100 -y 20
 SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 30000}
 place .main.numexp -x 100 -y 50
