@@ -148,8 +148,8 @@ global LASTACQ STATUS SCOPE ACQREGION
       commandAndor red "grabframe $SCOPE(exposure)" 0
       commandAndor blue "grabframe $SCOPE(exposure)" 0
    } else {
-      commandAndor red "grabroi $SCOPE(exposure) $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(geom)" 0
-      commandAndor blue "grabroi $SCOPE(exposure) $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(geom)" 0
+      commandAndor red "grabroi $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom)" 0
+      commandAndor blue "grabroi $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom)" 0
    }
    if { $STATUS(abort) == 0 } {
       if { $SCOPE(exposure) > 0.0 } {
@@ -186,12 +186,12 @@ proc acquireCubes { } {
 global INSTRUMENT SCOPE LASTACQ ACQREGION
    set n [expr $ACQREGION(xe) - $ACQREGION(xs) +1]
    if { $INSTRUMENT(red) } {
-      commandAndor red "setframe roi"
+#      commandAndor red "setframe roi"
       commandAndor red "grabcube $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) $SCOPE(numframes)"
       set LASTACQ roi
    }
    if { $INSTRUMENT(blue) } {
-      commandAndor blue "setframe roi"
+#      commandAndor blue "setframe roi"
       commandAndor blue "grabcube $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) $SCOPE(numframes)"
       set LASTACQ roi
    }

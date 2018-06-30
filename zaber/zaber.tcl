@@ -321,10 +321,12 @@ global ZABERS
    if { $station == "fullframe" } {
       if { $ZABERS(A,arm) == $arm } {zaberGoto A wide} 
       if { $ZABERS(B,arm) == $arm } {zaberGoto B wide} 
+      zaberGoto input wide
    }
    if { $station == "roi" } {
       if { $ZABERS(A,arm) == $arm } {zaberGoto A speckle} 
       if { $ZABERS(B,arm) == $arm } {zaberGoto B speckle} 
+      zaberGoto input speckle
    }
 }
 

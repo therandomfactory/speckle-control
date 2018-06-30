@@ -75,9 +75,9 @@ debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
 set ANDOR_CFG(fitds9) 0
 set ANDOR_CFG($CAM,OutputAmplifier) 0
-set ANDOR_CFG($CAM,PreAmpGain) 2
+set ANDOR_CFG($CAM,PreAmpGain) 1
 set ANDOR_CFG($CAM,VSSpeed) 1
-set ANDOR_CFG($CAM,HSSpeed) 0
+set ANDOR_CFG($CAM,HSSpeed) 1
 set ANDOR_CFG($CAM,EMHSSpeed) 1
 set ANDOR_CFG($CAM,hbin) 1
 set ANDOR_CFG($CAM,vbin) 1
@@ -124,8 +124,10 @@ cAndorSetProperty $CAM FrameTransferMode 1
 cAndorSetProperty $CAM OutputAmplifier 0
 cAndorSetProperty $CAM EMAdvanced 1
 cAndorSetProperty $CAM EMCCDGain 1
-cAndorSetProperty $CAM VSSpeed 0
-cAndorSetProperty $CAM PreAmpGain 0
+cAndorSetProperty $CAM VSSpeed 1
+cAndorSetProperty $CAM PreAmpGain 1
+cAndorSetProperty $CAM HSSpeed 1 0
+cAndorSetProperty $CAM HSSpeed 0 1
 cAndorSetProperty $CAM ReadMode 4
 cAndorSetProperty $CAM AcquisitionMode 1
 cAndorSetProperty $CAM KineticCycleTime 0.0
@@ -421,8 +423,9 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CODE CAM
           +4       { set res [cAndorSetProperty $CAM SetVSAmplitude 4] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
    }
    switch preampgain { 
-	  1        { set res [cAndorSetProperty $CAM SetPreAmpGain 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          2        { set res [cAndorSetProperty $CAM SetPreAmpGain 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+	  1        { set res [cAndorSetProperty $CAM SetPreAmpGain 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          2        { set res [cAndorSetProperty $CAM SetPreAmpGain 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+	  3        { set res [cAndorSetProperty $CAM SetPreAmpGain 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
    }
    return "OK"
 }
@@ -532,7 +535,7 @@ proc shutDown { } {
 }
 
 proc doService {sock msg} {
-global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
+global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
     debuglog "echosrv:$msg"
     set ANDOR_CFG([lindex $msg 0]) [lrange $msg 1 end]
     switch [lindex $msg 0] {
@@ -557,7 +560,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY
          outputamp       { set it [cAndorSetProperty $CAM OutputAmplifier [lindex $msg 1]] ; puts $sock $it}
          emadvanced      { set it [cAndorSetProperty $CAM EMAdvanced [lindex $msg 1]] ; puts $sock $it}
          emccdgain       { set it [cAndorSetProperty $CAM EMCCDGain [lindex $msg 1]] ; puts $sock $it}
-         hsspeed         { set it [cAndorSetProperty $CAM HSSpeed "[lindex $msg 1] [lindex $msg 2]"] ; puts $sock $it}
+         hsspeed         { set it [cAndorSetProperty $CAM HSSpeed [lindex $msg 1] [lindex $msg 2]] ; puts $sock $it}
          vsspeed         { set it [cAndorSetProperty $CAM VSSpeed [lindex $msg 1]] ; puts $sock $it}
          preampgain      { set it [cAndorSetProperty $CAM PreAmpGain [lindex $msg 1]] ; puts $sock $it}
          readmode        { set it [cAndorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}

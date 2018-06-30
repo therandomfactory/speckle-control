@@ -785,20 +785,10 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
     after 2000
   }
   if { $rdim == "manual" } {
-    catch {
-      set xcenter 512
-      set ycenter 512
-      set ACQREGION(xs) [expr int($xcenter-$rdim/2)]
-      set ACQREGION(xe) [expr int($xcenter+$rdim/2)]
-      set ACQREGION(ys) [expr int($ycenter-$rdim/2)]
-      set ACQREGION(ye) [expr int($ycenter+$rdim/2)]
-      exec echo "box $ACQREGION(xs) $ACQREGION(ys) $ACQREGION(xe) $ACQREGION(ye) | xpaset ds9red regions
-      set rdim 256
-    }
     set rdim $ACQREGION(geom)
-    set it [tk_dialog .d "Edit region" "Move the region in the\n image display tool then click OK" {} -1 "OK"]
-    commandAndor red "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
-    commandAndor blue "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
+    set it [tk_dialog .d "Edit regions" "Move the regions in the\n image display tool then click OK" {} -1 "OK"]
+#    commandAndor red "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
+#   commandAndor blue "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
   } else {
     set resr [commandAndor red "setroi $rdim"]
     set SCOPE(red,bias) [lindex $resr 2]
@@ -818,8 +808,8 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
         set r [lrange [split $i ",()"] 1 4]
         set ACQREGION(rxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
         set ACQREGION(rys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
-        set ACQREGION(rxe) [expr $ACQREGION(xs) + [lindex $r 2] -1]
-        set ACQREGION(rye) [expr $ACQREGION(ys) + [lindex $r 3] -1]
+        set ACQREGION(rxe) [expr $ACQREGION(rxs) + [lindex $r 2] -1]
+        set ACQREGION(rye) [expr $ACQREGION(rys) + [lindex $r 3] -1]
         puts stdout "selected red region $r"
      }
   }
@@ -829,13 +819,13 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
         set r [lrange [split $i ",()"] 1 4]
         set ACQREGION(bxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
         set ACQREGION(bys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
-        set ACQREGION(bxe) [expr $ACQREGION(xs) + [lindex $r 2] -1]
-        set ACQREGION(bye) [expr $ACQREGION(ys) + [lindex $r 3] -1]
+        set ACQREGION(bxe) [expr $ACQREGION(bxs) + [lindex $r 2] -1]
+        set ACQREGION(bye) [expr $ACQREGION(bys) + [lindex $r 3] -1]
         puts stdout "selected red region $r"
      }
   }
-  set CONFIG(geometry.StartCol) [expr $ACQREGION(xs)]
-  set CONFIG(geometry.StartRow) [expr $ACQREGION(ys)]
+  set CONFIG(geometry.StartCol) [expr $ACQREGION(rxs)]
+  set CONFIG(geometry.StartRow) [expr $ACQREGION(rys)]
   set CONFIG(geometry.NumCols) $rdim
   set CONFIG(geometry.NumRows) $rdim
   set ACQREGION(geom) $CONFIG(geometry.NumCols)
@@ -844,8 +834,8 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   commandAndor red "setframe roi"
   commandAndor blue "setframe roi"
   set LASTACQ roi
-  .lowlevel.rmode configure -text "Mode=speckle"
-  .lowlevel.bmode configure -text "Mode=speckle"
+  .lowlevel.rmode configure -text "Mode=ROI"
+  .lowlevel.bmode configure -text "Mode=ROI"
 }
 
 proc checkgain { {table table.dat} } {
@@ -921,6 +911,12 @@ global FRAME STATUS REMAINING
 }
 
 
+set ANDOR_CFG(red,VSSpeed) 1
+set ANDOR_CFG(blue,VSSpeed) 1
+set ANDOR_CFG(red,HSSpeed) 1
+set ANDOR_CFG(blue,HSSpeed) 1
+set ANDOR_CFG(red,EMHSSpeed) 1
+set ANDOR_CFG(blue,EMHSSpeed) 1
 
 
 #---------------------------------------------------------------------------
@@ -975,28 +971,30 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  commandAndor red  "vsspeed $ANDOR_CFG(red,VSSpeed)"
  commandAndor blue "vsspeed $ANDOR_CFG(blue,VSSpeed)"
  if { $INSTRUMENT(red,emccd) } {
-#   commandAndor red "outputamp $ANDOR_EMCCD"
+   commandAndor red "outputamp $ANDOR_EMCCD"
    commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
    commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
    commandAndor red "hsspeed 0 $ANDOR_CFG(red,EMHSSpeed)"
-# } else {
-#   commandAndor red "outputamp $ANDOR_CCD"
-# }
+ } else {
+   commandAndor red "outputamp $ANDOR_CCD"
+ }
  if { $INSTRUMENT(blue,emccd) } {
-#   commandAndor blue "outputamp $ANDOR_EMCCD"
+   commandAndor blue "outputamp $ANDOR_EMCCD"
    commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
    commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
    commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
-# } else {
-#   commandAndor blue "outputamp $ANDOR_CCD"
-# }
- commandAndor red "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
+ } else {
+   commandAndor blue "outputamp $ANDOR_CCD"
+ }
+ commandAndor red  "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
- commandAndor red "filter $SPECKLE_FILTER(red,current)"
+ commandAndor red  "filter $SPECKLE_FILTER(red,current)"
  commandAndor blue "filter $SPECKLE_FILTER(blue,current)"
  set cmt [join [split [string trim [.main.comment get 0.0 end]] \n] "|"]
  commandAndor red "comments $cmt"
  commandAndor blue "comments $cmt"
+ commandAndor red "datadir $SCOPE(datadir)"
+ commandAndor blue "datadir $SCOPE(datadir)"
  while { $iseqnum < $SCOPE(numseq) } {
   set ifrmnum 0
   while { $ifrmnum < $SCOPE(numframes) } {
@@ -1022,8 +1020,6 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
      commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
    }
    incr SCOPE(seqnum) 1
-   commandAndor red "datadir $SCOPE(datadir)"
-   commandAndor blue "datadir $SCOPE(datadir)"
 ####   flushAndors
    set redtemp  [lindex [commandAndor red gettemp] 0]
    set bluetemp  [lindex [commandAndor blue gettemp] 0]
@@ -1058,9 +1054,10 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    speckleshutter red close
    speckleshutter blue close
    if { $STATUS(abort) } {return}
-   abortsequence
+
   }
  }
+ abortsequence
  if { $SCOPE(autoclrcmt) } {.main.comment delete 0.0 end }
 }
 

@@ -343,7 +343,7 @@ global CAMSTATUS
     set camstatus [commandAndor $cam status]
     if { $camstatus != 0 } {
       set i 0
-      foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime  EMCCDGain EMAdvancedTExposure TAccumulate TKinetics" {
+      foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime  EMCCDGain EMAdvanced TExposure TAccumulate TKinetics" {
         set CAMSTATUS($cam,$p) [lindex $camstatus $i]
         incr i 1
       }

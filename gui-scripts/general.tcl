@@ -81,6 +81,9 @@ global CALS CATALOGS SCOPE env
      if { $cfg != "" } {
        set SCOPE(datadir) $cfg
        .main.seldir configure -text "$cfg"
+       commandAndor red "datadir $cfg"
+       commandAndor blue "datadir $cfg"
+       set SCOPE(datadir) $cfg
      }
    } else {
      set cfg [tk_chooseDirectory -initialdir $CALS(home)/$name]
