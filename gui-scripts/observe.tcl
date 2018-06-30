@@ -955,7 +955,7 @@ proc startsequence { } {
 #               STATUS	-	Exposure status
 #               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
-global ANDOR_CCD ANDOR_EMCCD
+global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  set iseqnum 0
  redisUpdate
  set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
@@ -1043,7 +1043,7 @@ global ANDOR_CCD ANDOR_EMCCD
       set FRAME $i
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-      after [expr int($SCOPE(exposure)*1000)+4]
+      after [expr int($SCOPE(exposure)*1000)+3]
       incr i 1
       .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
       update
@@ -1053,6 +1053,7 @@ global ANDOR_CCD ANDOR_EMCCD
    .main.abort configure -bg gray -relief sunken -fg LightGray
    speckleshutter red close
    speckleshutter blue close
+   if { $STATUS(abort) } {return}
    abortsequence
   }
  }
