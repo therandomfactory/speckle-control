@@ -35,8 +35,8 @@ global FLOG
 # Load the procedures
 #
 source $SPECKLE_DIR/gui-scripts/general.tcl
-source $SPECKLE_DIR/gui-scripts/display.tcl
-source $SPECKLE_DIR/gui-scripts/temperature.tcl
+###source $SPECKLE_DIR/gui-scripts/display.tcl
+###source $SPECKLE_DIR/gui-scripts/temperature.tcl
 ###source $SPECKLE_DIR/gui-scripts/calibration.tcl
 source $SPECKLE_DIR/gui-scripts/observe.tcl
 
@@ -496,8 +496,8 @@ set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
 
 source $SPECKLE_DIR/gui-scripts/speckle_gui.tcl
 
-trace variable CONFIG w watchconfig
-trace variable SCOPE w watchscope
+###trace variable CONFIG w watchconfig
+###trace variable SCOPE w watchscope
 
 
 #
