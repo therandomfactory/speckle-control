@@ -30,6 +30,20 @@ unsigned int *SharedMemBPro;
 unsigned int *SharedMem0;
 unsigned int *SharedMem1;
 
+typedef struct shmControlRegisters {
+  int iPeak[2];
+  int iMin[2];
+  int iFrame[2];
+  int displayFFT;
+  int displayLucky;
+  int saveLucky;
+  int iabort;
+  int iLuckyThresh[2];
+  int iLuckyCount[2];
+} shmControl;
+
+shmControl *SharedMem2;
+
 int getPeak(int cameraId , int npix);
 int imageDataA[1024*1024];
 int imageDataB[1024*1024];
@@ -74,6 +88,7 @@ int tcl_andorConnectShmem(ClientData clientData, Tcl_Interp *interp, int argc, c
 int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorConnectShmem0(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorConnectShmem1(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorConnectShmem2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStartAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorSelectCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -87,6 +102,7 @@ int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, cha
 int tcl_andorStoreFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorDisplayAvgFFT(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetAcquiredNum(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
@@ -118,6 +134,8 @@ int tcl_andorCooler(ClientData clientData, Tcl_Interp *interp, int argc, char **
 
 int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorSetControl(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+int tcl_andorGetControl(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 
 static char export_script[]={ " \
 	namespace eval ::andor:: { \
@@ -152,6 +170,7 @@ int Andortclinit_Init(Tcl_Interp *interp)
 {
 
   printf("andor_Init\n");
+  if (result==NULL) {result = malloc(256);}
 
   Tcl_PkgProvide(interp, "andor", "1.0");
 
@@ -174,6 +193,7 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorDisplayFrame", (Tcl_CmdProc *) tcl_andorDisplayFrame, NULL, NULL);
   Tcl_CreateCommand(interp, "andorConnectShmem0", (Tcl_CmdProc *) tcl_andorConnectShmem0, NULL, NULL);
   Tcl_CreateCommand(interp, "andorConnectShmem1", (Tcl_CmdProc *) tcl_andorConnectShmem1, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorConnectShmem2", (Tcl_CmdProc *) tcl_andorConnectShmem2, NULL, NULL);
   Tcl_CreateCommand(interp, "andorShutDown", (Tcl_CmdProc *) tcl_andorShutDown, NULL, NULL);
   Tcl_CreateCommand(interp, "andorFakeData", (Tcl_CmdProc *) tcl_andorFakeData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorClearLucky", (Tcl_CmdProc *) tcl_andorClearLucky, NULL, NULL);
@@ -186,8 +206,11 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorGetProperty", (Tcl_CmdProc *) tcl_andorGetProperty, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStoreFrameI4", (Tcl_CmdProc *) tcl_andorStoreFrameI4, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSetProperty", (Tcl_CmdProc *) tcl_andorSetProperty, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorGetControl", (Tcl_CmdProc *) tcl_andorGetControl, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorSetControl", (Tcl_CmdProc *) tcl_andorSetControl, NULL, NULL);
   Tcl_CreateCommand(interp, "andorSelectCamera", (Tcl_CmdProc *) tcl_andorSelectCamera, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStartAcq", (Tcl_CmdProc *) tcl_andorStartAcquisition, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorFastVideo", (Tcl_CmdProc *) tcl_andorFastVideo, NULL, NULL);
   Tcl_CreateCommand(interp, "andorAbortAcq", (Tcl_CmdProc *) tcl_andorAbortAcquisition, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetData", (Tcl_CmdProc *) tcl_andorGetAcquiredData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetFrame", (Tcl_CmdProc *) tcl_andorGetOldestFrame, NULL, NULL);
@@ -275,7 +298,7 @@ int tcl_andorConnectShmem0(ClientData clientData, Tcl_Interp *interp, int argc, 
         Shmem_id = shmget(7771, Shmem_size, IPC_CREAT|0666);
     }
     SharedMem0  = (unsigned int *) shmat(Shmem_id, NULL, 0);
-    sprintf(result,"%d %d %d %d %d %d",Shmem_id, Shmem_size,SharedMem0);
+    sprintf(result,"%d %d %d",Shmem_id, Shmem_size,SharedMem0);
     Tcl_SetResult(interp,result,TCL_STATIC);
     return TCL_OK;
 }
@@ -299,11 +322,151 @@ int tcl_andorConnectShmem1(ClientData clientData, Tcl_Interp *interp, int argc, 
         Shmem_id = shmget(7772, Shmem_size, IPC_CREAT|0666);
     }
     SharedMem1  = (unsigned int *) shmat(Shmem_id, NULL, 0);
-    sprintf(result,"%d %d %d %d %d %d",Shmem_id, Shmem_size,SharedMem1);
+    sprintf(result,"%d %d %d",Shmem_id, Shmem_size,SharedMem1);
     Tcl_SetResult(interp,result,TCL_STATIC);
     return TCL_OK;
 }
 
+int tcl_andorConnectShmem2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int Shmem_size;
+  char lresult[32];
+
+    Shmem_size = sizeof(shmControl);
+    Shmem_id = shmget(7773, Shmem_size, IPC_CREAT|0666);
+    if (Shmem_id < 0) {
+        Shmem_id = shmget(7773, Shmem_size, IPC_CREAT|0666);
+    }
+    SharedMem2  = (shmControl *) shmat(Shmem_id, NULL, 0);
+    sprintf(lresult,"%d %d %d",Shmem_id, Shmem_size,SharedMem2);
+    Tcl_SetResult(interp,lresult,TCL_STATIC);
+    return TCL_OK;
+}
+
+int tcl_andorGetControl(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int cameraId;
+  int ipeak, imin, iframe, ilucky;
+  int status;
+
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 3) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId, register\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+
+  sscanf(argv[1],"%d",&cameraId);
+ 
+  if (strcmp(argv[2],"peak") == 0) {
+     ipeak = SharedMem2->iPeak[cameraId];
+     sprintf(result,"%d",ipeak);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"min") == 0) {
+     imin = SharedMem2->iMin[cameraId];
+     sprintf(result,"%d",imin);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"frame") == 0) {
+     iframe = SharedMem2->iFrame[cameraId];
+     sprintf(result,"%d",iframe);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"lucky") == 0) {
+     ilucky = SharedMem2->iLuckyCount[cameraId];
+     sprintf(result,"%d",ilucky);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"luckythresh") == 0) {
+     ilucky = SharedMem2->iLuckyThresh[cameraId];
+     sprintf(result,"%d",ilucky);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"showlucky") == 0) {
+     ilucky = SharedMem2->displayLucky;
+     sprintf(result,"%d",ilucky);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"savelucky") == 0) {
+     ilucky = SharedMem2->saveLucky;
+     sprintf(result,"%d",ilucky);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"showfft") == 0) {
+     ilucky = SharedMem2->displayFFT;
+     sprintf(result,"%d",ilucky);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"abort") == 0) {
+     ilucky = SharedMem2->iabort;
+     sprintf(result,"%d",ilucky);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_OK;
+  }
+
+  return TCL_ERROR;
+}
+
+
+int tcl_andorSetControl(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int cameraId;
+  int ithresh;
+  int idispfft, idisplucky, iabort;
+  int status;
+
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 3) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId register -thresh-\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+
+  sscanf(argv[1],"%d",&cameraId);
+
+  if (strcmp(argv[2],"abort") == 0) {
+     SharedMem2->iabort = 1;
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"showfft") == 0) {
+     SharedMem2->displayFFT = 1;
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"showlucky") == 0) {
+     SharedMem2->displayLucky = 1;
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"savelucky") == 0) {
+     SharedMem2->saveLucky = 1;
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"luckythresh") == 0) {
+     sscanf(argv[3],"%d",&ithresh);
+     SharedMem2->iLuckyThresh[cameraId] = ithresh;
+     return TCL_OK;
+  }
+
+  return TCL_ERROR;
+}
 
 
 int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
@@ -1109,8 +1272,14 @@ int cAndorDisplaySingle(int cameraId, int ifft)
       dofft(width,height,imageDataA,outputData);
       addavg(outputData,outputAvgA,width*height);
     }
-    for ( irow=0;irow<width;irow++) {
-      copyline(SharedMem0 + irow*width, imageDataA + irow*width, width*4, 0);
+    if ( SharedMem2->displayFFT ) {
+      for ( irow=0;irow<width;irow++) {
+        copyline(SharedMem0 + irow*width, imageDataA + irow*width, width*4, 0);
+      }
+    } else {
+      for ( irow=0;irow<width;irow++) {
+        copyline(outputData + irow*width, imageDataA + irow*width, width*4, 0);
+      }
     }
   }
 
@@ -1119,9 +1288,16 @@ int cAndorDisplaySingle(int cameraId, int ifft)
       dofft(width,height,imageDataB,outputData);
       addavg(outputData,outputAvgB,width*height);
     }
-    for ( irow=0;irow<width;irow++) {
-       copyline(SharedMem1 + irow*width, imageDataB + irow*width, width*4, 0);
+    if ( SharedMem2->displayFFT ) {
+      for ( irow=0;irow<width;irow++) {
+         copyline(SharedMem1 + irow*width, imageDataB + irow*width, width*4, 0);
+      }
+    } else {
+      for ( irow=0;irow<width;irow++) {
+        copyline(outputData + irow*width, imageDataA + irow*width, width*4, 0);
+      }
     }
+
   }
 
   return TCL_OK;
@@ -1632,6 +1808,8 @@ int tcl_andorClearLucky(ClientData clientData, Tcl_Interp *interp, int argc, cha
        getLucky0[ipix]=0;
        getLucky1[ipix]=0;
     }
+    SharedMem2->iLuckyCount[0] = 0;
+    SharedMem2->iLuckyCount[1] = 0;
 }
 
 int tcl_andorAccumulateLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
@@ -1686,6 +1864,7 @@ int tcl_andorAccumulateLucky(ClientData clientData, Tcl_Interp *interp, int argc
     }
 
     if (maxsum/89 > ithresh) {
+      SharedMem2->iLuckyCount[cameraId]++;
       for (line = 0;line<idim; line=line++) {
          for (line = 0; pixel<idim; pixel=pixel++) {
              destx = xmaxat-line+idim/2;
@@ -1864,6 +2043,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
 			  status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
 		      }
                       count  = count+1;
+                      SharedMem2->iFrame[cameraId] = count;
                       ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
                       printf("frame %d, peak = %d , status=%d\n",ngot,ipeak,status);
                       fflush(NULL);
@@ -1874,18 +2054,20 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
                     fitsTimings[count-1] = (double)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
-                    if (deltat > 50) {
+                    if (deltat > 50 || SharedMem2->iabort > 0) {
                          count=numexp;
                          AbortAcquisition();
+                         SharedMem2->iabort = 0;
                     }
                     GetStatus(&status);
 		}
                 usleep(5000);
                 clock_gettime(CLOCK_REALTIME,&tm2);
                 deltat = tm2.tv_sec - tm1.tv_sec;
-                if (deltat > 50) {
+                if (deltat > 50 || SharedMem2->iabort > 0) {
                    count=numexp;
                    AbortAcquisition();
+                   SharedMem2->iabort = 0;
                 }
   }
 
@@ -1895,21 +2077,125 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   return TCL_OK;
 }
 
+
+
+int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int cameraId;
+  int numexp;
+  int num=0;
+  int ngot=0;
+  int iseq=0;
+  int status;
+  int numpix=0;
+  int bitpix;
+  int ifft=0;
+  int count;
+  int ipeak;
+  long deltat;
+  struct timespec tm1,tm2;
+  char filename[1024];
+
+  /* Check number of arguments provided and return an error if necessary */
+  if (argc < 3) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," cameraId numexp\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+
+  sscanf(argv[1],"%d",&cameraId);
+  sscanf(argv[2],"%d",&numexp);
+
+  if ( cameraId == 0 ) {
+     status = SetCurrentCamera(cameraA);
+  } else {
+     status = SetCurrentCamera(cameraB);
+  }
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select camera - %d",cameraId);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  num=0;
+  ngot=0;
+  count=0;
+  clock_gettime(CLOCK_REALTIME,&tm1);
+  printf("Start at : %ld\n",tm1.tv_sec);
+  StartAcquisition();
+  GetStatus(&status);
+  while (count < numexp) {
+		while(status==DRV_ACQUIRING) {
+                    GetTotalNumberImagesAcquired(&num);
+                    if ( num > ngot ) {
+                      if (num ==1 ) {
+                        clock_gettime(CLOCK_REALTIME,&tm1);
+                        printf("Acq Start at : %ld\n",tm1.tv_sec);
+                      }
+                      ngot = num;
+ 		      if ( cameraId == 0 ) {
+		          status = GetOldestImage(imageDataA, andorSetup[cameraId].npix);
+		      } else {
+			  status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
+		      }
+                      count  = count+1;
+                      SharedMem2->iFrame[cameraId] = count;
+                      ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
+                      printf("frame %d, peak = %d , status=%d\n",ngot,ipeak,status);
+                      fflush(NULL);
+                      cAndorDisplaySingle(cameraId, ifft);
+                    }
+                    usleep(5000);
+                    clock_gettime(CLOCK_REALTIME,&tm2);
+                    deltat = tm2.tv_sec - tm1.tv_sec;
+                    fitsTimings[count-1] = (double)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
+                    if (deltat > 50 || SharedMem2->iabort > 0 ) {
+                         count=numexp;
+                         AbortAcquisition();
+                         SharedMem2->iabort = 0;
+                    }
+                    GetStatus(&status);
+		}
+                usleep(5000);
+                clock_gettime(CLOCK_REALTIME,&tm2);
+                deltat = tm2.tv_sec - tm1.tv_sec;
+                if (deltat > 50 || SharedMem2->iabort  > 0) {
+                   count=numexp;
+                   AbortAcquisition();
+                   SharedMem2->iabort = 0;
+                }
+  }
+
+  printf("\nAcq End at : %ld\n",tm2.tv_sec);
+  printf("%ld milliseconds per frame\n",(tm2.tv_sec-tm1.tv_sec)*1000/numexp);
+
+  return TCL_OK;
+}
+
+
 int getPeak ( int cameraId , int npix ) {
    int ipeak;
    int ipix;
+   int imin=100000;
+
    for (ipix=0;ipix<npix;ipix++) {
       if (cameraId == 0) {
         if (imageDataA[ipix] > ipeak) {
            ipeak = imageDataA[ipix];
+        } 
+        if (imageDataA[ipix] < imin) {
+           imin = imageDataA[ipix];
         } 
       }
       if (cameraId == 1) {
         if (imageDataB[ipix] > ipeak) {
            ipeak = imageDataB[ipix];
         } 
+        if (imageDataB[ipix] < imin) {
+           imin = imageDataA[ipix];
+        } 
       }
    }
+   SharedMem2->iPeak[cameraId] = ipeak;
+   SharedMem2->iMin[cameraId] = imin;
    return ipeak;
 }
 

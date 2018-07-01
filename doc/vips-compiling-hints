@@ -1,0 +1,17 @@
+The VIPS package can be recompiled using the GNU standard
+
+./configure --prefix=some-installation-directory --without-python
+make install
+
+
+If the configure step does not work , try
+
+sudo apt install automake autogen m4
+libtoolize
+aclocal
+automake --add-missing
+autoconf
+
+then try the ./confgure again.
+
+

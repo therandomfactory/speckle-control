@@ -6,10 +6,11 @@ proc debuglog { msg } {
 proc cAndorSetProperty { cam prop val {val2 ""} } {
 global ANDOR_CFG ANDOR_ARM
    if { $prop == "HSSpeed" } {
-      if { $val == 0 } { andorSetProperty $cam HSSpeed 0 $val2 ; set prop EMHSSpeed }
-      if { $val == 1 } { andorSetProperty $cam HSSpeed 1 $val2 }
+      if { $val == 0 } { set res [andorSetProperty $cam HSSpeed 0 $val2] ; set prop EMHSSpeed }
+      if { $val == 1 } { set res [andorSetProperty $cam HSSpeed 1 $val2] }
+   } else {
+     set res [andorSetProperty $cam $prop $val]
    }
-   set res [andorSetProperty $cam $prop $val]
    if { $res == "" } {
      set ANDOR_CFG($cam,$prop) $val
      set ANDOR_CFG($ANDOR_ARM,$prop) $val
@@ -74,7 +75,7 @@ if { $handle < 0} {exit}
 debuglog "Connected to camera $cameraNum, handle = $handle"
 set CAM [expr $cameraNum - 1]
 set ANDOR_CFG(fitds9) 0
-set ANDOR_CFG($CAM,OutputAmplifier) 0
+set ANDOR_CFG($CAM,OutputAmplifier) 1
 set ANDOR_CFG($CAM,PreAmpGain) 1
 set ANDOR_CFG($CAM,VSSpeed) 1
 set ANDOR_CFG($CAM,HSSpeed) 1
@@ -111,6 +112,8 @@ cAndorSetProperty $CAM Cooler 1
 
 set shmid [andorConnectShmem[set CAM] 1024 1024]
 debuglog "$ANDOR_ARM memory buffers @ $shmid"
+set shmid2 [andorConnectShmem2]
+debuglog "Andors control registers @ $shmid2"
 
 set DS9 ds9[set ANDOR_ARM]
 initads9 [lindex $shmid 0] 1024 1024
@@ -134,13 +137,16 @@ cAndorSetProperty $CAM ReadMode 4
 cAndorSetProperty $CAM AcquisitionMode 1
 cAndorSetProperty $CAM KineticCycleTime 0.0
 cAndorSetProperty $CAM NumberAccumulations 1
-cAndorSetProperty $CAM NumberKinetics 100
+cAndorSetProperty $CAM NumberKinetics 1
 cAndorSetProperty $CAM AccumulationCycleTime 0.0
 cAndorSetProperty $CAM ExposureTime 0.04
 cAndorSetProperty $CAM SetTemperature -60
 
 set ANDOR_CFG($ANDOR_ARM,EMCCDGain) 0
 set ANDOR_CFG($ANDOR_ARM,EMAdvanced) 0
+set ANDOR_CFG($ANDOR_ARM,min) 300
+set ANDOR_CFG($ANDOR_ARM,peak) 1000
+
 
 proc showstatus { } {
 global CAM ANDOR_CFG
@@ -318,12 +324,16 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
+    exec xpaset -p $DS9 scale linear
+    exec xpaset -p $DS9 limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*1.5]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   if { $ANDOR_ARM == "red" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
+    exec xpaset -p $DS9 scale linear
+    exec xpaset -p $DS9 limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*1.5]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
@@ -352,14 +362,75 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(red)}
+    set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
+    set ANDOR_CFG(red,peak) [andorGetControl $ANDOR_CFG(red) peak]
   }
   if { $ANDOR_CFG(blue) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(blue)}
+    set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
+    set ANDOR_CFG(blue,peak) [andorGetControl $ANDOR_CFG(blue) peak]
   }
   updateDatabase
   debuglog "Finished acquisition"
+}
+
+
+proc acquireFastVideo { exp x y npix n } {
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
+  debuglog "Starting fast video sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
+  if { $ANDOR_ARM == "blue" } {
+    exec xpaset -p $DS9 frame 1
+    exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
+    exec xpaset -p $DS9 cmap Cool
+    exec xpaset -p $DS9 scale linear
+    exec xpaset -p $DS9 limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*1.5]
+    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
+  }
+  if { $ANDOR_ARM == "red" } {
+    exec xpaset -p $DS9 frame 1
+    exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
+    exec xpaset -p $DS9 cmap Heat
+    exec xpaset -p $DS9 scale linear
+    exec xpaset -p $DS9 limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*1.5]
+    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
+  }
+  updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
+  refreshads9 [expr int($exp*2000)] [expr $n*4]
+  set TELEMETRY(speckle.andor.numexp) $n
+  set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
+  set TELEMETRY(speckle.andor.numberkinetics) $n
+  SetExposureTime $exp
+  if { $ANDOR_CFG(red) > -1} {
+     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+  }
+  if { $ANDOR_CFG(blue) > -1} {
+     andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+  }
+  set count 0
+  set dofft 1
+  if { $ANDOR_CFG(red) > -1} {
+      andorFastVideo $ANDOR_CFG(red) $n
+  }
+  if { $ANDOR_CFG(blue) > -1 } {
+      andorFastVideo $ANDOR_CFG(blue) $n
+  }
+  update idletasks
+  set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
+  if { $ANDOR_CFG(red) > -1} {
+    if { $dofft } {andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n}
+    catch {andorAbortAcq $ANDOR_CFG(red)}
+    set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
+    set ANDOR_CFG(red,peak) [andorGetControl $ANDOR_CFG(red) peak]
+  }
+  if { $ANDOR_CFG(blue) > -1} {
+    if { $dofft } {andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n}
+    catch {andorAbortAcq $ANDOR_CFG(blue)}
+    set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
+    set ANDOR_CFG(blue,peak) [andorGetControl $ANDOR_CFG(blue) peak]
+  }
+  debuglog "Finished Video run"
 }
 
 set FITSBITS(SHORT_IMG)    16
@@ -379,7 +450,7 @@ global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
    set finsert [open /tmp/insert_$ANDOR_ARM.sql w]
    set amp "CCD Amplifier"
    if { $ANDOR_CFG($ANDOR_ARM,OutputAmplifier) == 0 } { set amp "ECMMD Amplifier" }
-   puts $finsert "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(ProgID)','$TELEMETRY(speckle.scope.target)','$ANDOR_CFG(imagename)','$TELEMETRY(speckle.scope.datatype)',$TELEMETRY(speckle.andor.preamp_gain),$TELEMETRY(speckle.andor.em_gain),$TELEMETRY(speckle.andor.bias_estimate),$TELEMETRY(speckle.andor.peak_estimate),$TELEMETRY(speckle.andor.int_time),$TELEMETRY(speckle.andor.exposureStart),$TELEMETRY(speckle.andor.exposureEnd),'$SCOPE(filter)','$amp',$TELEMETRY(speckle.andor.numexp),$TELEMETRY(speckle.andor.numaccum),'$TELEMETRY(speckle.andor.roi)',$TELEMETRY(speckle.andor.hbin),$TELEMETRY(speckle.andor.vbin),'$TELEMETRY(tcs.telescope.ra)','$TELEMETRY(tcs.telescope.dec)',$TELEMETRY(tcs.weather.rawiq),$TELEMETRY(tcs.weather.rawcc),$TELEMETRY(tcs.weather.rawwv),$TELEMETRY(tcs.weather.rawbg));"
+   puts $finsert "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(ProgID)','$TELEMETRY(tcs.telescope.target)','$ANDOR_CFG(imagename)','$TELEMETRY(speckle.scope.datatype)',$TELEMETRY(speckle.andor.preamp_gain),$TELEMETRY(speckle.andor.em_gain),$TELEMETRY(speckle.andor.bias_estimate),$TELEMETRY(speckle.andor.peak_estimate),$TELEMETRY(speckle.andor.int_time),$TELEMETRY(speckle.andor.exposureStart),$TELEMETRY(speckle.andor.exposureEnd),'$SCOPE(filter)','$amp',$TELEMETRY(speckle.andor.numexp),$TELEMETRY(speckle.andor.numaccum),'$TELEMETRY(speckle.andor.roi)',$TELEMETRY(speckle.andor.hbin),$TELEMETRY(speckle.andor.vbin),'$TELEMETRY(tcs.telescope.ra)','$TELEMETRY(tcs.telescope.dec)',$TELEMETRY(tcs.weather.rawiq),$TELEMETRY(tcs.weather.rawcc),$TELEMETRY(tcs.weather.rawwv),$TELEMETRY(tcs.weather.rawbg));"
    close $finsert
    catch {exec mysql speckle --user=root < /tmp/insert_$ANDOR_ARM.sql >& /tmp/insert_$ANDOR_ARM.log &}
 }
@@ -549,6 +620,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "Acquiring roi"}
          version         { puts $sock "1.0" }
          grabcube        { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Acquiring cube"}
+         fastVideo       { after 10 "andorFastVideo [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Fastvideo starts"}
          setframe        { configureFrame [lindex $msg 1] ;  puts $sock "OK"}
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }

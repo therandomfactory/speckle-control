@@ -170,11 +170,44 @@ global LASTACQ STATUS SCOPE ACQREGION
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
       .main.abort configure -fg gray -relief sunken
-      after 1000 speckleshutter red close
-      after 1000 speckleshutter blue close
    }
 }
   
+
+proc fastvideomode { } {
+global LASTACQ STATUS SCOPE ACQREGION
+#   commandAndor red "imagename videomode 1" 0
+#   commandAndor blue "imagename videomode 1" 0
+#   exec rm -f $SCOPE(datadir)/videomode_red.fits
+#   exec rm -f $SCOPE(datadir)/videomode_blue.fits
+   set STATUS(abort) 0
+   andorSetControl abort 0
+   set redtemp  [lindex [commandAndor red gettemp] 0]
+   set bluetemp  [lindex [commandAndor blue gettemp] 0]
+   mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
+   mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
+   .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
+   .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
+   commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) 100"
+   commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) 100"
+   if { $STATUS(abort) == 0 } {
+      if { $SCOPE(exposure) > 0.0 } {
+          mimicMode red open
+          mimicMode blue open
+      }
+      .main.video configure -relief sunken -fg yellow
+      .main.observe configure -fg LightGray -relief sunken -command ""
+      .main.abort configure -fg black -relief raised
+      after [expr int($SCOPE(exposure)*1000)+100] fastvideomode
+   } else {
+      andorSetControl abort 1
+      .main.video configure -relief raised -fg black
+      .main.observe configure -fg black -relief raised -command startsequence
+      .main.abort configure -fg gray -relief sunken
+   }
+}
+
+
 proc startvideomode { } {
 global STATUS SCOPE
    set STATUS(abort) 0
@@ -185,6 +218,28 @@ global STATUS SCOPE
    videomode
 }
 
+
+proc showControl { } {
+   foreach i "0 1" {
+     foreach p "min peak frame lucky luckythresh" {
+        puts stdout  "Camera $i : $p = [andorGetControl $i $p]"
+     }
+   }
+   puts stdout  "Global : showfft = [andorGetControl $i showfft]"
+   puts stdout  "Global : savelucky = [andorGetControl $i savelucky]"
+   puts stdout  "Global : showlucky = [andorGetControl $i showlucky]"
+   puts stdout  "Global : abort = [andorGetControl $i abort]"
+}
+
+
+proc testControl { } {
+   andorSetControl 0 luckythresh 99
+   andorSetControl 1 luckythresh 123
+   andorSetControl 0 showfft
+   andorSetControl 0 savelucky
+   andorSetControl 0 showlucky
+   andorSetControl 0 abort
+}
 
 
 

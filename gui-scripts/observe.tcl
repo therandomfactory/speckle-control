@@ -1007,6 +1007,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    set dfrmnum $ifrmnum
    set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
    set STATUS(abort) 0
+   andorSetControl abort 0
    .main.observe configure -text "working" -bg green -relief sunken
    .main.abort configure -bg orange -relief raised -fg black
    wm geometry .countdown
@@ -1052,7 +1053,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
       after [expr int($perframe*1000)]
-      incr i 1
+#      incr i 1
+      set i [andorGetControl 0 frame]
       .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
       .lowlevel.progress configure -text "Observation status : Exposure $dfrmnum   Sequence $iseqnum"
       update
