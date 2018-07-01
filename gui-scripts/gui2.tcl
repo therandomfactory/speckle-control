@@ -199,6 +199,12 @@ global FITSBITS
    commandAndor blue "fitsbits $type"
 }
 
+proc dataquality { type value } {
+global DATAQUAL DATAQUALT TELEMETRY
+   set DATAQUAL($type) $value
+   set TELEMETRY(tcs.weather.$type) $value
+   .main.[set type] configure -text "DQ $DATAQUALT($type) : $value"
+}
 
 
 proc speckleGuiMode { mode } {
@@ -245,7 +251,7 @@ proc validInteger {win event X oldX min max} {
 
 
 proc validFloat {win event X oldX} {
-        set strongCheck [expr {[string is double -strict $X]}]
+        set strongCheck [expr {[string is double $X]}]
         if {! $strongCheck} {set X $oldX}
         switch $event {
             key {
@@ -385,12 +391,6 @@ menu .main.rawbg.m
 .main.rawbg.m add command -label "RAWBG ANY" -command "dataquality rawbg 0"
 place .main.rawbg -x 362 -y 290
 
-proc dataquality { type value } {
-global DATAQUAL DATAQUALT TELEMETRY
-   set DATAQUAL($type) $value
-   set TELEMETRY(tcs.weather.$type) $value
-   .main.[set type] configure -text "DQ $DATAQUALT($type) : $value"
-}
 
 foreach q "rawbg rawcc rawwv rawiq" { set DATAQUAL($q) 0 }
 set DATAQUALT(rawiq) image
@@ -461,7 +461,8 @@ showstatus "Initializing cameras"
 source  $SPECKLE_DIR/gui-scripts/camera_init.tcl
 resetSingleAndors fullframe
 set STATUS(busy) 0
-
+load $SPECKLE_DIR/lib/andorTclInit.so
+andorConnectShmem2
 
 
 

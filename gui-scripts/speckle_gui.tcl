@@ -1,189 +1,3 @@
-wm title . "Speckle Control"
-place .main -x 0 -y 30
-place .mbar -x 0
-.main configure -width 936
-.mbar configure -width 936
-place .mbar.help -x 880
-set iy 50
-foreach item "target ProgID ra dec telescope instrument" {
-   place .main.l$item -x 360 -y $iy
-   place .main.v$item -x 440 -y $iy
-
-   incr iy 24 
-}
-
-.main.vtarget configure -textvariable TELEMETRY(tcs.target.name)
-.main.vra configure -textvariable TELEMETRY(tcs.telescope.ra)
-.main.vdec configure -textvariable TELEMETRY(tcs.telescope.dec)
-
-
-menubutton .mbar.config -text "Configurations" -fg black -bg gray -menu .mbar.config.m
-menu .mbar.config.m
-set cfg [glob $env(SPECKLE_DIR)/config-scripts/*]
-foreach i $$cfg { 
-   set id [file tail $i]
-   .mbar.config.m add command -label "$id" -command "loadconfig $id"
-}
-.mbar.config.m add command -label "User selected" -command "loadconfig user"
-.mbar.config.m add command -label "Save current as" -command "saveconfig"
-place .mbar.config -x 380 -y 0
-
-
-
-checkbutton .main.bred -bg gray -text "RED ARM" -variable INSTRUMENT(red)  -highlightthickness 0
-place .main.bred -x 350 -y 22
-checkbutton .main.bblue -bg gray -text "BLUE ARM" -variable INSTRUMENT(blue)  -highlightthickness 0
-place .main.bblue -x 450 -y 22
-label .main.astatus -text test -fg black -bg LightBlue
-place .main.astatus -x 20 -y 315
-.main.astatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD     Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??????"
- 
-label .main.bstatus -text test -bg Orange -fg black
-place .main.bstatus -x 20 -y 340
-.main.bstatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD     Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??????"
-
-###TBD
-place .main.astatus -x 1000
-place .main.bstatus -x 1000
-
-frame .lowlevel -bg gray -width 620 -height 710
-place .lowlevel -x 0 -y 360
-label .lowlevel.red -text "RED ARM" -bg red -fg black -width 25
-place .lowlevel.red -x 20 -y 3
-label .lowlevel.blue -text "BLUE ARM" -bg LightBlue -fg black -width 25
-place .lowlevel.blue -x 420 -y 3
-#checkbutton .lowlevel.clone -bg gray -text "Clone settings" -variable INSTRUMENT(clone)  -highlightthickness 0
-#place .lowlevel.clone -x 240 -y 3
-
-label .lowlevel.lemgain  -bg gray -text "EM Gain"
-SpinBox .lowlevel.emgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
-place .lowlevel.lemgain -x 220 -y 103
-place .lowlevel.emgain -x 274 -y 100
-
-label .lowlevel.lbemgain  -bg gray -text "EM Gain"
-SpinBox .lowlevel.bemgain -width 4  -bg gray  -range "0 1000 1" -textvariable INSTRUMENT(blue,emgain) -command "checkemccdgain blue" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
-place .lowlevel.lbemgain -x 616 -y 103
-place .lowlevel.bemgain -x 670 -y 100
-
-
-
-label .lowlevel.input -text "INPUT" -bg white
-place .lowlevel.input -x 280 -y 270
-set INSTRUMENT(clone) 0
-
-button .lowlevel.rtempset -bg gray -text "Temp Set" -width 6 -command "andorsetpoint red"
-entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6  -justify right -validate all -vcmd {validInteger %W %V %P %s -80 20}
-place .lowlevel.rtempset -x 126 -y 28
-place .lowlevel.vrtempset -x 210 -y 33
-
-button .lowlevel.btempset -bg gray -text "Temp Set" -width 6 -command "andorsetpoint blue"
-entry .lowlevel.vbtempset -bg white -textvariable ANDOR_CFG(blue,setpoint) -width 6  -justify right -validate all -vcmd {validInteger %W %V %P %s -80 20}
-place .lowlevel.btempset -x 524 -y 28
-place .lowlevel.vbtempset -x 610 -y 33
-set ANDOR_CFG(red,setpoint) -60
-set ANDOR_CFG(blue,setpoint) -60
-
-menubutton .lowlevel.rshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.rshut.m -relief raised
-menu .lowlevel.rshut.m
-place .lowlevel.rshut -x 20 -y 30
-.lowlevel.rshut.m add command -label "Shutter=During" -command "speckleshutter red during"
-.lowlevel.rshut.m add command -label "Shutter=Close" -command "speckleshutter red close"
-.lowlevel.rshut.m add command -label "Shutter=Open" -command "speckleshutter red open"
-
-menubutton .lowlevel.bshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.bshut.m -relief raised
-menu .lowlevel.bshut.m
-place .lowlevel.bshut -x 420 -y 30
-.lowlevel.bshut.m add command -label "Shutter=During" -command "speckleshutter blue during"
-.lowlevel.bshut.m add command -label "Shutter=Close" -command "speckleshutter blue close"
-.lowlevel.bshut.m add command -label "Shutter=Open" -command "speckleshutter blue open"
-
-
-checkbutton .lowlevel.rautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(red,fitds9) -highlightthickness 0
-checkbutton .lowlevel.bautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(blue,fitds9) -highlightthickness 0
-place .lowlevel.rautofit -x 280 -y 33
-place .lowlevel.bautofit -x 680 -y 33
-
-checkbutton .lowlevel.rfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(red,frametransfer) -highlightthickness 0
-checkbutton .lowlevel.bfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(blue,frametransfer) -highlightthickness 0
-place .lowlevel.rfxfer -x 220 -y 3
-place .lowlevel.bfxfer -x 620 -y 3
-set ANDOR_CFG(red,frametransfer) 1
-set ANDOR_CFG(blue,frametransfer) 1
-
-set INSTRUMENT(red,fitds9) 0
-set INSTRUMENT(blue,fitds9) 0
-set ZABERS(A,target) 0
-set ZABERS(B,target) 0
-set ZABERS(input,target) 0
-set TELEMETRY(speckle.mode.andor) "widefield"
-
-button .lowlevel.zagoto -bg gray -text "Move to" -width 8 -command "zaberEngpos A"
-entry .lowlevel.vzagoto -bg white -textvariable ZABERS(A,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.zagoto -x 20 -y 300
-place .lowlevel.vzagoto -x 130 -y 302
-button .lowlevel.zawide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos A wide"
-place .lowlevel.zawide -x 20 -y 340
-button .lowlevel.zaspec -bg gray -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos A speckle"
-place .lowlevel.zaspec -x 20 -y 380
-button .lowlevel.zahome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos A home"
-place .lowlevel.zahome -x 20 -y 420
-
-button .lowlevel.zigoto -bg gray -text "Move to" -width 8 -command "zaberEngpos input"
-entry .lowlevel.vzigoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.zigoto -x 220 -y 300
-place .lowlevel.vzigoto -x 330 -y 302
-button .lowlevel.ziwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos input wide"
-place .lowlevel.ziwide -x 220 -y 340
-button .lowlevel.zispec -bg gray -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos input speckle"
-place .lowlevel.zispec -x 220 -y 380
-button .lowlevel.zihome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos input home"
-place .lowlevel.zihome -x 220 -y 420
-
-button .lowlevel.zbgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos B"
-entry .lowlevel.vzbgoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.zbgoto -x 420 -y 300
-place .lowlevel.vzbgoto -x 530 -y 302
-button .lowlevel.zbwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos B wide"
-place .lowlevel.zbwide -x 420 -y 340
-button .lowlevel.zbspec -bg gray -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos B speckle"
-place .lowlevel.zbspec -x 420 -y 380
-button .lowlevel.zbhome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos B home"
-place .lowlevel.zbhome -x 420 -y 420
-
-menubutton .lowlevel.rmode -text Mode  -width 10 -bg gray80 -menu .lowlevel.rmode.m -relief raised
-menu .lowlevel.rmode.m
-place .lowlevel.rmode -x 20 -y 70
-.lowlevel.rmode.m add command -label "Wide Field" -command "specklemode red wide"
-.lowlevel.rmode.m add command -label "Speckle" -command "specklemode red speckle"
-.lowlevel.rmode.m add command -label "Custom" -command "specklemode red custom"
-
-menubutton .lowlevel.bmode -text Mode -width 10 -bg gray80 -menu .lowlevel.bmode.m
-menu .lowlevel.bmode.m
-place .lowlevel.bmode -x 420 -y 70
-.lowlevel.bmode.m add command -label "Wide Field" -command "specklemode blue wide"
-.lowlevel.bmode.m add command -label "Speckle" -command "specklemode blue speckle"
-.lowlevel.bmode.m add command -label "Custom" -command "specklemode blue custom"
-
-menubutton .lowlevel.rfilter -text "Filter = clear"  -width 16 -bg gray80 -menu .lowlevel.rfilter.m -relief raised
-menu .lowlevel.rfilter.m
-place .lowlevel.rfilter -x 118 -y 70
-.lowlevel.rfilter.m add command -label "i" -command "specklefilter red Red-I"
-.lowlevel.rfilter.m add command -label "z" -command "specklefilter red Red-Z"
-.lowlevel.rfilter.m add command -label "716" -command "specklefilter red Red-716"
-.lowlevel.rfilter.m add command -label "832" -command "specklefilter red Red-832"
-.lowlevel.rfilter.m add command -label "clear" -command "specklefilter red clear"
-.lowlevel.rfilter.m add command -label "block" -command "specklefilter red block"
-
-menubutton .lowlevel.bfilter -text "Filter = clear"  -width 16 -bg gray80 -menu .lowlevel.bfilter.m -relief raised
-menu .lowlevel.bfilter.m
-place .lowlevel.bfilter -x 518 -y 70
-.lowlevel.bfilter.m add command -label "u" -command "specklefilter blue Blue-U"
-.lowlevel.bfilter.m add command -label "g" -command "specklefilter blue Blue-G"
-.lowlevel.bfilter.m add command -label "r" -command "specklefilter blue Blue-R"
-.lowlevel.bfilter.m add command -label "467" -command "specklefilter blue Blue-467"
-.lowlevel.bfilter.m add command -label "562" -command "specklefilter blue Blue-562"
-.lowlevel.bfilter.m add command -label "clear" -command "specklefilter blue clear"
-
 proc specklefilter { arm name } {
 global FWHEELS SPECKLE_FILTER
   if { $arm == "red" } {
@@ -199,14 +13,6 @@ global FWHEELS SPECKLE_FILTER
     }
   }
 }
-
-set SPECKLE_FILTER(red,current) clear
-set SPECKLE_FILTER(blue,current) clear
-set SPECKLE_FILTER(red,wheel) 1
-set SPECKLE_FILTER(blue,wheel) 2
-
-set d  [split $SCOPE(obsdate) "-"]
-set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
 
 #
 #  Do the actual setup of the GUI, to sync it with the camera status
@@ -358,12 +164,240 @@ proc showprogress { x } {
    .lowlevel.p configure -value $x
 }
 
+proc andorset { w arm item value } {
+global ANDOR_CFG
+  set ANDOR_CFG($arm,$item) $value
+  .lowlevel.$w configure -text $ANDOR_CFG($item,$value)
+  switch $item {
+      VSSpeed    { commandAndor $arm "vsspeed $value" }
+      HSSpeed    { commandAndor $arm "hsspeed 1 $value" }
+      EMHSSpeed  { commandAndor $arm "hsspeed 0 $value" }
+      PreAmpGain { commandAndor $arm "preampgain $value" }
+      OuputAmplifier { commandAndor $arm "outputamp $value" }
+  }
+}
+
+proc syncgui  { } {
+global CAMSTATUS ANDOR_CFG
+   .lowlevel.vspeed configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(red,VSSpeed))
+   .lowlevel.bvspeed configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(blue,VSSpeed))
+   if { $CAMSTATUS(red,OutputAmplifier) == 1 } {
+     .lowlevel.ccdhs configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(red,HSSpeed))
+   } else {
+     .lowlevel.emhs configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(red,HSSpeed))
+   }
+   if { $CAMSTATUS(blue,OutputAmplifier) == 1 } {
+     .lowlevel.bccdhs configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(blue,HSSpeed))
+   } else {
+     .lowlevel.bemhs configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(blue,HSSpeed))
+   }
+}
+
+
+
+
+wm title . "Speckle Control"
+place .main -x 0 -y 30
+place .mbar -x 0
+.main configure -width 936
+.mbar configure -width 936
+place .mbar.help -x 880
+set iy 50
+foreach item "target ProgID ra dec telescope instrument" {
+   place .main.l$item -x 360 -y $iy
+   place .main.v$item -x 440 -y $iy
+
+   incr iy 24 
+}
+
+.main.vtarget configure -textvariable TELEMETRY(tcs.target.name)
+.main.vra configure -textvariable TELEMETRY(tcs.telescope.ra)
+.main.vdec configure -textvariable TELEMETRY(tcs.telescope.dec)
+
+
+menubutton .mbar.config -text "Configurations" -fg black -bg gray -menu .mbar.config.m
+menu .mbar.config.m
+set cfg [glob $env(SPECKLE_DIR)/config-scripts/*]
+foreach i $$cfg { 
+   set id [file tail $i]
+   .mbar.config.m add command -label "$id" -command "loadconfig $id"
+}
+.mbar.config.m add command -label "User selected" -command "loadconfig user"
+.mbar.config.m add command -label "Save current as" -command "saveconfig"
+place .mbar.config -x 380 -y 0
+
+
+
+checkbutton .main.bred -bg gray -text "RED ARM" -variable INSTRUMENT(red)  -highlightthickness 0
+place .main.bred -x 450 -y 22
+checkbutton .main.bblue -bg gray -text "BLUE ARM" -variable INSTRUMENT(blue)  -highlightthickness 0
+place .main.bblue -x 350 -y 22
+
+#label .main.astatus -text test -fg black -bg LightBlue
+#place .main.astatus -x 20 -y 315
+#.main.astatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD     Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??????"
+#label .main.bstatus -text test -bg Orange -fg black
+#place .main.bstatus -x 20 -y 340
+#.main.bstatus configure -text "Run:YES   Shut:OPEN   FPS:32/32   Mode:CCD     Temp:ON:-50  Frame:256x256   PGain:10   NumPix:??????"
+###TBD
+#place .main.astatus -x 1000
+#place .main.bstatus -x 1000
+
+frame .lowlevel -bg gray -width 620 -height 710
+place .lowlevel -x 0 -y 360
+label .lowlevel.red -text "RED ARM" -bg red -fg black -width 25
+place .lowlevel.red -x 420 -y 3
+label .lowlevel.blue -text "BLUE ARM" -bg LightBlue -fg black -width 25
+place .lowlevel.blue -x 20 -y 3
+#checkbutton .lowlevel.clone -bg gray -text "Clone settings" -variable INSTRUMENT(clone)  -highlightthickness 0
+#place .lowlevel.clone -x 240 -y 3
+
+label .lowlevel.lemgain  -bg gray -text "EM Gain"
+SpinBox .lowlevel.emgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
+place .lowlevel.lemgain -x 616 -y 103
+place .lowlevel.emgain -x 670 -y 100
+
+label .lowlevel.lbemgain  -bg gray -text "EM Gain"
+SpinBox .lowlevel.bemgain -width 4  -bg gray  -range "0 1000 1" -textvariable INSTRUMENT(blue,emgain) -command "checkemccdgain blue" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
+place .lowlevel.lbemgain -x 220 -y 103
+place .lowlevel.bemgain -x 274 -y 100
+
+
+
+label .lowlevel.input -text "INPUT" -bg white
+place .lowlevel.input -x 280 -y 270
+set INSTRUMENT(clone) 0
+
+button .lowlevel.rtempset -bg gray -text "Temp Set" -width 6 -command "andorsetpoint red"
+entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6  -justify right -validate all -vcmd {validInteger %W %V %P %s -80 20}
+place .lowlevel.rtempset -x 524 -y 28
+place .lowlevel.vrtempset -x 610 -y 33
+
+button .lowlevel.btempset -bg gray -text "Temp Set" -width 6 -command "andorsetpoint blue"
+entry .lowlevel.vbtempset -bg white -textvariable ANDOR_CFG(blue,setpoint) -width 6  -justify right -validate all -vcmd {validInteger %W %V %P %s -80 20}
+place .lowlevel.btempset -x 126 -y 28
+place .lowlevel.vbtempset -x 210 -y 33
+
+
+set ANDOR_CFG(red,setpoint) -60
+set ANDOR_CFG(blue,setpoint) -60
+
+menubutton .lowlevel.rshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.rshut.m -relief raised
+menu .lowlevel.rshut.m
+place .lowlevel.rshut -x 420 -y 30
+.lowlevel.rshut.m add command -label "Shutter=During" -command "speckleshutter red during"
+.lowlevel.rshut.m add command -label "Shutter=Close" -command "speckleshutter red close"
+.lowlevel.rshut.m add command -label "Shutter=Open" -command "speckleshutter red open"
+
+menubutton .lowlevel.bshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.bshut.m -relief raised
+menu .lowlevel.bshut.m
+place .lowlevel.bshut -x 20 -y 30
+.lowlevel.bshut.m add command -label "Shutter=During" -command "speckleshutter blue during"
+.lowlevel.bshut.m add command -label "Shutter=Close" -command "speckleshutter blue close"
+.lowlevel.bshut.m add command -label "Shutter=Open" -command "speckleshutter blue open"
+
+
+checkbutton .lowlevel.rautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(red,fitds9) -highlightthickness 0
+checkbutton .lowlevel.bautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(blue,fitds9) -highlightthickness 0
+place .lowlevel.rautofit -x 680 -y 33
+place .lowlevel.bautofit -x 280 -y 33
+
+checkbutton .lowlevel.rfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(red,frametransfer) -highlightthickness 0
+checkbutton .lowlevel.bfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(blue,frametransfer) -highlightthickness 0
+place .lowlevel.rfxfer -x 620 -y 3
+place .lowlevel.bfxfer -x 220 -y 3
+set ANDOR_CFG(red,frametransfer) 1
+set ANDOR_CFG(blue,frametransfer) 1
+
+set INSTRUMENT(red,fitds9) 0
+set INSTRUMENT(blue,fitds9) 0
+set ZABERS(A,target) 0
+set ZABERS(B,target) 0
+set ZABERS(input,target) 0
+set TELEMETRY(speckle.mode.andor) "widefield"
+
+button .lowlevel.zagoto -bg gray -text "Move to" -width 8 -command "zaberEngpos A"
+entry .lowlevel.vzagoto -bg white -textvariable ZABERS(A,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+place .lowlevel.zagoto -x 420 -y 300
+place .lowlevel.vzagoto -x 530 -y 302
+button .lowlevel.zawide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos A wide"
+place .lowlevel.zawide -x 420 -y 340
+button .lowlevel.zaspec -bg gray -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos A speckle"
+place .lowlevel.zaspec -x 420 -y 380
+button .lowlevel.zahome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos A home"
+place .lowlevel.zahome -x 420 -y 420
+
+button .lowlevel.zigoto -bg gray -text "Move to" -width 8 -command "zaberEngpos input"
+entry .lowlevel.vzigoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+place .lowlevel.zigoto -x 220 -y 300
+place .lowlevel.vzigoto -x 330 -y 302
+button .lowlevel.ziwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos input wide"
+place .lowlevel.ziwide -x 220 -y 340
+button .lowlevel.zispec -bg gray -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos input speckle"
+place .lowlevel.zispec -x 220 -y 380
+button .lowlevel.zihome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos input home"
+place .lowlevel.zihome -x 220 -y 420
+
+button .lowlevel.zbgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos B"
+entry .lowlevel.vzbgoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+place .lowlevel.zbgoto -x 20 -y 300
+place .lowlevel.vzbgoto -x 130 -y 302
+button .lowlevel.zbwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos B wide"
+place .lowlevel.zbwide -x 20 -y 340
+button .lowlevel.zbspec -bg gray -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos B speckle"
+place .lowlevel.zbspec -x 20 -y 380
+button .lowlevel.zbhome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos B home"
+place .lowlevel.zbhome -x 20 -y 420
+
+menubutton .lowlevel.rmode -text Mode  -width 10 -bg gray80 -menu .lowlevel.rmode.m -relief raised
+menu .lowlevel.rmode.m
+place .lowlevel.rmode -x 420 -y 70
+.lowlevel.rmode.m add command -label "Wide Field" -command "specklemode red wide"
+.lowlevel.rmode.m add command -label "Speckle" -command "specklemode red speckle"
+.lowlevel.rmode.m add command -label "Custom" -command "specklemode red custom"
+
+menubutton .lowlevel.bmode -text Mode -width 10 -bg gray80 -menu .lowlevel.bmode.m
+menu .lowlevel.bmode.m
+place .lowlevel.bmode -x 20 -y 70
+.lowlevel.bmode.m add command -label "Wide Field" -command "specklemode blue wide"
+.lowlevel.bmode.m add command -label "Speckle" -command "specklemode blue speckle"
+.lowlevel.bmode.m add command -label "Custom" -command "specklemode blue custom"
+
+menubutton .lowlevel.rfilter -text "Filter = clear"  -width 16 -bg gray80 -menu .lowlevel.rfilter.m -relief raised
+menu .lowlevel.rfilter.m
+place .lowlevel.rfilter -x 518 -y 70
+.lowlevel.rfilter.m add command -label "i" -command "specklefilter red Red-I"
+.lowlevel.rfilter.m add command -label "z" -command "specklefilter red Red-Z"
+.lowlevel.rfilter.m add command -label "716" -command "specklefilter red Red-716"
+.lowlevel.rfilter.m add command -label "832" -command "specklefilter red Red-832"
+.lowlevel.rfilter.m add command -label "clear" -command "specklefilter red clear"
+.lowlevel.rfilter.m add command -label "block" -command "specklefilter red block"
+
+menubutton .lowlevel.bfilter -text "Filter = clear"  -width 16 -bg gray80 -menu .lowlevel.bfilter.m -relief raised
+menu .lowlevel.bfilter.m
+place .lowlevel.bfilter -x 118 -y 70
+.lowlevel.bfilter.m add command -label "u" -command "specklefilter blue Blue-U"
+.lowlevel.bfilter.m add command -label "g" -command "specklefilter blue Blue-G"
+.lowlevel.bfilter.m add command -label "r" -command "specklefilter blue Blue-R"
+.lowlevel.bfilter.m add command -label "467" -command "specklefilter blue Blue-467"
+.lowlevel.bfilter.m add command -label "562" -command "specklefilter blue Blue-562"
+.lowlevel.bfilter.m add command -label "clear" -command "specklefilter blue clear"
+
+
+set SPECKLE_FILTER(red,current) clear
+set SPECKLE_FILTER(blue,current) clear
+set SPECKLE_FILTER(red,wheel) 1
+set SPECKLE_FILTER(blue,wheel) 2
+
+set d  [split $SCOPE(obsdate) "-"]
+set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
+
 
 toplevel .camerastatus -width 400 -height 520 -bg gray
 wm title .camerastatus "Camera Configrations" 
 label .camerastatus.lred -text "Red Arm" -bg gray
 label .camerastatus.lblue -text "Blue Arm" -bg gray
-place .camerastatus.lred -x 200 -y 10
+place .camerastatus.lred -x 400 -y 10
 place .camerastatus.lblue -x 300 -y 10
 
 set iy 40
@@ -372,8 +406,8 @@ foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpee
    label .camerastatus.vred[set p] -textvariable CAMSTATUS(red,$p) -bg gray -fg NavyBlue
    label .camerastatus.vblue[set p] -textvariable CAMSTATUS(blue,$p) -bg gray -fg NavyBlue
    place .camerastatus.l[set p] -x 20 -y $iy
-   place .camerastatus.vred[set p] -x 220 -y $iy
-   place .camerastatus.vblue[set p] -x 320 -y $iy
+   place .camerastatus.vred[set p] -x 320 -y $iy
+   place .camerastatus.vblue[set p] -x 220 -y $iy
    incr iy 25
 }
 button .camerastatus.done -text "Close" -fg black -bg orange -width 45 -command "wm withdraw .camerastatus"
@@ -418,19 +452,15 @@ label .lowlevel.lccdhs  -bg gray -text "CCD HS"
 
 
 
-place .lowlevel.emccd -x 20 -y 100
-place .lowlevel.hgain -x 120 -y 100
-place .lowlevel.aemccd -x 330 -y 100
-
-
-place .lowlevel.lvspeed -x 20 -y 200
-place .lowlevel.vspeed -x 120 -y 200
-
-place .lowlevel.lemhs -x 20 -y 230
-place .lowlevel.emhs -x 120 -y 230
-
-place .lowlevel.lccdhs -x 20 -y 260
-place .lowlevel.ccdhs -x 120 -y 260
+place .lowlevel.emccd -x 420 -y 100
+place .lowlevel.hgain -x 520 -y 100
+place .lowlevel.aemccd -x 730 -y 100
+place .lowlevel.lvspeed -x 420 -y 200
+place .lowlevel.vspeed -x 520 -y 200
+place .lowlevel.lemhs -x 420 -y 230
+place .lowlevel.emhs -x 520 -y 230
+place .lowlevel.lccdhs -x 420 -y 260
+place .lowlevel.ccdhs -x 520 -y 260
 
 
 checkbutton .lowlevel.bemccd  -bg gray -text "EMCCD" -variable INSTRUMENT(blue,emccd) -command "checkemccdgain blue" -highlightthickness 0
@@ -465,36 +495,6 @@ menu .lowlevel.bccdhs.m
 .lowlevel.bccdhs.m  add command -label "1 MHz"  -command "andorset bccdhs blue HSSpeed 0"
 .lowlevel.bccdhs.m  add command -label "100 KHz"  -command "andorset bccdhs blue HSSpeed 1"
 
-proc andorset { w arm item value } {
-global ANDOR_CFG
-  set ANDOR_CFG($arm,$item) $value
-  .lowlevel.$w configure -text $ANDOR_CFG($item,$value)
-  switch $item {
-      VSSpeed    { commandAndor $arm "vsspeed $value" }
-      HSSpeed    { commandAndor $arm "hsspeed 1 $value" }
-      EMHSSpeed  { commandAndor $arm "hsspeed 0 $value" }
-      PreAmpGain { commandAndor $arm "preampgain $value" }
-      OuputAmplifier { commandAndor $arm "outputamp $value" }
-  }
-}
-
-proc syncgui  { } {
-global CAMSTATUS ANDOR_CFG
-   .lowlevel.vspeed configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(red,VSSpeed))
-   .lowlevel.bvspeed configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(blue,VSSpeed))
-   if { $CAMSTATUS(red,OutputAmplifier) == 1 } {
-     .lowlevel.ccdhs configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(red,HSSpeed))
-   } else {
-     .lowlevel.emhs configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(red,HSSpeed))
-   }
-   if { $CAMSTATUS(blue,OutputAmplifier) == 1 } {
-     .lowlevel.bccdhs configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(blue,HSSpeed))
-   } else {
-     .lowlevel.bemhs configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(blue,HSSpeed))
-   }
-}
-
-
 
 set ANDOR_CFG(VSSpeed,0) "0.6 usec"
 set ANDOR_CFG(VSSpeed,1) "1.13 usec"
@@ -507,36 +507,31 @@ set ANDOR_CFG(EMHSSpeed,3) "1 MHz"
 set ANDOR_CFG(HSSpeed,0) "1 MHz"
 set ANDOR_CFG(HSSpeed,1) "100 KHz"
 
-place .lowlevel.bemccd -x 420 -y 100
-place .lowlevel.bhgain -x 520 -y 100
-place .lowlevel.abemccd -x 730 -y 100
+place .lowlevel.bemccd -x 20 -y 100
+place .lowlevel.bhgain -x 120 -y 100
+place .lowlevel.abemccd -x 330 -y 100
+place .lowlevel.lbvspeed -x 20 -y 200
+place .lowlevel.bvspeed -x 120 -y 200
+place .lowlevel.lbemhs -x 20 -y 230
+place .lowlevel.bemhs -x 120 -y 230
+place .lowlevel.lbccdhs -x 20 -y 260
+place .lowlevel.bccdhs -x 120 -y 260
 
-
-place .lowlevel.lbvspeed -x 420 -y 200
-place .lowlevel.bvspeed -x 520 -y 200
-
-place .lowlevel.lbemhs -x 420 -y 230
-place .lowlevel.bemhs -x 520 -y 230
-
-place .lowlevel.lbccdhs -x 420 -y 260
-place .lowlevel.bccdhs -x 520 -y 260
 
 button .lowlevel.rsave -text Save -bg gray70 -width 6 -command "specklesave red"
 button .lowlevel.rload -text Load -bg gray70 -width 6 -command "speckleload red"
-place .lowlevel.rsave -x 20  -y 460
-place .lowlevel.rload -x 115 -y 460
-
+place .lowlevel.rsave -x 420  -y 460
+place .lowlevel.rload -x 515 -y 460
 
 button .lowlevel.isave -text Save -bg gray70 -width 6 -command "specklesave input"
 button .lowlevel.iload -text Load -bg gray70 -width 6 -command "speckleload input"
 place .lowlevel.isave -x 220  -y 460
 place .lowlevel.iload -x 310 -y 460
 
-
 button .lowlevel.bsave -text Save -bg gray70 -width 6 -command "specklesave blue"
 button .lowlevel.bload -text Load -bg gray70 -width 6 -command "speckleload blue"
-place .lowlevel.bsave -x 420  -y 460
-place .lowlevel.bload -x 515 -y 460
+place .lowlevel.bsave -x 120  -y 460
+place .lowlevel.bload -x 115 -y 460
 
 button .main.video -width 5 -height 2 -text "Video" -relief raised -bg gray -command startvideomode
 place .main.video  -x 100 -y 167
