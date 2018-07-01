@@ -274,7 +274,7 @@ global ANDOR_MODE LASTACQ
        positionSpeckle $arm fullframe
     }
     if { $name == "speckle" && $LASTACQ != "roi" } {
-       commandAndor arm "setframe roi"
+       commandAndor $arm "setframe roi"
        positionSpeckle $arm roi
      }
     debuglog "$arm setup for $name"
@@ -301,18 +301,18 @@ global ANDOR_CFG
 }
 
 proc specklesynctelem { arm } {
-global DATAQUAL ZABERS
+global DATAQUAL ZABERS FWHEELS DATAQUAL
    zaberCheck
    set pinputzaber $ZABERS(input,readpos)
    if  { $arm == "red" } {
-     set pfilter $ZABERS(A,readpos)
+     set pfieldzaber $ZABERS(A,readpos)
      set pfilter $FWHEELS(red,$FWHEELS(red,position))
    } else {
      set pfieldzaber $ZABERS(B,readpos)
      set pfilter $FWHEELS(blue,$FWHEELS(blue,position))
    }
-   commandAndor $arm positiontelem "$pinutzaber $pfieldzaber $pfilter"
-   commandAndor $arm dqtelemetry "$DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQAL(rawwv) $DATAQUAL(rawbg)"
+   commandAndor $arm "positiontelem $pinputzaber $pfieldzaber $pfilter"
+   commandAndor $arm "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
 }
 
 
@@ -480,17 +480,17 @@ global ANDOR_CFG
 
 proc syncgui  { } {
 global CAMSTATUS ANDOR_CFG
-   .lowlevel.vspeed -configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(red,VSSpeed))
-   .lowlevel.bvspeed -configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUSblue,VSSpeed))
+   .lowlevel.vspeed configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(red,VSSpeed))
+   .lowlevel.bvspeed configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(blue,VSSpeed))
    if { $CAMSTATUS(red,OutputAmplifier) == 1 } {
-     .lowlevel.ccdhs -configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(red,HSSpeed))
+     .lowlevel.ccdhs configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(red,HSSpeed))
    } else {
-     .lowlevel.emhs -configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(red,EMHSSpeed))
+     .lowlevel.emhs configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(red,HSSpeed))
    }
    if { $CAMSTATUS(blue,OutputAmplifier) == 1 } {
-     .lowlevel.bccdhs -configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(blue,HSSpeed))
+     .lowlevel.bccdhs configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(blue,HSSpeed))
    } else {
-     .lowlevel.bemhs -configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(blue,EMHSSpeed))
+     .lowlevel.bemhs configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(blue,HSSpeed))
    }
 }
 
@@ -551,6 +551,8 @@ place .main.clrcomment -x 640 -y 23
 
 ttk::progressbar .lowlevel.p -orient horizontal -length 900  -mode determinate
 place .lowlevel.p -x 20 -y 130
+label .lowlevel.progress -text "Observation status : Idle" -fg NavyBlue -bg gray
+place .lowlevel.progress -x 20 -y 154
 
 #set INSTRUMENT(red) 1
 #set INSTRUMENT(blue) 1
@@ -706,5 +708,14 @@ if { [file exists $env(HOME)/.specklegui] } {
    source $env(HOME)/.specklegui
 }
 
+
 set SCOPE(imagename) "N[exec date +%Y%m%d]_[format %6.6d [set SCOPE(seqnum)]]"
+catch {
+    set all [glob $SCOPE(datadir)/N*.fits]
+    set last [split [lindex $all end] _]
+    set SCOPE(seqnum) [expr [string trimleft [lindex $last 2] 0] +1]
+}
+
+
+
 

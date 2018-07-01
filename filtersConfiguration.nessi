@@ -9,7 +9,7 @@ set FWHEELS(red,2)		"Red-Z"
 set FWHEELS(red,3)		"Red-716"
 set FWHEELS(red,4)		"Red-832"
 set FWHEELS(red,5)		"clear"
-set FWHEELS(red,6)		"clear"
+set FWHEELS(red,6)		"block"
 
 set FWHEELS(blue,1)		"Blue-U"
 set FWHEELS(blue,2)		"Blue-G"

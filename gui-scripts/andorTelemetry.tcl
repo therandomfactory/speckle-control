@@ -18,18 +18,22 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM
    set TELEMETRY(speckle.andor.roi) "$ANDOR_ROI(xs),$ANDOR_ROI(xe),$ANDOR_ROI(ys),$ANDOR_ROI(ye)"
    set TELEMETRY(speckle.andor.vbin) $ANDOR_CFG($arm,vbin)
    set TELEMETRY(speckle.andor.datatype) $ANDOR_CFG($arm,fitsbits)
-   set TELEMETRY(speckle.andor.filter) $SCOPE(filter)
    set dll [string range [file tail [glob $SPECKLE_DIR/lib/libUSBI2C.so.*.0]] 13 end]
    set TELEMETRY(speckle.andor.sw_version) $dll
    set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG($arm,KineticCycleTime) * $ANDOR_CFG($arm,ExposureTime) * $ANDOR_CFG($arm,NumberAccumulations)]
    set TELEMETRY(speckle.andor.em_gain) $ANDOR_CFG($arm,EMCCDGain)
-   set TELEMETRY(speckle.andor.vertical_speed) $ANDOR_CFG($arm,VSSpeed) 
    set TELEMETRY(speckle.andor.amplifier) $ANDOR_CFG($arm,OutputAmplifier)
    set TELEMETRY(speckle.andor.preamp_gain) $ANDOR_CFG($arm,PreAmpGain)
    set TELEMETRY(speckle.andor.serial_number) $ANDOR_CFG($CAM,SerialNumber) 
    set TELEMETRY(speckle.andor.target_temperature) [lindex $ANDOR_CFG($arm,SetTemperature) 0]
    set TELEMETRY(speckle.andor.ccdtemp) $ANDOR_CFG(ccdtemp) 
    set TELEMETRY(speckle.andor.prescans) 0
+   set TELEMETRY(speckle.andor.vertical_speed) $ANDOR_CFG(VSSpeed,$ANDOR_CFG($CAM,VSSpeed))
+   if { $TELEMETRY(speckle.andor.amplifier) == 0 } {
+      set TELEMETRY(speckle.andor.horizontal_speed) $ANDOR_CFG(EMHSSpeed,$ANDOR_CFG($CAM,EMHSSpeed))
+   } else {
+      set TELEMETRY(speckle.andor.horizontal_speed) $ANDOR_CFG(HSSpeed,$ANDOR_CFG($CAM,HSSpeed))
+   }
    set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(bias)
    set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(peak)
    set now [exec date -u +%Y-%m-%dT%H:%M:%S.0]
@@ -39,6 +43,17 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM
 }
 
 #set initial defaults
+set ANDOR_CFG(VSSpeed,0) "0.6 usec"
+set ANDOR_CFG(VSSpeed,1) "1.13 usec"
+set ANDOR_CFG(VSSpeed,2) "2.2 usec"
+set ANDOR_CFG(VSSpeed,3) "4.33 usec"
+set ANDOR_CFG(EMHSSpeed,0) "30 MHz"
+set ANDOR_CFG(EMHSSpeed,1) "20 MHz"
+set ANDOR_CFG(EMHSSpeed,2) "10 MHz"
+set ANDOR_CFG(EMHSSpeed,3) "1 MHz"
+set ANDOR_CFG(HSSpeed,0) "1 MHz"
+set ANDOR_CFG(HSSpeed,1) "100 KHz"
+
 set ANDOR_CFG(red,hbin) 1
 set ANDOR_CFG(red,vbin) 1
 set ANDOR_CFG(blue,hbin) 1

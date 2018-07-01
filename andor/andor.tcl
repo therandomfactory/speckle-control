@@ -144,6 +144,12 @@ global LASTACQ STATUS SCOPE ACQREGION
    commandAndor blue "imagename videomode 1" 0
    exec rm -f $SCOPE(datadir)/videomode_red.fits
    exec rm -f $SCOPE(datadir)/videomode_blue.fits
+   set redtemp  [lindex [commandAndor red gettemp] 0]
+   set bluetemp  [lindex [commandAndor blue gettemp] 0]
+   mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
+   mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
+   .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
+   .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
    if { $LASTACQ == "fullframe" } {
       commandAndor red "grabframe $SCOPE(exposure)" 0
       commandAndor blue "grabframe $SCOPE(exposure)" 0
@@ -239,11 +245,11 @@ global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
    if { $mode == "fullframe" } {
      exec xterm -geometry +20+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
-     exec xterm -geometry +540+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
+     exec xterm -geometry +1100+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
      set LASTACQ fullframe
    } else {
      exec xterm -geometry +20+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
-     exec xterm -geometry +540+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry +1100+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }

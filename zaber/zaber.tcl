@@ -148,25 +148,33 @@ global ZABERS ZPROP ZNAME ZSIMPROP
 }
 
 proc zaberCheck { } {
-global ZABERS
+global ZABERS SCOPE
   foreach s "A B input" {
     zaberCommand $s "get pos"
     zaberReader $ZABERS(handle)
+    set ZABERS($s,readpos) "????"
     set ZABERS($s,readpos) $ZABERS($s,pos)
-    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,speckle)] < 5 } {set ZABERS($s,readpos) "speckle"}
-    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,wide)] < 5 } {set ZABERS($s,readpos) "wide"}
+    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,speckle))] < 5 } {set ZABERS($s,readpos) "speckle"}
+    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,wide))] < 5 } {set ZABERS($s,readpos) "wide"}
   }
+  .mimicSpeckle.zaberA configure -text "Zaber A : $ZABERS(A,pos) : $ZABERS(A,readpos)"
+  .mimicSpeckle.zaberB configure -text "Zaber B : $ZABERS(B,pos) : $ZABERS(B,readpos)"
+  .mimicSpeckle.zaberInput configure -text "Zaber Input : $ZABERS(input,pos) : $ZABERS(input,readpos)"
   if { $SCOPE(telescope) == "GEMINI" } { 
+    set ZABERS(focus,readpos) "????"
     zaberCommand focus "get pos"
+    set ZABERS(pickoff,readpos) "????"
     zaberReader $ZABERS(handle)
     set ZABERS(focus,readpos) $ZABERS(focus,pos)
-    if { [expr abs($ZABERS(focus,pos) - $ZABERS(focus,extend)] < 5 } {set ZABERS(focus,readpos) "extend"}
-    if { [expr abs($ZABERS(focus,pos) - $ZABERS(focus,stow)] < 5 } {set ZABERS(focus,readpos) "stow"}
+    if { [expr abs($ZABERS(focus,pos) - $ZABERS(focus,extend))] < 5 } {set ZABERS(focus,readpos) "extend"}
+    if { [expr abs($ZABERS(focus,pos) - $ZABERS(focus,stow))] < 5 } {set ZABERS(focus,readpos) "stow"}
     zaberCommand pickoff "get pos"
     zaberReader $ZABERS(handle)
     set ZABERS(pickoff,readpos) $ZABERS(pickoff,pos)
-    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,in)] < 5 } {set ZABERS(pickoff,readpos) "in"}
-    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,out)] < 5 } {set ZABERS(pickoff,readpos) "out"}
+    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,in))] < 5 } {set ZABERS(pickoff,readpos) "in"}
+    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,out))] < 5 } {set ZABERS(pickoff,readpos) "out"}
+    .mimicSpeckle.zaberFocus configure -text "Zaber Focus : $ZABERS(focus,pos) : $ZABERS(focus,readpos)"
+    .mimicSpeckle.zaberPickoff configure -text "Zaber Pickoff : $ZABERS(pickoff,pos) : $ZABERS(pickoff,readpos)"
   }
 }
 

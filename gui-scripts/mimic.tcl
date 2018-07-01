@@ -4,7 +4,7 @@
 #
 
 proc createMimicDiagram { baseimg } {
-global MOFF XO YO SPECKLE_DIR
+global MOFF XO YO SPECKLE_DIR SCOPE
 global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut XO YO MIMIC
   catch {destroy .mimicSpeckle}
   set XO [lindex $MOFF($baseimg) 0]
@@ -36,6 +36,18 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
   place .mimicSpeckle.myCanvas.redtemp -x [expr $XO+716] -y  [expr $YO+140]
   label .mimicSpeckle.myCanvas.bluetemp  -width 10  -text "0.0 deg" 
   place .mimicSpeckle.myCanvas.bluetemp -x [expr $XO+266] -y  [expr $YO+560]
+  label .mimicSpeckle.zaberA -text "Zaber A @ ???? : ????"
+  label .mimicSpeckle.zaberB -text "Zaber B @ ???? : ????"
+  label .mimicSpeckle.zaberInput -text "Zaber Input @ ???? : ????"
+  if { $SCOPE(telescope) == "GEMINI" } {
+    label .mimicSpeckle.zaberFocus -text "Zaber Focus @ ???? : ????"
+    label .mimicSpeckle.zaberPickoff -text "Zaber Pickoff @ ???? : ????"
+    place .mimicSpeckle.zaberFocus -x 640 -y 590
+    place .mimicSpeckle.zaberPickoff -x 640 -y 620
+  }
+  place .mimicSpeckle.zaberA -x 640 -y 500
+  place .mimicSpeckle.zaberB -x 640 -y 530
+  place .mimicSpeckle.zaberInput -x 640 -y 560
   updateMimic
   wm geometry .mimicSpeckle +960+30
 }

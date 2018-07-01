@@ -124,12 +124,12 @@ cAndorSetProperty $CAM FrameTransferMode 1
 cAndorSetProperty $CAM OutputAmplifier 0
 cAndorSetProperty $CAM EMAdvanced 1
 cAndorSetProperty $CAM EMCCDGain 1
-cAndorSetProperty $CAM VSSpeed 1
-cAndorSetProperty $CAM VSAmplitude 0
+#cAndorSetProperty $CAM VSSpeed 1
+#cAndorSetProperty $CAM VSAmplitude 0
 cAndorSetProperty $CAM BaselineClamp 1
 cAndorSetProperty $CAM PreAmpGain 1
-cAndorSetProperty $CAM HSSpeed 1 0
-cAndorSetProperty $CAM HSSpeed 0 1
+#cAndorSetProperty $CAM HSSpeed 1 0
+#cAndorSetProperty $CAM HSSpeed 0 1
 cAndorSetProperty $CAM ReadMode 4
 cAndorSetProperty $CAM AcquisitionMode 1
 cAndorSetProperty $CAM KineticCycleTime 0.0
@@ -200,7 +200,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     set TELEMETRY(speckle.andor.numberkinetics) 0
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
-      andorGetData $ANDOR_CFG(red)
+      set peak [andorGetData $ANDOR_CFG(red)]
       andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
@@ -211,7 +211,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
-      andorGetData $ANDOR_CFG(blue)
+      set peak [andorGetData $ANDOR_CFG(blue)]
       andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
@@ -221,6 +221,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
+    puts stdout "$peak"
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
     updateDatabase
 }
@@ -575,7 +576,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          accumulationcycletime { set it [cAndorSetProperty $CAM AccumulationCycleTime [lindex $msg 1]] ; puts $sock $it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
          settemperature  { SetTemperature [lindex $msg 1] ; puts $sock "OK"}
-         positiontelem   { set TELEMETRY(speckle.andor.inputzaber [lindex $msg 1]
+         positiontelem   { set TELEMETRY(speckle.andor.inputzaber) [lindex $msg 1]
                            set TELEMETRY(speckle.andor.fieldzaber) [lindex $msg 2]
                            set TELEMETRY(speckle.andor.filter) [lindex $msg 3]
                            puts $sock "OK"

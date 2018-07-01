@@ -2,6 +2,26 @@
 set ANDORS(red,serialnum)  X-10330
 set ANDORS(blue,serialnum) X-10331
 set ANDORS(X-10330) red
+
+# 
+# Offset of blue camera field from red camera field
+#
+#  Wide field mode
+#
+#  BlueX = 1002 - RedX
+#  BlueY = RedY - 15
+#
+# Speckle mode
+#
+#  BlueX = 999 - RedX
+#  BlueY = RedY - 20
+#
+
+set ANDORS(wide,blueX) 1002
+set ANDORS(wide,blueY) 15
+set ANDORS(speckle,blueX) 999
+set ANDORS(speckle,blueY) 20
+
 set ANDORS(X-10331) blue
 set ANDORS(emgainSaturation,1)	12000
 set ANDORS(emgainSaturation,2)	21000

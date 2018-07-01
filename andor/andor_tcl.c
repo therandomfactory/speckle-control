@@ -30,7 +30,7 @@ unsigned int *SharedMemBPro;
 unsigned int *SharedMem0;
 unsigned int *SharedMem1;
 
-
+int getPeak(int cameraId , int npix);
 int imageDataA[1024*1024];
 int imageDataB[1024*1024];
 int outputData[1024*1024];
@@ -671,7 +671,7 @@ int append_fitsTimings(int numexp)
    char *tunit[] = { "seconds" };
 
    fits_create_tbl(fptr, BINARY_TBL, numexp, 1, ttype, tform, tunit, extname, &status);
-   fits_write_col(fptr, TDOUBLE, 1, 1, 1, numexp, fitsTimings, &status);
+   fits_write_col(fptr, TDOUBLE, 1, 1, 1, numexp, &fitsTimings, &status);
 
 }
 
@@ -1469,6 +1469,7 @@ int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
   float SensorTemp,TargetTemp,AmbientTemp,CoolerVolts,temperature;
   float texposure,taccumulate,tkinetics;
   int precision,mintemp,maxtemp;
+  int vspeed, hspeed;
 
   /* Check number of arguments provided and return an error if necessary */
   if (argc < 3) {
@@ -1814,6 +1815,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   int bitpix;
   int ifft=0;
   int count;
+  int ipeak;
   long deltat;
   struct timespec tm1,tm2;
   char filename[1024];
@@ -1862,7 +1864,8 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
 			  status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
 		      }
                       count  = count+1;
-                      printf("frame %d, status=%d\n",ngot,status);
+                      ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
+                      printf("frame %d, peak = %d , status=%d\n",ngot,ipeak,status);
                       fflush(NULL);
                       cAndorStoreROI(cameraId, filename, bitpix, ngot ,numexp);                                   
                       cAndorDisplaySingle(cameraId, ifft);
@@ -1870,7 +1873,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                     usleep(5000);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
-                    fitsTimings[count-1] = (float)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
+                    fitsTimings[count-1] = (double)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
                     if (deltat > 50) {
                          count=numexp;
                          AbortAcquisition();
@@ -1891,6 +1894,25 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
 
   return TCL_OK;
 }
+
+int getPeak ( int cameraId , int npix ) {
+   int ipeak;
+   int ipix;
+   for (ipix=0;ipix<npix;ipix++) {
+      if (cameraId == 0) {
+        if (imageDataA[ipix] > ipeak) {
+           ipeak = imageDataA[ipix];
+        } 
+      }
+      if (cameraId == 1) {
+        if (imageDataB[ipix] > ipeak) {
+           ipeak = imageDataB[ipix];
+        } 
+      }
+   }
+   return ipeak;
+}
+
 
 
 int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
@@ -2255,6 +2277,7 @@ int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc
   int status=0;
   int cameraId=0;
   int num;
+  int ipeak;
 
   sscanf(argv[1],"%d",&cameraId);
 
@@ -2285,6 +2308,10 @@ int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc
      sprintf(result,"Failed to get acquired data %d",status);
      Tcl_SetResult(interp,result,TCL_STATIC);
      return TCL_ERROR;
+  } else { 
+     ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
+     sprintf(result,"Peak =  %d", ipeak);
+     Tcl_SetResult(interp,result,TCL_STATIC);
   }
   return TCL_OK;
 }

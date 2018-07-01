@@ -124,6 +124,7 @@ global CAMERAS ALTA STATUS
     $camera write_Shutter 0
     $camera Flush
   }
+  .lowlevel.p configure -value 100
   set STATUS(busy) 0
 }
 
@@ -954,10 +955,13 @@ global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPE
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  set iseqnum 0
  redisUpdate
+ zaberCheck
+ specklesynctelem red
+ specklesynctelem blue
  set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
  .lowlevel.p configure -value 0.0
- speckleshutter red open
- speckleshutter blue open
+ speckleshutter red auto
+ speckleshutter blue auto
  commandAndor red  "frametransfer $ANDOR_CFG(red,frametransfer)"
  commandAndor blue "frametransfer $ANDOR_CFG(blue,frametransfer)"
  commandAndor red  "numberkinetics $SCOPE(numframes)"
@@ -980,8 +984,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  }
  if { $INSTRUMENT(blue,emccd) } {
    commandAndor blue "outputamp $ANDOR_EMCCD"
-   commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
    commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
+   commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
    commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
  } else {
    commandAndor blue "outputamp $ANDOR_CCD"
@@ -1000,6 +1004,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
   while { $ifrmnum < $SCOPE(numframes) } {
    incr iseqnum 1
    incr ifrmnum 1
+   set dfrmnum $ifrmnum
    set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
    set STATUS(abort) 0
    .main.observe configure -text "working" -bg green -relief sunken
@@ -1027,6 +1032,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
    .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
    .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
+   set tpredict [lindex [commandAndor red status] end]
    if { $LASTACQ == "fullframe" } {
       set TELEMETRY(speckle.andor.mode) "widefield"
       acquireFrames
@@ -1045,16 +1051,18 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
       set FRAME $i
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-      after [expr int($perframe*1000)+3]
+      after [expr int($perframe*1000)]
       incr i 1
       .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
+      .lowlevel.progress configure -text "Observation status : Exposure $dfrmnum   Sequence $iseqnum"
       update
    }
    set SCOPE(exposureEnd) [expr [clock milliseconds]/1000.0]
    .main.observe configure -text "Observe" -bg gray -relief raised
    .main.abort configure -bg gray -relief sunken -fg LightGray
-   speckleshutter red close
-   speckleshutter blue close
+#   speckleshutter red close
+#   speckleshutter blue close
+   .lowlevel.progress configure -text "Observation status : Idle"
    if { $STATUS(abort) } {return}
 
   }

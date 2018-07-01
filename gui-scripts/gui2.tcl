@@ -22,7 +22,7 @@ if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
 }
 set now [clock seconds]
 set FLOG [open /tmp/speckleLog_[set now].log w]
-exec xterm -geometry +1100+800 -e tail -f /tmp/speckleLog_[set now].log &
+exec xterm -geometry +540+800 -e tail -f /tmp/speckleLog_[set now].log &
 
 proc debuglog { msg } {
 global FLOG
@@ -174,13 +174,18 @@ set FITSBITS(ULONG_IMG)    40
 
 
 proc plotTimings { } {
-   set it [tk_getOpenFile -initialdir $env(HOME)/data]
+global env SCOPE
+   set it [tk_getOpenFile -initialdir $SCOPE(datadir)]
    if { [file exists $it] } {
       set fh [fits open $it]
       $fh move +1
       set times [$fh get table]
       set fout [open /tmp/timings w]
-      foreach i $times { puts $fout $i }
+      set start [lindex $times 0]
+      foreach i $times {
+          set t [expr $i-$start]
+          if { [expr abs($t)] < 1000 } {puts $fout $t}
+      }
       close $fout
       fits close $fh
       exec echo "plot \"/tmp/timings\"" | gnuplot -p
