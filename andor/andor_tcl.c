@@ -2005,7 +2005,9 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   int ifft=0;
   int count;
   int ipeak;
+  int maxt;
   long deltat;
+  float texposure, taccumulate, tkinetics;
   struct timespec tm1,tm2;
   char filename[1024];
 
@@ -2037,6 +2039,8 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   clock_gettime(CLOCK_REALTIME,&tm1);
   SharedMem2->iabort=0;
   printf("Start at : %ld\n",tm1.tv_sec);
+  status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
+  maxt = (int) (numexp * tkinetics * 5);
   StartAcquisition();
   GetStatus(&status);
   while (count < numexp) {
@@ -2056,16 +2060,16 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                       count  = count+1;
                       SharedMem2->iFrame[cameraId] = count;
                       ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
-                      printf("frame %d, peak = %d , status=%d\n",ngot,ipeak,status);
+                      printf("frame %d , count=%d , peak = %d , status=%d\n",ngot,count,ipeak,status);
                       fflush(NULL);
-                      cAndorStoreROI(cameraId, filename, bitpix, ngot ,numexp);                                   
+                      cAndorStoreROI(cameraId, filename, bitpix, count ,numexp);                                   
                       cAndorDisplaySingle(cameraId, ifft);
                     }
-                    usleep(5000);
+                    usleep(500);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
                     fitsTimings[count-1] = (double)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
-                    if (deltat > 50 || SharedMem2->iabort > 0) {
+                    if (deltat > maxt || SharedMem2->iabort > 0) {
                          count=numexp;
                          AbortAcquisition();
 /*                         SharedMem2->iabort = 0; */
@@ -2075,7 +2079,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                 usleep(5000);
                 clock_gettime(CLOCK_REALTIME,&tm2);
                 deltat = tm2.tv_sec - tm1.tv_sec;
-                if (deltat > 50 || SharedMem2->iabort > 0) {
+                if (deltat > maxt  || SharedMem2->iabort > 0) {
                    count=numexp;
                    AbortAcquisition();
 /*                   SharedMem2->iabort = 0; */

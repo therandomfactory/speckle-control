@@ -398,7 +398,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
       set FRAME $i
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-      after [expr int($perframe*1000)]
+#      after [expr int($perframe*1000)]
+     after 20
       if { $LASTACQ == "fullframe" } {
          incr i 1
       } else {
@@ -434,6 +435,16 @@ set SCOPE(blue,bias) 0
 set SCOPE(red,peak) 1
 set SCOPE(blue,peak) 1
 
+
+set ACQREGION(geom) 1024
+set ACQREGION(rxs) 1
+set ACQREGION(rxe) 1024
+set ACQREGION(rys) 1
+set ACQREGION(rye) 1024
+set ACQREGION(bxs) 1
+set ACQREGION(bxe) 1024
+set ACQREGION(bys) 1
+set ACQREGION(bye) 1024
 
 
 set ANDOR_CFG(red,VSSpeed) 1
