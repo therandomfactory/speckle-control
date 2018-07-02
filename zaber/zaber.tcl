@@ -130,6 +130,7 @@ global SCOPE
       zaberCommand focus home
       zaberCommand pickof home
    }
+   after 5000 zaberCheck
 }
 
 proc zaberCommand { name cmd } {
@@ -159,7 +160,6 @@ global ZABERS SCOPE
     zaberCommand $s "get pos"
     after 200
     zaberReader $ZABERS(handle)
-    set ZABERS($s,readpos) "????"
     set ZABERS($s,readpos) $ZABERS($s,pos)
     if { [expr abs($ZABERS($s,pos) - $ZABERS($s,speckle))] < 5 } {set ZABERS($s,readpos) "speckle"}
     if { [expr abs($ZABERS($s,pos) - $ZABERS($s,wide))] < 5 } {set ZABERS($s,readpos) "wide"}
@@ -168,14 +168,14 @@ global ZABERS SCOPE
   .mimicSpeckle.zaberB configure -text "Zaber B : $ZABERS(B,pos) : $ZABERS(B,readpos)"
   .mimicSpeckle.zaberInput configure -text "Zaber Input : $ZABERS(input,pos) : $ZABERS(input,readpos)"
   if { $SCOPE(telescope) == "GEMINI" } { 
-    set ZABERS(focus,readpos) "????"
     zaberCommand focus "get pos"
-    set ZABERS(pickoff,readpos) "????"
+    after 200
     zaberReader $ZABERS(handle)
     set ZABERS(focus,readpos) $ZABERS(focus,pos)
     if { [expr abs($ZABERS(focus,pos) - $ZABERS(focus,extend))] < 5 } {set ZABERS(focus,readpos) "extend"}
     if { [expr abs($ZABERS(focus,pos) - $ZABERS(focus,stow))] < 5 } {set ZABERS(focus,readpos) "stow"}
     zaberCommand pickoff "get pos"
+     after 200
     zaberReader $ZABERS(handle)
     set ZABERS(pickoff,readpos) $ZABERS(pickoff,pos)
     if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,in))] < 5 } {set ZABERS(pickoff,readpos) "in"}
@@ -198,11 +198,7 @@ global ZABERS ZPROP ZNAME ZSIMPROP
       set res [gets $fh]
       debuglog "zaber : $res"
       if { [lindex $res 2] == "OK" } {
-        foreach d "A B input focus pickoff" {
-           if { [string trim [lindex $res 0] "@0"] == $ZABER($d,device) } {
-             set ZABERS($d,$ZPROP) "[lindex $res 5]"
-           }
-        }
+              set ZABERS($ZNAME,$ZPROP) "[lindex $res 5]"
       }
     }
   }
@@ -282,7 +278,8 @@ global ZABERS
     mimicMode input $pos
   } else {
     catch {mimicMode $ZABERS($name,arm) $pos}
-  } 
+  }
+  after 5000 zaberCheck
 }
 
 proc zaberConfigurePos { name property {value current} } {
@@ -335,6 +332,7 @@ proc positionZabers { station } {
       zaberGoto B speckle
       zaberGoto input speckle
    }
+   after 5000 zaberCheck
 }
 
 proc positionSpeckle { arm station } {
@@ -350,6 +348,7 @@ global ZABERS
       if { $ZABERS(B,arm) == $arm } {zaberGoto B speckle} 
       zaberGoto input speckle
    }
+   after 5000 zaberCheck
 }
 
 

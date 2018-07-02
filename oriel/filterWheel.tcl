@@ -14,19 +14,18 @@ set SPECKLE_DIR $env(SPECKLE_DIR)
 
 proc loadFiltersConfig { fname } {
 global SPECKLE_DIR NESCONFIG FWHEELS SCOPE
-   if { $SCOPE(telescope) == "GEMINI" } {  
-      set fname "[set fname].gemini"
-   }
+   set fname "[set fname].[string tolower $SCOPE(telescope)]"
    if { [file exists $SPECKLE_DIR/$fname] == 0 } {
      errordialog "Filters configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
-     source $SPECKLE_DIR/filtersConfiguration
+     source $SPECKLE_DIR/$fname
      set NESCONFIG(picoChange) 0
    }
 }
 
 proc saveFiltersConfig { fname } {
-global SPECKLE_DIR  NESCONFIG FWHEELS
+global SPECKLE_DIR  NESCONFIG FWHEELS SCOPE
+   set fname "[set fname].[string tolower $SCOPE(telescope)]"
    set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh
    echoFiltersConfig $fcfg
