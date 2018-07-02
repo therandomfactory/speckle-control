@@ -31,6 +31,103 @@ global FLOG
 }
 
 
+
+proc plotTimings { } {
+global env SCOPE
+   set it [tk_getOpenFile -initialdir $SCOPE(datadir)]
+   if { [file exists $it] } {
+      set fh [fits open $it]
+      $fh move +1
+      set times [$fh get table]
+      set fout [open /tmp/timings w]
+      set start [lindex $times 0]
+      foreach i $times {
+          set t [expr $i-$start]
+          if { [expr abs($t)] < 1000 } {puts $fout $t}
+      }
+      close $fout
+      fits close $fh
+      exec echo "plot \"/tmp/timings\"" | gnuplot -p
+   }
+}
+
+
+proc setfitsbits { type } {
+global FITSBITS
+   commandAndor red "fitsbits $type"   
+   commandAndor blue "fitsbits $type"
+}
+
+proc dataquality { type value } {
+global DATAQUAL DATAQUALT TELEMETRY
+   set DATAQUAL($type) $value
+   set TELEMETRY(tcs.weather.$type) $value
+   .main.[set type] configure -text "DQ $DATAQUALT($type) : $value"
+}
+
+
+proc speckleGuiMode { mode } {
+global SPECKLE
+  wm geometry . $SPECKLE($mode)
+}
+
+proc validInteger {win event X oldX min max} {
+        # Make sure min<=max
+        if {$min > $max} {
+            set tmp $min; set min $max; set max $tmp
+        }
+        # Allow valid integers, empty strings, sign without number
+        # Reject Octal numbers, but allow a single "0"
+        # Which signes are allowed ?
+        if {($min <= 0) && ($max >= 0)} {   ;# positive & negative sign
+            set pattern {^[+-]?(()|0|([1-9][0-9]*))$}
+        } elseif {$max < 0} {               ;# negative sign
+            set pattern {^[-]?(()|0|([1-9][0-9]*))$}
+        } else {                            ;# positive sign
+            set pattern {^[+]?(()|0|([1-9][0-9]*))$}
+        }
+        # Weak integer checking: allow empty string, empty sign, reject octals
+        set weakCheck [regexp $pattern $X]
+        # if weak check fails, continue with old value
+        if {! $weakCheck} {set X $oldX}
+        # Strong integer checking with range
+        set strongCheck [expr {[string is int -strict $X] && ($X >= $min) && ($X <= $max)}]
+
+        switch $event {
+            key {
+                $win configure -bg [expr {$strongCheck ? "white" : "yellow"}]
+                return $weakCheck
+            }
+            focusout {
+                if {! $strongCheck} {$win configure -bg red}
+                return $strongCheck
+            }
+            default {
+                return 1
+            }
+        }
+} 
+
+
+proc validFloat {win event X oldX} {
+        set strongCheck [expr {[string is double $X]}]
+        if {! $strongCheck} {set X $oldX}
+        switch $event {
+            key {
+                $win configure -bg [expr {$strongCheck ? "white" : "yellow"}]
+                return $strongCheck
+            }
+            focusout {
+                if {! $strongCheck} {$win configure -bg red}
+                return $strongCheck
+            }
+            default {
+                return 1
+            }
+        }
+} 
+
+
 #
 # Load the procedures
 #
@@ -150,6 +247,7 @@ menu .mbar.help.m
 .mbar.observe.m add command -label "Snap-roi-512" -command "observe region512"
 .mbar.observe.m add command -label "Adjust ROI" -command "observe manual"
 .mbar.observe.m add command -label "Reset full-frame" -command "observe fullframe"
+.mbar.observe.m add command -label "Single Image" -command "observe single"
 .mbar.temp.m add command -label "Cooler on" -command "setpoint on"
 .mbar.temp.m add command -label "Cooler off" -command "setpoint off"
 .mbar.temp.m add command -label "Cooler to ambient" -command  {set ok [confirmaction "Ramp temperature to ambient"] ; if {$ok} {setpoint amb}}
@@ -171,103 +269,6 @@ set FITSBITS(ULONG_IMG)    40
 #set FITSBITS(LONGLONG_IMG) 64
 #set FITSBITS(BYTE_IMG)     8 
 #set FITSBITS(DOUBLE_IMG)  -64
-
-
-proc plotTimings { } {
-global env SCOPE
-   set it [tk_getOpenFile -initialdir $SCOPE(datadir)]
-   if { [file exists $it] } {
-      set fh [fits open $it]
-      $fh move +1
-      set times [$fh get table]
-      set fout [open /tmp/timings w]
-      set start [lindex $times 0]
-      foreach i $times {
-          set t [expr $i-$start]
-          if { [expr abs($t)] < 1000 } {puts $fout $t}
-      }
-      close $fout
-      fits close $fh
-      exec echo "plot \"/tmp/timings\"" | gnuplot -p
-   }
-}
-
-
-proc setfitsbits { type } {
-global FITSBITS
-   commandAndor red "fitsbits $type"   
-   commandAndor blue "fitsbits $type"
-}
-
-proc dataquality { type value } {
-global DATAQUAL DATAQUALT TELEMETRY
-   set DATAQUAL($type) $value
-   set TELEMETRY(tcs.weather.$type) $value
-   .main.[set type] configure -text "DQ $DATAQUALT($type) : $value"
-}
-
-
-proc speckleGuiMode { mode } {
-global SPECKLE
-  wm geometry . $SPECKLE($mode)
-}
-
-proc validInteger {win event X oldX min max} {
-        # Make sure min<=max
-        if {$min > $max} {
-            set tmp $min; set min $max; set max $tmp
-        }
-        # Allow valid integers, empty strings, sign without number
-        # Reject Octal numbers, but allow a single "0"
-        # Which signes are allowed ?
-        if {($min <= 0) && ($max >= 0)} {   ;# positive & negative sign
-            set pattern {^[+-]?(()|0|([1-9][0-9]*))$}
-        } elseif {$max < 0} {               ;# negative sign
-            set pattern {^[-]?(()|0|([1-9][0-9]*))$}
-        } else {                            ;# positive sign
-            set pattern {^[+]?(()|0|([1-9][0-9]*))$}
-        }
-        # Weak integer checking: allow empty string, empty sign, reject octals
-        set weakCheck [regexp $pattern $X]
-        # if weak check fails, continue with old value
-        if {! $weakCheck} {set X $oldX}
-        # Strong integer checking with range
-        set strongCheck [expr {[string is int -strict $X] && ($X >= $min) && ($X <= $max)}]
-
-        switch $event {
-            key {
-                $win configure -bg [expr {$strongCheck ? "white" : "yellow"}]
-                return $weakCheck
-            }
-            focusout {
-                if {! $strongCheck} {$win configure -bg red}
-                return $strongCheck
-            }
-            default {
-                return 1
-            }
-        }
-} 
-
-
-proc validFloat {win event X oldX} {
-        set strongCheck [expr {[string is double $X]}]
-        if {! $strongCheck} {set X $oldX}
-        switch $event {
-            key {
-                $win configure -bg [expr {$strongCheck ? "white" : "yellow"}]
-                return $strongCheck
-            }
-            focusout {
-                if {! $strongCheck} {$win configure -bg red}
-                return $strongCheck
-            }
-            default {
-                return 1
-            }
-        }
-} 
-
 
 #
 #  Initialize telescope/user variables
@@ -311,6 +312,8 @@ place .main.lexp -x 20 -y 23
 place .main.lnum -x 20 -y 53
 place .main.ltyp -x 20 -y 83
 place .main.lseq -x 20 -y 107
+checkbutton .main.kinetic -bg gray  -text "Kinetic mode" -variable ANDOR_CFG(kineticMode) -highlightthickness 0
+place .main.kinetic -x 210 -y 82
 
 set SCOPE(exptype) Object
 set SCOPE(numaccum) 1

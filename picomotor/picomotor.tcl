@@ -57,7 +57,8 @@ proc picosConnect { axis } {
 global PICOS
    set handle -1
    set handle [socket $PICOS(ip) 23]
-   fconfigure $s -buffering line
+   fconfigure $handle -buffering line
+   fconfigure $handle -blocking 0
    if { $handle < 0 } {
      errordialog "Failed to connect to Picomotor at  $PICOS(ip)"
    } else {
@@ -96,10 +97,10 @@ global PICOS
    switch $par {
       disable        { set res [picoCommand $axis AB] }
       stop           { set res [picoCommand $axis ST] }
-      position       { set res [picoCommand $axis "PA"] }
-      acceleration   { set res [picoCommand $axis "AC"] }
-      offset         { set res [picoCommand $axis "PR"] }
-      velocity       { set res [picoCommand $axis "VA] }
+      position       { set res [picoCommand $axis "PA $value"] }
+      acceleration   { set res [picoCommand $axis "AC $value"] }
+      offset         { set res [picoCommand $axis "PR $value"] }
+      velocity       { set res [picoCommand $axis "VA $value] }
       reset          { set res [picoCommand $axis "RS"] }
       in             { set res [picoCommand $axis "PA $PICOS($axis,in)"] }
       out            { set res [picoCommand $axis "PA $PICOS($axis,out)"] }
@@ -140,15 +141,16 @@ global PICOS
      debuglog "SIM $axis,$par = $PICOS($axis,$par)"
    } else {
      switch $par {
-        acceleration   { set PICOS($axis,acceleration) [lindex [split [picoCommand $axis AC?] "="] 1] }
-        position       { set PICOS($axis,position)     [lindex [split [picoCommand $axis TP?] "="] 1] }
-        velocity       { set PICOS($axis,velocity)     [lindex [split [picoCommand $axis VA?] "="] 1] }
-        status         { set PICOS($axis,status)       [lindex [split [picoCommand $axis MD?] "="] 1] }
-        home           { set PICOS($axis,home)         [lindex [split [picoCommand $axis DH?] "="] 1] }
-        ident          { set PICOS($axis,ident)        [lindex [split [picoCommand $axis *IDN?] "="] 1] }
+        acceleration   { set PICOS($axis,acceleration) [picoCommand $axis AC?] }
+        position       { set PICOS($axis,position)     [picoCommand $axis TP?] }
+        velocity       { set PICOS($axis,velocity)     [picoCommand $axis VA?] }
+        status         { set PICOS($axis,status)       [picoCommand $axis MD?] }
+        home           { set PICOS($axis,home)         [picoCommand $axis DH?] }
+        ident          { set PICOS($axis,ident)        [picoCommand $axis *IDN?] }
       }
    }
-   debuglog "Got PICO $axis $par = $PICOS($axis,$par)"
+#   debuglog "Got PICO $axis $par = $PICOS($axis,$par)"
+   puts stdout  "Got PICO $axis $par = $PICOS($axis,$par)"
    return $PICOS($axis,$par)
 }
 

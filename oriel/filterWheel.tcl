@@ -281,7 +281,12 @@ if { $FWHEELS(sim) == 0 } {
   debuglog "Moving filter wheels to clear positions"
   selectfilter red $FWHEELS(red,clear)
   selectfilter blue $FWHEELS(blue,clear)
-}  
+}  else {
+  set FWHEELS(red,0) "simulate"
+  set FWHEELS(blue,0) "simulate"
+  set FWHEELS(red,position) 0
+  set FWHEELS(blue,position) 0
+}
 
 wm withdraw .filters
 

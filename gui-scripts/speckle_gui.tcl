@@ -533,7 +533,7 @@ button .lowlevel.bload -text Load -bg gray70 -width 6 -command "speckleload blue
 place .lowlevel.bsave -x 120  -y 460
 place .lowlevel.bload -x 115 -y 460
 
-button .main.video -width 5 -height 2 -text "Video" -relief raised -bg gray -command startvideomode
+button .main.video -width 5 -height 2 -text "Video" -relief raised -bg gray -command startfastvideo
 place .main.video  -x 100 -y 167
 
 place .main.abort   -x 180 -y 167

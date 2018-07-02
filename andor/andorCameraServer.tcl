@@ -325,7 +325,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
     exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*1.5]
+    exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*1.5]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   if { $ANDOR_ARM == "red" } {
@@ -333,7 +333,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
     exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*1.5]
+    exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*1.5]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
@@ -385,7 +385,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
     exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*1.5]
+    exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*1.5]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   if { $ANDOR_ARM == "red" } {
@@ -393,7 +393,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
     exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*1.5]
+    exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*1.5]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
@@ -419,13 +419,13 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   update idletasks
   set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
   if { $ANDOR_CFG(red) > -1} {
-    if { $dofft } {andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n}
+#    if { $dofft } {andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n}
     catch {andorAbortAcq $ANDOR_CFG(red)}
     set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
     set ANDOR_CFG(red,peak) [andorGetControl $ANDOR_CFG(red) peak]
   }
   if { $ANDOR_CFG(blue) > -1} {
-    if { $dofft } {andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n}
+#    if { $dofft } {andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n}
     catch {andorAbortAcq $ANDOR_CFG(blue)}
     set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
     set ANDOR_CFG(blue,peak) [andorGetControl $ANDOR_CFG(blue) peak]
@@ -450,7 +450,7 @@ global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
    set finsert [open /tmp/insert_$ANDOR_ARM.sql w]
    set amp "CCD Amplifier"
    if { $ANDOR_CFG($ANDOR_ARM,OutputAmplifier) == 0 } { set amp "ECMMD Amplifier" }
-   puts $finsert "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(ProgID)','$TELEMETRY(tcs.telescope.target)','$ANDOR_CFG(imagename)','$TELEMETRY(speckle.scope.datatype)',$TELEMETRY(speckle.andor.preamp_gain),$TELEMETRY(speckle.andor.em_gain),$TELEMETRY(speckle.andor.bias_estimate),$TELEMETRY(speckle.andor.peak_estimate),$TELEMETRY(speckle.andor.int_time),$TELEMETRY(speckle.andor.exposureStart),$TELEMETRY(speckle.andor.exposureEnd),'$SCOPE(filter)','$amp',$TELEMETRY(speckle.andor.numexp),$TELEMETRY(speckle.andor.numaccum),'$TELEMETRY(speckle.andor.roi)',$TELEMETRY(speckle.andor.hbin),$TELEMETRY(speckle.andor.vbin),'$TELEMETRY(tcs.telescope.ra)','$TELEMETRY(tcs.telescope.dec)',$TELEMETRY(tcs.weather.rawiq),$TELEMETRY(tcs.weather.rawcc),$TELEMETRY(tcs.weather.rawwv),$TELEMETRY(tcs.weather.rawbg));"
+   puts $finsert "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(ProgID)','$TELEMETRY(tcs.target.name)','$ANDOR_CFG(imagename)','$TELEMETRY(speckle.scope.datatype)',$TELEMETRY(speckle.andor.preamp_gain),$TELEMETRY(speckle.andor.em_gain),$TELEMETRY(speckle.andor.bias_estimate),$TELEMETRY(speckle.andor.peak_estimate),$TELEMETRY(speckle.andor.int_time),$TELEMETRY(speckle.andor.exposureStart),$TELEMETRY(speckle.andor.exposureEnd),'$SCOPE(filter)','$amp',$TELEMETRY(speckle.andor.numexp),$TELEMETRY(speckle.andor.numaccum),'$TELEMETRY(speckle.andor.roi)',$TELEMETRY(speckle.andor.hbin),$TELEMETRY(speckle.andor.vbin),'$TELEMETRY(tcs.telescope.ra)','$TELEMETRY(tcs.telescope.dec)',$TELEMETRY(tcs.weather.rawiq),$TELEMETRY(tcs.weather.rawcc),$TELEMETRY(tcs.weather.rawwv),$TELEMETRY(tcs.weather.rawbg));"
    close $finsert
    catch {exec mysql speckle --user=root < /tmp/insert_$ANDOR_ARM.sql >& /tmp/insert_$ANDOR_ARM.log &}
 }
@@ -620,7 +620,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          grabroi         { after 10 "acquireDataROI [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4]" ; puts $sock "Acquiring roi"}
          version         { puts $sock "1.0" }
          grabcube        { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Acquiring cube"}
-         fastVideo       { after 10 "andorFastVideo [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Fastvideo starts"}
+         fastVideo       { after 10 "acquireFastVideo [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Fastvideo starts"}
          setframe        { configureFrame [lindex $msg 1] ;  puts $sock "OK"}
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }

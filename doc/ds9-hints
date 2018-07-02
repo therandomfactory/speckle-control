@@ -1,0 +1,16 @@
+By default, ds9 will no longer create regions when it starts; that is, clicking in the ds9 window will not create a region. This is because the ds9 interface has changed in version 7.3.2, as noted above, so that it no longer starts in region editing mode.
+
+    To create or edit regions, users must now manually switch to Region mode by selecting
+
+    Edit → Region
+
+    from the menu bar or the button bar.
+
+    Users can make this the default by editing their preferences:
+
+    Edit → Preferences ...
+    Menus and Buttons                  (left panel)
+    Edit → Menu → Region               (right panel)
+    Save
+
+

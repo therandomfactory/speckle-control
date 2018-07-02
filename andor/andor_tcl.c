@@ -427,7 +427,7 @@ int tcl_andorGetControl(ClientData clientData, Tcl_Interp *interp, int argc, cha
 int tcl_andorSetControl(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
   int cameraId;
-  int ithresh;
+  int ithresh,iframe;
   int idispfft, idisplucky, iabort;
   int status;
 
@@ -444,15 +444,6 @@ int tcl_andorSetControl(ClientData clientData, Tcl_Interp *interp, int argc, cha
      return TCL_OK;
   }
 
-  if (strcmp(argv[2],"showfft") == 0) {
-     SharedMem2->displayFFT = 1;
-     return TCL_OK;
-  }
-
-  if (strcmp(argv[2],"showlucky") == 0) {
-     SharedMem2->displayLucky = 1;
-     return TCL_OK;
-  }
 
   if (strcmp(argv[2],"savelucky") == 0) {
      SharedMem2->saveLucky = 1;
@@ -465,7 +456,26 @@ int tcl_andorSetControl(ClientData clientData, Tcl_Interp *interp, int argc, cha
      return TCL_OK;
   }
 
-  return TCL_ERROR;
+  if (strcmp(argv[2],"frame") == 0) {
+     sscanf(argv[3],"%d",&iframe);
+     SharedMem2->iFrame[cameraId] = iframe;
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"showfft") == 0) {
+     sscanf(argv[3],"%d",&iframe);
+     SharedMem2->displayFFT = iframe;
+     return TCL_OK;
+  }
+
+  if (strcmp(argv[2],"showlucky") == 0) {
+     sscanf(argv[3],"%d",&iframe);
+     SharedMem2->displayLucky = iframe;
+     return TCL_OK;
+  }
+
+
+ return TCL_ERROR;
 }
 
 
@@ -1274,11 +1284,11 @@ int cAndorDisplaySingle(int cameraId, int ifft)
     }
     if ( SharedMem2->displayFFT ) {
       for ( irow=0;irow<width;irow++) {
-        copyline(SharedMem0 + irow*width, imageDataA + irow*width, width*4, 0);
+        copyline(SharedMem0 + irow*width, outputData + irow*width, width*4, 0);
       }
     } else {
       for ( irow=0;irow<width;irow++) {
-        copyline(outputData + irow*width, imageDataA + irow*width, width*4, 0);
+        copyline(SharedMem0 + irow*width, imageDataA + irow*width, width*4, 0);
       }
     }
   }
@@ -1290,11 +1300,11 @@ int cAndorDisplaySingle(int cameraId, int ifft)
     }
     if ( SharedMem2->displayFFT ) {
       for ( irow=0;irow<width;irow++) {
-         copyline(SharedMem1 + irow*width, imageDataB + irow*width, width*4, 0);
+         copyline(SharedMem1 + irow*width, outputData + irow*width, width*4, 0);
       }
     } else {
       for ( irow=0;irow<width;irow++) {
-        copyline(outputData + irow*width, imageDataA + irow*width, width*4, 0);
+        copyline(SharedMem1 + irow*width, imageDataB + irow*width, width*4, 0);
       }
     }
 
@@ -2025,6 +2035,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   ngot=0;
   count=0;
   clock_gettime(CLOCK_REALTIME,&tm1);
+  SharedMem2->iabort=0;
   printf("Start at : %ld\n",tm1.tv_sec);
   StartAcquisition();
   GetStatus(&status);
@@ -2057,7 +2068,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                     if (deltat > 50 || SharedMem2->iabort > 0) {
                          count=numexp;
                          AbortAcquisition();
-                         SharedMem2->iabort = 0;
+/*                         SharedMem2->iabort = 0; */
                     }
                     GetStatus(&status);
 		}
@@ -2067,7 +2078,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                 if (deltat > 50 || SharedMem2->iabort > 0) {
                    count=numexp;
                    AbortAcquisition();
-                   SharedMem2->iabort = 0;
+/*                   SharedMem2->iabort = 0; */
                 }
   }
 
@@ -2118,6 +2129,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
   num=0;
   ngot=0;
   count=0;
+  SharedMem2->iabort=0;
   clock_gettime(CLOCK_REALTIME,&tm1);
   printf("Start at : %ld\n",tm1.tv_sec);
   StartAcquisition();
@@ -2150,7 +2162,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
                     if (deltat > 50 || SharedMem2->iabort > 0 ) {
                          count=numexp;
                          AbortAcquisition();
-                         SharedMem2->iabort = 0;
+/*                         SharedMem2->iabort = 0; */
                     }
                     GetStatus(&status);
 		}
@@ -2160,7 +2172,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
                 if (deltat > 50 || SharedMem2->iabort  > 0) {
                    count=numexp;
                    AbortAcquisition();
-                   SharedMem2->iabort = 0;
+/*                   SharedMem2->iabort = 0; */
                 }
   }
 

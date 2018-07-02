@@ -95,7 +95,12 @@ global ZABERS
      debuglog "Zabers in SIMULATION mode"
      return
    } else {
-      set handle [open $ZABERS(port) RDWR]
+      if { [file exists $ZABERS(port)] }  {
+         set handle [open $ZABERS(port) RDWR]
+      }
+      if { $handle < 0 } {
+         set handle [open $ZABERS(port2) RDWR]
+      }
       fconfigure $handle -buffering none
       fconfigure $handle -blocking 0
       fconfigure $handle -mode 115200,n,8,1
@@ -149,8 +154,10 @@ global ZABERS ZPROP ZNAME ZSIMPROP
 
 proc zaberCheck { } {
 global ZABERS SCOPE
+ if { $ZABERS(sim) == 0 } {
   foreach s "A B input" {
     zaberCommand $s "get pos"
+    after 200
     zaberReader $ZABERS(handle)
     set ZABERS($s,readpos) "????"
     set ZABERS($s,readpos) $ZABERS($s,pos)
@@ -176,19 +183,26 @@ global ZABERS SCOPE
     .mimicSpeckle.zaberFocus configure -text "Zaber Focus : $ZABERS(focus,pos) : $ZABERS(focus,readpos)"
     .mimicSpeckle.zaberPickoff configure -text "Zaber Pickoff : $ZABERS(pickoff,pos) : $ZABERS(pickoff,readpos)"
   }
+ }
 }
 
 
 proc zaberReader { fh } {
 global ZABERS ZPROP ZNAME ZSIMPROP
-  if { $ZABERS(sim) && $ZSIMPROP != "" } {
-    set ZABERS($ZNAME,$ZPROP) $ZSIMPROP
+  if { $ZABERS(sim) } {
+    if { $ZSIMPROP != "" } {
+       set ZABERS($ZNAME,$ZPROP) $ZSIMPROP
+    }
   } else {
     if { ![eof $fh] } {
       set res [gets $fh]
       debuglog "zaber : $res"
       if { [lindex $res 2] == "OK" } {
-        set ZABERS($ZNAME,$ZPROP) "[lindex $res 5]"
+        foreach d "A B input focus pickoff" {
+           if { [string trim [lindex $res 0] "@0"] == $ZABER($d,device) } {
+             set ZABERS($d,$ZPROP) "[lindex $res 5]"
+           }
+        }
       }
     }
   }
@@ -363,6 +377,7 @@ if { [info exists env(SPECKLE_SIM)] } {
 loadZaberConfig
 echoZaberConfig
 zaberConnect
+set ZSIMPROP ""
 if { $ZABERS(sim) == 0 } {
   zaberGetProperties A
   zaberGetProperties B
@@ -377,11 +392,20 @@ if { $ZABERS(sim) == 0 } {
   zaberGoto B wide
   zaberGoto input wide
   if { $SCOPE(telescope) == "GEMINI" } {
+       set ZABERS(focus,readpos) "simulate"
+       set ZABERS(pickoff,readpos) "simulate)
        zaberCommand focus home
        zaberCommand pickoff home
        after 2000
        zaberGoto pickoff out	
        zaberGoto focus stow 
   }
+} else {
+  set ZABERS(input,readpos) "simulate"
+  set ZABERS(A,readpos) "simulate"
+  set ZABERS(B,readpos) "simulate"
 }
+
+
+
 

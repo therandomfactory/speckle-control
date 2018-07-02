@@ -28,7 +28,7 @@ proc abortsequence { } {
 #               STATUS	-	Exposure status
 global STATUS
   set STATUS(abort) 1
-  countdown off
+  andorSetControl 0 abort
   .main.observe configure -text "Observe" -bg gray -relief raised -command startsequence
   .main.abort configure -bg gray -relief sunken -fg LightGray
   mimicMode red close
@@ -315,6 +315,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  commandAndor blue "comments $cmt"
  commandAndor red "datadir $SCOPE(datadir)"
  commandAndor blue "datadir $SCOPE(datadir)"
+ andorSetControl 0 frame 0
+ andorSetControl 1 frame 0
  while { $iseqnum < $SCOPE(numseq) } {
   set ifrmnum 0
   while { $ifrmnum < $SCOPE(numframes) } {
@@ -323,7 +325,6 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    set dfrmnum $ifrmnum
    set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
    set STATUS(abort) 0
-   andorSetControl abort 0
    .main.observe configure -text "working" -bg green -relief sunken
    .main.abort configure -bg orange -relief raised -fg black
    wm geometry .countdown
@@ -364,15 +365,18 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    set FRAME 0
    set REMAINING 0
 #   countdown [expr int($SCOPE(exposure)*$SCOPE(numframes))]
-   while { $i <= $SCOPE(numframes) && $STATUS(abort) == 0 } {
+   while { $i < $SCOPE(numframes) && $STATUS(abort) == 0 } {
       set FRAME $i
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
       after [expr int($perframe*1000)]
-#      incr i 1
-      set i [andorGetControl 0 frame]
+      if { $LASTACQ == "fullframe" } {
+         incr i 1
+      } else {
+         set i [andorGetControl 0 frame]
+      }
       .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
-      .lowlevel.progress configure -text "Observation status : Exposure $dfrmnum   Sequence $iseqnum"
+      .lowlevel.progress configure -text "Observation status : Frame $i   Exposure $dfrmnum   Sequence $iseqnum"
       update
    }
    set SCOPE(exposureEnd) [expr [clock milliseconds]/1000.0]

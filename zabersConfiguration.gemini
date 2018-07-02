@@ -2,6 +2,8 @@
 # for device 1, and 5 MUST BE OUT ON SHUTDOWN, and EXTEND/IN on startup 
 
 set ZABERS(port) /dev/ttyUSB0
+set ZABERS(port2) /dev/ttyUSB1
+
 set ZABERS(focus,device)      1
 set ZABERS(focus,stow)        0
 set ZABERS(focus,extend) 1049869
