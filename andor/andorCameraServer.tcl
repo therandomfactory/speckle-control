@@ -325,7 +325,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
     exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*1.5]
+    exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*$ANDOR_CFG(scalepeak)]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   if { $ANDOR_ARM == "red" } {
@@ -333,7 +333,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
     exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*1.5]
+    exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*$ANDOR_CFG(scalepeak)]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
@@ -349,7 +349,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
   }
   set count 0
-  set dofft 0
+  set dofft 1
   if { $ANDOR_CFG(red) > -1} {
       andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $ANDOR_CFG(fitsbits) $dofft
   }
@@ -385,7 +385,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
     exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*1.5]
+    exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*$ANDOR_CFG(scalepeak)]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   if { $ANDOR_ARM == "red" } {
@@ -393,7 +393,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
     exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*1.5]
+    exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*$ANDOR_CFG(scalepeak)]
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
@@ -443,7 +443,7 @@ set FITSBITS(ULONG_IMG)    40
 #set FITSBITS(BYTE_IMG)     8 
 #set FITSBITS(DOUBLE_IMG)  -64
 set ANDOR_CFG(fitsbits) $FITSBITS(USHORT_IMG)
-
+set ANDOR_CFG(scalepeak) 1.2
 
 proc updateDatabase { } {
 global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
@@ -622,6 +622,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          grabcube        { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Acquiring cube"}
          fastVideo       { after 10 "acquireFastVideo [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Fastvideo starts"}
          setframe        { configureFrame [lindex $msg 1] ;  puts $sock "OK"}
+         scalepeak       { set ANDOR_CFG(scalepeak) [lindex $msg 1] ; puts $sock "OK"}
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
          forceroi        { forceROI  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}

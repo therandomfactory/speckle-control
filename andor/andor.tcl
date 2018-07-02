@@ -193,6 +193,8 @@ global LASTACQ STATUS SCOPE ACQREGION
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
+     commandAndor red "numberkinetics 100"
+     commandAndor blue "numberkinetics 100"
      commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) 100"
      commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) 100"
       if { $SCOPE(exposure) > 0.0 } {

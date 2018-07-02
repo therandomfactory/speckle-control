@@ -128,6 +128,16 @@ proc validFloat {win event X oldX} {
 } 
 
 
+proc setKineticMode { } {
+global ANDOR_CFG
+}
+
+proc setDisplayMode  { } {
+global ANDOR_CFG
+   andorSetControl 0 showfft $ANDOR_CFG(showfft)
+}
+
+
 #
 # Load the procedures
 #
@@ -312,8 +322,10 @@ place .main.lexp -x 20 -y 23
 place .main.lnum -x 20 -y 53
 place .main.ltyp -x 20 -y 83
 place .main.lseq -x 20 -y 107
-checkbutton .main.kinetic -bg gray  -text "Kinetic mode" -variable ANDOR_CFG(kineticMode) -highlightthickness 0
+checkbutton .main.kinetic -bg gray  -text "Kinetic mode" -variable ANDOR_CFG(kineticMode) -command setKineticMode -highlightthickness 0
 place .main.kinetic -x 210 -y 82
+checkbutton .main.showfft -bg gray  -text "Display FFT" -variable ANDOR_CFG(showfft) -command setDisplayMode -highlightthickness 0
+place .main.showfft -x 210 -y 52
 
 set SCOPE(exptype) Object
 set SCOPE(numaccum) 1
@@ -330,9 +342,6 @@ label .main.rcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
 place .main.rcamtemp -x 353 -y 2
 label .main.bcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
 place .main.bcamtemp -x 453 -y 2
-
-
-
 
 
 
