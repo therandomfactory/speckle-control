@@ -157,6 +157,12 @@ global ANDOR_CFG
 }
 
 
+proc setBinning { } {
+global ANDOR_CFG
+   andorCommand red "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+   andorCommand blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+}
+
 #
 # Load the procedures
 #
@@ -345,6 +351,11 @@ checkbutton .main.kinetic -bg gray  -text "Kinetic mode" -variable ANDOR_CFG(kin
 place .main.kinetic -x 210 -y 82
 checkbutton .main.showfft -bg gray  -text "Display FFT" -variable ANDOR_CFG(showfft) -command setDisplayMode -highlightthickness 0
 place .main.showfft -x 210 -y 52
+
+label .main.lbin -text Binning  -bg gray
+SpinBox .main.binning -width 4 -range "1 16 1" -textvariable ANDOR_CFG(binning) -command setBinning -justify right -validate all -vcmd {validInteger %W %V %P %s 1 16}
+place .main.lbin -x 220 -y 23
+place .main.binning -x 280 -y 20
 
 set SCOPE(exptype) Object
 set SCOPE(numaccum) 1
