@@ -349,7 +349,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
   }
   set count 0
-  set dofft 1
+  set dofft 0
   if { $ANDOR_CFG(red) > -1} {
       andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $ANDOR_CFG(fitsbits) $dofft
   }
@@ -360,14 +360,14 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
   if { $ANDOR_CFG(red) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
-    andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
+#    andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(red)}
     set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
     set ANDOR_CFG(red,peak) [andorGetControl $ANDOR_CFG(red) peak]
   }
   if { $ANDOR_CFG(blue) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
-    andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n
+#    andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n
     catch {andorAbortAcq $ANDOR_CFG(blue)}
     set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
     set ANDOR_CFG(blue,peak) [andorGetControl $ANDOR_CFG(blue) peak]
@@ -409,7 +409,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
   }
   set count 0
-  set dofft 1
+  set dofft 0
   if { $ANDOR_CFG(red) > -1} {
       andorFastVideo $ANDOR_CFG(red) $n
   }
