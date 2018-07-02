@@ -181,7 +181,7 @@ global STATUS
 }
 
 proc fastvideomode { } {
-global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS
+global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG
 #   commandAndor red "imagename videomode 1" 0
 #   commandAndor blue "imagename videomode 1" 0
 #   exec rm -f $SCOPE(datadir)/videomode_red.fits
@@ -196,8 +196,8 @@ global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS
      set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / 0.04))]
      commandAndor red "numberkinetics $perrun"
      commandAndor blue "numberkinetics $perrun"
-     commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) $perrun"
-     commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) $perrun"
+     commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $perrun"
+     commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]  $perrun"
       if { $SCOPE(exposure) > 0.0 } {
           mimicMode red open
           mimicMode blue open
@@ -253,16 +253,16 @@ proc testControl { } {
 
 
 proc acquireCubes { } {
-global INSTRUMENT SCOPE LASTACQ ACQREGION
+global INSTRUMENT SCOPE LASTACQ ACQREGION ANDOR_CFG
    set n [expr $ACQREGION(xe) - $ACQREGION(xs) +1]
    if { $INSTRUMENT(red) } {
 #      commandAndor red "setframe roi"
-      commandAndor red "grabcube $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) $SCOPE(numframes)"
+      commandAndor red "grabcube $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $SCOPE(numframes)"
       set LASTACQ roi
    }
    if { $INSTRUMENT(blue) } {
 #      commandAndor blue "setframe roi"
-      commandAndor blue "grabcube $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) $SCOPE(numframes)"
+      commandAndor blue "grabcube $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $SCOPE(numframes)"
       set LASTACQ roi
    }
 }

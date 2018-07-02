@@ -629,8 +629,8 @@ int cAndorStoreFrame(int cameraId, char *filename, int iexp,int numexp)
   int nelements;
 
 
-  width = andorSetup[cameraId].width;
-  height = andorSetup[cameraId].height;
+   width = andorSetup[cameraId].width / andorSetup[cameraId].image.hbin;
+   height = andorSetup[cameraId].height / andorSetup[cameraId].image.vbin;
 
    if ( cameraId == 0 ) {
      copyFrom = &imageDataA;
@@ -1807,7 +1807,7 @@ int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, 
         
         //Setup Image dimensions
         status = SetImage(1,1,1,width,1,height);
-        printf("status = %d in tcl_andorPrepDataCube, %d,%d,%d,%d,%d,%d\n",status,1,1,1,width,1,height);
+        printf("status = %d in tcl_andorPrepDataFrame, %d,%d,%d,%d,%d,%d\n",status,1,1,1,width,1,height);
         return TCL_OK;
 }
 
@@ -2402,6 +2402,8 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
   andorSetup[cameraId].height = vend-vstart+1;
   andorSetup[cameraId].npix = (hend-hstart+1)*(vend-vstart+1)/hbin/vbin;
   andorSetup[cameraId].exposure_time = DFT_ANDOR_EXPOSURE_TIME;
+  status = SetImage(andorSetup[cameraId].image.hbin,andorSetup[cameraId].image.vbin,andorSetup[cameraId].image.hstart,andorSetup[cameraId].image.hend,andorSetup[cameraId].image.vstart,andorSetup[cameraId].image.vend);
+  printf("status = %d in tcl_andorConfigure, %d,%d,%d,%d,%d,%d\n",status,andorSetup[cameraId].image.hbin,andorSetup[cameraId].image.vbin,andorSetup[cameraId].image.hstart,andorSetup[cameraId].image.hend,andorSetup[cameraId].image.vstart,andorSetup[cameraId].image.vend);
 
 //  status = andor_set_temperature(DFT_ANDOR_TEMPERATURE);
 //  status = andor_cooler_off();

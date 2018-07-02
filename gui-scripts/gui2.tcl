@@ -159,8 +159,8 @@ global ANDOR_CFG
 
 proc setBinning { } {
 global ANDOR_CFG
-   andorCommand red "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
-   andorCommand blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+   commandAndor red "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+   commandAndor blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
 }
 
 #
@@ -353,7 +353,7 @@ checkbutton .main.showfft -bg gray  -text "Display FFT" -variable ANDOR_CFG(show
 place .main.showfft -x 210 -y 52
 
 label .main.lbin -text Binning  -bg gray
-SpinBox .main.binning -width 4 -range "1 16 1" -textvariable ANDOR_CFG(binning) -command setBinning -justify right -validate all -vcmd {validInteger %W %V %P %s 1 16}
+SpinBox .main.binning -width 4 -range "1 16 1" -textvariable ANDOR_CFG(binning) -justify right 
 place .main.lbin -x 220 -y 23
 place .main.binning -x 280 -y 20
 

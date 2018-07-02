@@ -315,6 +315,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
  commandAndor red  "vsspeed $ANDOR_CFG(red,VSSpeed)"
  commandAndor blue "vsspeed $ANDOR_CFG(blue,VSSpeed)"
+ setBinning
  if { $INSTRUMENT(red,emccd) } {
    commandAndor red "outputamp $ANDOR_EMCCD"
    commandAndor red "emadvanced $INSTRUMENT(red,highgain)"

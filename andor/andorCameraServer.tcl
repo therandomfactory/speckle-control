@@ -183,7 +183,6 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE
    if { $mode == "fullframe" } {
      debuglog "Configure camera $CAM for fullframe"
      andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin) 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
-     andorPrepDataFrame
      cAndorSetProperty $CAM AcquisitionMode 1
      cAndorSetProperty $CAM OutputAmplifier 0
      set SCOPE(numframes) 1
@@ -203,17 +202,21 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE
 }
 
 proc acquireDataFrame { exp } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
     redisUpdate
     set t [clock seconds]
+    set dimen [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]
     set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
     set TELEMETRY(speckle.andor.numexp) 1
     set TELEMETRY(speckle.andor.numberkinetics) 0
+    if { $ANDOR_ARM == "blue" } {
+      exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$dimen,ydim=$dimen,bitpix=32\\\]
+    }
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       set peak [andorGetData $ANDOR_CFG(red)]
-      andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits 1024 1024 1 1
+      andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p $DS9 frame 2
@@ -224,7 +227,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     }
     if { $ANDOR_CFG(blue) > -1 } {
       set peak [andorGetData $ANDOR_CFG(blue)]
-      andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits 1024 1024 1 1
+      andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p $DS9 frame 2
@@ -629,6 +632,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          grabcube        { after 10 "acquireDataCube [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Acquiring cube"}
          fastVideo       { after 10 "acquireFastVideo [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5]" ; puts $sock "Fastvideo starts"}
          setframe        { configureFrame [lindex $msg 1] ;  puts $sock "OK"}
+         setbinning      { set ANDOR_CFG($CAM,hbin) [lindex $msg 1] ; set ANDOR_CFG($CAM,vbin) [lindex $msg 2] ; set ANDOR_CFG(binning) [lindex $msg 1] ;puts $sock "OK"}
          scalepeak       { set ANDOR_CFG(scalepeak) [lindex $msg 1] ; puts $sock "OK"}
          fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
@@ -672,24 +676,17 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          readoutcfg      { set res [configReadout [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5] [lindex $msg 6] [lindex $msg 7]] ; puts $sock $res}
          comments        { set SCOPE(comments) [lrange $msg 1 end] ;  puts $sock "OK" }
          autofitds9      { set ANDOR_CFG(fitsds9) [lindex $msg 1] ;  puts $sock "OK" }
-         configure       { set hbin [lindex $msg 1]
-                           set vbin [lindex $msg 2]
-                           set vstart [lindex $msg 3]
-                           set vend [lindex $msg 4]
-                           set hstart [lindex $msg 5]
-                           set hend [lindex $msg 6]
-                           set preamp_gain [lindex $msg 7]
-                           set vertical_speed [lindex $msg 8]
-                           set ccd_horizontal_speed [lindex $msg 9]
-                           set em_horizontal_speed [lindex $msg 10]
-                           andorConfigure $CAM $hbin $vbin $hstart $hend $vstart $vend $preamp_gain $vertical_speed $ccd_horizontal_speed $em_horizontal_speed
-                           set ANDOR_CFG($CAM,PreAmpGain) $preamp_gain
-                           set ANDOR_CFG($CAM,VSSpeed) $vertical_speed
-                           if { $ANDOR_CFG($CAM,OutputAmplifier) == 0 } {
-                             set ANDOR_CFG($CAM,EMHSSpeed) $em_horizontal_speed
-                           } else {
-                             set ANDOR_CFG($CAM,HSSpeed) $ccd_horizontal_speed
-                           }
+         configure       { set ANDOR_CFG($CAM,hbin) [lindex $msg 1]
+                           set ANDOR_CFG($CAM,vbin) [lindex $msg 2]
+                           set ANDOR_ROI(xs) [lindex $msg 3]
+                           set ANDOR_ROI(xe) [lindex $msg 4]
+                           set ANDOR_ROI(ys) [lindex $msg 5]
+                           set ANDOR_ROI(ye) [lindex $msg 6]
+                           set ANDOR_CFG($CAM,PreAmpGain) [lindex $msg 7]
+                           set ANDOR_CFG($CAM,VSSpeed) [lindex $msg 8]
+                           set ANDOR_CFG($CAM,HSSpeed) [lindex $msg 9]
+                           set ANDOR_CFG($CAM,EMHSSpeed) [lindex $msg 10]
+     			   andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin)  $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
 			   puts $sock "OK"
                          }
          setupcamera     { set it [andorSetupCamera $CAM [lindex $msg 1]] ; puts $sock $it}
