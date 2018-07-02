@@ -129,7 +129,26 @@ proc validFloat {win event X oldX} {
 
 
 proc setKineticMode { } {
-global ANDOR_CFG
+global ANDOR_CFG ACQREGION
+  if { $ANDOR_CFG(kineticMode) }  {
+    if { $ACQREGION(geom) == 1024 } {
+       commandAndor red "setframe roi"
+      commandAndor blue "setframe roi"
+      set LASTACQ roi
+      .lowlevel.rmode configure -text "Mode=ROI"
+      .lowlevel.bmode configure -text "Mode=ROI"
+     } else {
+      commandAndor red  "setframe fullkinetic"
+      commandAndor blue "setframe fullkinetic"
+     .lowlevel.rmode configure -text "Mode=FULL"
+     .lowlevel.bmode configure -text "Mode=FULL"
+    }
+  } else {
+    commandAndor red "setframe fullframe"
+    commandAndor blue "setframe fullframe"
+    .lowlevel.rmode configure -text "Mode=Single"
+    .lowlevel.bmode configure -text "Mode=Single"
+  }
 }
 
 proc setDisplayMode  { } {
@@ -252,12 +271,12 @@ menu .mbar.help.m
 
 #.mbar.file.m add command -label "Save As" -command filesaveas
 .mbar.file.m add command -label "Exit" -command shutdown
-.mbar.observe.m add command -label "Snap-roi-128" -command "observe region128"
-.mbar.observe.m add command -label "Snap-roi-256" -command "observe region256"
-.mbar.observe.m add command -label "Snap-roi-512" -command "observe region512"
+.mbar.observe.m add command -label "Acq-roi-128" -command "observe region128"
+.mbar.observe.m add command -label "Acq-roi-256" -command "observe region256"
+.mbar.observe.m add command -label "Acq-roi-512" -command "observe region512"
+.mbar.observe.m add command -label "Acq-full" -command "observe regionall"
 .mbar.observe.m add command -label "Adjust ROI" -command "observe manual"
 .mbar.observe.m add command -label "Reset full-frame" -command "observe fullframe"
-.mbar.observe.m add command -label "Single Image" -command "observe single"
 .mbar.temp.m add command -label "Cooler on" -command "setpoint on"
 .mbar.temp.m add command -label "Cooler off" -command "setpoint off"
 .mbar.temp.m add command -label "Cooler to ambient" -command  {set ok [confirmaction "Ramp temperature to ambient"] ; if {$ok} {setpoint amb}}
@@ -532,6 +551,9 @@ set SCOPE(obsdate) [join "[lrange $now 1 2] [lindex $now 4]" -]
 #set SCOPE(NumCols)  $CONFIG(geometry.NumCols) 
 #set SCOPE(NumRows)  $CONFIG(geometry.NumRows) 
 set SCOPE(darktime) 0.0
+set SCOPE(numframes) 1
+set SCOPE(numseq) 1
+
 #
 #  Start monitoring the temperature
 #

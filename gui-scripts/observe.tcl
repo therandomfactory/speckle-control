@@ -72,6 +72,7 @@ global SCOPE
       region128 {acquisitionmode 128}
       region256 {acquisitionmode 256}
       region512 {acquisitionmode 512}
+      regionall {acquisitionmode 1024}
       manual    {acquisitionmode manual}
       multiple {continuousmode $SCOPE(exposure) 999999 $id}
       fullframe {setfullframe}
@@ -154,7 +155,7 @@ proc  acquisitionmode { rdim } {
 #  
 #               ACQREGION	-	Sub-frame region coordinates
 #               CONFIG	-	GUI configuration
-global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
+global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   puts stdout "rdim == $rdim"
   if { $rdim != "manual"} {
         commandAndor red "setframe fullframe"
@@ -163,7 +164,7 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   }
   set SCOPE(numseq) 1
   set SCOPE(numframes) 1
-  if { $rdim != "manual" } {
+  if { $rdim != "manual" && $rdim != 1024} {
     set LASTACQ "fullframe"
     startsequence
     after 2000
@@ -186,6 +187,7 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   mimicMode blue roi [set rdim]x[set rdim]
   exec xpaset -p ds9red regions system physical
   exec xpaset -p ds9blue regions system physical
+  if { $rdim != 1024 } {
   set reg [split [exec xpaget ds9red regions] \n]
   foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
@@ -214,13 +216,36 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET
   set CONFIG(geometry.NumRows) $rdim
   set ACQREGION(geom) $CONFIG(geometry.NumCols)
   debuglog "ROI's are red  = $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(rxe) $ACQREGION(rye)" 
-  debuglog "ROI's are blue = $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(bxe) $ACQREGION(bye)" 
+  debuglog "ROI's are blue = $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(bxe) $ACQREGION(bye)"
   commandAndor red "setframe roi"
   commandAndor blue "setframe roi"
   set LASTACQ roi
   .lowlevel.rmode configure -text "Mode=ROI"
   .lowlevel.bmode configure -text "Mode=ROI"
+  } else {
+    set ACQREGION(geom) 1024
+    set ACQREGION(rxs) 1
+    set ACQREGION(rxe) 1024
+    set ACQREGION(rys) 1
+    set ACQREGION(rye) 1024
+    set ACQREGION(bxs) 1
+    set ACQREGION(bxe) 1024
+    set ACQREGION(bys) 1
+    set ACQREGION(bye) 1024
+    if { $ANDOR_CFG(kineticMode) } {
+      commandAndor red "setframe fullkinetic"
+      commandAndor blue "setframe fullkinetic"
+     .lowlevel.rmode configure -text "Mode=FULL"
+     .lowlevel.bmode configure -text "Mode=FULL"
+    } else {
+      commandAndor red "setframe fullframe"
+      commandAndor blue "setframe fullframe"
+     .lowlevel.rmode configure -text "Mode=Single"
+     .lowlevel.bmode configure -text "Mode=Single"
+    }
+  }
 }
+
 
 proc checkgain { {table table.dat} } {
 global SCOPE SPECKLE_DIR
@@ -352,11 +377,15 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
    set tpredict [lindex [commandAndor red status] end]
    if { $LASTACQ == "fullframe" } {
-      set TELEMETRY(speckle.andor.mode) "widefield"
-      acquireFrames
+      set TELEMETRY(speckle.andor.mode) "fullframe"
+      if { $ANDOR_CFG(kineticMode) } {
+         acquireCubes
+      } else {
+         acquireFrames
+      }
       set perframe $SCOPE(exposure)
    } else {
-      set TELEMETRY(speckle.andor.mode) "speckle"
+      set TELEMETRY(speckle.andor.mode) "roi"
       acquireCubes
       set ifrmnum $SCOPE(numframes)
       set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]

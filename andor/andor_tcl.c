@@ -1274,8 +1274,8 @@ int cAndorDisplaySingle(int cameraId, int ifft)
   width = andorSetup[cameraId].width / andorSetup[cameraId].image.hbin;
   height = andorSetup[cameraId].height / andorSetup[cameraId].image.vbin;
  
-  if ( width != 1024 && width != 512 && width != 256 && width != 128) { ifft = 0; }
-  if ( height != 1024 && height != 512 && height != 256 && height != 128) { ifft = 0; }
+  if ( width != 512 && width != 256 && width != 128) { ifft = 0; }
+  if ( height != 512 && height != 256 && height != 128) { ifft = 0; }
 
   if ( cameraId == 0 ) {
     if ( ifft == 1 ) {

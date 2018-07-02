@@ -194,6 +194,12 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE
      cAndorSetProperty $CAM AcquisitionMode 3
      cAndorSetProperty $CAM OutputAmplifier 0
    }
+   if { $mode == "fullkinetic" } {
+     debuglog "Configure camera $CAM for fullframe"
+     andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin) 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
+     cAndorSetProperty $CAM AcquisitionMode 3
+     cAndorSetProperty $CAM OutputAmplifier 0
+   }
 }
 
 proc acquireDataFrame { exp } {
@@ -349,7 +355,8 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
   }
   set count 0
-  set dofft 1
+  set dofft 0
+  if { $npix < 1024 } {set dofft 1}
   if { $ANDOR_CFG(red) > -1} {
       andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $ANDOR_CFG(fitsbits) $dofft
   }
