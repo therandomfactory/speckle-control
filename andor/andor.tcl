@@ -181,7 +181,7 @@ global STATUS
 }
 
 proc fastvideomode { } {
-global LASTACQ STATUS SCOPE ACQREGION
+global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS
 #   commandAndor red "imagename videomode 1" 0
 #   commandAndor blue "imagename videomode 1" 0
 #   exec rm -f $SCOPE(datadir)/videomode_red.fits
@@ -193,10 +193,11 @@ global LASTACQ STATUS SCOPE ACQREGION
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
-     commandAndor red "numberkinetics 100"
-     commandAndor blue "numberkinetics 100"
-     commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) 100"
-     commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) 100"
+     set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / 0.04))]
+     commandAndor red "numberkinetics $perrun"
+     commandAndor blue "numberkinetics $perrun"
+     commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) $perrun"
+     commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) $perrun"
       if { $SCOPE(exposure) > 0.0 } {
           mimicMode red open
           mimicMode blue open
@@ -213,6 +214,8 @@ global LASTACQ STATUS SCOPE ACQREGION
    }
 }
 
+
+set CAMSTATUS(blue,TKinetics) .30
 
 proc startvideomode { } {
 global STATUS SCOPE
