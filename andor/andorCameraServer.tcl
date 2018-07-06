@@ -21,6 +21,15 @@ global ANDOR_CFG ANDOR_ARM
    return $res
 }
 
+proc setutc { {id 0} } {
+global SCOPE CAMSTATUS
+  set now [split [exec  date -u +%Y-%m-%d,%T.%U] ,]
+  set SCOPE(obsdate) [lindex $now 0]
+  set SCOPE(obstime) [lindex $now 1]
+}
+
+
+
 wm withdraw .
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
@@ -134,14 +143,21 @@ cAndorSetProperty $CAM PreAmpGain 1
 #cAndorSetProperty $CAM HSSpeed 1 0
 #cAndorSetProperty $CAM HSSpeed 0 1
 cAndorSetProperty $CAM ReadMode 4
-cAndorSetProperty $CAM AcquisitionMode 1
 cAndorSetProperty $CAM KineticCycleTime 0.0
 cAndorSetProperty $CAM NumberAccumulations 1
 cAndorSetProperty $CAM NumberKinetics 1
 cAndorSetProperty $CAM AccumulationCycleTime 0.0
 cAndorSetProperty $CAM ExposureTime 0.04
 cAndorSetProperty $CAM SetTemperature -60
+	
+# Special incantations to "make things work"
+SetAcquisitionMode 5
+PrepareAcquisition
+StartAcquisition
+after 1000
+AbortAcquisition
 
+cAndorSetProperty $CAM AcquisitionMode 1
 set ANDOR_CFG($ANDOR_ARM,EMCCDGain) 0
 set ANDOR_CFG($ANDOR_ARM,EMAdvanced) 0
 set ANDOR_CFG($ANDOR_ARM,min) 300
@@ -205,6 +221,7 @@ proc acquireDataFrame { exp } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
     redisUpdate
+    setutc
     set t [clock seconds]
     set dimen [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]
     set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
@@ -245,6 +262,7 @@ proc acquireDataROI { exp x y n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     debuglog "Starting $ANDOR_ARM ROI sequence with exposure = $exp"
     redisUpdate
+    setutc
     set t [clock seconds]
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
@@ -329,6 +347,7 @@ proc acquireDataCube { exp x y npix n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   redisUpdate
+  setutc
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
@@ -640,6 +659,7 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex $msg 2]]" }
          datadir         { set SPECKLE_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set SCOPE(datadir) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
+         imagetype       { set TELEMETRY(speckle.scope.imagetype) [lindex $msg 1] ; puts $sock "OK"}
          gettemp         { set it [andorGetProperty $CAM temperature] ; set ANDOR_CFG(ccdtemp) [lindex $it 0] ; puts $sock $it }
          status          { set it [showstatus] ; puts $sock $it}
          shutter         { set it [cAndorSetProperty $CAM Shutter [lindex $msg 1]] ; puts $sock $it}

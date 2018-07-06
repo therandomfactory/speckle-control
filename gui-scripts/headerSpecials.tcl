@@ -28,6 +28,20 @@ global TELEMETRY
   return [catchhms [expr $value/3.141592564689*12.]]
 }
 
+proc catchzd { value } {
+global TELEMETRY
+  return [float [format %6.2f [expr $value/3.141592564689*12.]]]
+}
+
+proc catchfloat { value } {
+  return "float $value"
+}
+
+
+proc catchint { value } {
+  return "integer $value"
+}
+
 proc catchraddeg { value } {
 global TELEMETRY
   return "double [format %19.3f [expr $value/3.141592564689*180.]]"
