@@ -456,14 +456,14 @@ label .lowlevel.lccdhs  -bg gray -text "CCD HS"
 
 place .lowlevel.emccd -x 420 -y 100
 place .lowlevel.hgain -x 520 -y 100
-place .lowlevel.aemccd -x 730 -y 95
+place .lowlevel.aemccd -x 725 -y 95
 place .lowlevel.lvspeed -x 420 -y 200
 place .lowlevel.vspeed -x 520 -y 200
 place .lowlevel.lemhs -x 420 -y 230
 place .lowlevel.emhs -x 520 -y 230
 place .lowlevel.lccdhs -x 420 -y 260
 place .lowlevel.ccdhs -x 520 -y 260
-place .lowlevel.emchk -x 730 -y 110
+place .lowlevel.emchk -x 725 -y 110
 
 
 checkbutton .lowlevel.bemccd  -bg gray -text "EMCCD" -variable INSTRUMENT(blue,emccd) -command "checkemccdgain blue" -highlightthickness 0
@@ -513,14 +513,14 @@ set ANDOR_CFG(HSSpeed,1) "100 KHz"
 
 place .lowlevel.bemccd -x 20 -y 100
 place .lowlevel.bhgain -x 120 -y 100
-place .lowlevel.abemccd -x 330 -y 95
+place .lowlevel.abemccd -x 325 -y 95
 place .lowlevel.lbvspeed -x 20 -y 200
 place .lowlevel.bvspeed -x 120 -y 200
 place .lowlevel.lbemhs -x 20 -y 230
 place .lowlevel.bemhs -x 120 -y 230
 place .lowlevel.lbccdhs -x 20 -y 260
 place .lowlevel.bccdhs -x 120 -y 260
-place .lowlevel.bemchk -x 330 -y 110
+place .lowlevel.bemchk -x 325 -y 110
 
 
 button .lowlevel.rsave -text Save -bg gray70 -width 6 -command "specklesave red"
