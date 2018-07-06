@@ -290,7 +290,7 @@ global TOMPG
   if { $value == "NA" } {set type string}
   switch $type {
      string  {
-              set record "[format %-8s $key]= '[format %18s $value]'"
+              set record "[format %-8s $key]= [format %18s '$value']"
              }
      integer {
               set record "[format %-8s $key]=  [format %19d [expr int($value)]]"

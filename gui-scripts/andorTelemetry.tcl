@@ -8,7 +8,7 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    } else {
      set TELEMETRY(speckle.andor.amplifier) "Electron Multiplying"
    }
-   set TELEMETRY(speckle.scope.imagename) "[set ANDOR_CFG(imagename)]_[set ANDOR_ARM].fits"
+   set TELEMETRY(speckle.andor.imagename) "[set ANDOR_CFG(imagename)]_[set ANDOR_ARM].fits"
    set TELEMETRY(speckle.andor.acquisition_mode) "Single scan"
    if { $TELEMETRY(speckle.andor.numberkinetics) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics mode" }
    set TELEMETRY(speckle.andor.int_time) $ANDOR_CFG($arm,ExposureTime)

@@ -191,11 +191,11 @@ cAndorSetProperty $CAM ExposureTime 0.04
 cAndorSetProperty $CAM SetTemperature -60
 	
 # Special incantations to "make things work"
-SetAcquisitionMode 5
-PrepareAcquisition
-StartAcquisition
-after 1000
-AbortAcquisition
+#SetAcquisitionMode 5
+#PrepareAcquisition
+#andorStartAcq
+#after 1000
+#andorAbortAcq
 
 cAndorSetProperty $CAM AcquisitionMode 1
 set ANDOR_CFG($ANDOR_ARM,EMCCDGain) 0
