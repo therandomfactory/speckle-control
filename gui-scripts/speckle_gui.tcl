@@ -511,6 +511,9 @@ set ANDOR_CFG(EMHSSpeed,3) "1 MHz"
 set ANDOR_CFG(HSSpeed,0) "1 MHz"
 set ANDOR_CFG(HSSpeed,1) "100 KHz"
 
+set INSTRUMENT(red,emccd) 1
+set INSTRUMENT(blue,emccd) 1
+
 place .lowlevel.bemccd -x 20 -y 100
 place .lowlevel.bhgain -x 120 -y 100
 place .lowlevel.abemccd -x 325 -y 95
