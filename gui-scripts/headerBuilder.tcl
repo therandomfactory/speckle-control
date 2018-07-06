@@ -16,7 +16,7 @@ set SEQNUM 1
 if { [info exists env(TELESCOPE)] } {
      set TOMPG $env(TELESCOPE)
 } else {
-     helperDialog "SPECKLE Diagnostics" "Telescope environment not defined" "HELP EXIT" notelescope.html
+     puts stdout "SPECKLE Diagnostics - Telescope environment not defined"
 }
 
 
@@ -108,8 +108,8 @@ global TOMPG HEADERS ACTIVE
 
 
 proc fillheader { args } {
-global TELEMETRY PDEBUG HEADERS TOMPG FITSKEY FITSTXT SEQNUM ACTIVE SCOPE ANDOR_ARM
-global FROMSTARTEXP CACHETELEMETRY
+global TELEMETRY PDEBUG HEADERS TOMPG FITSKEY FITSTXT SEQNUM ACTIVE SCOPE
+global FROMSTARTEXP CACHETELEMETRY ANDOR_ARM
   set fhead ""
   speckleTelemetryUpdate
   updateAndorTelemetry $ANDOR_ARM
@@ -282,14 +282,15 @@ proc fitshdrrecord { key type value text } {
 global TOMPG
   set record ""
   set v1 [lindex $value 0]
-  set fmt 18.13e
+  set fmt 18.4f
   if { [llength [split $type _]] > 1 } {
      set fmt [lindex [split $type _] 1]
      set type [lindex [split $type _] 0]     
   }
+  if { $value == "NA" } {set type string}
   switch $type {
      string  {
-              set record "[format %-8s $key]= '[format %-18s $value]'"
+              set record "[format %-8s $key]= '[format %18s $value]'"
              }
      integer {
               set record "[format %-8s $key]=  [format %19d [expr int($value)]]"
@@ -298,9 +299,11 @@ global TOMPG
               set record "[format %-8s $key]=  [format %19s $value]"
              }
      float   {
+              if { [expr abs($value)] < 10000 } {set fmt 18.6f}
               set record [string toupper "[format %-8s $key]=  [format %$fmt $v1]"]
              }
      double  {
+              if { expr abs($value)] < 10000 } {set fmt 18.6f}
               set record [string toupper "[format %-8s $key]=  [format %$fmt $v1]"]
              }
   }

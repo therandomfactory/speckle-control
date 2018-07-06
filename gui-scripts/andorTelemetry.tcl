@@ -1,16 +1,20 @@
 
 
 proc updateAndorTelemetry { arm } {
-global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM
+global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.head) "Andor iXon Emccd"
    if { $ANDOR_CFG($arm,EMCCDGain) > 0 } {
-     set TELEMETRY(speckle.andor.acquisition_mode) "CCD"
+     set TELEMETRY(speckle.andor.amplifier) "CCD"
    } else {
-     set TELEMETRY(speckle.andor.acquisition_mode) "Electron Multiplying"
+     set TELEMETRY(speckle.andor.amplifier) "Electron Multiplying"
    }
+   set TELEMETRY(speckle.scope.imagename) "[set ANDOR_CFG(imagename)]_[set ANDOR_ARM].fits"
+   set TELEMETRY(speckle.andor.acquisition_mode) "Single scan"
+   if { $TELEMETRY(speckle.andor.numberkinetics) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics mode" }
    set TELEMETRY(speckle.andor.int_time) $ANDOR_CFG($arm,ExposureTime)
    set TELEMETRY(speckle.andor.kinetic_time) $ANDOR_CFG($arm,KineticCycleTime)
    set TELEMETRY(speckle.andor.numaccum) $ANDOR_CFG($arm,NumberAccumulations)
+   if { $TELEMETRY(speckle.andor.numaccum) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics + Accumulate mode" }
    set TELEMETRY(speckle.andor.accumulationcycle) $ANDOR_CFG($arm,AccumulationCycleTime)
    set TELEMETRY(speckle.andor.read_mode) "Frame transfer"
    set TELEMETRY(speckle.andor.fullframe) "1,1024,1,1024"
@@ -23,7 +27,7 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM
    set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG($arm,KineticCycleTime) * $ANDOR_CFG($arm,ExposureTime) * $ANDOR_CFG($arm,NumberAccumulations)]
    set TELEMETRY(speckle.andor.em_gain) $ANDOR_CFG($arm,EMCCDGain)
    set TELEMETRY(speckle.andor.amplifier) $ANDOR_CFG($arm,OutputAmplifier)
-   set TELEMETRY(speckle.andor.preamp_gain) $ANDOR_CFG($arm,PreAmpGain)
+   set TELEMETRY(speckle.andor.preamp_gain) [expr $ANDOR_CFG($arm,PreAmpGain) +1]
    set TELEMETRY(speckle.andor.serial_number) $ANDOR_CFG($CAM,SerialNumber) 
    set TELEMETRY(speckle.andor.target_temperature) [lindex $ANDOR_CFG($arm,SetTemperature) 0]
    set TELEMETRY(speckle.andor.ccdtemp) $ANDOR_CFG(ccdtemp) 
@@ -37,22 +41,22 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM
    set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(bias)
    set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(peak)
    set now [exec date -u +%Y-%m-%dT%H:%M:%S.0]
-   set TELEMETRY(speckle.scope.recid) [set now]_$SCOPE(telescope)_$TELEMETRY(tcs.target.name)"
+   set TELEMETRY(speckle.scope.recid) [set SCOPE(obsdate)]_$SCOPE(telescope)"
    set TELEMETRY(speckle.andor.read_mode) "Image"
    set TELEMETRY(speckle.scope.site) $SCOPE(telescope)
 }
 
 #set initial defaults
-set ANDOR_CFG(VSSpeed,0) "0.6 usec"
-set ANDOR_CFG(VSSpeed,1) "1.13 usec"
-set ANDOR_CFG(VSSpeed,2) "2.2 usec"
-set ANDOR_CFG(VSSpeed,3) "4.33 usec"
-set ANDOR_CFG(EMHSSpeed,0) "30 MHz"
-set ANDOR_CFG(EMHSSpeed,1) "20 MHz"
-set ANDOR_CFG(EMHSSpeed,2) "10 MHz"
-set ANDOR_CFG(EMHSSpeed,3) "1 MHz"
-set ANDOR_CFG(HSSpeed,0) "1 MHz"
-set ANDOR_CFG(HSSpeed,1) "100 KHz"
+set ANDOR_CFG(VSSpeed,0) "0.6"
+set ANDOR_CFG(VSSpeed,1) "1.13"
+set ANDOR_CFG(VSSpeed,2) "2.2"
+set ANDOR_CFG(VSSpeed,3) "4.33"
+set ANDOR_CFG(EMHSSpeed,0) "30"
+set ANDOR_CFG(EMHSSpeed,1) "20"
+set ANDOR_CFG(EMHSSpeed,2) "10"
+set ANDOR_CFG(EMHSSpeed,3) "1"
+set ANDOR_CFG(HSSpeed,0) "1"
+set ANDOR_CFG(HSSpeed,1) "0.1"
 
 set ANDOR_CFG(red,hbin) 1
 set ANDOR_CFG(red,vbin) 1
