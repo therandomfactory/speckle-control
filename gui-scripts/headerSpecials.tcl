@@ -30,13 +30,17 @@ global TELEMETRY
 
 proc catchzd { value } {
 global TELEMETRY
-  return [float [format %6.2f [expr $value/3.141592564689*12.]]]
+  return "float [format %6.2f [expr $value/3.141592564689*180.]]"
 }
 
 proc catchfloat { value } {
   return "float $value"
 }
 
+proc catchmnir { value } {
+global TELEMETRY
+  return "float [format %6.2f [expr $value/3.141592564689*180.]]"
+}
 
 proc catchint { value } {
   return "integer $value"

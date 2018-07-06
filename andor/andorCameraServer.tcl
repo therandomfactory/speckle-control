@@ -1,8 +1,40 @@
 #!/usr/bin/wish
+## \file andorCameraServer.tcl
+#
+# This Source Code Form is subject to the terms of the GNU Public
+# License, v. 2 If a copy of the GPL was not distributed with this file,
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+#
+# Copyright(c) 2018 The Random Factory (www.randomfactopry.com) 
+#
+#
+#
+#\code
+## Documented proc \c debuglog .
+# \param[in] msg Text of debug message
+#
+#  Output a debug message to the log file. Log files are saved in the /tmp
+#  directory with names like /tmp/speckle_12345678.log
+#
 proc debuglog { msg } {
    puts stdout $msg
 }
 
+## Documented proc \c cAndorSetProperty .
+# \param[in] arm Name of intrument arm red/blue
+# \param[in] prop Camera property name
+# \param[in] val Value to set the the property to 
+# \param[in] val2 Optional second value for HSSpeed usage
+#
+#  This wraps the low level (C) shared library calls which set camera properties
+#  e.g it will call methods like SetExpsoureTime. It records the results of 
+#  sucessfull calls in the ANDOR_CFG array for easy access from the tcl side
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue
+#
 proc cAndorSetProperty { cam prop val {val2 ""} } {
 global ANDOR_CFG ANDOR_ARM
    if { $prop == "HSSpeed" } {
@@ -21,6 +53,14 @@ global ANDOR_CFG ANDOR_ARM
    return $res
 }
 
+## Documented proc \c setutc .
+#
+# Set the UT time and data globals
+#
+#
+# Globals :
+#		SCOPE - Array of telescope settings
+#
 proc setutc { {id 0} } {
 global SCOPE CAMSTATUS
   set now [split [exec  date -u +%Y-%m-%d,%T.%U] ,]
@@ -164,6 +204,15 @@ set ANDOR_CFG($ANDOR_ARM,min) 300
 set ANDOR_CFG($ANDOR_ARM,peak) 1000
 
 
+## Documented proc \c showstatus .
+#
+#  Prints the current camera settings to the debug log
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		CAM - Andor camera id used in the C code, 0 or 1
+#
 proc showstatus { } {
 global CAM ANDOR_CFG
   foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilterMode GetImageRotate GetKeepCleanTime GetMaximumExposure GetMaximumNumberRingExposureTimes GetMinimumImageLength GetMinimumNumberInSeries GetNumberADChannels GetNumberAmp GetNumberDevices GetNumberFKVShiftSpeeds GetNumberHorizontalSpeeds GetNumberIO GetNumberPreAmpGains GetNumberRingExposureTimes GetNumberVSAmplitudes GetNumberVSSpeeds GetNumberVerticalSpeeds GetReadOutTime GetStartUpTime GetStatus GetTotalNumberImagesAcquired" {
@@ -180,6 +229,16 @@ global CAM ANDOR_CFG
 } 
 
 
+## Documented proc \c resetCamera .
+# \param[in] mode The new camera mode , either fullframe or roi
+#
+#  Reset the camera frame dimensions, binning and readout parameters
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		CAM - Andor camera id used in the C code, 0 or 1
+#
 proc resetCamera { mode } {
 global CAM ANDOR_CFG
    andorShutDown
@@ -194,6 +253,19 @@ global CAM ANDOR_CFG
    }
 }
 
+## Documented proc \c configureFrame .
+# \param[in] mode The new camera mode , either fullframe or roi
+#
+#  Reset the camera frame dimensions, binning and readout parameters, and acquisition
+#  mode for either single frame or kinetics
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		ANDOR_ROI - Region of interest parameters\n
+#		CAM - Andor camera id used in the C code, 0 or 1\n
+#		SCOPE - Array of telescope settings
+#
 proc configureFrame { mode } {
 global CAM ANDOR_ROI ANDOR_CFG SCOPE
    if { $mode == "fullframe" } {
@@ -217,6 +289,21 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE
    }
 }
 
+## Documented proc \c acquireDataFrame .
+# \param[in] exp Exposure time in seconds 
+#
+#  Take a single exposure
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		SPECKLE_DATADIR - Directory path to data storage\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue
+#		ACQREGION - Region of interest parameters\n
+#		CAM - Andor camera id used in the C code, 0 or 1\n
+#		DS9 - Name of ds9 executable for display ds9red or ds9blue
+#		TELEMETRY - Array of telemetry items for header/database usage
+#
 proc acquireDataFrame { exp } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
@@ -224,7 +311,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     setutc
     set t [clock seconds]
     set dimen [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]
-    set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
+    set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     set TELEMETRY(speckle.andor.numexp) 1
     set TELEMETRY(speckle.andor.numberkinetics) 0
     if { $ANDOR_ARM == "blue" } {
@@ -234,7 +321,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     if { $ANDOR_CFG(red) > -1} {
       set peak [andorGetData $ANDOR_CFG(red)]
       andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $dimen $dimen 1 1
-      set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
+      set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p $DS9 frame 2
       if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
@@ -245,7 +332,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     if { $ANDOR_CFG(blue) > -1 } {
       set peak [andorGetData $ANDOR_CFG(blue)]
       andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $dimen $dimen 1 1
-      set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
+      set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p $DS9 frame 2
       if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
@@ -258,6 +345,22 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     updateDatabase
 }
 
+## Documented proc \c acquireDataROI .
+# \param[in] exp Exposure time in seconds 
+# \param[in] x Starting column number
+# \param[in] y Starting row number
+# \param[in] n Number of exposures
+#  Take exposures of a region of interest
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		SPECKLE_DATADIR - Directory path to data storage\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue
+#		CAM - Andor camera id used in the C code, 0 or 1\n
+#		DS9 - Name of ds9 executable for display ds9red or ds9blue
+#		TELEMETRY - Array of telemetry items for header/database usage
+#
 proc acquireDataROI { exp x y n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     debuglog "Starting $ANDOR_ARM ROI sequence with exposure = $exp"
@@ -265,6 +368,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     setutc
     set t [clock seconds]
     SetExposureTime $exp
+    set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
@@ -285,55 +389,25 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
+    set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
 }
 
-proc OldacquireDataCube { exp x y npix n } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9
-  debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
-  if { $ANDOR_ARM == "blue" } {
-    exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=512,ydim=512,bitpix=32\\\]
-  }
-  refreshads9 [expr int($exp*2000)] [expr $n*4]
-  set t [clock seconds]
-  SetExposureTime $exp
-  if { $ANDOR_CFG(red) > -1} {
-     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
-  }
-  if { $ANDOR_CFG(blue) > -1} {
-     andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
-  }
-  set count 0
-  set dofft 1
-  andorStartAcq
-  while { $count < $n } {
-    incr count 1
-    if { $ANDOR_CFG(red) > -1} {
-      andorGetFrameN $ANDOR_CFG(red) $count
-      andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $npix $npix $count $n
-      andorDisplayFrame $ANDOR_CFG(red) $npix $npix 1
-    }
-    if { $ANDOR_CFG(blue) > -1 } {
-      andorGetFrameN $ANDOR_CFG(blue) $count
-      andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $npix $npix $count $n
-      andorDisplayFrame $ANDOR_CFG(blue) $npix $npix 1
-    }
-    update idletasks
-    after 1
-  }
-  if { $ANDOR_CFG(red) > -1} {
-    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
-    andorDisplayAvgFFT $ANDOR_CFG(red) $npix $npix $n
-    catch {andorAbortAcq $ANDOR_CFG(red)}
-  }
-  if { $ANDOR_CFG(blue) > -1} {
-    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
-    andorDisplayAvgFFT $ANDOR_CFG(blue) $npix $npix $n
-    catch {andorAbortAcq $ANDOR_CFG(blue)}
-  }
-  debuglog "Finished acquisition"
-}
 
+## Documented proc \c acquireDataCube .
+# \param[in] cid Camera Id , 0 or 1
+# \param[in] fname FITS file name
+# \param[in] nx Column count
+# \param[in] ny Row count
+# \param[in] count Current frame number
+# \param[in] n Number of frames
+#
+#  Save cube exposures in kinetic mode
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties
+#
 proc andorSaveData { cid fname nx ny count n } {
 global ANDOR_CFG
   switch $ANDOR_CFG(fitsbits) { 
@@ -343,6 +417,23 @@ global ANDOR_CFG
   }
 }
 
+## Documented proc \c acquireDataCube .
+# \param[in] exp Exposure time in seconds 
+# \param[in] x Starting column number
+# \param[in] y Starting row number
+# \param[in] npix Frame dimension (x and y)
+#
+#  Take data cube exposures in kinetic mode
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		SPECKLE_DATADIR - Directory path to data storage\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue\n
+#		ANDOR_ROI - Region of interest parameters\n
+#		DS9 - Name of ds9 executable for display ds9red or ds9blue\n
+#		TELEMETRY - Array of telemetry items for header/database usage
+#
 proc acquireDataCube { exp x y npix n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
@@ -367,7 +458,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
   refreshads9 [expr int($exp*2000)] [expr $n*4]
   set TELEMETRY(speckle.andor.numexp) $n
-  set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
+  set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
   set TELEMETRY(speckle.andor.numberkinetics) $n
   SetExposureTime $exp
   if { $ANDOR_CFG(red) > -1} {
@@ -386,7 +477,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
       andorGetSingleCube $ANDOR_CFG(blue) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $ANDOR_CFG(fitsbits) $dofft
   }
   update idletasks
-  set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
+  set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
   if { $ANDOR_CFG(red) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
 #    andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
@@ -406,6 +497,23 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
 }
 
 
+## Documented proc \c acquireFastVideo .
+# \param[in] exp Exposure time in seconds 
+# \param[in] x Starting column number
+# \param[in] y Starting row number
+# \param[in] npix Frame dimension (x and y)
+#
+#  Take fast exposures in kinetic mode, but only display them
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		SPECKLE_DATADIR - Directory path to data storage\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue\n
+#		ANDOR_ROI - Region of interest parameters\n
+#		DS9 - Name of ds9 executable for display ds9red or ds9blue\n
+#		TELEMETRY - Array of telemetry items for header/database usage
+#
 proc acquireFastVideo { exp x y npix n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   debuglog "Starting fast video sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
@@ -474,6 +582,17 @@ set FITSBITS(ULONG_IMG)    40
 set ANDOR_CFG(fitsbits) $FITSBITS(USHORT_IMG)
 set ANDOR_CFG(scalepeak) 1.2
 
+## Documented proc \c updateDatabase .
+#
+#  Update the SQL database with a record of the current FITS dataset
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue\n
+#		TELEMETRY - Array of telemetry items for header/database usage\n
+#		SCOPE - Array of telescope information
+#
 proc updateDatabase { } {
 global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
    set finsert [open /tmp/insert_$ANDOR_ARM.sql w]
@@ -484,6 +603,24 @@ global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
    catch {exec mysql speckle --user=root < /tmp/insert_$ANDOR_ARM.sql >& /tmp/insert_$ANDOR_ARM.log &}
 }
 
+## Documented proc \c configReadout .
+# \param[in] amp Amplifier id
+# \param[in] hsspeed Horizontal readout rate
+# \param[in] vsspeed Vertical shift speed
+# \param[in] vsamplitude Vertical shift amplitude
+# \param[in] preampgain Preamp gain index
+# \param[in] emgain EMCCD gain setting
+# \param[in] emgainmode EMCCD Advanced mode setting
+#
+#  Control the camera readout parameters with user friendly names 
+#
+#
+# Globals :\n
+#		ANDOR_CCD - Number of conventional amplifier\n
+#		CAM - Andor camera id used in the C code, 0 or 1\n
+#		ANDOR_EMCCD - Number of EMCCD amplifier\n
+#		ANDOR_CODE - Indexes to arrays of speed identifiers
+#
 proc configReadout { amp hsspeed vsspeed vsamplitude preampgain emgain emgainmode } {
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CODE CAM
    if { $amp == $ANDOR_CCD } {
@@ -534,6 +671,10 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CODE CAM
 }
 
 
+## Documented proc \c printreadoutcfgs .
+#
+#  Print the possible camera readout parameter configurations
+#
 proc printreadoutcfgs { } {
     set amp CCD
     foreach hsspeed "1MHz 100KHz" {
@@ -560,6 +701,10 @@ proc printreadoutcfgs { } {
 }
 
 
+## Documented proc \c testreadoutcfgs .
+#
+#  Test the possible camera readout parameter configurations
+#
 proc testreadoutcfgs { } {
 global ANDOR_RET
     set amp CCD
@@ -586,6 +731,16 @@ global ANDOR_RET
     }
 }
 
+## Documented proc \c locateStar .
+# \param[in] steps Number of pixel offset per sampling
+# \param[in] smooth Size of sampling box to average
+#
+#  Find the brightest object in an image
+#
+#
+# Globals :
+#		ANDOR_CFG - Array of camera configuration items
+#
 proc locateStar { steps smooth } {
 global ANDOR_CFG
   if { $ANDOR_CFG(red) > -1} {
@@ -597,6 +752,18 @@ global ANDOR_CFG
   return $res
 }
 
+## Documented proc \c selectROI .
+# \param[in] idim Size of rfegion of interest (x and y)
+#
+#  Find the brightest object , and select an ROI of the requried size around it
+#  Show the region on ds9
+#
+#
+# Globals :\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue\n
+#		ANDOR_ROI - Region of interest parameters\n
+#		DS9 - Name of ds9 executable for display ds9red or ds9blue
+#
 proc selectROI { idim } {
 global ANDOR_ARM ANDOR_ROI DS9
   set xy [locateStar 20 5]
@@ -620,6 +787,16 @@ global ANDOR_ARM ANDOR_ROI DS9
   return "$xy"
 }
 
+## Documented proc \c forceROI .
+# \param[in] idim Size of rfegion of interest (x and y)
+#
+#  Force the position of an ROI of the requried size
+#
+#
+# Globals :\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue\n
+#		ANDOR_ROI - Region of interest parameters
+#
 proc forceROI { xs xe ys ye } {
 global ANDOR_ARM ANDOR_ROI
   set ANDOR_ROI(xs) $xs
@@ -631,14 +808,33 @@ global ANDOR_ARM ANDOR_ROI
 
 
 
+## Documented proc \c shutDown .
+#
+#  Shutdown the camera servers and exit
+#
+#
 proc shutDown { } {
   debuglog "Shutting down Andor acqusition servers"
   andorShutDown
   exit
 }
 
+## Documented proc \c doService .
+# \param[in] sock The socket handle
+# \param[in] msg The command message and parameters
+#
+#  Process a command received via socket interface
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		SPECKLE_DATADIR - Directory path to data storage\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue
+#		CAM - Andor camera id used in the C code, 0 or 1\n
+#		TELEMETRY - Array of telemetry items for header/database usage\n
+#		SCOPE - Array of telescope parameters
+#
 proc doService {sock msg} {
-global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
+global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR
     debuglog "echosrv:$msg"
     set ANDOR_CFG([lindex $msg 0]) [lrange $msg 1 end]
     switch [lindex $msg 0] {
@@ -727,7 +923,11 @@ global TLM SCOPE CAM ANDOR_ARM DATADIR ANDOR_CFG TELEMETRY SPECKLE_DATADIR
 
 wm withdraw .
 
-# Handles the input from the client and  client shutdown
+## Documented proc \c svcHandler .
+# \param[in] sock The socket handle
+#
+#  Read the next command from the socket and call the processor
+#
 proc  svcHandler {sock} {
   set l [gets $sock]    ;# get the client packet
   if {[eof $sock]} {    ;# client gone or finished
@@ -737,10 +937,14 @@ proc  svcHandler {sock} {
   }
 }
 
+## Documented proc \c svcHandler .
+# \param[in] sock The socket handle
+# \param[in] addr The address of the client 
+# \param[in] port Number of the port being used
+#
 # Accept-Connection handler for Server.
 # called When client makes a connection to the server
 # Its passed the channel we're to communicate with the client on,
-# The address of the client and the port we're using
 #
 # Setup a handler for (incoming) communication on
 # the client channel - send connection Reply and log connection
@@ -768,7 +972,7 @@ proc accept {sock addr port} {
   puts "Accepted connection from $addr at [exec date]"
 }
 
- 
+#\endcode
 
 
 # Create a server socket on port $svcPort.

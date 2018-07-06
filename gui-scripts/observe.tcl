@@ -176,11 +176,11 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
 #   commandAndor blue "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
   } else {
     set resr [commandAndor red "setroi $rdim"]
-    set SCOPE(red,bias) [lindex $resr 2]
-    set SCOPE(red,peak) [lindex $resr 3]
+    set SCOPE(red,bias) [expr int([lindex $resr 2])]
+    set SCOPE(red,peak) [expr int([lindex $resr 3])]
     set resb [commandAndor blue "setroi $rdim"]
-    set SCOPE(blue,bias) [lindex $resr 2]
-    set SCOPE(blue,peak) [lindex $resr 3]
+    set SCOPE(blue,bias) [expr int([lindex $resr 2])]
+    set SCOPE(blue,peak) [expr int([lindex $resr 3])]
   }
   set chk [checkgain]
   mimicMode red roi [set rdim]x[set rdim]
@@ -248,15 +248,19 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
 
 
 proc checkgain { {table table.dat} } {
-global SCOPE SPECKLE_DIR
+global SCOPE SPECKLE_DIR INSTRUMENT
   catch {
-   set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $SCOPE(red,bias) $SCOPE(red,peak)]
-   if { [lindex [split $res \n] 6] == "Changes to EM Gain are recommended." } {
-     set it [tk_dialog .d "RED CAMERA EM GAIN" $res {} -1 "OK"]
+   if { $INSTRUMENT(red,emcheck) } {
+     set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $SCOPE(red,bias) $SCOPE(red,peak)]
+     if { [lindex [split $res \n] 6] == "Changes to EM Gain are recommended." } {
+       set it [tk_dialog .d "RED CAMERA EM GAIN" $res {} -1 "OK"]
+     }
    }
-   set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $SCOPE(blue,bias) $SCOPE(blue,peak)]
-   if { [lindex [split $res \n] 6] == "Changes to EM Gain are recommended." } {
-     set it [tk_dialog .d "BLUE CAMERA EM GAIN" $res {} -1 "OK"]
+   if { $INSTRUMENT(blue,emcheck) } {
+     set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $SCOPE(blue,bias) $SCOPE(blue,peak)]
+     if { [lindex [split $res \n] 6] == "Changes to EM Gain are recommended." } {
+       set it [tk_dialog .d "BLUE CAMERA EM GAIN" $res {} -1 "OK"]
+     }
    }
   }
 }

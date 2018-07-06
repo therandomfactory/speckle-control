@@ -303,7 +303,7 @@ global TOMPG
               set record [string toupper "[format %-8s $key]=  [format %$fmt $v1]"]
              }
      double  {
-              if { expr abs($value)] < 10000 } {set fmt 18.6f}
+              if { [expr abs($value)] < 10000 } {set fmt 18.6f}
               set record [string toupper "[format %-8s $key]=  [format %$fmt $v1]"]
              }
   }

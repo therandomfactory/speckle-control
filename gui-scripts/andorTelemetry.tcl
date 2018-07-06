@@ -24,9 +24,8 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.datatype) $ANDOR_CFG($arm,fitsbits)
    set dll [string range [file tail [glob $SPECKLE_DIR/lib/libUSBI2C.so.*.0]] 13 end]
    set TELEMETRY(speckle.andor.sw_version) $dll
-   set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG($arm,KineticCycleTime) * $ANDOR_CFG($arm,ExposureTime) * $ANDOR_CFG($arm,NumberAccumulations)]
+   set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG($arm,NumberKinetics) * $ANDOR_CFG($arm,ExposureTime) * $ANDOR_CFG($arm,NumberAccumulations)]
    set TELEMETRY(speckle.andor.em_gain) $ANDOR_CFG($arm,EMCCDGain)
-   set TELEMETRY(speckle.andor.amplifier) $ANDOR_CFG($arm,OutputAmplifier)
    set TELEMETRY(speckle.andor.preamp_gain) [expr $ANDOR_CFG($arm,PreAmpGain) +1]
    set TELEMETRY(speckle.andor.serial_number) $ANDOR_CFG($CAM,SerialNumber) 
    set TELEMETRY(speckle.andor.target_temperature) [lindex $ANDOR_CFG($arm,SetTemperature) 0]
@@ -45,6 +44,15 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.read_mode) "Image"
    set TELEMETRY(speckle.scope.site) $SCOPE(telescope)
 }
+
+
+proc showTelemetry { } {
+global TELEMETRY
+   foreach i [lsort [array names TELEMETRY]] {
+      puts stdout "TELEMETRY($i) = $TELEMETRY($i)"
+   }
+}
+
 
 #set initial defaults
 set ANDOR_CFG(VSSpeed,0) "0.6"
