@@ -1,3 +1,5 @@
+## \file andor.tcl
+# \brief This contains procedures shared between the GUI and camera servers and which facilitate communication between them
 #
 # This Source Code Form is subject to the terms of the GNU Public
 # License, v. 2 If a copy of the GPL was not distributed with this file,
@@ -6,8 +8,48 @@
 # Copyright(c) 2017 The Random Factory (www.randomfactopry.com) 
 #
 #
+# \mainpage Introduction
+# This project provides controller software (server and GUI) for the instrument described below.\n
+# It has been undertaken by "The Random Factory" (www.randomfactory.com) located in Tucson AZ.\n
+#\n
+# This effort is funded under NASA Grant and Cooperative agreement #NNX14AR61A\n
+#\n
+# Principal Investigator : Steve B. Howell, NASA Ames Research Center, Senior Research Scientist\n
+#\n
+# The NN-EXPLORE program provides about 50 percent of the observing time on the Kitt Peak WIYN\n
+# (Wisconsin-Indiana-Yale-NOAO) 3.5-meter \n
+# telescope to the exoplanet community. \n
+# WIYN’s suite of instruments include HYDRA, a multi-fiber medium to high-resolution bench #spectrograph, \n
+# WHIRC, a near-IR imager, ODI, an optical wide-field optical imager, and for over a decade, \n
+# a visiting speckle camera #called DSSI (Horch et al. 2009). \n
+#\n
+# The telescope’s instruments also include several integral field units, bundles of optical fiber that \n
+# feed light from the telescope to an instrument, in this case a spectrograph, that lives in an environmentally \n
+# controlled room in the WIYN telescope basement. \n
+#\n
+# Beginning in 2017, thanks to funding support from the NASA Exoplanet program, DSSI has been replaced by a \n
+# modern, more functional, community available observatory instrument named NESSI.\n
+#\n
+# NESSI, the NN-EXPLORE Exoplanet & Stellar Speckle Imager, was commissioned during the fall of 2016 \n
+# and is now available for community #use. Speckle imaging allows telescopes to achieve diffraction limited\n
+# imaging performance—that is, collecting images with resolutions equal to that which would be possible if the atmosphere were removed.\n 
+# The technique employs digital cameras capable of reading out frames at a very fast rate, effectively “freezing out” \n
+# atmospheric seeing. The resulting speckles are correlated and combined in Fourier space to produce reconstructed \n
+# images with resolutions at the diffraction limit of the telescope (see Howell et al., 2011). \n
+# Achievable spatial resolutions at WIYN are 39 milliarcseconds (550 nanometers) and 64 milliarcseconds (880 nanometers).\n
+#
 
-
+#\code
+## Documented proc \c initCameraConfig .
+# \param[in] id Camera Id reference for Andor Library calls
+#
+# Globals : 
+#		ANDOR_CFG - Array of camera configuration items
+#
+# This function initializes all the items of the ANDOR_CFG global array to a default value
+# of ? to ensure that we can easily see when they are assigned actual values via the Andor library
+# wrapped calls.
+#
 proc initCameraConfig { id } {
 global ANDOR_CFG
   foreach c "exposure_time temperature cam_frames_per_second missed_frames__second usb_frames_per_second preamp_gain vertical_speed horizontal_speeds hbin vbin hstart hend vstart vend read_mode acquisition_mode width height shutter amplifier npixx npixy minimum_temperature maximum_temperature target_temperature temperature_status running usb_running camlink_running num_preamp_gains preamp_gain_index em_advanced minimum_em_gain maximum_em_gain em_gain num_vertical_speeds vertical_speed_index num_horizontal_speeds horizontal_speed_index"  {
@@ -16,7 +58,12 @@ global ANDOR_CFG
 }
 
 
-
+## Documented proc \c printCapabilities .
+# \param[in] fid Open file id to output to
+#
+# Globals : 
+#		ANDOR_CFG - Array of camera configuration items
+#
 proc printCapabilities { fid } {
 global ANDOR_CAP
 set ANDOR_CAP [AndorCapabilities]
@@ -26,6 +73,13 @@ set ANDOR_CAP [AndorCapabilities]
   }
 }
 
+## Documented proc \c printCameraConfig .
+# \param[in] id Camera Id reference for Andor Library calls
+# \param[in] fid Open file id to output to
+#
+# Globals : 
+#		ANDOR_CFG - Array of camera configuration items
+#
 proc printCameraConfig { fid id } {
 global ANDOR_CFG
   foreach c "exposure_time temperature cam_frames_per_second missed_frames__second usb_frames_per_second preamp_gain vertical_speed horizontal_speeds hbin vbin hstart hend vstart vend read_mode acquisition_mode width height shutter amplifier npixx npixy minimum_temperature maximum_temperature target_temperature temperature_status running usb_running camlink_running num_preamp_gains preamp_gain_index em_advanced minimum_em_gain maximum_em_gain em_gain num_vertical_speeds vertical_speed_index num_horizontal_speeds horizontal_speed_index"  {
@@ -33,6 +87,14 @@ global ANDOR_CFG
   }
 }
 
+## Documented proc \c initds9 .
+# \param[in] shmid Shared memory address
+# \param[in] width Width of image
+# \param[in] height Height of image
+#
+# Globals : 
+#		SPECKLE_DIR - Directory path to speckle software installation
+#
 proc initds9 { shmid width height } {
 global SPECKLE_DIR
   debuglog "Configuring ds9"
@@ -40,11 +102,26 @@ global SPECKLE_DIR
   exec xpaset -p ds9 shm array shmid $shmid \\\[xdim=$width,ydim=$height,bitpix=32\\\]
 }
 
+## Documented proc \c refreshds9 .
+# \param[in] delta Period between refreshes
+# \param[in] count Number of refreshes
+#
+#  This function uses XPA to start a refresh cycle in ds9
+#
 proc refreshds9 { delta count } {
   exec xpaset -p ds9 tcl \{refinit $delta $count\}
   exec xpaset -p ds9 tcl refresher
 }
 
+## Documented proc \c initads9 .
+# \param[in] shmid Shared memory address
+# \param[in] width Width of image
+# \param[in] height Height of image
+#
+# Globals :\n
+#		SPECKLE_DIR - Directory path to speckle software installation\n
+#		DS9 - Name of a ds9 executable for XPA control (ds9red or ds9blue)
+#
 proc initads9 { shmid width height } {
 global SPECKLE_DIR DS9
   debuglog "Configuring ds9"
@@ -52,6 +129,17 @@ global SPECKLE_DIR DS9
   exec xpaset -p $DS9 shm array shmid $shmid \\\[xdim=$width,ydim=$height,bitpix=32\\\]
 }
 
+## Documented proc \c refreshads9 .
+# \param[in] delta Period between refreshes
+# \param[in] count Number of refreshes
+#
+#  This function uses XPA to start a refresh cycle in a ds9
+#
+#
+#
+# Globals : 
+#		DS9 - Name of a ds9 executable for XPA control (ds9red or ds9blue)
+#
 proc refreshads9 { delta count } {
 global DS9
   exec xpaset -p $DS9 tcl \{refinit $delta $count\}
@@ -59,6 +147,15 @@ global DS9
 }
 
 
+## Documented proc \c connectToAndors .
+#
+# Connect to the 2 Andor camera server processes using sockets (2001 and 2002)
+#
+#
+# Globals :\n 
+#		ANDOR_SOCKET - Array of (2) socket file handles\n
+#		INSTRUMENT - Array of instrument settings
+#
 proc connectToAndors { } {
 global ANDOR_SOCKET INSTRUMENT
    set ANDOR_SOCKET(red) 0
@@ -89,6 +186,18 @@ global ANDOR_SOCKET INSTRUMENT
    }
 }
 
+## Documented proc \c commandAndor .
+# \param[in] arm Name of intrument arm red/blue
+# \param[in] cmd Command and parameters
+# \param[in] echk Optional existence check for "grab" command
+#
+#  Send a command to an Andor camera server via socket
+#
+#
+# Globals :\n
+#		ANDOR_SOCKET - Array of (2) socket file handles\n
+#		SCOPE - Array of telescope settings
+#
 proc commandAndor { arm cmd {echk 1} } {
 global ANDOR_SOCKET SCOPE
    if { $ANDOR_SOCKET($arm) == 0 } {
@@ -118,6 +227,13 @@ global ANDOR_SOCKET SCOPE
    return $result
 } 
 
+## Documented proc \c commandAndor .
+# Flush the Andor communication sockets
+#
+#
+# Globals : 
+#		ANDOR_SOCKET - Array of (2) socket file handles
+#
 proc flushAndors { } {
 global ANDOR_SOCKET
    if { $ANDOR_SOCKET(red) > 0 } {
@@ -129,6 +245,16 @@ global ANDOR_SOCKET
 }
 
 
+## Documented proc \c commandCameras .
+# \param[in] cmd Command and parameters
+# \param[in] echk Optional existence check for "grab" command
+#
+# Send command to both cameras if clone setting is selected
+#
+#
+# Globals : 
+#		INSTRUMENT - Array of instrument settings
+#
 proc commandCameras { cmd {echk 1} } {
 global INSTRUMENT
    commandAndor red $cmd $echk
@@ -138,6 +264,17 @@ global INSTRUMENT
 }
 
 
+## Documented proc \c videomode .
+#
+#  Process (slow) frame by frame video mode
+#
+#
+# Globals : \n
+#		LASTACQ - Type of last acquisition fulframe/roi\n
+#		SCOPE - Array of telescope settings\n
+#		STATUS - Array of exposure statuses\n
+#		ACQREGION - ROI properties xs,xe,ys,ye
+#
 proc videomode { } {
 global LASTACQ STATUS SCOPE ACQREGION
    commandAndor red "imagename videomode 1" 0
@@ -174,12 +311,31 @@ global LASTACQ STATUS SCOPE ACQREGION
 }
   
 
+## Documented proc \c startfastvideo .
+#
+#  Initiate fast video mode
+# Globals : 
+#		STATUS - Array of exposure statuses
+#
 proc startfastvideo { } {
 global STATUS
    set STATUS(abort) 0
    fastvideomode
 }
 
+## Documented proc \c fastvideomode .
+#
+#  Fast video mode processing
+#
+#
+# Globals :\n
+#		LASTACQ - Type of last acquisition fulframe/roi\n
+#		SCOPE - Array of telescope settings\n
+#		STATUS - Array of exposure statuses\n
+#		ACQREGION - ROI properties xs,xe,ys,ye\n
+#		CAMSTATUS - Array of camera current settings retrieved from Andor servers\n
+#		ANDOR_CFG - Andor camera properties
+#
 proc fastvideomode { } {
 global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG
 #   commandAndor red "imagename videomode 1" 0
@@ -217,6 +373,14 @@ global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG
 
 set CAMSTATUS(blue,TKinetics) .30
 
+## Documented proc \c startvideomode .
+#
+#  Setup (slow) frame by frame video mode
+#
+# Globals :\n
+#		SCOPE - Array of telescope settings\n
+#		STATUS - Array of exposure statuses
+#
 proc startvideomode { } {
 global STATUS SCOPE
    set STATUS(abort) 0
@@ -228,6 +392,11 @@ global STATUS SCOPE
 }
 
 
+## Documented proc \c showControl .
+#
+#  Print contents of SharedMem2 shared memory area which is used
+#  for high speed data sharing with the Andor camera servers
+#
 proc showControl { } {
    foreach i "0 1" {
      foreach p "min peak frame lucky luckythresh" {
@@ -241,6 +410,11 @@ proc showControl { } {
 }
 
 
+## Documented proc \c testControl .
+#
+#  Test setting values in the SharedMem2 shared memory area which is used
+#  for high speed data sharing with the Andor camera servers
+#
 proc testControl { } {
    andorSetControl 0 luckythresh 99
    andorSetControl 1 luckythresh 123
@@ -252,6 +426,19 @@ proc testControl { } {
 
 
 
+## Documented proc \c acquireCubes .
+#
+#  Setup and start a data acqusition run of a data cube
+#
+#
+# Globals :\n
+#		INSTRUMENT - Array of instrument settings\n
+#		LASTACQ - Type of last acquisition fulframe/roi\n
+#		SCOPE - Array of telescope settings\n
+#		STATUS - Array of exposure statuses\n
+#		ACQREGION - ROI properties xs,xe,ys,ye\n
+#		ANDOR_CFG - Andor camera properties
+#
 proc acquireCubes { } {
 global INSTRUMENT SCOPE LASTACQ ACQREGION ANDOR_CFG
    set n [expr $ACQREGION(xe) - $ACQREGION(xs) +1]
@@ -267,6 +454,15 @@ global INSTRUMENT SCOPE LASTACQ ACQREGION ANDOR_CFG
    }
 }
 
+## Documented proc \c acquireFrames .
+#
+#  Setup and start a data acqusition run of an individual frame#
+#
+# Globals :\n
+#		INSTRUMENT - Array of instrument settings\n
+#		SCOPE - Array of telescope settings\n
+#		STATUS - Array of exposure statuses
+#
 proc acquireFrames { } {
 global INSTRUMENT SCOPE
    if { $INSTRUMENT(red) } {
@@ -281,8 +477,19 @@ global INSTRUMENT SCOPE
    }
 }
    
+## Documented proc \c resetAndors .
+#
+#  Shutdown any existing Andor camera servers, and restart them - DEPRECATED
+#
+#
+# Globals :\n
+#		SPECKLE_DIR - Directory path to speckle software installation\n
+#		ANDOR_SOCKET - Array of (2) socket file handles\n
+#		SCOPE - Array of telescope settings\n
+#		ACQREGION - ROI properties xs,xe,ys,ye\n
+#
 proc resetAndors { mode } {
-global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
+global SPECKLE_DIR ANDOR_SOCKET ACQREGION
    debuglog "Resetting Andors for $mode" 
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
@@ -302,8 +509,20 @@ global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
 }
 
 
+## Documented proc \c resetSingleAndors .
+#
+#  Shutdown any existing Andor camera servers, and restart them
+#  This uses the two dedicated (per arm) ds9's for display, and is the currently
+#  preferred mode of operation
+#
+#
+# Globals :\n
+#		SPECKLE_DIR - Directory path to speckle software installation\n
+#		ANDOR_SOCKET - Array of (2) socket file handles\n
+#		ACQREGION - ROI properties xs,xe,ys,ye
+#
 proc resetSingleAndors { mode } {
-global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
+global SPECKLE_DIR ANDOR_SOCKET ACQREGION
    debuglog "Resetting Andors for $mode" 
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
@@ -321,7 +540,7 @@ global INSTRUMENT SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ SCOPE
    connectToAndors
    debuglog "Andor reset complete"
 }
-
+#\endcode
 
 set ANDOR_MODES(readout) 		"full_vertical_binning multi_track random_track single_track image"
 set ANDOR_MODES(acquisition)		"single_scan accumulate kinetics fast_kinetics run_till_abort"

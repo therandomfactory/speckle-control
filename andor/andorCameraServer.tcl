@@ -1,5 +1,6 @@
 #!/usr/bin/wish
 ## \file andorCameraServer.tcl
+# \brief This contains procedures for the camera servers
 #
 # This Source Code Form is subject to the terms of the GNU Public
 # License, v. 2 If a copy of the GPL was not distributed with this file,
