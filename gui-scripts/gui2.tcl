@@ -3,27 +3,28 @@
 # Define the global environment, everything lives under /opt/apogee
 # Change SPECKLE_DIR to move the code somewhere else
 #
-set SPECKLE_DIR $env(SPECKLE_DIR)
-set DEBUG 1
-set RAWTEMP 0
-set SPECKLEGUI 1
-set NOBLT 1
-set where [exec ip route]
-set gw [lindex $where 2]
-set SCOPE(telescope) GEMINI
-set SCOPE(site) GEMINI_N
-set SCOPE(latitude) 19:49:00
-set SCOPE(longitude) 155:28:00
-if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
-  set SCOPE(latitude) 31:57:11.78
-  set SCOPE(longitude) 07:26:27.97
-  set SCOPE(telescope) WIYN
-  set SCOPE(site) KPNO
-}
-set now [clock seconds]
-set FLOG [open /tmp/speckleLog_[set now].log w]
-exec xterm -geometry +540+800 -e tail -f /tmp/speckleLog_[set now].log &
-
+## \file gui2.tcl
+# \brief This contains generic GUI initialization and utility procedures
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
+#
+#
+#\code
+## Documented proc \c debuglog .
+# \param[in] msg Text of debug message
+#
+#  Output a debug message to the log file. Log files are saved in the /tmp
+#  directory with names like /tmp/speckle_12345678.log
+#
+#
+# Globals :\n
+#		FLOG - File handle of open log file
+#
 proc debuglog { msg } {
 global FLOG
    puts $FLOG $msg
@@ -32,6 +33,17 @@ global FLOG
 
 
 
+## Documented proc \c plotTimings .
+#
+#  Plot the timing infornation stored in a binary FITS extension\n
+#  of an image cube from a kinetic series observation.\n
+#  The times are stored as TAI, but we subtract the initial time\n
+#  before plotting. Gnuplot is used to plot.
+#
+# Globals :\n
+#		SCOPE - Array of telescope information\n
+#		env - Environment variables
+#
 proc plotTimings { } {
 global env SCOPE
    set it [tk_getOpenFile -initialdir $SCOPE(datadir)]
@@ -52,12 +64,28 @@ global env SCOPE
 }
 
 
+## Documented proc \c setfitsbits .
+# \param[in] type FITS data type
+#
+# Set the FITS data type for subsequent images
+#
 proc setfitsbits { type } {
-global FITSBITS
    commandAndor red "fitsbits $type"   
    commandAndor blue "fitsbits $type"
 }
 
+## Documented proc \c dataquality .
+# \param[in] type Type of data quality information , image, cloud, water, background
+# \param[in] value Value of data quality
+#
+# Set the data quality values for headers
+#
+#
+# Globals :\n
+#		DATAQUAL - Array of data qualities\n
+#		DATAQUALT - Array of data quality types\n
+#		TELEMETRY - Array of telemetry for header and database usage
+#
 proc dataquality { type value } {
 global DATAQUAL DATAQUALT TELEMETRY
    set DATAQUAL($type) $value
@@ -66,11 +94,31 @@ global DATAQUAL DATAQUALT TELEMETRY
 }
 
 
+## Documented proc \c speckleGuiMode .
+# \param[in] mode Selected mode, observing or engineering
+#
+# Set the GUI mode geometry , observing or engineering
+#
+#
+# Globals :\n
+#		SPECKLE - Array of GUI proerties
+#
 proc speckleGuiMode { mode } {
 global SPECKLE
   wm geometry . $SPECKLE($mode)
 }
 
+## Documented proc \c validInteger .
+# \param[in] win Widget id
+# \param[in] event Type of event
+# \param[in] X New value
+# \param[in] oldX Previous value
+# \param[in] min Minimum allowed value
+# \param[in] max Maximum allowed value
+#
+# Check if input field is a valid integer
+#
+#
 proc validInteger {win event X oldX min max} {
         # Make sure min<=max
         if {$min > $max} {
@@ -109,6 +157,15 @@ proc validInteger {win event X oldX min max} {
 } 
 
 
+## Documented proc \c validFloat .
+# \param[in] win Widget id
+# \param[in] event Type of event
+# \param[in] X New value
+# \param[in] oldX Previous value
+#
+# Check if input field is a valid floating point number
+#
+#
 proc validFloat {win event X oldX} {
         set strongCheck [expr {[string is double $X]}]
         if {! $strongCheck} {set X $oldX}
@@ -128,11 +185,20 @@ proc validFloat {win event X oldX} {
 } 
 
 
+## Documented proc \c setKineticMode .
+# 
+# Set Kinetics mode for camera
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Array of camera parameters\n
+#		ACQREGION - Region of interest parameters
+#
 proc setKineticMode { } {
 global ANDOR_CFG ACQREGION
   if { $ANDOR_CFG(kineticMode) }  {
     if { $ACQREGION(geom) == 1024 } {
-       commandAndor red "setframe roi"
+      commandAndor red "setframe roi"
       commandAndor blue "setframe roi"
       set LASTACQ roi
       .lowlevel.rmode configure -text "Mode=ROI"
@@ -151,17 +217,56 @@ global ANDOR_CFG ACQREGION
   }
 }
 
+## Documented proc \c setDisplayMode .
+# 
+# Set FFT display mode
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Array of camera parameters\n
+#
 proc setDisplayMode  { } {
 global ANDOR_CFG
    andorSetControl 0 showfft $ANDOR_CFG(showfft)
 }
 
 
+## Documented proc \c setBinning .
+# 
+# Set image binning parameters for cameras
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Array of camera parameters\n
+#
 proc setBinning { } {
 global ANDOR_CFG
    commandAndor red "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
    commandAndor blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
 }
+
+# \endcode
+
+set SPECKLE_DIR $env(SPECKLE_DIR)
+set DEBUG 1
+set RAWTEMP 0
+set SPECKLEGUI 1
+set NOBLT 1
+set where [exec ip route]
+set gw [lindex $where 2]
+set SCOPE(telescope) GEMINI
+set SCOPE(site) GEMINI_N
+set SCOPE(latitude) 19:49:00
+set SCOPE(longitude) 155:28:00
+if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
+  set SCOPE(latitude) 31:57:11.78
+  set SCOPE(longitude) 07:26:27.97
+  set SCOPE(telescope) WIYN
+  set SCOPE(site) KPNO
+}
+set now [clock seconds]
+set FLOG [open /tmp/speckleLog_[set now].log w]
+exec xterm -geometry +540+800 -e tail -f /tmp/speckleLog_[set now].log &
 
 #
 # Load the procedures
@@ -290,6 +395,7 @@ menu .mbar.help.m
 #.mbar.temp.m add command -label "Plot raw temps" -command {set RAWTEMP 1}
 .mbar.tools.m add command -label "Engineering" -command "speckleGuiMode engineeringGui"
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file://$SPECKLE_DIR/doc/user-guide.html &}
+.mbar.help.m add command -label "Code Documentation" -command {exec firefox file://$SPECKLE_DIR/doc/code/index.html &}
 .mbar.tools.m add command -label "Observing" -command "speckleGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Selection" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
@@ -496,11 +602,16 @@ wm withdraw .tplot
 }
 
 #
+#  Do the actual setup of the GUI, to sync it with the camera status
+#
+
+source $SPECKLE_DIR/gui-scripts/speckle_gui.tcl
+
+#
 #
 #  Call the camera setup code, and the telescope setup code
 #
 showstatus "Initializing cameras"
-source  $SPECKLE_DIR/gui-scripts/camera_init.tcl
 resetSingleAndors fullframe
 set STATUS(busy) 0
 load $SPECKLE_DIR/lib/andorTclInit.so
@@ -531,12 +642,6 @@ set LASTBIN(y) 1
 #######setutc
 set d  [split $SCOPE(obsdate) "-"]
 set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
-
-#
-#  Do the actual setup of the GUI, to sync it with the camera status
-#
-
-source $SPECKLE_DIR/gui-scripts/speckle_gui.tcl
 
 ###trace variable CONFIG w watchconfig
 ###trace variable SCOPE w watchscope
