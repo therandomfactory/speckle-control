@@ -220,7 +220,7 @@ global CAM ANDOR_CFG
      set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
   }
-  foreach i "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime EMCCDGain EMAdvanced" {
+  foreach i "Shutter FrameTransferMode OutputAmplifier EMHSSpeed HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime EMCCDGain EMAdvanced" {
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,$i)"
      lappend s $ANDOR_CFG($CAM,$i)
   }

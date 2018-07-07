@@ -149,7 +149,7 @@ global CAMSTATUS ANDOR_CFG
     set camstatus [commandAndor $cam status]
     if { $camstatus != 0 } {
       set i 0
-      foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime EMCCDGain EMAdvanced TExposure TAccumulate TKinetics" {
+      foreach p "Shutter FrameTransferMode OutputAmplifier EMHSSpeed HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime EMCCDGain EMAdvanced TExposure TAccumulate TKinetics" {
         if { [info exists ANDOR_CFG($p,[lindex $camstatus $i])] } {
           set CAMSTATUS($cam,$p) "$ANDOR_CFG($p,[lindex $camstatus $i])"
         } else {
@@ -188,12 +188,12 @@ global CAMSTATUS ANDOR_CFG
    if { $CAMSTATUS(red,OutputAmplifier) == 1 } {
      .lowlevel.ccdhs configure -text $CAMSTATUS(red,HSSpeed)
    } else {
-     .lowlevel.emhs configure -text $CAMSTATUS(red,HSSpeed)
+     .lowlevel.emhs configure -text $CAMSTATUS(red,EMHSSpeed)
    }
    if { $CAMSTATUS(blue,OutputAmplifier) == 1 } {
      .lowlevel.bccdhs configure -text $CAMSTATUS(blue,HSSpeed)
    } else {
-     .lowlevel.bemhs configure -text $CAMSTATUS(blue,HSSpeed)
+     .lowlevel.bemhs configure -text $CAMSTATUS(blue,EMHSSpeed)
    }
 }
 
@@ -405,7 +405,7 @@ place .camerastatus.lred -x 400 -y 10
 place .camerastatus.lblue -x 300 -y 10
 
 set iy 40
-foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
+foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain EMHSSpeed HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
    label .camerastatus.l[set p] -text $p  -bg gray
    label .camerastatus.vred[set p] -textvariable CAMSTATUS(red,$p) -bg gray -fg NavyBlue
    label .camerastatus.vblue[set p] -textvariable CAMSTATUS(blue,$p) -bg gray -fg NavyBlue
@@ -416,7 +416,7 @@ foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpee
 }
 button .camerastatus.done -text "Close" -fg black -bg orange -width 45 -command "wm withdraw .camerastatus"
 place .camerastatus.done -x 20 -y 475
-wm geometry .camerastatus 430x520+20+20
+wm geometry .camerastatus 430x550+20+20
 foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
    set CAMSTATUS(red,$p) "???"
    set CAMSTATUS(blue,$p) "???"
