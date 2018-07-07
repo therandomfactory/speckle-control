@@ -320,7 +320,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     }
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
-      set peak [andorGetData $ANDOR_CFG(red)]
+      set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(red)]
       andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
@@ -331,7 +331,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
-      set peak [andorGetData $ANDOR_CFG(blue)]
+      set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(blue)]
       andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
@@ -341,7 +341,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
     }
-    puts stdout "$peak"
+    puts stdout "$TELEMETRY(speckle.andor.peak_estimate)"
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
     updateDatabase
 }
@@ -485,6 +485,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     catch {andorAbortAcq $ANDOR_CFG(red)}
     set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
     set ANDOR_CFG(red,peak) [andorGetControl $ANDOR_CFG(red) peak]
+    set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(red,peak) 
   }
   if { $ANDOR_CFG(blue) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
@@ -492,6 +493,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     catch {andorAbortAcq $ANDOR_CFG(blue)}
     set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
     set ANDOR_CFG(blue,peak) [andorGetControl $ANDOR_CFG(blue) peak]
+    set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(blue,peak) 
   }
   updateDatabase
   debuglog "Finished acquisition"
