@@ -395,7 +395,7 @@ menu .mbar.help.m
 #.mbar.temp.m add command -label "Plot raw temps" -command {set RAWTEMP 1}
 .mbar.tools.m add command -label "Engineering" -command "speckleGuiMode engineeringGui"
 .mbar.help.m add command -label "Users Guide" -command {exec firefox file://$SPECKLE_DIR/doc/user-guide.html &}
-.mbar.help.m add command -label "Code Documentation" -command {exec firefox file://$SPECKLE_DIR/doc/code/index.html &}
+.mbar.help.m add command -label "Code Documentation" -command {exec firefox file://$SPECKLE_DIR/doc/code/html/index.html &}
 .mbar.tools.m add command -label "Observing" -command "speckleGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Selection" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
@@ -481,7 +481,7 @@ place .main.bcamtemp -x 453 -y 2
 
 
 
-.main.imagename insert 0 "N[exec date +%Y%m%d]"
+.main.imagename insert 0 "N[exec date +%Y%m%d]_000000_000001"
 entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 999999}
 place .main.seqnum -x 270 -y 135
 set SCOPE(seqnum) 1
@@ -639,7 +639,7 @@ set OBSPARS(Skyflat) "0.1 1 1"
 
 set LASTBIN(x) 1
 set LASTBIN(y) 1
-#######setutc
+setutc
 set d  [split $SCOPE(obsdate) "-"]
 set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
 
@@ -690,6 +690,18 @@ wm protocol .       WM_DELETE_WINDOW {wm iconify .status}
 wm protocol .mimicSpeckle WM_DELETE_WINDOW {wm iconify .status}
 wm protocol .camerastatus WM_DELETE_WINDOW {wm iconify .status}
 wm protocol .filters WM_DELETE_WINDOW {wm iconify .status}
+
+set d [string tolower [exec date +%B]]
+
+if { [file exists $SCOPE(datadir)] } {
+ catch {
+  set all [glob $SCOPE(datadir)/N*.fits]
+  set last [split [lindex $all end] "_."]
+  set SCOPE(seqnum) [string trimleft [lindex $last 1] 0]
+  set SCOPE(imagename) "N[exec date +%Y%m%d]_ [format %6.6d $iseq]_000001"
+ }
+}
+
 
 
 speckleGuiMode observingGui
