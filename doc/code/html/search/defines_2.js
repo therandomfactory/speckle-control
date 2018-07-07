@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['loc_5fsize',['LOC_SIZE',['../andor__tcl_8c.html#a7f0935829a015ad0c7bd7fd7d16355ff',1,'andor_tcl.c']]]
+  ['hrdeg',['hrdeg',['../ccd__astro_8c.html#ae118c4a78016f5ff238c297ee568bfe1',1,'ccd_astro.c']]],
+  ['hrrad',['hrrad',['../ccd__astro_8c.html#a6decddc4963c95defff0266089716730',1,'ccd_astro.c']]]
 ];

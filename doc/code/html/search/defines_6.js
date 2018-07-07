@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wfs_5fperiodic',['WFS_PERIODIC',['../andor__tcl_8h.html#ac18f4aa2b53e70fff5084a8e3a7ba9f6',1,'andor_tcl.h']]]
+  ['obs_5fsize',['OBS_SIZE',['../andor__tcl_8c.html#ac35979190a202dc1a747b7aa2d6a31e7',1,'andor_tcl.c']]]
 ];

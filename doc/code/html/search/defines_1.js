@@ -1,5 +1,10 @@
 var searchData=
 [
+  ['dasin',['DASIN',['../ccd__astro_8c.html#a0d7f1d879501873bf3477409898f2c77',1,'ccd_astro.c']]],
+  ['datan2',['DATAN2',['../ccd__astro_8c.html#a3c3f6c06c99f5f2aa436f253104fc99f',1,'ccd_astro.c']]],
+  ['dcos',['DCOS',['../ccd__astro_8c.html#ab5263fe8b4034adaa87390477bacd874',1,'ccd_astro.c']]],
+  ['deghr',['deghr',['../ccd__astro_8c.html#a23e7b5b636d7d8a44548f25b991a0562',1,'ccd_astro.c']]],
+  ['degrad',['degrad',['../ccd__astro_8c.html#a4f290ef8550589b60e07c92fe19e06cd',1,'ccd_astro.c']]],
   ['dft_5fandor_5famplifier',['DFT_ANDOR_AMPLIFIER',['../andor__tcl_8h.html#ae08c181f6eee388d13379b9f7384daba',1,'andor_tcl.h']]],
   ['dft_5fandor_5fcamera_5flink',['DFT_ANDOR_CAMERA_LINK',['../andor__tcl_8h.html#a4ce5fb4764ec1b477de8da2467841355',1,'andor_tcl.h']]],
   ['dft_5fandor_5fccd_5fhorizontal_5fspeed',['DFT_ANDOR_CCD_HORIZONTAL_SPEED',['../andor__tcl_8h.html#a2c4ae789d9ab851a4b1d9ab95d0e4e32',1,'andor_tcl.h']]],
@@ -16,5 +21,6 @@ var searchData=
   ['dft_5fandor_5fvbin',['DFT_ANDOR_VBIN',['../andor__tcl_8h.html#a8221fc5bccfade1f7b9cdbc8d3e78959',1,'andor_tcl.h']]],
   ['dft_5fandor_5fvend',['DFT_ANDOR_VEND',['../andor__tcl_8h.html#ad7f72bd3b09e46886b1444d831805622',1,'andor_tcl.h']]],
   ['dft_5fandor_5fvertical_5fspeed',['DFT_ANDOR_VERTICAL_SPEED',['../andor__tcl_8h.html#ad00af510da420c13aa7a37a8f143a3e9',1,'andor_tcl.h']]],
-  ['dft_5fandor_5fvstart',['DFT_ANDOR_VSTART',['../andor__tcl_8h.html#ae727dd89c1a1dc65da2195577ac9b555',1,'andor_tcl.h']]]
+  ['dft_5fandor_5fvstart',['DFT_ANDOR_VSTART',['../andor__tcl_8h.html#ae727dd89c1a1dc65da2195577ac9b555',1,'andor_tcl.h']]],
+  ['dsin',['DSIN',['../ccd__astro_8c.html#aff931f8163297e4b4d26cff78c29621d',1,'ccd_astro.c']]]
 ];

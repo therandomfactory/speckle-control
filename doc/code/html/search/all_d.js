@@ -1,15 +1,18 @@
 var searchData=
 [
-  ['obs_5fsize',['OBS_SIZE',['../andor__tcl_8c.html#ac35979190a202dc1a747b7aa2d6a31e7',1,'andor_tcl.c']]],
-  ['observe',['observe',['../observe_8tcl.html#ab7abf3e949169e33d734a2351ef164f6',1,'observe.tcl']]],
-  ['observe_2etcl',['observe.tcl',['../observe_8tcl.html',1,'']]],
-  ['obsid',['obsid',['../header_builder_8tcl.html#a1e57e4199271c1397e5cd58df9fd7225',1,'headerBuilder.tcl']]],
-  ['oldacquiredatacube',['OldacquireDataCube',['../andor_camera_server_8tcl.html#a599e310b012095d7b849fba04785f706',1,'andorCameraServer.tcl']]],
-  ['opendevicehandle',['OpenDeviceHandle',['../class_gen_one_linux_u_s_b.html#a8ad63ef80529da5885215e62d4bca020',1,'GenOneLinuxUSB']]],
-  ['operator_3d',['operator=',['../class_gen_one_linux_u_s_b.html#a6e9ac32f95be242534e1da8fbaaabcc8',1,'GenOneLinuxUSB']]],
-  ['oriel_5ftcl_2ecpp',['oriel_tcl.cpp',['../oriel__tcl_8cpp.html',1,'']]],
-  ['orielappinit',['orielAppInit',['../oriel__tcl_8cpp.html#a56249f85052339748c0af02459921887',1,'oriel_tcl.cpp']]],
-  ['outputavga',['outputAvgA',['../andor__tcl_8c.html#a824d21b34ac386b195bccf7e1bba2806',1,'andor_tcl.c']]],
-  ['outputavgb',['outputAvgB',['../andor__tcl_8c.html#a80304b28ffb2ddd3f48c3195b73916f0',1,'andor_tcl.c']]],
-  ['outputdata',['outputData',['../andor__tcl_8c.html#a193b702a3ccbb038fcc474055e118e6d',1,'andor_tcl.c']]]
+  ['pi',['PI',['../ccd__astro_8c.html#a598a3330b3c21701223ee0ca14316eca',1,'ccd_astro.c']]],
+  ['pixmult',['PIXMULT',['../andor__tcl_8h.html#ab84a6addb95442787c3cd951d054dc2e',1,'andor_tcl.h']]],
+  ['plottimings',['plotTimings',['../gui2_8tcl.html#a8789155738e73290d4963ce2a58eb3fe',1,'gui2.tcl']]],
+  ['positionspeckle',['positionSpeckle',['../zaber_8tcl.html#a8123d133ce7313f3e3cce66f6a9ee780',1,'zaber.tcl']]],
+  ['positionzabers',['positionZabers',['../zaber_8tcl.html#a495696cfffe04e9769bfc91c41b88427',1,'zaber.tcl']]],
+  ['postproc_2etcl',['postproc.tcl',['../postproc_8tcl.html',1,'']]],
+  ['postprocess',['postProcess',['../postproc_8tcl.html#abff3266785c10769c465a19b6433d1a2',1,'postproc.tcl']]],
+  ['preamp_5fgain',['preamp_gain',['../structandor__setup.html#a986d48a8a9c75972ac55a05e47cb0d06',1,'andor_setup']]],
+  ['preamp_5fgain_5findex',['preamp_gain_index',['../structandor__setup.html#a9ed9f0b0d177fde56518ebeed9665609',1,'andor_setup']]],
+  ['precess',['precess',['../ccd__astro_8c.html#aae1165f6e4eb1d6d3292e28b1f8640f6',1,'ccd_astro.c']]],
+  ['printcameraconfig',['printCameraConfig',['../andor_8tcl.html#a61be1037c5878e7f2d4607b1592e848f',1,'andor.tcl']]],
+  ['printcapabilities',['printCapabilities',['../andor_8tcl.html#a8282e7191ff89b03d37c5024ea5c3002',1,'andor.tcl']]],
+  ['printreadoutcfgs',['printreadoutcfgs',['../andor_camera_server_8tcl.html#a2e5137ef6ac8a82e7b4c172bca6b741a',1,'andorCameraServer.tcl']]],
+  ['process_5fdata',['process_data',['../andor__tcl_8h.html#a70863f03ed655a6da875a16728295b07',1,'andor_tcl.h']]],
+  ['processed_5fframes_5fper_5fsecond',['processed_frames_per_second',['../structandor__setup.html#ae3c81465d1a1845b82234c341d32177f',1,'andor_setup']]]
 ];

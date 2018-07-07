@@ -1,13 +1,22 @@
 var searchData=
 [
-  ['loadconfig',['loadconfig',['../speckle__gui_8tcl.html#a9549cd5906d327434e446fd174f323a4',1,'speckle_gui.tcl']]],
-  ['loadfiltersconfig',['loadFiltersConfig',['../filter_wheel_8tcl.html#a9abe3045a61bab0d317b06261ee44f8d',1,'filterWheel.tcl']]],
-  ['loadhdrdefs',['loadhdrdefs',['../header_builder_8tcl.html#af2be97e554cc9297666c624a70dd12e5',1,'headerBuilder.tcl']]],
-  ['loadstreamdefs',['loadstreamdefs',['../header_builder_8tcl.html#afd09ae503d6f13744381abcf36e47319',1,'headerBuilder.tcl']]],
-  ['loadzaberconfig',['loadZaberConfig',['../zaber_8tcl.html#a1ecee0470be358b53665eb3dadb8d169',1,'zaber.tcl']]],
-  ['loc_5fsize',['LOC_SIZE',['../andor__tcl_8c.html#a7f0935829a015ad0c7bd7fd7d16355ff',1,'andor_tcl.c']]],
-  ['locatestar',['locateStar',['../andor_camera_server_8tcl.html#a63b53fa76af863cfa90e752a3108ccc9',1,'andorCameraServer.tcl']]],
-  ['lock_5fusb_5fmutex',['lock_usb_mutex',['../andor__tcl_8h.html#a3742afccc542f269659c0c2f84e8f360',1,'andor_tcl.h']]],
-  ['logfiltersconfig',['logFiltersConfig',['../filter_wheel_8tcl.html#a2af79db7ebc32f327935758023aac9d0',1,'filterWheel.tcl']]],
-  ['logzaberconfig',['logZaberConfig',['../zaber_8tcl.html#ab26f5a912a54812f0c293d4aefa83610',1,'zaber.tcl']]]
+  ['m_5fcontext',['m_Context',['../class_gen_one_linux_u_s_b.html#a9ccfb41086b4a482cab435f7f8a10b3b',1,'GenOneLinuxUSB']]],
+  ['m_5fdevice',['m_Device',['../class_gen_one_linux_u_s_b.html#a9cdd0e3b15693fd523f5867c118314fb',1,'GenOneLinuxUSB']]],
+  ['m_5fdevicedescriptor',['m_DeviceDescriptor',['../class_gen_one_linux_u_s_b.html#a5a9ceb60ebfd0eb250cd0011c1a4d55d',1,'GenOneLinuxUSB']]],
+  ['m_5fdevicenum',['m_DeviceNum',['../class_gen_one_linux_u_s_b.html#abf14877feb42190aa23dc0f08e663138',1,'GenOneLinuxUSB']]],
+  ['m_5fioerror',['m_IoError',['../class_gen_one_linux_u_s_b.html#a6f59dd910a730e4e171b98af2e9ac09b',1,'GenOneLinuxUSB']]],
+  ['max',['max',['../andor__tcl_8h.html#affe776513b24d84b39af8ab0930fef7f',1,'andor_tcl.h']]],
+  ['maximum_5fem_5fgain',['maximum_em_gain',['../structandor__setup.html#a18146a0e1c959d9c18c0767e3c66ead2',1,'andor_setup']]],
+  ['maximum_5ftemperature',['maximum_temperature',['../structandor__setup.html#a6b486ca52e3d929530efdf93dc16a9b5',1,'andor_setup']]],
+  ['mimic_2etcl',['mimic.tcl',['../mimic_8tcl.html',1,'']]],
+  ['mimicmode',['mimicMode',['../mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d',1,'mimic.tcl']]],
+  ['min',['min',['../andor__tcl_8h.html#ac6afabdc09a49a433ee19d8a9486056d',1,'andor_tcl.h']]],
+  ['minborder',['MINBORDER',['../andor__tcl_8c.html#a3dfe84e6a11abfc51603473ba9071714',1,'andor_tcl.c']]],
+  ['minimum_5fem_5fgain',['minimum_em_gain',['../structandor__setup.html#a94d80d0fb6f3122f9c7db05a19e43654',1,'andor_setup']]],
+  ['minimum_5ftemperature',['minimum_temperature',['../structandor__setup.html#ae7518a24bda7f7d519efd562cd7d113e',1,'andor_setup']]],
+  ['missed_5fframes_5fper_5fsecond',['missed_frames_per_second',['../structandor__setup.html#a966deded386bc3df709fa35650c7506e',1,'andor_setup']]],
+  ['mjd0',['MJD0',['../ccd__astro_8c.html#a17c22d077b2c872fa05d3482ea45caac',1,'ccd_astro.c']]],
+  ['mjd_5fcal',['mjd_cal',['../ccd__astro_8c.html#a7de792bd2e3b0e68f0f2fbaf67547b77',1,'ccd_astro.c']]],
+  ['mjd_5fyear',['mjd_year',['../ccd__astro_8c.html#afa6f866f9e7bebfc1001ec63efdb44a7',1,'ccd_astro.c']]],
+  ['mjdf0',['MJDF0',['../ccd__astro_8c.html#ad03bc5507beb566bb1956c9a53110deb',1,'ccd_astro.c']]]
 ];
