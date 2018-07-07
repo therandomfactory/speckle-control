@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['refreshads9',['refreshads9',['../andor_8tcl.html#a45fe0ac8fa5176d80e852fa520db2964',1,'andor.tcl']]],
-  ['refreshds9',['refreshds9',['../andor_8tcl.html#acffb75a6f7e309768b7a0e8671815119',1,'andor.tcl']]],
-  ['resetandors',['resetAndors',['../andor_8tcl.html#add4e77aaa3a381785e9fedb3c2685d74',1,'andor.tcl']]],
-  ['resetcamera',['resetCamera',['../andor_camera_server_8tcl.html#a77f50a902bf5f00cf1469a4f6ec81cbc',1,'andorCameraServer.tcl']]],
-  ['resetsingleandors',['resetSingleAndors',['../andor_8tcl.html#a9e05ca161f02a23c7e08f26eb82877a5',1,'andor.tcl']]]
+  ['headerastrometry',['headerAstrometry',['../astrometry_8tcl.html#a2fbc89c78babdcb958ba6a3dae8ae34d',1,'astrometry.tcl']]],
+  ['headercomments',['headerComments',['../header_builder_8tcl.html#a0c9ca5cb3a8ba171b8819b162b8563d8',1,'headerBuilder.tcl']]],
+  ['hms',['HMS',['../convert_8tcl.html#aae1b3eb9bf51d6777edde064bfde530e',1,'convert.tcl']]],
+  ['hms2rad',['HMS2Rad',['../convert_8tcl.html#a53d6052fc52b3088ce4e309c04fa3549',1,'convert.tcl']]],
+  ['hms_5fto_5fradians',['hms_to_radians',['../astrometry_8tcl.html#a4d9d9c411f1175845ca8a3bfd87ae919',1,'astrometry.tcl']]],
+  ['homezabers',['homeZabers',['../zaber_8tcl.html#aea316e7ac1e0c124570e8b81b0411b3a',1,'zaber.tcl']]]
 ];

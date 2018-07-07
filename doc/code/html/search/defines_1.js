@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['dft_5fandor_5famplifier',['DFT_ANDOR_AMPLIFIER',['../andor__tcl_8h.html#ae08c181f6eee388d13379b9f7384daba',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fcamera_5flink',['DFT_ANDOR_CAMERA_LINK',['../andor__tcl_8h.html#a4ce5fb4764ec1b477de8da2467841355',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fccd_5fhorizontal_5fspeed',['DFT_ANDOR_CCD_HORIZONTAL_SPEED',['../andor__tcl_8h.html#a2c4ae789d9ab851a4b1d9ab95d0e4e32',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fem_5fadvanced',['DFT_ANDOR_EM_ADVANCED',['../andor__tcl_8h.html#af872e1791d4e535e4a65a3a158365129',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fem_5fgain',['DFT_ANDOR_EM_GAIN',['../andor__tcl_8h.html#a8da4c5110070574987ce5fc1c212eeaf',1,'andor_tcl.h']]],
+  ['dft_5fandor_5femccd_5fhorizontal_5fspeed',['DFT_ANDOR_EMCCD_HORIZONTAL_SPEED',['../andor__tcl_8h.html#ae23412a535ae4a71ac35d1b4b1248249',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fexposure_5ftime',['DFT_ANDOR_EXPOSURE_TIME',['../andor__tcl_8h.html#a13e8454955501eeab265e416d22f654d',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fhbin',['DFT_ANDOR_HBIN',['../andor__tcl_8h.html#a5e3af05e15bd3cd8ecf2692ebdad4a5b',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fhend',['DFT_ANDOR_HEND',['../andor__tcl_8h.html#a77fc0bdc3ccb36d650381d8ede25e2a3',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fhstart',['DFT_ANDOR_HSTART',['../andor__tcl_8h.html#aa3978194c3231ddce5c53f126bcbb9b9',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fpreamp_5fgain',['DFT_ANDOR_PREAMP_GAIN',['../andor__tcl_8h.html#a9c90df1ea1b120e410365005459a7c98',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fshutter',['DFT_ANDOR_SHUTTER',['../andor__tcl_8h.html#a1d3d5f634081b8ef58b33e81228238a3',1,'andor_tcl.h']]],
+  ['dft_5fandor_5ftemperature',['DFT_ANDOR_TEMPERATURE',['../andor__tcl_8h.html#a0feb002ba163b2dd7d65a060faacdde8',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fvbin',['DFT_ANDOR_VBIN',['../andor__tcl_8h.html#a8221fc5bccfade1f7b9cdbc8d3e78959',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fvend',['DFT_ANDOR_VEND',['../andor__tcl_8h.html#ad7f72bd3b09e46886b1444d831805622',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fvertical_5fspeed',['DFT_ANDOR_VERTICAL_SPEED',['../andor__tcl_8h.html#ad00af510da420c13aa7a37a8f143a3e9',1,'andor_tcl.h']]],
+  ['dft_5fandor_5fvstart',['DFT_ANDOR_VSTART',['../andor__tcl_8h.html#ae727dd89c1a1dc65da2195577ac9b555',1,'andor_tcl.h']]]
+];
