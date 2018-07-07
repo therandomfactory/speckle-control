@@ -144,13 +144,17 @@ global INSTRUMENT
 
 
 proc cameraStatuses { } {
-global CAMSTATUS
+global CAMSTATUS ANDOR_CFG
   foreach cam "red blue" {
     set camstatus [commandAndor $cam status]
     if { $camstatus != 0 } {
       set i 0
       foreach p "Shutter FrameTransferMode OutputAmplifier HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime EMCCDGain EMAdvanced TExposure TAccumulate TKinetics" {
-        set CAMSTATUS($cam,$p) [lindex $camstatus $i]
+        if { [info exists ANDOR_CFG($p,[lindex $camstatus $i])] } {
+          set CAMSTATUS($cam,$p) "$ANDOR_CFG($p,[lindex $camstatus $i])"
+        } else {
+          set CAMSTATUS($cam,$p) [lindex $camstatus $i]
+        }
         incr i 1
       }
     }
@@ -179,17 +183,17 @@ global ANDOR_CFG
 
 proc syncgui  { } {
 global CAMSTATUS ANDOR_CFG
-   .lowlevel.vspeed configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(red,VSSpeed))
-   .lowlevel.bvspeed configure -text $ANDOR_CFG(VSSpeed,$CAMSTATUS(blue,VSSpeed))
+   .lowlevel.vspeed configure -text $CAMSTATUS(red,VSSpeed)
+   .lowlevel.bvspeed configure -text $CAMSTATUS(blue,VSSpeed)
    if { $CAMSTATUS(red,OutputAmplifier) == 1 } {
-     .lowlevel.ccdhs configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(red,HSSpeed))
+     .lowlevel.ccdhs configure -text $CAMSTATUS(red,HSSpeed)
    } else {
-     .lowlevel.emhs configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(red,HSSpeed))
+     .lowlevel.emhs configure -text $CAMSTATUS(red,HSSpeed)
    }
    if { $CAMSTATUS(blue,OutputAmplifier) == 1 } {
-     .lowlevel.bccdhs configure -text $ANDOR_CFG(HSSpeed,$CAMSTATUS(blue,HSSpeed))
+     .lowlevel.bccdhs configure -text $CAMSTATUS(blue,HSSpeed)
    } else {
-     .lowlevel.bemhs configure -text $ANDOR_CFG(EMHSSpeed,$CAMSTATUS(blue,HSSpeed))
+     .lowlevel.bemhs configure -text $CAMSTATUS(blue,HSSpeed)
    }
 }
 
