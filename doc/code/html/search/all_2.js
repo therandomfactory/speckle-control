@@ -40,5 +40,6 @@ var searchData=
   ['dofft',['dofft',['../andor__tcl_8c.html#a3abecc959cde5e513f242d720e899099',1,'dofft(int width, int height, int *imageData, int *outputData):&#160;dofft.cpp'],['../dofft_8cpp.html#a3abecc959cde5e513f242d720e899099',1,'dofft(int width, int height, int *imageData, int *outputData):&#160;dofft.cpp']]],
   ['dofft_2ecpp',['dofft.cpp',['../dofft_8cpp.html',1,'']]],
   ['doservice',['doService',['../andor_camera_server_8tcl.html#a7f479a218abdc6945e130af27530bfdd',1,'andorCameraServer.tcl']]],
+  ['ds9refresher_2etcl',['ds9refresher.tcl',['../ds9refresher_8tcl.html',1,'']]],
   ['dsin',['DSIN',['../ccd__astro_8c.html#aff931f8163297e4b4d26cff78c29621d',1,'ccd_astro.c']]]
 ];
