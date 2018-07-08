@@ -5,7 +5,7 @@
 # License, v. 2 If a copy of the GPL was not distributed with this file,
 # You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 #
-# Copyright(c) 2017 The Random Factory (www.randomfactopry.com) 
+# Copyright(c) 2017 The Random Factory (www.randomfactory.com) 
 #
 #
 # \mainpage Introduction

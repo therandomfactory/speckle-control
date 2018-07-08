@@ -1,5 +1,75 @@
+## \file speckle_gui.tcl
+# \brief This contains procedures for initializing configuration
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
+#
+#
+#\code
+
+## Documented proc \c speckleTelemetryUpdate .
+# 
+# Update telemetry data for GUI usage
+#
+proc speckleTelemetryUpdate { } {
+global SCOPE TELEMETRY FITSKEY IMGMETA
+   foreach i [array names SCOPE] {
+       set TELEMETRY(speckle.scope.$i) $SCOPE($i)
+   }
+   foreach i [array names FITSKEY] {
+      if { [info exists IMGMETA([lindex [split $i .] end],value)] } {
+          set TELEMETRY($i) $IMGMETA([lindex [split $i .] end],value)
+      }
+   }
+   if { $SCOPE(telescope) == "WIYN" } {
+      redisUpdate
+   }
+}
+
+ 
+## Documented proc \c shutdown .
+# 
+#  Shutdown the cameras , kill the logger and close the GUI
+#
+#  Globals    :
+#               SCOPE - Array of telescope parameters
+#	
+proc shutdown { {id 0} } {
+global SCOPE
+   set it [tk_dialog .d "Exit" "Confirm exit" {} -1 "Cancel" "EXIT"]
+   if { $it } {
+     if { $SCOPE(telescope) == "GEMINI" } {
+        debuglog "Moving Gemini mechanisms to stowed positions"
+        picosOutPosition
+        zaberGoto focus stow
+        zaberGoto pickoff out
+     }
+     savespecklegui
+     catch { commandAndor red shutdown }
+     catch { commandAndor blue shutdown }
+     catch { exec xpaset -p ds9 exit }
+     after 5000
+     catch { exec pkill -9 tail }
+     exit
+   }
+}
+
+
+## Documented proc \c specklefilter .
+# \param[in] arm Instrument arm, red or blue
+# \param[in] name Name of selected filter
+#
+#  Update filter feedback in GUI
+#
+#  Globals    :
+#		SPECKLE_FILTER - Selected filter info
+#	
 proc specklefilter { arm name } {
-global FWHEELS SPECKLE_FILTER
+global SPECKLE_FILTER
   if { $arm == "red" } {
     .lowlevel.rfilter configure -text "Filter = $name"
   } else {
@@ -14,9 +84,15 @@ global FWHEELS SPECKLE_FILTER
   }
 }
 
-#
+## Documented proc \c savespecklegui .
 #  Do the actual setup of the GUI, to sync it with the camera status
 #
+#  Update filter feedback in GUI
+#
+#  Globals    :\n
+#		SCOPE - Array of telescope information\n
+#		env - Environment variables
+#	
 proc savespecklegui { } {
 global SCOPE env
    set fout [open $env(HOME)/.specklegui w]
@@ -27,6 +103,15 @@ global SCOPE env
 }
 
 
+## Documented proc \c findfilter .
+# \param[in] arm Instrument arm, red or blue
+# \param[in] name Name of selected filter
+#
+#  Find position of named filter
+#
+#  Globals    :
+#		FWHEELS - Array of filter info
+#	
 proc findfilter { arm name  } {
 global FWHEELS
    foreach i "1 2 3 4 5 6"  {
@@ -36,6 +121,14 @@ global FWHEELS
 }
 
 
+## Documented proc \c loadconfig .
+# \param[in] arm Instrument arm, red or blue
+#
+#  Load filter configuration data
+#
+#  Globals    :
+#		SPECKLE_DIR - Directory path of speckle code
+#	
 proc loadconfig { fname } {
 global SPECKLE_DIR
    if { $fname == "user" } {
@@ -50,6 +143,15 @@ global SPECKLE_DIR
 }
 
 
+## Documented proc \c initFilter .
+# \param[in] arm Instrument arm, red or blue
+#
+# Initalize filter wheel
+#
+#  Globals    :\n
+#		SPECKLE_FILTER - Selected filter info\n
+#		FWHEELS - Array of filter info
+#	
 proc initFilter { arm } {
 global SPECKLE_FILTER FWHEELS
    debuglog "Initializing filter wheels ..."
@@ -58,18 +160,42 @@ global SPECKLE_FILTER FWHEELS
    debuglog "Initialized filter wheels"
 }
 
+## Documented proc \c specklesave .
+# \param[in] device zaber device name
+# GUI hook to save zaber configurations
+#
+#  Globals    :
+#		SPECKLE_DIR - Directory path of speckle code
+#
 proc specklesave { device } {
 global SPECKLE_DIR
    saveZaberConfig zabersConfiguration
    debuglog "Saved zabers configuration"
 }
 
+## Documented proc \c speckleload .
+# \param[in] device zaber device name
+# GUI hook to load zaber configurations
+#
+#  Globals    :
+#		SPECKLE_DIR - Directory path of speckle code
+#
 proc speckleload { device } {
 global SPECKLE_DIR
    source $SPECKLE_DIR/zabersConfiguration
    debuglog "Loaded zabers configuration"
 }
 
+## Documented proc \c specklemode .
+# \param[in] arm Instrument arm, red or blue
+# \param[in] name Name of observingmode
+#
+#  Configure arm of instrument
+#
+#  Globals    :\n
+#		ANDOR_MODE - Observing mode, fullframe or roi\n
+#		LASTACQ - Last used observing mode 
+#
 proc specklemode { arm name } {
 global ANDOR_MODE LASTACQ
     .lowlevel.rmode configure -text "Mode=$name"
@@ -87,6 +213,17 @@ global ANDOR_MODE LASTACQ
 }
 
 
+## Documented proc \c speckleshutter .
+# \param[in] arm Instrument arm, red or blue
+# \param[in] name Name of observingmode
+#
+#  Configure camera shutter modes
+#
+#  Globals    :\n
+#		ANDOR_MODE - Observing mode, fullframe or roi\n
+#		LASTACQ - Last used observing mode \n
+#		ANDOR_SHUTTER - camera shutter selected mode
+#
 proc speckleshutter { arm name } {
 global ANDOR_MODE LASTACQ ANDOR_SHUTTER
     .lowlevel.rshut configure -text "Shutter=$name"
@@ -100,14 +237,32 @@ global ANDOR_MODE LASTACQ ANDOR_SHUTTER
     }
 }
 
+## Documented proc \c andorsetpoint .
+# \param[in] arm Instrument arm, red or blue
+#
+#  Configure camera temperature setpoints from GUI
+#
+#  Globals    :
+#		ANDOR_CFG - Array of Andor camera configuration data
+#
 proc andorsetpoint { arm } {
 global ANDOR_CFG
    debuglog "Set $arm camera temperature setpoint to $ANDOR_CFG($arm,setpoint)"
    commandAndor $arm "settemperature $ANDOR_CFG($arm,setpoint)"
 }
 
+## Documented proc \c specklesynctelem .
+# \param[in] arm Instrument arm, red or blue
+#
+#  Synchroize telemetry with GUI widgets
+#
+#  Globals    :\n
+#		DATAQUAL - Array of Data Quality info\n
+#		ZABERS - Array of zaber device configuration\n
+#		FWHEELS - Array of filter wheel configuration
+#
 proc specklesynctelem { arm } {
-global DATAQUAL ZABERS FWHEELS DATAQUAL
+global DATAQUAL ZABERS FWHEELS
    zaberCheck
    set pinputzaber $ZABERS(input,readpos)
    if  { $arm == "red" } {
@@ -122,6 +277,14 @@ global DATAQUAL ZABERS FWHEELS DATAQUAL
 }
 
 
+## Documented proc \c checkemccdgain .
+# \param[in] arm Instrument arm, red or blue
+#
+#  Check EM gain against Advanced mode requirements and setting
+#
+#  Globals    :
+#		INSTRUMENT - Array od instrument configuration
+#
 proc checkemccdgain { arm } {
 global INSTRUMENT
    debuglog "Set $arm camera EMCCD gain to $INSTRUMENT($arm,emccd)"
@@ -143,6 +306,14 @@ global INSTRUMENT
 }
 
 
+## Documented proc \c cameraStatuses .
+#
+#  Update camera status from servers and update GUI
+#
+#  Globals    :\n
+#		ANDOR_CFG - Array of Andor camera configuration data\n
+#		CAMSTATUS - Array of camera statuses for GUI display
+#
 proc cameraStatuses { } {
 global CAMSTATUS ANDOR_CFG
   foreach cam "red blue" {
@@ -164,10 +335,22 @@ global CAMSTATUS ANDOR_CFG
 }
 
 
+## Documented proc \c showprogress .
+#
+#  Update progess bar in GUI
+#
 proc showprogress { x } {
    .lowlevel.p configure -value $x
 }
 
+## Documented proc \c andorset .
+# \param[in] arm Instrument arm, red or blue
+#
+#  GUI hooks to configure camera readout parameters
+#
+#  Globals    :
+#		ANDOR_CFG - Array of Andor camera configuration data\n
+#
 proc andorset { w arm item value } {
 global ANDOR_CFG
   set ANDOR_CFG($arm,$item) $value
@@ -181,6 +364,14 @@ global ANDOR_CFG
   }
 }
 
+## Documented proc \c syncgui .
+#
+#  Syncrojnize GUI widgets with current camera settings
+#
+#  Globals    :\n
+#		ANDOR_CFG - Array of Andor camera configuration data\n
+#		CAMSTATUS - Array of camera statuses for GUI display
+#
 proc syncgui  { } {
 global CAMSTATUS ANDOR_CFG
    .lowlevel.vspeed configure -text $CAMSTATUS(red,VSSpeed)
@@ -198,7 +389,7 @@ global CAMSTATUS ANDOR_CFG
 }
 
 
-
+# \endcode
 
 wm title . "Speckle Control"
 place .main -x 0 -y 30
@@ -217,6 +408,33 @@ foreach item "target ProgID ra dec telescope instrument" {
 .main.vtarget configure -textvariable TELEMETRY(tcs.target.name)
 .main.vra configure -textvariable TELEMETRY(tcs.telescope.ra)
 .main.vdec configure -textvariable TELEMETRY(tcs.telescope.dec)
+
+set CAMSTATUS(Gain) 1.0
+set CAMSTATUS(BinX) 1
+set CAMSTATUS(BinY) 1
+set CAMSTATUS(Temperature) -100.0
+set CAMSTATUS(CoolerMode) 1
+set SCOPE(latitude) 31:57:11.78
+set SCOPE(longitude) 07:26:27.97
+set SCOPE(camera) "Andor iXon Ultra"
+set SCOPE(instrument) speckle
+set SCOPE(observer) ""
+set SCOPE(target) test
+set SCOPE(imagetype) OBJECT
+set SCOPE(exposure) 1.0
+set SCOPE(ra) 00:00:00.00
+set SCOPE(dec) +00:00:00.00
+set SCOPE(equinox) 2000.0
+set SCOPE(secz) 0.0
+set SCOPE(filterpos) 0
+set SCOPE(filtername) none
+set SCOPE(shutter) 1
+set now [split [exec  date -u +%Y-%m-%d,%T] ,]
+set SCOPE(readout-delay) 999
+set SCOPE(obsdate) [exec date -u +%Y-%m-%dT%H:%M:%S.0]
+set SCOPE(obstime) [lindex $now 1]
+
+source $SPECKLE_DIR/andor/andor.tcl
 
 
 menubutton .mbar.config -text "Configurations" -fg black -bg gray -menu .mbar.config.m

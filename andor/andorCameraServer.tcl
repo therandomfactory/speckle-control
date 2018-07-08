@@ -2,12 +2,12 @@
 ## \file andorCameraServer.tcl
 # \brief This contains procedures for the camera servers
 #
-# This Source Code Form is subject to the terms of the GNU Public
-# License, v. 2 If a copy of the GPL was not distributed with this file,
-# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-#
-# Copyright(c) 2018 The Random Factory (www.randomfactopry.com) 
-#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
 #
 #\code
@@ -597,7 +597,7 @@ set ANDOR_CFG(scalepeak) 1.2
 #		SCOPE - Array of telescope information
 #
 proc updateDatabase { } {
-global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE
+global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE CAM
    set finsert [open /tmp/insert_$ANDOR_ARM.sql w]
    set amp "CCD Amplifier"
    if { $ANDOR_CFG($ANDOR_ARM,OutputAmplifier) == 0 } { set amp "ECMMD Amplifier" }
@@ -975,7 +975,7 @@ proc accept {sock addr port} {
   puts "Accepted connection from $addr at [exec date]"
 }
 
-#\endcode
+# \endcode
 
 
 # Create a server socket on port $svcPort.

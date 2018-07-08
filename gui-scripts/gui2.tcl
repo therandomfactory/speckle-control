@@ -4,7 +4,7 @@
 # Change SPECKLE_DIR to move the code somewhere else
 #
 ## \file gui2.tcl
-# \brief This contains generic GUI initialization and utility procedures
+# \brief This contains helper routines to process header items
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
 # License, v. 2 If a copy of the GPL was not distributed with this file,\n
@@ -272,10 +272,17 @@ exec xterm -geometry +540+800 -e tail -f /tmp/speckleLog_[set now].log &
 # Load the procedures
 #
 source $SPECKLE_DIR/gui-scripts/general.tcl
+setutc
 ###source $SPECKLE_DIR/gui-scripts/display.tcl
 ###source $SPECKLE_DIR/gui-scripts/temperature.tcl
 ###source $SPECKLE_DIR/gui-scripts/calibration.tcl
 source $SPECKLE_DIR/gui-scripts/observe.tcl
+set ACQREGION(xs) 1
+set ACQREGION(xe) 1024
+set ACQREGION(ys) 1
+set ACQREGION(ye) 1024
+set LASTACQ fullframe
+source $SPECKLE_DIR/andor/andor.tcl
 
 
 # Create the status window. This window is used to display informative messages
@@ -559,15 +566,6 @@ set STATUS(readout) 0
 
 
 
-#
-#  Define a default sub-region
-#  
-set ACQREGION(xs) 1
-set ACQREGION(xe) 256
-set ACQREGION(ys) 1
-set ACQREGION(ye) 256
-set LASTACQ none
-
 if { 0 } {
 #
 #  Set up the default structures for temperature control/plotting
@@ -639,7 +637,7 @@ set OBSPARS(Skyflat) "0.1 1 1"
 
 set LASTBIN(x) 1
 set LASTBIN(y) 1
-setutc
+set SCOPE(obsdate) [exec date -u +%Y-%m-%dT%H:%M:%S.0]
 set d  [split $SCOPE(obsdate) "-"]
 set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
 
@@ -657,15 +655,6 @@ if { [file exists $env(HOME)/.specklegui] } {
    source $env(HOME)/.specklegui
 }
 
-#
-#  Fix the date
-#
-
-set SCOPE(obsdate) [join "[lrange $now 1 2] [lindex $now 4]" -]  
-#set SCOPE(StartCol) $CONFIG(geometry.StartCol)
-#set SCOPE(StartRow) $CONFIG(geometry.StartRow) 
-#set SCOPE(NumCols)  $CONFIG(geometry.NumCols) 
-#set SCOPE(NumRows)  $CONFIG(geometry.NumRows) 
 set SCOPE(darktime) 0.0
 set SCOPE(numframes) 1
 set SCOPE(numseq) 1
