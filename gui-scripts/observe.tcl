@@ -1,31 +1,25 @@
-
-
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
+## \file observe.tcl
+# \brief This contains procedures for main observing sequencing
 #
-#  Procedure  : abortsequence
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
 #
+#\code
+## Documented proc \c abortsequence .
+# 
 #  This procedure aborts the current exposure or sequence of exposures.
-#  It simply sets the global abort flag and resets the GUI widgets.
-#
-#  Arguments  :
-#
- 
-proc abortsequence { } {
- 
+#  It simply sets the global abort flag and resets the GUI widgets 
 #
 #  Globals    :
 #  
 #               STATUS	-	Exposure status
+#
+proc abortsequence { } {
 global STATUS
   set STATUS(abort) 1
   andorSetControl 0 abort
@@ -35,38 +29,18 @@ global STATUS
   mimicMode blue close
 }
 
-
-
-
-set STATUS(last) [expr [clock clicks]/1000000.]
-
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
-#
-#  Procedure  : observe
-#
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#  This stub routine responds to user selections on the observe menu.
-#
-#  Arguments  :
-#
-#               op	-	Operation specifier
-#               id	-	Camera id (for multi-camera use) (optional, default is 0)
  
+## Documented proc \c abortsequence .
+#  \param[in] op - Operation specifier
+#  \param[in] id - Camera id (for multi-camera use) (optional, default is 0)
+# 
+#  This procedure aborts the current exposure or sequence of exposures.
+#  It simply sets the global abort flag and resets the GUI widgets 
+#
+#  Globals    :  
+#               SCOPE	- Telescope parameters, gui setup
+#
 proc observe { op {id 0} } {
- 
-#
-#  Globals    :
-#  
-#               SCOPE	-	Telescope parameters, gui setup
 global SCOPE
   switch $op {
       region128 {acquisitionmode 128}
@@ -81,33 +55,19 @@ global SCOPE
 
 
 
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
+## Documented proc \c setfullframe .
+#  \param[in] op - Operation specifier
+#  \param[in] id - Camera id (for multi-camera use) (optional, default is 0)
+# 
+#  This procedure reconfigure the cameras for fullframe operation
 #
-#  Procedure  : setfullframe
+#  Globals    :  
+#               SCOPE	- Telescope parameters, gui setup
+#		CONFIG - Image geometry configuration
+#		LASTACQ - Type of last image acqusition
+#		ANDOR_DEF - Andor defaults
 #
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#  This stub routine responds to user selections on the observe menu.
-#
-#  Arguments  :
-#
-#               op	-	Operation specifier
-#               id	-	Camera id (for multi-camera use) (optional, default is 0)
- 
 proc setfullframe { } {
- 
-#
-#  Globals    :
-#  
-#               SCOPE	-	Telescope parameters, gui setup
 global SCOPE CONFIG LASTACQ ANDOR_DEF
    set CONFIG(geometry.BinX)      1
    set CONFIG(geometry.BinY)      1
@@ -128,33 +88,20 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF
 
 
 
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
+## Documented proc \c acquisitionmode .
+#  \param[in] rdim Type of acquisition, fullframe or roi dimension
+# 
+#  This procedure reconfigures the cameras for fullframe or ROI operation
 #
-#  Procedure  : acquisitionmode
+#  Globals    :  
+#               SCOPE	- Telescope parameters, gui setup
+#		CONFIG - Image geometry configuration
+#		LASTACQ - Type of last image acqusition
+#		ANDOR_DEF - Andor defaults
+#               ACQREGION - Sub-frame region coordinates
+#		ANDOR_SOCKET - Andor camera server socket handles
 #
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#  This procedure controls the specification of a sub-image region using
-#  the DS9 image display tool.
-#
-#  Arguments  :
-#
- 
 proc  acquisitionmode { rdim } {
- 
-#
-#  Globals    :
-#  
-#               ACQREGION	-	Sub-frame region coordinates
-#               CONFIG	-	GUI configuration
 global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   puts stdout "rdim == $rdim"
   if { $rdim != "manual"} {
@@ -247,6 +194,16 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
 }
 
 
+## Documented proc \c acquisitionmode .
+#  \param[in] table Table of EM gain thresholds
+# 
+#  This procedure reconfigures the cameras for fullframe or ROI operation
+#
+#  Globals    :  
+#		SCOPE - Array of telescope configurations
+#		SPECKLE_DIR - Directory path of speckle code
+#		INSTRUMENT - Array of instrument configuration data
+#
 proc checkgain { {table table.dat} } {
 global SCOPE SPECKLE_DIR INSTRUMENT
   catch {
@@ -265,39 +222,33 @@ global SCOPE SPECKLE_DIR INSTRUMENT
   }
 }
 
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
+## Documented proc \c startsequence .
+# 
+#  This routine manages a sequence of exposures. It updates bias columns\n
+#  specifications in case they have been changed, then it loops thru\n
+#  a set of frames, updating the progress bar.
 #
-#  Procedure  : startsequence
+#  Globals    :  
+#               SCOPE	- Telescope parameters, gui setup
+#		CONFIG - Image geometry configuration
+#		LASTACQ - Type of last image acqusition
+#		ANDOR_DEF - Andor defaults
+#               ACQREGION - Sub-frame region coordinates
+#		ANDOR_CFG - Array of camera settings
+#		ANDOR_SOCKET - Andor camera server socket handles
+#		ANDOR_SHUTTER - Shutter mode names
+#               SCOPE	- Telescope parameters, gui setup
+#               OBSPARS	- Default observation parameters
+#               FRAME	- Frame number in a sequence
+#               STATUS	- Exposure status
+#               DEBUG	- Set to 1 for verbose logging
+#		TELEMETRY - Array of telemetry for headers and database usage
+#		DATAQUAL - Array of data quality information
+#		INSTRUMENT - Array of instrument configuration data
 #
-#---------------------------------------------------------------------------
-#  Author     : Dave Mills (randomfactory@gmail.com)
-#  Version    : 0.9
-#  Date       : Aug-01-2017
-#  Copyright  : The Random Factory, Tucson AZ
-#  License    : GNU GPL
-#  Changes    :
-#
-#  This routine manages a sequence of exposures. It updates bias columns
-#  specifications in case they have been changed, then it loops thru
-#  a set of frames, updating the countdown window, and calling obstodisk to 
-#  do the actual exposures.
-#
-#  Arguments  :
-#
- 
 proc startsequence { } {
- 
-#
-#  Globals    :
-#  
-#               SCOPE	-	Telescope parameters, gui setup
-#               OBSPARS	-	Default observation parameters
-#               FRAME	-	Frame number in a sequence
-#               STATUS	-	Exposure status
-#               DEBUG	-	Set to 1 for verbose logging
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
-global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
+global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  set iseqnum 0
  redisUpdate
  zaberCheck
@@ -360,9 +311,13 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    wm geometry .countdown
    set i 1
    if { $SCOPE(exptype) == "Zero" || $SCOPE(exptype) == "Dark" } {
+     commandAndor red  "shutter $ANDOR_SHUTTER(close)"
+     commandAndor blue "shutter $ANDOR_SHUTTER(close)"
      mimicMode red close
      mimicMode blue close
    } else {
+     commandAndor red  "shutter $ANDOR_SHUTTER(auto)"
+     commandAndor blue "shutter $ANDOR_SHUTTER(auto)"
      mimicMode red open
      mimicMode blue open
    }
@@ -373,7 +328,6 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
      commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
    }
    incr SCOPE(seqnum) 1
-####   flushAndors
    set redtemp  [lindex [commandAndor red gettemp] 0]
    set bluetemp  [lindex [commandAndor blue gettemp] 0]
    mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
@@ -385,6 +339,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
       set TELEMETRY(speckle.andor.mode) "fullframe"
       if { $ANDOR_CFG(kineticMode) } {
          acquireCubes
+         set ifrmnum $SCOPE(numframes)
+         set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
       } else {
          acquireFrames
       }
@@ -398,20 +354,18 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
    set now [clock seconds]
    set FRAME 0
    set REMAINING 0
-#   countdown [expr int($SCOPE(exposure)*$SCOPE(numframes))]
    while { $i < $SCOPE(numframes) && $STATUS(abort) == 0 } {
       set FRAME $i
       set REMAINING [expr [clock seconds] - $now]
       if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-#      after [expr int($perframe*1000)]
-     after 20
+      after 20
       if { $LASTACQ == "fullframe" } {
          incr i 1
       } else {
          set i [andorGetControl 0 frame]
       }
       .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
-      .lowlevel.progress configure -text "Observation status : Frame $i   Exposure $dfrmnum   Sequence $iseqnum"
+      .lowlevel.progress configure -text "Observation status : Frame $i   Exposure $dfrmnum   Sequence $iseqnum / $SCOPE(numseq)"
       update
    }
    set SCOPE(exposureEnd) [expr [clock milliseconds]/1000.0]
@@ -421,12 +375,14 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
 #   speckleshutter blue close
    .lowlevel.progress configure -text "Observation status : Idle"
    if { $STATUS(abort) } {return}
-
   }
  }
  abortsequence
  if { $SCOPE(autoclrcmt) } {.main.comment delete 0.0 end }
 }
+
+
+# \endcode
 
 
 set SCOPE(red,bias) 0
@@ -439,6 +395,7 @@ set SCOPE(red,bias) 0
 set SCOPE(blue,bias) 0
 set SCOPE(red,peak) 1
 set SCOPE(blue,peak) 1
+set STATUS(last) [expr [clock clicks]/1000000.]
 
 
 set ACQREGION(geom) 1024

@@ -614,7 +614,7 @@ resetSingleAndors fullframe
 set STATUS(busy) 0
 load $SPECKLE_DIR/lib/andorTclInit.so
 andorConnectShmem2
-
+initControl
 
 
 
