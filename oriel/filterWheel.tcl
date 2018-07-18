@@ -1,44 +1,77 @@
 #!/usr/bin/tclsh
-
+## \file filterWheel.tcl
+# \brief Filter wheel control scripts
 #
-# This Source Code Form is subject to the terms of the GNU Public
-# License, v. 2. If a copy of the GPL was not distributed with this file,
-# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
-# Copyright(c) 2017 The Random Factory (www.randomfactory.com) 
 #
+#\code
+## Documented proc \c loadFiltersConfig .
+# \param[in] fname Name of filter configuration file
 #
-
-
-set SPECKLE_DIR $env(SPECKLE_DIR)
-
+# Load the filter wheels configurations
+#
+# Globals :\n
+#		SPECKLE_DIR - Directory path of speckle code\n
+#		FWHEELS - Array of filter wheel configuration and settings\n
+#		SCOPE - Array of telescope configuration
+#
 proc loadFiltersConfig { fname } {
-global SPECKLE_DIR NESCONFIG FWHEELS SCOPE
+global SPECKLE_DIR FWHEELS SCOPE
    set fname "[set fname].[string tolower $SCOPE(telescope)]"
    if { [file exists $SPECKLE_DIR/$fname] == 0 } {
      errordialog "Filters configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
      source $SPECKLE_DIR/$fname
-     set NESCONFIG(picoChange) 0
    }
 }
 
+## Documented proc \c saveFiltersConfig .
+# \param[in] fname Name of filter configuration file
+#
+# Save the filter wheels configurations
+#
+# Globals :\n
+#		SPECKLE_DIR - Directory path of speckle code\n
+#		FWHEELS - Array of filter wheel configuration and settings\n
+#		SCOPE - Array of telescope configuration
+#
 proc saveFiltersConfig { fname } {
-global SPECKLE_DIR  NESCONFIG FWHEELS SCOPE
+global SPECKLE_DIR FWHEELS SCOPE
    set fname "[set fname].[string tolower $SCOPE(telescope)]"
    set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh
    echoFiltersConfig $fcfg
    close $fcfg
-   set NESCONFIG(picoChange) 0
    debuglog "Saved Filters configuration in $SPECKLE_DIR/$fname"
 }
 
+
+## Documented proc \c logFiltersConfig .
+#
+# Log filter wheel configurations
+#
+# Globals :
+#		FLOG - File handle of open log file
+#
 proc logFiltersConfig { } {
 global FLOG
   echoFiltersConfig $FLOG
 }
 
+## Documented proc \c logFiltersConfig .
+# \param[in] fcfg - File handle
+#
+# Log filter wheel configurations
+#
+# Globals :
+#		FWHEELS - Array of filter wheel configuration and settings
+#
 proc echoFiltersConfig { {fcfg stdout} } {
 global FWHEELS
    puts $fcfg  "# Filters stage configuration parameters
@@ -51,6 +84,15 @@ global FWHEELS
    }
 }
 
+## Documented proc \c selectfilter .
+# \param[in] id Wheel identifier
+# \param[in] n Filter position
+#
+#  Move filter to selected position
+#
+# Globals :
+#		FWHEELS - Array of filter wheel configuration and settings
+#
 proc selectfilter { id n } {
 global FILTERWHEEL FWHEELS MAXFILTERS
   set i 1
@@ -82,20 +124,136 @@ global FILTERWHEEL FWHEELS MAXFILTERS
   }
 }
 
+## Documented proc \c findWheels .
+#
+#  Lookup filter wheels by serial number
+#
+# Globals :
+#		FWSERIAL - Filter wheel serial numbers
+#
 proc findWheels { } {
 global FWSERIAL
    set fw [split [exec lsusb] \n]
    set id 1
    foreach i $fw {
       if { [lindex $i 6] == "Newport" } {
-         set iusb($id) [string trim [lindex $i 1]:[lindex $i 3] :]
-         set info [exec lsusb -v -s $iusb($id)]
-         set FWSERIAL($iusb($id)) [lindex $info [expr [lsearch $info iSerial] +2]]
-         incr id 1
+        catch {
+          set iusb($id) [string trim [lindex $i 1]:[lindex $i 3] :]
+          set info [exec lsusb -v -s $iusb($id)]
+          set FWSERIAL($iusb($id)) [lindex $info [expr [lsearch $info iSerial] +2]]
+          incr id 1
+        }
       }
    }
 }
 
+
+## Documented proc \c filterWheelHelp .
+#
+#  Print help menu for optional implementation as a service
+#
+proc filterWheelHelp { }  {
+  puts stdout "Filter Wheel commands :
+tcl	Command         Function
+open			Open a connection
+close			Close connection
+getID	IDN?		Query to determine filter wheel model and firmware revision.
+setPos	FILT X		Sets the active filter position to value X (1-6)
+getPos	FILT?		Query to determine the active filter position (1-6)
+setFlt	FLTX ID		Set the  filter type/lable in position X
+getFlt	FLTX ID?	Query to determine the  filter type/label in position X
+next	NEXT		Increments the filter position clockwise by 1 position
+prev	PREV		Increments the filter position counter clockwise by 1 position	
+manual	MBTN (Y/N)	Sets the manual push button mode to enable (Y) or disable (N)
+status	STB?		Query to determine the status of the unit
+reset	RST		Resets the controller to default settings & operation
+clear	CLS		Clears any status error messages
+setHS	HSHK X		Set the unit handshake mode
+getHS	HSHK?		Query to determine the hanshake mode of the unit
+dotest	TST		Initiates a system self test
+getTest	TST?		Query to determine the self test status/result
+"
+}
+
+## Documented proc \c fwService .
+#
+#  Command parser stub for optional implementation as a service
+#
+proc fwService { arm op {p1 ""} {p2 ""} {p3 ""} } {
+global FWHEEL
+   switch $op {
+       open    {}
+       close   {}
+       getID   {}
+       setPos  {}
+       getPos  {}
+       setFlt  {}
+       getFlt  {}
+       next    {}
+       prev    {}
+       manual  {}
+       status  {}
+       reset   {}
+       clear   {}
+       setHS   {}
+       getHS   {}
+       dotest  {}
+       getTest {}
+  }
+}
+
+## Documented proc \c resetFilterWheel .
+# \param[in] id Wheel identifier
+#
+#  Reset filter wheel
+#
+proc resetFilterWheel { id } {
+   oriel_write_cmd $id RST
+   after 7000
+   set res [oriel_read_result $id]
+   oriel_write_cmd $id FILT?
+   after 200
+   set res [oriel_read_result $id]
+   return $res
+}
+
+## Documented proc \c setOrielFilter .
+# \param[in] id Wheel identifier
+# \param[in] n Filter position
+#
+#  Call low level code to move filter to selected position
+#
+proc setOrielFilter { id n } {
+   oriel_write_cmd $id FILT?
+   after 200
+   set res [oriel_read_result $id]
+   set cpos [string range $res 4 4]
+   set npos [expr $n - $cpos]
+   while { $npos > 0 } {
+      oriel_write_cmd $id NEXT
+      incr npos -1
+      after 2000
+      set res [oriel_read_result $id]
+   }
+   while { $npos < 0 } {
+      oriel_write_cmd $id PREV
+      incr npos 1
+      after 2000
+      set res [oriel_read_result $id]
+   }
+   oriel_write_cmd $id FILT?
+   after 200
+   set res [oriel_read_result $id]
+   set cpos [string range $res 4 4]
+   if { $cpos == $n } {
+      return $n
+   }
+   return -1
+}
+
+
+
+# \endcode
 
 
 foreach a "red blue" {
@@ -104,6 +262,7 @@ foreach a "red blue" {
   }
 }
 set FWHEELS(focusoffset) 0
+set SPECKLE_DIR $env(SPECKLE_DIR)
 
 set MAXFILTERS 6
 destroy .filters
@@ -149,93 +308,6 @@ button .filters.exit -text "Close" -fg black -bg orange -width 32 -command "wm w
 place .filters.load -x 10 -y [expr $iy+30]
 place .filters.save -x 262 -y [expr $iy+30]
 place .filters.exit -x 502 -y [expr $iy+30]
-
-
-
-
-proc filterWheelHelp { }  {
-  puts stdout "Filter Wheel commands :
-tcl	Command         Function
-open			Open a connection
-close			Close connection
-getID	IDN?		Query to determine filter wheel model and firmware revision.
-setPos	FILT X		Sets the active filter position to value X (1-6)
-getPos	FILT?		Query to determine the active filter position (1-6)
-setFlt	FLTX ID		Set the  filter type/lable in position X
-getFlt	FLTX ID?	Query to determine the  filter type/label in position X
-next	NEXT		Increments the filter position clockwise by 1 position
-prev	PREV		Increments the filter position counter clockwise by 1 position	
-manual	MBTN (Y/N)	Sets the manual push button mode to enable (Y) or disable (N)
-status	STB?		Query to determine the status of the unit
-reset	RST		Resets the controller to default settings & operation
-clear	CLS		Clears any status error messages
-setHS	HSHK X		Set the unit handshake mode
-getHS	HSHK?		Query to determine the hanshake mode of the unit
-dotest	TST		Initiates a system self test
-getTest	TST?		Query to determine the self test status/result
-"
-}
-
-proc fwService { arm op {p1 ""} {p2 ""} {p3 ""} } {
-global FWHEEL
-   switch $op {
-       open    {}
-       close   {}
-       getID   {}
-       setPos  {}
-       getPos  {}
-       setFlt  {}
-       getFlt  {}
-       next    {}
-       prev    {}
-       manual  {}
-       status  {}
-       reset   {}
-       clear   {}
-       setHS   {}
-       getHS   {}
-       dotest  {}
-       getTest {}
-  }
-}
-
-proc resetFilterWheel { id } {
-   oriel_write_cmd $id RST
-   after 7000
-   set res [oriel_read_result $id]
-   oriel_write_cmd $id FILT?
-   after 200
-   set res [oriel_read_result $id]
-   return $res
-}
-
-proc setOrielFilter { id n } {
-   oriel_write_cmd $id FILT?
-   after 200
-   set res [oriel_read_result $id]
-   set cpos [string range $res 4 4]
-   set npos [expr $n - $cpos]
-   while { $npos > 0 } {
-      oriel_write_cmd $id NEXT
-      incr npos -1
-      after 2000
-      set res [oriel_read_result $id]
-   }
-   while { $npos < 0 } {
-      oriel_write_cmd $id PREV
-      incr npos 1
-      after 2000
-      set res [oriel_read_result $id]
-   }
-   oriel_write_cmd $id FILT?
-   after 200
-   set res [oriel_read_result $id]
-   set cpos [string range $res 4 4]
-   if { $cpos == $n } {
-      return $n
-   }
-   return -1
-}
 
 
 

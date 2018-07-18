@@ -9,6 +9,7 @@ foreach d $uall {
    set manu [lindex [split $id :] 0]
    set devi [lindex [split $id :] 1]
    if { $manu == "104d" } {
+    if { [info exists DEV($devi)] } {
       set path [string trim "/proc/bus/usb/[lindex $d 1]/[lindex $d 3]" :]
       if { [file exists $path] } {
         puts stdout "Found Oriel $DEV($devi) : $d, path $path"
@@ -23,6 +24,7 @@ foreach d $uall {
         puts stdout "sudo chmod a+rw $path"
         exec sudo chmod a+rw $path
       }
+    }
    }
 }
 

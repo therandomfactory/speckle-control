@@ -1,5 +1,5 @@
 #!/bin/sh
-/home/nessi/speckle-control/andor/usbpermit.tcl
-/home/nessi/speckle-control/oriel/usbpermit.tcl
+$HOME/speckle-control/andor/usbpermit.tcl
+$HOME/speckle-control/oriel/usbpermit.tcl
 sudo chmod a+rw /dev/ttyUSB*
 
