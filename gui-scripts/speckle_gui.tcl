@@ -910,20 +910,22 @@ showstatus "Initializing PICOs"
 source $SPECKLE_DIR/picomotor/picomotor.tcl
 
 if { $SCOPE(telescope) == "GEMINI" } {
-showstatus "Connecting to Gemini Telemetry service"
-source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
+ showstatus "Connecting to Gemini Telemetry service"
+ source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
 
-set SPKTELEM(sim) 0
-if { [info exists env(SPECKLE_SIM)] } {
+ set SPKTELEM(sim) 0
+ if { [info exists env(SPECKLE_SIM)] } {
    set simdev [split $env(SPECKLE_SIM) ,]
    if { [lsearch $simdev geminitlm] > -1 } {
        set SPKTELEM(sim) 1
        debuglog "Gemini telemetry in SIMULATION mode"
        simGeminiTelemetry
   }
-} else {
-  geminiConnect north
+ }
 }
+
+if { $SPKTELEM(sim) == 0 } {
+  geminiConnect north
 }
 
 

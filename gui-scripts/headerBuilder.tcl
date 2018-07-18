@@ -1,25 +1,32 @@
-
+## \file headerBuilder.tcl
+# \brief This contains procedures to assemble the FITS headers
 #
-#  This file contains the tcl code to provide automated FITS header
-#  construction. The contents of predefined headers are read from a
-#  datafile. Another file specifies the relationship between FITS
-#  keywords and MPG router stream parameters, and between SPECKLE
-#  controller configuration items and FITS keywords.
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
-
-set PDEBUG 0
-set STREAMS ""
-set SPECKLEHDRLOG [open /tmp/$env(USER)_headerInfo.log a]
-puts $SPECKLEHDRLOG "Startup at [exec date]"
-set SEQNUM 1
-
-if { [info exists env(TELESCOPE)] } {
-     set TOMPG $env(TELESCOPE)
-} else {
-     puts stdout "SPECKLE Diagnostics - Telescope environment not defined"
-}
-
-
+#  This file contains the tcl code to provide automated FITS header\n
+#  construction. The contents of predefined headers are read from a\n
+#  datafile. Another file specifies the relationship between FITS\n
+#  keywords and MPG router stream parameters, and between SPECKLE\n
+#  controller configuration items and FITS keywords.\n
+#
+#
+#\code
+## Documented proc \c loadstreamdefs .
+# \param[in] from File to read stream definitions from
+#
+#
+# Globals :\n
+#		TELEMETRY - Array of telemetry items for headers and database usage\n
+#		STREAM - Array of telemetry stream names\n
+#		PDEBUG - Debug verbosity\n
+#		FITSKEY - Array of FITS keywords\n
+#		FITSTXT - Array of FITS header descriptions
+#
 proc loadstreamdefs { {from telem.conf} } {
 global TELEMETRY STREAMS PDEBUG FITSKEY FITSTXT
   set fin [open $from r]
@@ -44,8 +51,16 @@ global TELEMETRY STREAMS PDEBUG FITSKEY FITSTXT
 
 
 
+## Documented proc \c loadhdrdefs .
+# \param[in] from File to read header definitions from
+#
+#
+# Globals :\n
+#		HEADERS - Names of header types\n
+#		PDEBUG - Debug verbosity
+#
 proc loadhdrdefs { {from headers.conf} } {
-global HEADERS PDEBUG ACTIVE
+global HEADERS PDEBUG
   set fin [open $from r]
   while { [gets $fin rec] > -1 } {
     if { [string trim $rec] != "" } {
@@ -67,48 +82,25 @@ global HEADERS PDEBUG ACTIVE
 
 
 
-proc subscribestreams { } {
-global STREAMS PDEBUG TOMPG ACTIVE
-  foreach s $STREAMS {
-   if { [info exists ACTIVE($s)] } {
-    set stat 0
-    catch {set stat [$TOMPG subscribe $s]
-    }
-    if { $stat == 0 } {return error}
-    if { $PDEBUG } {debuglog "Subscribed to stream $s"}
-   }
-  }
-}
 
-
-proc newdata { name par state type value } {
-global TELEMETRY
-##  puts stdout "got $name = $value"
-  set TELEMETRY($name) [join [split $value "\{\}\""] " "]
-  set TELEMETRY($name,t) $type
-}
-
-
-proc activatestreams { } {
-global TOMPG HEADERS ACTIVE
-  switch $TOMPG {
-     kpno_36  { set type tcs-36 }
-     kpno_09m  { set type tcs-36 }
-     kpno_2m   { set type tcs-2m }
-     kpno_4m   { set type tcs-4m }
-     wiyn      { set type wiyn-speckle }
-     gemini    { set type gemini-speckle }
-  }
-  foreach i $HEADERS($type) {
-     set stream [join [lrange [split $i "."] 0 1] "."]
-     set ACTIVE($stream) 1
-  }
-}
-
-
-
+## Documented proc \c fillheader .
+# \param[in] args Optional arguments , scope-instrument identifier
+#
+#  Create a FITS header structure with all the required keywords
+#
+# Globals :\n
+#		TELEMETRY - Array of telemetry items for headers and database usage\n
+#		SEQNUM - Sequence number\n
+#		CACHETELEMETRY - Cache of telemetry items\n
+#		PDEBUG - Debug verbosity\n
+#		HEADERS - Names of header types\n
+#		FITSKEY - Array of FITS keywords\n
+#		FITSTXT - Array of FITS header descriptions\n
+#		FROMSTARTEXP - Array of values to use from exposure start
+#		ANDOR_ARM - Instrument arm, red or blue
+#
 proc fillheader { args } {
-global TELEMETRY PDEBUG HEADERS TOMPG FITSKEY FITSTXT SEQNUM ACTIVE SCOPE
+global TELEMETRY PDEBUG HEADERS FITSKEY FITSTXT SEQNUM SCOPE
 global FROMSTARTEXP CACHETELEMETRY ANDOR_ARM
   set fhead ""
   speckleTelemetryUpdate
@@ -181,6 +173,14 @@ global FROMSTARTEXP CACHETELEMETRY ANDOR_ARM
   return "$fhead"
 }
 
+## Documented proc \c headerComments .
+# \param[in] fid FITS file handle of open file
+#
+#  Add comments to FITS header
+#
+# Globals :
+#		SCOPE - Array of Telescope information
+#
 proc headerComments { fid } {
 global SCOPE
   set spos [llength [$fid dump -l]]
@@ -193,55 +193,15 @@ global SCOPE
   }
 }
 
-proc bgcountdown { c } {
-  .countdown configure -bg $c
-  foreach w "lf lt f t" {
-      .countdown.$w configure -bg $c
-  }
-  update
-}
 
-proc countdown { op } {
-global FRAME STATUS SCOPE
-  set time $STATUS(countdown)
-  if { $op == "off" || $STATUS(abort) } {
-     place .countdown -y 1000
-     wm geometry . 520x440
-     preparebuttons
-     if { $FRAME == $SCOPE(numframes) } {
-       set SCOPE(numframes) 1
-     }
-     set STATUS(countdown) 0
-     return
-  }
-  .countdown.f configure -text $FRAME
-  .countdown.t configure -text $time
-  if { $STATUS(pause) == 0 } {
-      incr time -1
-  } else {
-      .countdown.t configure -text "$time (HOLD)"
-  }
-  set STATUS(countdown) $time
-  if { $time < 0 } {
-    bgcountdown yellow
-  } else {
-    bgcountdown orange
-  }
-  if { [winfo y .countdown] == 1000 } {
-     wm geometry . 520x555
-     place .countdown -x 0 -y 440
-  }
-  if { $time > -1 } {
-     update
-     after 850 countdown $time
-  } else {
-     if { $STATUS(readout) } {
-       .countdown.t configure -text "READING"
-     }
-  }
-}
-
-
+## Documented proc \c getInterval .
+# \param[in] id A timer identifier
+#
+#  Get interval since a timer was started
+#
+# Globals :
+#		TIMER - Array of timers
+#
 proc getInterval { id op } {
 global TIMER
    switch $op {
@@ -256,14 +216,22 @@ global TIMER
    return $delta
 }
 
+## Documented proc \c obsid .
+#
+#  Generate an observstion identifier
+#
 proc obsid {  } {
   set obsid "wiyn.speckle.20[exec date -u +\%y\%m\%dT\%H\%M\%S]"
   return $obsid
 }
 
 
+## Documented proc \c notheaderGeometry .
+# \param[in] fid FITS file handle of open file
+#
+#  Placeholder for eventual geometry header info 
+#
 proc notheaderGeometry { fid } {
-global IMGSTAT IMGMETA
    set r [fitshdrrecord DATASEC string [calculateXSEC DATASEC] "image portion of frame"]
    $fid put keyword $r
    set r [fitshdrrecord ORIGSEC string [calculateXSEC ORIGSEC] "original size full frame "]
@@ -278,8 +246,15 @@ global IMGSTAT IMGMETA
 
 
 
+## Documented proc \c fitshdrrecord .
+# \param[in] key A FITS header keyword
+# \param[in] type Type of the information, integer, float, double, string
+# \param[in] value The data value
+# \param[in] text The text description of the item
+#
+#  Format a FITS header record
+#
 proc fitshdrrecord { key type value text } {
-global TOMPG
   set record ""
   set v1 [lindex $value 0]
   set fmt 18.4f
@@ -316,6 +291,17 @@ global TOMPG
 }
 
 
+## Documented proc \c appendHeader .
+# \param[in] imgname Name of FITS file
+#
+#  Add the FITS header information to a file
+#
+# Globals :\n
+#		TELEMETRY - Array of telemetry items for headers and database usage\n
+#		SCOPE - Array of telescope parameters\n
+#		env - Environment variables\n
+#		SPECKLEHDRLOG - Cache of header details
+#
 proc appendHeader { imgname } {
 global SPECKLEHDRLOG SCOPE env TELEMETRY
   set hdr [fillheader $env(TELESCOPE)-$SCOPE(instrument)]
@@ -344,20 +330,27 @@ global SPECKLEHDRLOG SCOPE env TELEMETRY
   fits close $fid
 }
 
-set TELEMETRY(tcs.telescope.ra) 12:00:00
-set TELEMETRY(tcs.telescope.dec) 00:00:00
 
+## Documented proc \c jdtout .
+# \param[in] jd Julian date
+#
+#  Calculate UT from Julian date
+#
 proc jdtout { jd } {
   set f [expr $jd - int($jd) + 0.29166666]
   set hms [radians_to_hms [expr $f*2.*3.14159265359]]
 }
 
-
-
-proc hdrtest { args } {
-   puts stdout "$args"
-}
-
+## Documented proc \c calculateXSEC .
+# \param[in] name Geometry section name
+#
+#  Calculate image geometry header data
+#
+#
+# Globals :\n
+#		SCOPE - Array of telescope parameters\n
+#		IMGMETA - Image geometry metadata
+#
 proc calculateXSEC { name } {
 global IMGMETA SCOPE
   set imgcols [expr int($IMGMETA(imageCols,postvalue))]
@@ -391,6 +384,10 @@ global IMGMETA SCOPE
 }
 
 
+## Documented proc \c ccachetelemetry .
+#
+# Keep a cached copy of the telemetry
+#
 proc cachetelemetry { } {
 global TELEMETRY CACHETELEMETRY
    foreach i [array names TELEMETRY] {
@@ -399,6 +396,10 @@ global TELEMETRY CACHETELEMETRY
 }
 
 
+## Documented proc \c getFocus .
+#
+# Calculate WIYN focus setting
+#
 proc getFocus { } {
     set posa [lindex [wiyn info oss.secondary.posa] 0]
     set posb [lindex [wiyn info oss.secondary.posb] 0]
@@ -408,24 +409,25 @@ proc getFocus { } {
     return $current
 }
 
-
-proc dummytest { } {
-global TELEMETRY
-  set TELEMETRY(tcs.time.UTC) "2450213.183315 float"
-  set TELEMETRY(tcs.time.tdt) "2450213.184035 float"
-  set TELEMETRY(tcs.time.LAST) "0.037653 float"
-  set TELEMETRY(tcs.time.delta_AT) "30 integer"
-  set TELEMETRY(tcs.time.delta_UT) "0.546810 float"
-  set TELEMETRY(tcs.time.tai) "2450213.183662 float"
-  set TELEMETRY(tcs.time.tdb) "2450213.184035 float"
-  set TELEMETRY(tcs.time.UT1) "2450213.183321 float"
-  set TELEMETRY(tcs.time.GMST) "1.985395  float"
-  set TELEMETRY(tcs.time.GAST) "1.985412 float"
-}
+# \endcode
 
 #
 #  Initialisation code from here onwards....
 #
+set PDEBUG 0
+set STREAMS ""
+set TELEMETRY(tcs.telescope.ra) 12:00:00
+set TELEMETRY(tcs.telescope.dec) 00:00:00
+set SPECKLEHDRLOG [open /tmp/$env(USER)_headerInfo.log a]
+puts $SPECKLEHDRLOG "Startup at [exec date]"
+set SEQNUM 1
+
+if { [info exists env(TELESCOPE)] } {
+     set TOMPG $env(TELESCOPE)
+} else {
+     puts stdout "SPECKLE Diagnostics - Telescope environment not defined"
+}
+
 set SPECKLE_DIR $env(SPECKLE_DIR)
 load $SPECKLE_DIR/lib/libfitstcl.so
 
@@ -441,6 +443,10 @@ if { $env(TELESCOPE) == "WIYN" } {
   redisConnect
   redisUpdate
   puts stdout "Connected to REDIS server"
+} else {
+  proc redisquery { } { }
+  source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
+  geminiConnect north
 }
 
 foreach i "LSTHDR ELMAP AZMAP TRACK EPOCH TARGRA 
@@ -449,9 +455,6 @@ foreach i "LSTHDR ELMAP AZMAP TRACK EPOCH TARGRA
    set FROMSTARTEXP($i) 1
 }
 
-proc dummyappendHeader { args } {
-    puts stdout "appendHeader is commented out!!!!"
-}
 
 after 5000 cachetelemetry
 
