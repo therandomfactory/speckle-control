@@ -641,6 +641,9 @@ foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpee
 }
 wm withdraw .camerastatus
 
+set CAMSTATUS(red,TKinetics) 0.04
+set CAMSTATUS(blue,TKinetics) 0.04
+
 checkbutton .lowlevel.emccd  -bg gray -text "EMCCD" -variable INSTRUMENT(red,emccd) -command "checkemccdgain red"  -highlightthickness 0
 checkbutton .lowlevel.hgain  -bg gray -text "High Gain" -variable INSTRUMENT(red,highgain) -command "checkemccdgain red"  -highlightthickness 0
 checkbutton .lowlevel.aemccd  -bg gray -text "Auto Set" -variable INSTRUMENT(red,autoemccd) -highlightthickness 0

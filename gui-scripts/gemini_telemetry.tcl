@@ -1,7 +1,23 @@
+## \file gemini_telemetry.tcl
+# \brief This contains procedures to gather Gemini telescope telemetry
 #
-# Gemini translations for TELEMETRY array
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
-
+#
+#\code
+## Documented proc \c geminiConnect .
+# \param[in] scope Telescope id , north or south
+#
+# Connect to the telemery server
+#
+# Globals :
+#		GEMINICFG - Gemini specific proprties
+#
 proc geminiConnect { scope } {
 global GEMINICFG
    set handle -1
@@ -18,8 +34,15 @@ global GEMINICFG
    return $handle
 }
 
+## Documented proc \c flushGemini .
+#
+# Flush the socket buffers
+#
+# Globals :
+#		GEMINICFG - Gemini specific proprties
+#
 proc flushGemini { } {
-global GEMINI GEMINICFG TELEMETRY
+global GEMINICFG
    while { [gets $GEMINICFG(handle) rec] > -1 } {
       debuglog "flushed $rec"
    }
@@ -27,6 +50,15 @@ global GEMINI GEMINICFG TELEMETRY
 
 
 
+## Documented proc \c updateGeminiTelemetry .
+#
+# Update telemetry by querying server
+#
+# Globals :\n
+#		GEMINICFG - Gemini specific proprties\n
+#		GEMINI - Gemini specific items\n
+#		TELEMETRY - Global telemetry array for headers and database
+#
 proc updateGeminiTelemetry { } {
 global GEMINI GEMINICFG TELEMETRY SCOPE
    set all [lsort [array names GEMINI]]
@@ -43,7 +75,7 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
       }
    }
    echoGeminiTelemetry
-   set SCOPE(ProgID) $TELEMETRY($GEMINI(progamid))
+   set SCOPE(ProgID) $TELEMETRY($GEMINI(programid))
    set SCOPE(ra) $TELEMETRY($GEMINI(targetra))
    set SCOPE(dec) $TELEMETRY($GEMINI(targetdec))
    set SCOPE(target) $TELEMETRY($GEMINI(targetname))
@@ -53,6 +85,14 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
 #   }
 }
 
+## Documented proc \c echoGeminiTelemetry .
+#
+# Print out the Gemini telemetry to debug log
+#
+# Globals :\n
+#		GEMINI - Gemini specific items\n
+#		TELEMETRY - Global telemetry array for headers and database
+#
 proc echoGeminiTelemetry { } {
 global GEMINI TELEMETRY
    set all [lsort [array names GEMINI]]
@@ -61,6 +101,15 @@ global GEMINI TELEMETRY
    }
 }
 
+## Documented proc \c simGeminiTelemetry .
+#
+# Simulate Gemini telemetry
+#
+# Globals :\n
+#		GEMINI - Gemini specific items\n
+#		TELEMETRY - Global telemetry array for headers and database\n
+#		CACHETELEMETRY - Cached Global telemetry
+#
 proc simGeminiTelemetry { } {
 global GEMINI TELEMETRY CACHETELEMETRY
    set TELEMETRY($GEMINI(airmass)) 1.000
@@ -101,6 +150,20 @@ global GEMINI TELEMETRY CACHETELEMETRY
    }
 }
 
+## Documented proc \c speckleTelemetryUpdate .
+#
+# Simulate Gemini telemetry
+#
+# Globals :\n
+#		GEMINI - Gemini specific items\n
+#		TELEMETRY - Global telemetry array for headers and database\n
+#		CACHETELEMETRY - Cached Global telemetry\n
+#		SCOPE - Array of telescope properties\n
+#		FITSKEY - Array of FITS keywords for headers\n
+#		ANDOR_CFG - Array of Andor camera parameters\n
+#		CAM - Camera id , 0 or 1\n
+#		IMGMETA - Image metadata
+#
 proc speckleTelemetryUpdate { } {
 global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
    updateGeminiTelemetry
@@ -111,7 +174,7 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
       if { [info exists IMGMETA([lindex [split $i .] end],value)] } {
           set TELEMETRY($i) $IMGMETA([lindex [split $i .] end],value)
       }
-   }
+  }
   set TELEMETRY(speckle.andor.head) "iXon"
   set TELEMETRY(speckle.andor.acquisition_mode) $ANDOR_CFG(acquisition)
   set TELEMETRY(speckle.andor.kinetic_time) $ANDOR_CFG(kineticcycletime)
@@ -138,6 +201,8 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
   set TELEMETRY(speckle.andor.ccdtemp) $ANDOR_CFG(ccdtemp)
   set TELEMETRY(speckle.andor.filter) $ANDOR_CFG(filter)
 }
+
+# \encdode
 
 set ANDOR_CFG(verticalspeeds) "0 0 0 0"
 set CAM 0
