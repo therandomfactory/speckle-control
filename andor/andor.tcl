@@ -337,7 +337,7 @@ global STATUS
 #		ANDOR_CFG - Andor camera properties
 #
 proc fastvideomode { } {
-global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG
+global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG INSTRUMENT
 #   commandAndor red "imagename videomode 1" 0
 #   commandAndor blue "imagename videomode 1" 0
 #   exec rm -f $SCOPE(datadir)/videomode_red.fits
@@ -352,6 +352,30 @@ global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG
      set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / 0.04))]
      commandAndor red "numberkinetics $perrun"
      commandAndor blue "numberkinetics $perrun"
+     commandAndor red  "numberaccumulations $SCOPE(numaccum)"
+     commandAndor blue "numberaccumulations $SCOPE(numaccum)"
+     commandAndor red  "vsspeed $ANDOR_CFG(red,VSSpeed)"
+     commandAndor blue "vsspeed $ANDOR_CFG(blue,VSSpeed)"
+     commandAndor red  "preampgain $ANDOR_CFG(red,PreAmpGain)"
+     commandAndor blue "preampgain $ANDOR_CFG(blue,PreAmpGain)"
+     if { $INSTRUMENT(red,emccd) } {
+       commandAndor red "outputamp $ANDOR_EMCCD"
+       commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
+       commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
+       commandAndor red "hsspeed 0 $ANDOR_CFG(red,EMHSSpeed)"
+     } else {
+       commandAndor red "outputamp $ANDOR_CCD"
+       commandAndor red "hsspeed 1 $ANDOR_CFG(red,HSSpeed)"
+     }
+     if { $INSTRUMENT(blue,emccd) } {
+       commandAndor blue "outputamp $ANDOR_EMCCD"
+       commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
+       commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
+       commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
+     } else {
+       commandAndor blue "outputamp $ANDOR_CCD"
+       commandAndor blue "hsspeed 1 $ANDOR_CFG(red,HSSpeed)"
+     }
      commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $perrun"
      commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]  $perrun"
       if { $SCOPE(exposure) > 0.0 } {
@@ -372,6 +396,7 @@ global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG
 
 
 set CAMSTATUS(blue,TKinetics) .30
+set CAMSTATUS(red,TKinetics)  .30
 
 ## Documented proc \c startvideomode .
 #
@@ -418,12 +443,27 @@ proc showControl { } {
 proc testControl { } {
    andorSetControl 0 luckythresh 99
    andorSetControl 1 luckythresh 123
-   andorSetControl 0 showfft
-   andorSetControl 0 savelucky
-   andorSetControl 0 showlucky
-   andorSetControl 0 abort
+   andorSetControl 0 showfft 0
+   andorSetControl 0 savelucky 0
+   andorSetControl 0 showlucky 0
+   andorSetControl 0 abort 0
 }
 
+## Documented proc \c initControl .
+#
+#  Set inital default values in the SharedMem2 shared memory area which is used
+#  for high speed data sharing with the Andor camera servers
+#
+proc initControl { } {
+   andorSetControl 0 luckythresh 99
+   andorSetControl 1 luckythresh 99
+   andorSetControl 0 frame 0
+   andorSetControl 1 frame 0
+   andorSetControl 0 showfft 0
+   andorSetControl 0 savelucky 0
+   andorSetControl 0 showlucky 0
+   andorSetControl 0 abort 0
+}
 
 
 ## Documented proc \c acquireCubes .
@@ -541,6 +581,7 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION
    debuglog "Andor reset complete"
 }
 #\endcode
+
 
 set ANDOR_MODES(readout) 		"full_vertical_binning multi_track random_track single_track image"
 set ANDOR_MODES(acquisition)		"single_scan accumulate kinetics fast_kinetics run_till_abort"

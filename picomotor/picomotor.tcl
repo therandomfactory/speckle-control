@@ -1,45 +1,73 @@
-#!/usr/bin/tclsh
-
+## \file picomotor.tcl
+# \brief This contains routines for controlling the picomotors
 #
-# This Source Code Form is subject to the terms of the GNU Public
-# License, v. 2.1. If a copy of the GPL was not distributed with this file,
-# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
-# Copyright(c) 2017 The Random Factory (www.randomfactory.com) 
 #
+#\code
+## Documented proc \c loadPicosConfig .
+# \param[in] fname Name of configuration file
 #
-
-
-set SPECKLE_DIR $env(SPECKLE_DIR)
-set PICOS(ipoll) 1000
-
+#  Load pico motors configuration
+#
+# Globals :\n
+#		SPECKLE_DIR - Directory path of speckle code\n
+#		PICOS - Array of pico configuration data
+#
 proc loadPicosConfig { {fname picomotorConfiguration} } {
-global SPECKLE_DIR SPKCONFIG PICOS
+global SPECKLE_DIR PICOS
    if { [file exists $SPECKLE_DIR/$fname] == 0 } {
      errordialog "Picos configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
      source $SPECKLE_DIR/$fname
-     set SPKCONFIG(picoChange) 0
    }
    logPicosConfig
    debuglog "Loaded PICO configuration"
 }
 
+## Documented proc \c savePicosConfig .
+# \param[in] fname Name of configuration file
+#
+#  Load pico motors configuration
+#
+# Globals :\n
+#		SPECKLE_DIR - Directory path of speckle code\n
+#		PICOS - Array of pico configuration data
+#
 proc savePicosConfig { fname } {
-global SPECKLE_DIR  SPKCONFIG PICOS
+global SPECKLE_DIR PICOS
    set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh
    echoPicosConfig $fcfg
    close $fcfg
-   set SPKCONFIG(picoChange) 0
    debuglog "Saved Picos configuration in $SPECKLE_DIR/$fname"
 }
 
+## Documented proc \c logPicosConfig .
+#
+#  Log pico motors configuration
+#
+# Globals :\n
+#		FLOG - File handle of open log 
+#
 proc logPicosConfig { } {
 global FLOG
   echoPicosConfig $FLOG
 }
 
+## Documented proc \c savePicosConfig .
+# \param[in] fcfg File handle
+#
+#  Print pico motors configuration
+#
+# Globals :\n
+#		PICOS - Array of pico configuration data
+#
 proc echoPicosConfig { fcfg } {
 global PICOS
    puts $fcfg  "# Picos stage configuration parameters : [exec date]"
@@ -53,7 +81,14 @@ global PICOS
 }
 
 
-proc picosConnect { axis } {
+## Documented proc \c picosConnect .
+#
+#  Connect to pico motors port
+#
+# Globals :\n
+#		PICOS - Array of pico configuration data
+#
+proc picosConnect { } {
 global PICOS
    set handle -1
    set handle [socket $PICOS(ip) 23]
@@ -68,6 +103,15 @@ global PICOS
    return $handle
 }
 
+## Documented proc \c picoCommand .
+# \param[in] axis Number of axis 1,2,3
+# \param[in] cmd  Command text
+#
+#  Send a command to pico axis 
+#
+# Globals :\n
+#		PICOS - Array of pico configuration data
+#
 proc picoCommand { axis cmd } {
 global PICOS
    debuglog "Commanding $axis picomotor - $cmd"
@@ -91,6 +135,16 @@ global PICOS
    return $rec
 } 
 
+## Documented proc \c picoSet .
+# \param[in] axis Number of axis 1,2,3
+# \param[in] par  Parameter name
+# \param[in] value New value for parameter
+#
+#  Send a command to pico axis 
+#
+# Globals :\n
+#		PICOS - Array of pico configuration data
+#
 proc picoSet { axis par {value ""} } {
 global PICOS
    debuglog "PICO command set $axis $par $value"
@@ -108,25 +162,48 @@ global PICOS
   }
 }
 
+## Documented proc \c picoSet .
+#
+#  Initialize the pico motor axes
+#
 proc picosInitialize { } {
-global PICOS
    debuglog "Initializing PICO stages"
-   picoSet X out
-   picoSet Y out
+   picoSet X RS
+   picoSet Y RS
+   picoSet Z RS
 }
 
+## Documented proc \c picosInPosition .
+#
+#  Move pico motor axes to in position
+#
 proc picosInPosition { } {
    debuglog "Set PICO position to in "
    picoSet X in
    picoSet Y in
+   picoSet Z in
 }
 
+## Documented proc \c picoOutPosition .
+#
+#  Move pico motor axes to out position
+#
 proc picosOutPosition { } {
    debuglog "Set PICO position to out"
    picoSet X out
    picoSet Y out
+   picoSet Z out
 }
 
+## Documented proc \c jogPico .
+# \param[in] axis Number of axis 1,2,3
+# \param[in] delta Steps to move
+#
+#  Adjust pico motor axis position
+#
+# Globals :
+#		PICOS - Array of pico configuration data
+#
 proc jogPico { axis delta } {
 global PICOS
    debuglog "Jog PICO $axis $delta"
@@ -135,6 +212,15 @@ global PICOS
 
 
 
+## Documented proc \c picoGet .
+# \param[in] axis Number of axis 1,2,3
+# \param[in] par Parameter to query
+#
+#  Get pico axis status
+#
+# Globals :
+#		PICOS - Array of pico configuration data
+#
 proc picoGet { axis par } {
 global PICOS
    if { $PICOS(sim) } {
@@ -154,6 +240,13 @@ global PICOS
    return $PICOS($axis,$par)
 }
 
+## Documented proc \c picoMonitor .
+#
+#  Poll axis positions and status
+#
+# Globals :
+#		PICOS - Array of pico configuration data
+#
 proc picoMonitor { } {
 global PICOS
   if { $PICOS(ipoll) > 0 } {
@@ -166,18 +259,27 @@ global PICOS
 }
 
 
+## Documented proc \c picoUseCurrentPos .
+#
+#  Set station position to current axis position
+#
+# Globals :
+#		PICOS - Array of pico configuration data
+#
 proc picoUseCurrentPos { station } {
-global PICOS SPKCONFIG
+global PICOS
    set PICOS(X,$station) [picoGet X position]
    debuglog "picomotor X $station set to $PICOS(X,$station)"
    set PICOS(Y,$station) [picoGet Y position]
    debuglog "picomotor Y $station set to $PICOS(Y,$station)"
-   set SPKCONFIG(picoChange) 1
 }
 
 
+## Documented proc \c picoHelp .
+#
+#  Help stub for potential implmentation as a service
+#
 proc picoHelp { } {
-global PICOS
    puts stdout "
 Supported commands : 
    picoSet \[ enable | disable | poslimit | neglimit | stop | reset \]
@@ -186,7 +288,11 @@ Supported commands :
 "
 }
 
-loadPicosConfig
+
+# \endcode
+
+set SPECKLE_DIR $env(SPECKLE_DIR)
+set PICOS(ipoll) 1000
 set PICOS(sim) 0
 if { [info exists env(SPECKLE_SIM)] } {
    set simdev [split $env(SPECKLE_SIM) ,]
@@ -195,10 +301,11 @@ if { [info exists env(SPECKLE_SIM)] } {
        set PICOS(X,position) 0 
        set PICOS(Y,position) 0
    } else {
+       loadPicosConfig
        picosConnect 
+       picosInitialize
    }
 }
 
-picosInitialize
 
 
