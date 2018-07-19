@@ -1,3 +1,9 @@
+/** 
+ * \file oriel_tcl.cpp
+ * \brief Tcl wrapper for Oriel filter wheel control
+ * 
+ */
+
 /* 
    This file contains the tcl interface routine to high level API for Nessi Oriel filter wheel
 
@@ -8,15 +14,15 @@
    License, v. 2.1. If a copy of the GPL was not distributed with this file,
    You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  
-  Copyright(c) 2017 The Random Factory (www.randomfactopry.com)  
+  Copyright(c) 2017 The Random Factory (www.randomfactory.com)  
  */
 
  
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <tcl.h>
-#include <tk.h>
+#include "tcl.h"
+#include "tk.h"
 #include <math.h>
 #include <time.h>
 #include <stdlib.h>
@@ -28,10 +34,50 @@
 #include <stdint.h>
 #include "GenOneLinuxUSB.h" 
 
+extern "C" {
+
+/** 
+ * \brief ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_oriel_connect(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \brief ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
+
 int tcl_oriel_write_cmd(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \brief ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
+
 int tcl_oriel_read_result(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \brief ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
+
 int tcl_oriel_disconnect(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \brief Initialize the wrapper commands
+ * \param Tcl_Interp interpreter pointer
+ *
+ */
+int orielAppInit(Tcl_Interp *interp);
+
 
 char *result;
 GenOneLinuxUSB *filterWheel[3];
@@ -143,7 +189,6 @@ int tcl_oriel_disconnect(ClientData clientData, Tcl_Interp *interp, int argc, ch
              tcl interface routines
  */
 
-extern "C" {
 int orielAppInit(Tcl_Interp *interp)
 {
 
