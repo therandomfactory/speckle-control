@@ -649,12 +649,6 @@ set SCOPE(equinox) [format %7.2f [expr [lindex $d 0]+[lindex $d 1]./12.]]
 #  Reset to the last used configuration if available
 #
 set SCOPE(datadir) $env(HOME)/data
-
-
-if { [file exists $env(HOME)/.specklegui] } {
-   source $env(HOME)/.specklegui
-}
-
 set SCOPE(darktime) 0.0
 set SCOPE(numframes) 1
 set SCOPE(numseq) 1

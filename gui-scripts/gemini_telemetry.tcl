@@ -29,6 +29,7 @@ global GEMINICFG
      debuglog "Connected to Gemini $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) - OK"
      set GEMINICFG(handle) $handle
    }
+   set GEMINICFG(site) $scope
    puts $GEMINICFG(handle) "get airmass"
    gets $GEMINICFG(handle) rec
    return $handle
@@ -63,7 +64,12 @@ proc updateGeminiTelemetry { } {
 global GEMINI GEMINICFG TELEMETRY SCOPE
    set all [lsort [array names GEMINI]]
    foreach t $all {
-      puts $GEMINICFG(handle) "get $t\n"
+      set ok "none"
+      catch { set ok [puts $GEMINICFG(handle) "get $t\n"] } res
+      if { $ok == "none" } { 
+        debuglog "Gemini telemetry lost - reconnecting"
+        geminiConnect $GEMINICFG(site)
+      }
    }
    after 500
    while { [gets $GEMINICFG(handle) rec] > -1 } {
@@ -79,6 +85,7 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
    set SCOPE(ra) $TELEMETRY($GEMINI(targetra))
    set SCOPE(dec) $TELEMETRY($GEMINI(targetdec))
    set SCOPE(target) $TELEMETRY($GEMINI(targetname))
+   set TELEMETRY(tcs.target.name) $SCOPE(target)
 #   set all [lsort [array names GEMINI]]
 #   foreach i $all {
 #      set CACHETELEMETRY($GEMINI($t)) $TELEMETRY($GEMINI($t))
