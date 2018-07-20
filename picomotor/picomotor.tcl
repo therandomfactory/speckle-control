@@ -128,9 +128,13 @@ global PICOS
      set PICOS($axis,current) $PICOS($axis,position)
    } else {
      debuglog "Sending PICO command $axis $cmd"
-     puts $PICOS(handle) "$PICOS($axis) $cmd"
-     after 100
-     gets $PICOS(handle) rec
+     exec curl  -o /tmp/picoresult http://10.2.110.11/cmd_send.cgi?cmd=[set cmd]%3F\\&submit=Send
+     set res [split [exec cat /tmp/picoresult] \n]
+     set ack [string trim [lindex $res [expr [lsearch $res "#response"] +2]] ">"]
+     debuglog "Response = $ack"
+###     puts $PICOS(handle) "$PICOS($axis) $cmd"
+###     after 100
+###     gets $PICOS(handle) rec
    }
    return $rec
 } 

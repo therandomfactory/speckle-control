@@ -535,6 +535,7 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
    if { $mode == "fullframe" } {
      exec xterm -e "$SPECKLE_DIR/andor/andorServer.tcl 1 1 1024 1 1024" &
+     after 1000
      exec xterm -e "$SPECKLE_DIR/andor/andorServer.tcl 2 1 1024 1 1024" &
      set LASTACQ fullframe
    } else {

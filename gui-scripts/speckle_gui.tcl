@@ -44,7 +44,7 @@ global SCOPE
    if { $it } {
      if { $SCOPE(telescope) == "GEMINI" } {
         debuglog "Moving Gemini mechanisms to stowed positions"
-        picosOutPosition
+        catch {picosOutPosition}
         zaberGoto focus stow
         zaberGoto pickoff out
      }
@@ -619,7 +619,7 @@ toplevel .camerastatus -width 400 -height 520 -bg gray
 wm title .camerastatus "Camera Configrations" 
 label .camerastatus.lred -text "Red Arm" -bg gray
 label .camerastatus.lblue -text "Blue Arm" -bg gray
-place .camerastatus.lred -x 400 -y 10
+place .camerastatus.lred -x 200 -y 10
 place .camerastatus.lblue -x 300 -y 10
 
 set iy 40
@@ -633,7 +633,7 @@ foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain EMHSSp
    incr iy 25
 }
 button .camerastatus.done -text "Close" -fg black -bg orange -width 45 -command "wm withdraw .camerastatus"
-place .camerastatus.done -x 20 -y 475
+place .camerastatus.done -x 20 -y 500
 wm geometry .camerastatus 430x550+20+20
 foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
    set CAMSTATUS(red,$p) "???"
@@ -941,7 +941,7 @@ if { [file exists $env(HOME)/.specklegui] } {
 
 set SCOPE(imagename) "N[exec date +%Y%m%d]_[format %6.6d [set SCOPE(seqnum)]]"
 catch {
-    set all [glob $SCOPE(datadir)/N*.fits]
+    set all [lsort [glob $SCOPE(datadir)/N*.fits]]
     set last [split [lindex $all end] _]
     set SCOPE(seqnum) [expr [string trimleft [lindex $last 2] 0] +1]
 }

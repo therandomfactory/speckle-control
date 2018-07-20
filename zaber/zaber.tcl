@@ -1,21 +1,37 @@
 #!/usr/bin/wish
-
+## \file zaber.tcl
+# \brief This contains procedures for Zaber device control
 #
-# This Source Code Form is subject to the terms of the GNU Public
-# License, v. 2.1. If a copy of the GPL was not distributed with this file,
-# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
-# Copyright(c) 2017 The Random Factory (www.randomfactory.com) 
+# Arm A = blue
+# Arm B = red
+#
+#\code
+#
+
+## Documented proc \c errordialog .
+#
+#  Print error message
+#
+proc errordialog { msg } {puts stdout $msg}
+
+## Documented proc \c loadZaberConfig .
+# \param[in] fname Name of configuration file
+#
+#  Load zaber device configrations
 #
 #
-# A = blue
-# B = red
-
-set SPECKLE_DIR $env(SPECKLE_DIR)
-
-#source ../util/common.tcl
-proc errordialog { msg} {puts stdout $msg}
-
+# Globals :\n
+#		ZABERS - Array of Zaber device configuration and state\n
+#		SCOPE - Array of telescope parameters\n
+#		SPECKLE_DIR - Directory path of speckle code
+#
 proc loadZaberConfig { {fname zabersConfiguration} } {
 global SPECKLE_DIR ZABERS SCOPE
    if { $SCOPE(telescope) == "GEMINI" } {  
@@ -25,26 +41,53 @@ global SPECKLE_DIR ZABERS SCOPE
      errordialog "Zaber configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
      source $SPECKLE_DIR/$fname
-     set NESCONFIG(zaberChange) 0
      debuglog "Loaded Zaber configuration from $SPECKLE_DIR/$fname"
    }
 }
 
+## Documented proc \c saveZaberConfig .
+# \param[in] fname Name of configuration file
+#
+#  Save zaber device configrations
+#
+#
+# Globals :\n
+#		ZABERS - Array of Zaber device configuration and state\n
+#		SPECKLE_DIR - Directory path of speckle code
+#
 proc saveZaberConfig { fname } {
 global SPECKLE_DIR ZABERS
    set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh
    echoZaberConfig $fcfg
    close $fcfg
-   set NESCONFIG(zaberChange) 0
    debuglog "Saved Zaber configuration in $SPECKLE_DIR/$fname"
 }
 
+## Documented proc \c logZaberConfig .
+# \param[in] fname Name of configuration file
+#
+#  Log zaber configuration info
+#
+#
+# Globals :\n
+#		FLOG - File handle of open log file
+#
 proc logZaberConfig { } {
 global FLOG
   echoZaberConfig $FLOG
 }
 
+## Documented proc \c echoZaberConfig .
+# \param[in] fcfg File handle to log to
+#
+#  Print zaber configuration info
+#
+#
+# Globals :\n
+#		ZABERS - Array of Zaber device configuration and state\n
+#		SCOPE - Array of telescope parameters
+#
 proc echoZaberConfig { {fcfg stdout} } {
 global ZABERS SCOPE
    puts $fcfg  "# Zaber stage configuration parameters
@@ -70,6 +113,17 @@ set ZABERS(port) $ZABERS(port)
    flush $fcfg
 }
 
+## Documented proc \c zaberPrintProperties .
+# \param[in] fd File handle to log to
+#
+#  Print zaber properties and values
+#
+#
+# Globals :\n
+#		ZABERS - Array of Zaber device configuration and state\n
+#		ZPROPERTIES - Array of device properties
+#		SCOPE - Array of telescope parameters
+#
 proc zaberPrintProperties { {fd stdout} } {
 global ZABERS ZPROPERTIES SCOPE
    if { $SCOPE(telescope) == "WIYN" } {
@@ -87,6 +141,14 @@ global ZABERS ZPROPERTIES SCOPE
 }
 
 
+## Documented proc \c zaberConnect .
+#
+#  Connect to zabers devices usb serial port
+#
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
 proc zaberConnect { } {
 global ZABERS
    set handle -1
@@ -115,12 +177,27 @@ global ZABERS
    return $handle
 }
 
+## Documented proc \c zaberDisconnect .
+#
+#  Disconnect from zabers devices usb serial port
+#
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
 proc zaberDisconnect { } {
 global ZABERS
    debuglog "Disconnecting from Zabers"
    close $ZABERS(handle)
 }
 
+## Documented proc \c homeZabers .
+#
+#  Send all zabers to the HOME position
+#
+#
+# Globals :
+#		SCOPE - Array of telescope configuration
 proc homeZabers { } {
 global SCOPE
    zaberCommand A home
@@ -133,6 +210,19 @@ global SCOPE
    after 5000 zaberCheck
 }
 
+## Documented proc \c zaberCommand .
+# \param[in] name Name of device
+# \param[in] Command string
+#
+#  Send a command to a zaber device
+#
+#
+# Globals :\n
+#		ZABERS - Array of Zaber device configuration and state\n
+#		ZPROP - Commanded property name\n
+#		ZNAME - Commanded device name\n
+#		ZSIMPROP - Simulated property value
+#
 proc zaberCommand { name cmd } {
 global ZABERS ZPROP ZNAME ZSIMPROP
   if { $ZABERS(handle) > 0 } {
@@ -153,6 +243,13 @@ global ZABERS ZPROP ZNAME ZSIMPROP
   }
 }
 
+## Documented proc \c zaberCheck .
+#
+#  Query zaber for current settings
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
 proc zaberCheck { } {
 global ZABERS SCOPE
  if { $ZABERS(sim) == 0 } {
@@ -187,6 +284,17 @@ global ZABERS SCOPE
 }
 
 
+## Documented proc \c zaberReader .
+# \param[in] fh Socket handle
+#
+#  Read all available zaber feedback
+#
+# Globals :\n
+#		ZABERS - Array of Zaber device configuration and state\n
+#		ZPROP - Commanded property name\n
+#		ZNAME - Commanded device name\n
+#		ZSIMPROP - Simulated property value
+#
 proc zaberReader { fh } {
 global ZABERS ZPROP ZNAME ZSIMPROP
   if { $ZABERS(sim) } {
@@ -204,6 +312,15 @@ global ZABERS ZPROP ZNAME ZSIMPROP
   }
 }
 
+## Documented proc \c zaberGetProperties .
+# \param[in] name Name of device
+#
+#  Send commands to query all property values
+#
+# Globals :\n
+#		ZABERS - Array of Zaber device configuration and state\n
+#		ZPROPERTIES - Array of device properties
+#
 proc zaberGetProperties { name } {
 global ZABERS ZPROPERTIES
    foreach p [split $ZPROPERTIES \n] {
@@ -212,6 +329,209 @@ global ZABERS ZPROPERTIES
        update
    }
 }
+
+
+## Documented proc \c zaberSetPos .
+# \param[in] name Name of device
+# \param[in] pos Position value
+#
+#  Send commands set a device position
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc zaberSetPos  { name pos } {
+global ZABERS
+   if { $ZABERS(sim) } {
+     debuglog "Zaber simulate : $name $pos"
+   } else {
+     zaberCommand $name  "move abs $pos"
+   }
+}
+
+## Documented proc \c zaberSetProperty .
+# \param[in] name Name of device
+# \param[in] property Name of property
+# \param[in] value New value for property
+#
+#  Send commands set a device property
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc zaberSetProperty { name property value } {
+   zaberCommand $name "set $property $value"
+}
+ 
+
+## Documented proc \c zaberEngpos .
+# \param[in] name Name of device
+#
+#  Send defvice to a named position
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc zaberEngpos { name } {
+global ZABERS
+  set newp $ZABERS($name,target)
+  set res [zaberSetPos $name $newp]
+}
+
+
+## Documented proc \c zaberGoto .
+# \param[in] name Name of device
+#
+#  Send device to a named position and update mimic diagram
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc zaberGoto { name pos } {
+global ZABERS
+  set newp $ZABERS($name,$pos)
+  set res [zaberSetPos $name $newp]
+  if { $name == "input"  } {
+    mimicMode input $pos
+  } else {
+    catch {mimicMode $ZABERS($name,arm) $pos}
+  }
+  after 5000 zaberCheck
+}
+
+## Documented proc \c zaberConfigurePos .
+# \param[in] name Name of device
+# \param[in] property Name of property
+# \param[in] value New value for property
+#
+#  Send device to a named position and update mimic diagram
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc zaberConfigurePos { name property {value current} } {
+global ZABERS
+    if { $value == "current" } {
+        set ZABERS($name,$property) $ZABERS($name,pos)
+    } else {
+        set ZABERS($name,$property) $value
+    }   
+}
+
+## Documented proc \c zaberHelp .
+#
+#  Print zaber command menu
+#
+proc zaberHelp { } {
+global ZABERS
+   puts stdout "
+Supported commands : 
+    estop
+    home
+    speckle
+    wide
+    in
+    out
+    move abs nnn
+    move rel nnn
+    set xxx
+"
+}
+
+## Documented proc \c zaberStopAll .
+#
+#  Stop all zaber device motion
+#
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc zaberStopAll { } {
+global ZABERS
+  debuglog "Zabers estop"
+  foreach d [array names ZABERS] {
+     if { [lindex [split $d ,] 1] == "device" } {
+        set id [lindex [split $d ,] 0]
+        puts stdout "Requested estop for device $id"
+        zaberCommand $id estop
+     }
+  }
+}
+
+## Documented proc \c positionZabers .
+#
+#  Move all zabers to requested station
+#
+proc positionZabers { station } {
+   debuglog "Configure Zabers for $station"
+   if { $station == "fullframe" } {
+      zaberGoto A wide   
+      zaberGoto B wide
+      zaberGoto input wide
+   }
+   if { $station == "roi" } {
+      zaberGoto A speckle  
+      zaberGoto B speckle
+      zaberGoto input speckle
+   }
+   after 5000 zaberCheck
+}
+
+## Documented proc \c positionSpeckle .
+#
+#  Move zabers to Speckle mode positions
+#
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc positionSpeckle { arm station } {
+global ZABERS
+   debuglog "Configure $arm Zaber for $station"
+   if { $station == "fullframe" } {
+      if { $ZABERS(A,arm) == $arm } {zaberGoto A wide} 
+      if { $ZABERS(B,arm) == $arm } {zaberGoto B wide} 
+      zaberGoto input wide
+   }
+   if { $station == "roi" } {
+      if { $ZABERS(A,arm) == $arm } {zaberGoto A speckle} 
+      if { $ZABERS(B,arm) == $arm } {zaberGoto B speckle} 
+      zaberGoto input speckle
+   }
+   after 5000 zaberCheck
+}
+
+
+
+## Documented proc \c zaberService .
+#
+#  Optional routine to setup zabers as a server
+#
+#
+proc zaberService { name cmd {a1 ""} {a2 ""} } {
+   switch $cmd {
+      estop       {zaberStopAll}
+      home        {zaberCommand $name home}
+      speckle     {zaberGoto $name speckle}
+      in          {zaberCommand $name in}
+      out         {zaberCommand $name out}
+      wide        {zaberGoto $name wide}
+      move        {zaberCommand $name "move $a1 $a2"}
+      set         {zaberSetProperty $a1 $a2}
+   }
+}
+
+
+# \endcode
+
+if { [info exists env(SPECKLE_SIM)] } {
+   set simdev [split $env(SPECKLE_SIM) ,]
+   if { [lsearch $simdev zaber] > -1 } {
+       set ZABERS(sim) 1
+   }
+}
+
+
 
 set ZPROPERTIES "system.serial
 deviceid
@@ -244,135 +564,7 @@ driver.current.hold
 driver.current.max
 resolution"
 
-
-
-proc zaberSetPos  { name pos } {
-global ZABERS
-   if { $ZABERS(sim) } {
-     debuglog "Zaber simulate : $name $pos"
-   } else {
-     zaberCommand $name  "move abs $pos"
-   }
-}
-
-proc zaberSetProperty { name property value } {
-   zaberCommand $name "set $property $value"
-}
- 
-proc zaberLed { name state } {
-   zaberSetProperty system.led.enable $state
-}
-
-proc zaberEngpos { name } {
-global ZABERS
-  set newp $ZABERS($name,target)
-  set res [zaberSetPos $name $newp]
-}
-
-
-proc zaberGoto { name pos } {
-global ZABERS
-  set newp $ZABERS($name,$pos)
-  set res [zaberSetPos $name $newp]
-  if { $name == "input"  } {
-    mimicMode input $pos
-  } else {
-    catch {mimicMode $ZABERS($name,arm) $pos}
-  }
-  after 5000 zaberCheck
-}
-
-proc zaberConfigurePos { name property {value current} } {
-global ZABERS
-    if { $value == "current" } {
-        set ZABERS($name,$property) $ZABERS($name,pos)
-    } else {
-        set ZABERS($name,$property) $value
-    }   
-}
-
-
-proc zaberHelp { } {
-global ZABERS
-   puts stdout "
-Supported commands : 
-    estop
-    home
-    speckle
-    wide
-    in
-    out
-    move abs nnn
-    move rel nnn
-    set xxx
-"
-}
-
-proc zaberStopAll { } {
-global ZABERS
-  debuglog "Zabers estop"
-  foreach d [array names ZABERS] {
-     if { [lindex [split $d ,] 1] == "device" } {
-        set id [lindex [split $d ,] 0]
-        puts stdout "Requested estop for device $id"
-        zaberCommand $id estop
-     }
-  }
-}
-
-proc positionZabers { station } {
-   debuglog "Configure Zabers for $station"
-   if { $station == "fullframe" } {
-      zaberGoto A wide   
-      zaberGoto B wide
-      zaberGoto input wide
-   }
-   if { $station == "roi" } {
-      zaberGoto A speckle  
-      zaberGoto B speckle
-      zaberGoto input speckle
-   }
-   after 5000 zaberCheck
-}
-
-proc positionSpeckle { arm station } {
-global ZABERS
-   debuglog "Configure $arm Zaber for $station"
-   if { $station == "fullframe" } {
-      if { $ZABERS(A,arm) == $arm } {zaberGoto A wide} 
-      if { $ZABERS(B,arm) == $arm } {zaberGoto B wide} 
-      zaberGoto input wide
-   }
-   if { $station == "roi" } {
-      if { $ZABERS(A,arm) == $arm } {zaberGoto A speckle} 
-      if { $ZABERS(B,arm) == $arm } {zaberGoto B speckle} 
-      zaberGoto input speckle
-   }
-   after 5000 zaberCheck
-}
-
-
-
-proc zaberService { name cmd {a1 ""} {a2 ""} } {
-   switch $cmd {
-      estop       {zaberStopAll}
-      home        {zaberCommand $name home}
-      speckle     {zaberGoto $name speckle}
-      in          {zaberCommand $name in}
-      out         {zaberCommand $name out}
-      wide        {zaberGoto $name wide}
-      move        {zaberCommand $name "move $a1 $a2"}
-      set         {zaberSetProperty $a1 $a2}
-   }
-}
-
-if { [info exists env(SPECKLE_SIM)] } {
-   set simdev [split $env(SPECKLE_SIM) ,]
-   if { [lsearch $simdev zaber] > -1 } {
-       set ZABERS(sim) 1
-   }
-}
-
+set SPECKLE_DIR $env(SPECKLE_DIR)
 loadZaberConfig
 echoZaberConfig
 zaberConnect
@@ -392,7 +584,7 @@ if { $ZABERS(sim) == 0 } {
   zaberGoto input wide
   if { $SCOPE(telescope) == "GEMINI" } {
        set ZABERS(focus,readpos) "simulate"
-       set ZABERS(pickoff,readpos) "simulate)
+       set ZABERS(pickoff,readpos) "simulate"
        zaberCommand focus home
        zaberCommand pickoff home
        after 2000
