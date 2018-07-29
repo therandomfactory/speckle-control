@@ -251,6 +251,21 @@ proc setOrielFilter { id n } {
    return -1
 }
 
+## Documented proc \c checkAutoFilter .
+#
+#  Returns sequence for automatic filter cycling
+#
+proc checkAutoFilter { } {
+global FWHEELS
+   set aseq ""
+   foreach i "1 2 3 4 5 6" {
+      if { $FWHEELS(auto$i) } {lappend aseq $i}
+   }
+   if { $aseq == "" } {return 0}
+   return $aseq
+}
+
+
 
 
 # \endcode
@@ -268,36 +283,40 @@ set MAXFILTERS 6
 destroy .filters
 toplevel .filters -bg gray
 wm title .filters "SPECKLE Filter Wheels control"
-label .filters.lpos   -text "Red Position" -bg gray -fg black
+label .filters.lauto  -text "Auto" -bg gray -fg black
+label .filters.lpos   -text "Red" -bg gray -fg black
 label .filters.lname  -text "Red Filter Name" -bg gray -fg black
-label .filters.lfocus -text "Red Focus offset" -bg gray -fg black
-label .filters.lbpos   -text "Blue Position" -bg gray -fg black
+label .filters.lfocus -text "Focus offset" -bg gray -fg black
+label .filters.lbpos   -text "Blue" -bg gray -fg black
 label .filters.lbname  -text "Blue Filter Name" -bg gray -fg black
-label .filters.lbfocus -text "Blue Focus offset" -bg gray -fg black
-place .filters.lpos -x 30 -y 20
-place .filters.lname -x 150 -y 20
-place .filters.lfocus -x 290 -y 20
-place .filters.lbpos -x 400 -y 20
-place .filters.lbname -x 520 -y 20
-place .filters.lbfocus -x 680 -y 20
+label .filters.lbfocus -text "Focus offset" -bg gray -fg black
+place .filters.lauto -x 5 -y 20
+place .filters.lpos -x 80 -y 20
+place .filters.lname -x 180 -y 20
+place .filters.lfocus -x 320 -y 20
+place .filters.lbpos -x 440 -y 20
+place .filters.lbname -x 540 -y 20
+place .filters.lbfocus -x 690 -y 20
 
 wm geometry .filters 773x[expr $MAXFILTERS*35 + 110]+10+170
 set i 0
 set iy 50
 while { $i < $MAXFILTERS } {
    incr i 1
+   checkbutton .filters.auto$i -bg gray -variable FWHEELS(auto$i) -highlightthickness 0
    button .filters.fred$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter red $i" -width 8
    entry  .filters.namered$i -textvariable FWHEELS(red,$i) -bg LightBlue -fg black -width 20
    entry  .filters.focusred$i -textvariable FWHEELS(red,$i,focus) -bg LightBlue -fg black -width 8
-   place  .filters.fred$i -x 20 -y $iy
+   place  .filters.auto$i -x 10 -y $iy
+   place  .filters.fred$i -x 50 -y $iy
    button .filters.fblue$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter blue $i" -width 8
    entry  .filters.nameblue$i -textvariable FWHEELS(blue,$i) -bg LightBlue -fg black -width 20
    entry  .filters.focusblue$i -textvariable FWHEELS(blue,$i,focus) -bg LightBlue -fg black -width 8
-   place  .filters.fblue$i -x 390 -y $iy
+   place  .filters.fblue$i -x 410 -y $iy
    incr iy 3
-   place  .filters.namered$i -x 130 -y $iy
-   place  .filters.focusred$i -x 310 -y $iy
-   place  .filters.nameblue$i -x 500 -y $iy
+   place  .filters.namered$i -x 150 -y $iy
+   place  .filters.focusred$i -x 325 -y $iy
+   place  .filters.nameblue$i -x 510 -y $iy
    place  .filters.focusblue$i -x 690 -y $iy
    incr iy 30
 }

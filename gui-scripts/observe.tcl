@@ -289,8 +289,6 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  }
  commandAndor red  "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
- commandAndor red  "filter $SPECKLE_FILTER(red,current)"
- commandAndor blue "filter $SPECKLE_FILTER(blue,current)"
  set cmt [join [split [string trim [.main.comment get 0.0 end]] \n] "|"]
  commandAndor red "comments $cmt"
  commandAndor blue "comments $cmt"
@@ -298,84 +296,95 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  commandAndor blue "datadir $SCOPE(datadir)"
  andorSetControl 0 frame 0
  andorSetControl 1 frame 0
- while { $iseqnum < $SCOPE(numseq) } {
-  set ifrmnum 0
-  while { $ifrmnum < $SCOPE(numframes) } {
-   incr iseqnum 1
-   incr ifrmnum 1
-   set dfrmnum $ifrmnum
-   set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
-   set STATUS(abort) 0
-   .main.observe configure -text "working" -bg green -relief sunken
-   .main.abort configure -bg orange -relief raised -fg black
-   wm geometry .countdown
-   set i 1
-   if { $SCOPE(exptype) == "Zero" || $SCOPE(exptype) == "Dark" } {
-     commandAndor red  "shutter $ANDOR_SHUTTER(close)"
-     commandAndor blue "shutter $ANDOR_SHUTTER(close)"
-     mimicMode red close
-     mimicMode blue close
-   } else {
-     commandAndor red  "shutter $ANDOR_SHUTTER(auto)"
-     commandAndor blue "shutter $ANDOR_SHUTTER(auto)"
-     mimicMode red open
-     mimicMode blue open
+ set autofilter [checkAutoFilter]
+ while { autofilter != "" } {
+   set nfilter [lindex $autofilter 0]
+   if { $nfilter > 0 } {
+    selectFilter red $nfilter
+    selectFilter blue $nfilter
+    commandAndor red  "filter $SPECKLE_FILTER(red,current)"
+    commandAndor blue "filter $SPECKLE_FILTER(blue,current)"
    }
-   commandAndor red "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
-   commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
-   if { $LASTACQ == "fullframe" && $SCOPE(numframes) > 1 } {
-     commandAndor red "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
-     commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
+   set autofilter [lrange $autofilter 1 end]
+   while { $iseqnum < $SCOPE(numseq) } {
+    set ifrmnum 0
+    while { $ifrmnum < $SCOPE(numframes) } {
+     incr iseqnum 1
+     incr ifrmnum 1
+     set dfrmnum $ifrmnum
+     set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
+     set STATUS(abort) 0
+     .main.observe configure -text "working" -bg green -relief sunken
+     .main.abort configure -bg orange -relief raised -fg black
+     wm geometry .countdown
+     set i 1
+     if { $SCOPE(exptype) == "Zero" || $SCOPE(exptype) == "Dark" } {
+       commandAndor red  "shutter $ANDOR_SHUTTER(close)"
+       commandAndor blue "shutter $ANDOR_SHUTTER(close)"
+       mimicMode red close
+       mimicMode blue close
+     } else {
+       commandAndor red  "shutter $ANDOR_SHUTTER(auto)"
+       commandAndor blue "shutter $ANDOR_SHUTTER(auto)"
+       mimicMode red open
+       mimicMode blue open
+     }
+     commandAndor red "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+     commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+     if { $LASTACQ == "fullframe" && $SCOPE(numframes) > 1 } {
+       commandAndor red "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
+       commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
+     }
+     incr SCOPE(seqnum) 1
+     set redtemp  [lindex [commandAndor red gettemp] 0]
+     set bluetemp  [lindex [commandAndor blue gettemp] 0]
+     mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
+     mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
+     .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
+     .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
+     set tpredict [lindex [commandAndor red status] end]
+     if { $LASTACQ == "fullframe" } {
+        set TELEMETRY(speckle.andor.mode) "fullframe"
+        if { $ANDOR_CFG(kineticMode) } {
+           acquireCubes
+           set ifrmnum $SCOPE(numframes)
+           set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
+        } else {
+           acquireFrames
+        }
+        set perframe $SCOPE(exposure)
+     } else {
+        set TELEMETRY(speckle.andor.mode) "roi"
+        acquireCubes
+        set ifrmnum $SCOPE(numframes)
+        set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
+     }
+     set now [clock seconds]
+     set FRAME 0
+     set REMAINING 0
+     while { $i < $SCOPE(numframes) && $STATUS(abort) == 0 } {
+        set FRAME $i
+        set REMAINING [expr [clock seconds] - $now]
+        if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
+        after 20
+        if { $LASTACQ == "fullframe" } {
+           incr i 1
+        } else {
+           set i [andorGetControl 0 frame]
+        }
+        .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
+        .lowlevel.progress configure -text "Observation status : Frame $i   Exposure $dfrmnum   Sequence $iseqnum / $SCOPE(numseq)"
+        update
+     }
+     set SCOPE(exposureEnd) [expr [clock milliseconds]/1000.0]
+     .main.observe configure -text "Observe" -bg gray -relief raised
+     .main.abort configure -bg gray -relief sunken -fg LightGray
+#     speckleshutter red close
+#     speckleshutter blue close
+     .lowlevel.progress configure -text "Observation status : Idle"
+     if { $STATUS(abort) } {return}
+    }
    }
-   incr SCOPE(seqnum) 1
-   set redtemp  [lindex [commandAndor red gettemp] 0]
-   set bluetemp  [lindex [commandAndor blue gettemp] 0]
-   mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
-   mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
-   .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
-   .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
-   set tpredict [lindex [commandAndor red status] end]
-   if { $LASTACQ == "fullframe" } {
-      set TELEMETRY(speckle.andor.mode) "fullframe"
-      if { $ANDOR_CFG(kineticMode) } {
-         acquireCubes
-         set ifrmnum $SCOPE(numframes)
-         set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
-      } else {
-         acquireFrames
-      }
-      set perframe $SCOPE(exposure)
-   } else {
-      set TELEMETRY(speckle.andor.mode) "roi"
-      acquireCubes
-      set ifrmnum $SCOPE(numframes)
-      set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
-   }
-   set now [clock seconds]
-   set FRAME 0
-   set REMAINING 0
-   while { $i < $SCOPE(numframes) && $STATUS(abort) == 0 } {
-      set FRAME $i
-      set REMAINING [expr [clock seconds] - $now]
-      if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
-      after 20
-      if { $LASTACQ == "fullframe" } {
-         incr i 1
-      } else {
-         set i [andorGetControl 0 frame]
-      }
-      .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
-      .lowlevel.progress configure -text "Observation status : Frame $i   Exposure $dfrmnum   Sequence $iseqnum / $SCOPE(numseq)"
-      update
-   }
-   set SCOPE(exposureEnd) [expr [clock milliseconds]/1000.0]
-   .main.observe configure -text "Observe" -bg gray -relief raised
-   .main.abort configure -bg gray -relief sunken -fg LightGray
-#   speckleshutter red close
-#   speckleshutter blue close
-   .lowlevel.progress configure -text "Observation status : Idle"
-   if { $STATUS(abort) } {return}
-  }
  }
  abortsequence
  if { $SCOPE(autoclrcmt) } {.main.comment delete 0.0 end }
