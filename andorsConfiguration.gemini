@@ -1,7 +1,8 @@
 
-set ANDORS(red,serialnum)  X-10330
+set ANDORS(red,serialnum)  X-10244
 set ANDORS(blue,serialnum) X-10405
 set ANDORS(X-10330) red
+set ANDORS(X-10244) red
 set ANDORS(X-10331) blue
 set ANDORS(X-10405) blue
 set ANDORS(emgainSaturation,1)	12000

@@ -1,10 +1,29 @@
-/* Written May 29, 1999 by Ken Sills */
-/* Generic routines used in the ap7 api files */
+/** 
+ * \file ccd_astro.c
+ * \brief Astrometric routines
+ * 
+ * Written May 29, 1999 by Ken Sills
+ */
 
 #include <math.h>
 
-void  precess(double J2000, double jd, double *ra, double *dec);
+
+/** 
+ * \brief Precess coordinates
+ * \param J2000 epoch
+ * \param jd Julian date
+ * \param ra RA
+ * \param dec DEC
+ */
+void precess(double J2000, double jd, double *ra, double *dec);
+
+
 void range (double *v, double r);
+/** 
+ * \brief Calculate MJD year
+ * \param mjd Mean Julian Data
+ * \param yr Year
+ */
 void mjd_year (double mjd, double *yr); 
 
 #define degrad(x)       ((x)*PI/180.)

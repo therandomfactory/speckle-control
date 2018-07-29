@@ -1,4 +1,25 @@
-
+## \file filechecks.tcl
+# \brief File and directory existence and permission tests
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
+#
+#
+#\code
+## Documented proc \c filechecks .
+# \param[in] fname Name of file to be checked
+#
+# Test file/directory for existance and write permissions
+#
+#
+# Globals :\n
+#		SCOPE - Array of telescope properties\n
+#		env - Environment variables
+#
 proc filechecks { fname } {
 global SCOPE env
    set dname [file dirname $fname]
@@ -40,5 +61,7 @@ global SCOPE env
    }
    return $fname
 }
+
+# \endcode
 
       

@@ -267,7 +267,7 @@ Functions</h2></td></tr>
 <div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}</div>
 <div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;  }<span class="comment"></span></div>
 <div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="comment"></span>  <a class="code" href="astrometry_8tcl.html#afe86e2039dbd93b4132d778641f15a78" title="updateds9wcs">updateds9wcs</a> $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)<span class="comment"></span></div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;<span class="comment"></span>  <a class="code" href="andor_8tcl.html#a86b8f65953c7fb6c5675e2acb5bd6db6" title="refreshads9">refreshads9</a> [<span class="keyword">expr</span> int($exp*2000)] [<span class="keyword">expr</span> $n*4]<span class="comment"></span></div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;<span class="comment"></span>  <a class="code" href="andor_8tcl.html#a45fe0ac8fa5176d80e852fa520db2964" title="refreshads9">refreshads9</a> [<span class="keyword">expr</span> int($exp*2000)] [<span class="keyword">expr</span> $n*4]<span class="comment"></span></div>
 <div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> TELEMETRY(speckle.andor.numexp) $n<span class="comment"></span></div>
 <div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> TELEMETRY(speckle.andor.exposureStart) [<span class="keyword">expr</span> [<span class="keyword">clock</span> microseconds]/1000000.]<span class="comment"></span></div>
 <div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> TELEMETRY(speckle.andor.numberkinetics) $n<span class="comment"></span></div>
@@ -512,7 +512,7 @@ Functions</h2></td></tr>
 <div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}</div>
 <div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;  }<span class="comment"></span></div>
 <div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;<span class="comment"></span>  <a class="code" href="astrometry_8tcl.html#afe86e2039dbd93b4132d778641f15a78" title="updateds9wcs">updateds9wcs</a> $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)<span class="comment"></span></div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;<span class="comment"></span>  <a class="code" href="andor_8tcl.html#a86b8f65953c7fb6c5675e2acb5bd6db6" title="refreshads9">refreshads9</a> [<span class="keyword">expr</span> int($exp*2000)] [<span class="keyword">expr</span> $n*4]<span class="comment"></span></div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;<span class="comment"></span>  <a class="code" href="andor_8tcl.html#a45fe0ac8fa5176d80e852fa520db2964" title="refreshads9">refreshads9</a> [<span class="keyword">expr</span> int($exp*2000)] [<span class="keyword">expr</span> $n*4]<span class="comment"></span></div>
 <div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> TELEMETRY(speckle.andor.numexp) $n<span class="comment"></span></div>
 <div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> TELEMETRY(speckle.andor.exposureStart) [<span class="keyword">clock</span> seconds]<span class="comment"></span></div>
 <div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> TELEMETRY(speckle.andor.numberkinetics) $n<span class="comment"></span></div>
@@ -1377,7 +1377,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 7 2018 18:08:10 for Speckle Instrument Control and GUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 7 2018 17:13:15 for Speckle Instrument Control and GUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

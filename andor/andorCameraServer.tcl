@@ -321,7 +321,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(red)]
-      andorStoreFrame $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $dimen $dimen 1 1
+      andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
       exec xpaset -p $DS9 frame 2
@@ -332,7 +332,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     }
     if { $ANDOR_CFG(blue) > -1 } {
       set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(blue)]
-      andorStoreFrame $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $dimen $dimen 1 1
+      andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
       exec xpaset -p $DS9 frame 2
@@ -412,8 +412,10 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
 proc andorSaveData { cid fname nx ny count n } {
 global ANDOR_CFG
   switch $ANDOR_CFG(fitsbits) { 
-      16   { andorStoreFrameI2 $cid $fname $nx $ny $count $n }
-      32   { andorStoreFrameI4 $cid $fname $nx $ny $count $n }
+      16   -
+      20   { andorStoreFrameI2 $cid $fname $nx $ny $count $n }
+      32   -
+      40   { andorStoreFrameI4 $cid $fname $nx $ny $count $n }
       -32  { andorStoreFrame   $cid $fname $nx $ny $count $n }
   }
 }
@@ -833,11 +835,12 @@ proc shutDown { } {
 #		SPECKLE_DATADIR - Directory path to data storage\n
 #		ANDOR_ARM - Instrument arm this camera is installed in red/blue
 #		CAM - Andor camera id used in the C code, 0 or 1\n
+#		FITSBITS - Fits numerical codes translation for data types
 #		TELEMETRY - Array of telemetry items for header/database usage\n
 #		SCOPE - Array of telescope parameters
 #
 proc doService {sock msg} {
-global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR
+global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
     debuglog "echosrv:$msg"
     set ANDOR_CFG([lindex $msg 0]) [lrange $msg 1 end]
     switch [lindex $msg 0] {
@@ -852,7 +855,7 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR
          setframe        { configureFrame [lindex $msg 1] ;  puts $sock "OK"}
          setbinning      { set ANDOR_CFG($CAM,hbin) [lindex $msg 1] ; set ANDOR_CFG($CAM,vbin) [lindex $msg 2] ; set ANDOR_CFG(binning) [lindex $msg 1] ;puts $sock "OK"}
          scalepeak       { set ANDOR_CFG(scalepeak) [lindex $msg 1] ; puts $sock "OK"}
-         fitsbits        { set ANDOR_CFG(fitsbits) [lindex $msg 1] ; puts $sock "OK"}
+         fitsbits        { set ANDOR_CFG(fitsbits) $FITSBITS([lindex $msg 1]) ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
          forceroi        { forceROI  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex $msg 2]]" }

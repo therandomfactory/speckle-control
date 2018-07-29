@@ -1,12 +1,16 @@
+/** 
+ * \file GenOneLinuxUSB.cpp
+ * \brief Simple usb device interface class
+ * 
+ * This class provides a minimal interface for USB device control
+ */
+
 /*! 
 * This Source Code Form is subject to the terms of the Mozilla Public
 * License, v. 2.0. If a copy of the MPL was not distributed with this file,
 * You can obtain one at http://mozilla.org/MPL/2.0/.
 *
 * Copyright(c) 2010 Apogee Instruments, Inc. 
-* \class GenOneLinuxUSB 
-* \brief Usb interface for *nix systems. 
-* 
 */ 
 
 #include "GenOneLinuxUSB.h" 
@@ -20,6 +24,7 @@ const uint16_t FW_VENDOR = 0x104d;
 const uint16_t FW_PRODUCT = 0x1011;
 static int ep_in_addr  = 0x81;
 static int ep_out_addr = 0x02;
+
 
 //////////////////////////// 
 // CTOR
@@ -120,7 +125,7 @@ bool GenOneLinuxUSB::OpenDeviceHandle(const uint16_t DeviceNum,
 			continue;
 		}
 
-		//are we an apogee device
+		//are we a filter wheel device
 		if( desc.idVendor == FW_VENDOR && desc.idProduct == FW_PRODUCT )
 		{
                         found++;

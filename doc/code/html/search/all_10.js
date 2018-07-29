@@ -160,7 +160,7 @@ var searchData=
   ['tcl_5foriel_5fwrite_5fcmd',['tcl_oriel_write_cmd',['../oriel__tcl_8cpp.html#a4087b0aca4a94e0ab2b7633c1e5ecd29',1,'oriel_tcl.cpp']]],
   ['temperature',['temperature',['../structandor__setup.html#a72e9b808e34cef512eae935e38acaaa0',1,'andor_setup']]],
   ['temperature_5fstatus',['temperature_status',['../structandor__setup.html#aadc2b2f2bc55f0f9691719a69f35bb2f',1,'andor_setup']]],
-  ['testcontrol',['testControl',['../andor_8tcl.html#ad096d1d6fdc72aa2aa188682883d26a4',1,'andor.tcl']]],
+  ['testcontrol',['testControl',['../andor_8tcl.html#a26c164bd46fc54fda451515bcce3a362',1,'andor.tcl']]],
   ['testreadoutcfgs',['testreadoutcfgs',['../andor_camera_server_8tcl.html#a30fa408fd872d3394716c75a813c862a',1,'andorCameraServer.tcl']]],
   ['timeout',['TIMEOUT',['../_gen_one_linux_u_s_b_8cpp.html#abc441f2ce5ea3d7b4583b648454614c5',1,'GenOneLinuxUSB.cpp']]],
   ['to_5fuppercase',['to_uppercase',['../ccd__astro_8c.html#ade7d4965d4cd932c046ad5416b2a75d3',1,'ccd_astro.c']]],

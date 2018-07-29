@@ -6,7 +6,7 @@
 extern "C"
 {
  
-#include <tcl.h>
+#include "tcl.h"
 
 int orielAppInit(Tcl_Interp *interp);
 

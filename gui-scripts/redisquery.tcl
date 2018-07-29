@@ -1,10 +1,93 @@
 #!/usr/bin/tclsh
+## \file redisquery.tcl
+# \brief This contains procedures for interacting with the Redis telemetry service at WIYN
 #
-# REDIS commands (via socket 6379)
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
-# keys * - list all keys
-# hgetall wiyn:key - get all values
 #
+# REDIS commands (via socket 6379)\n
+#\n
+# keys * - list all keys\n
+# hgetall wiyn:key - get all values\n
+#
+#
+#\code
+## Documented proc \c redisReader .
+# \param[in] fh Socket handle of Redis server connection
+#
+#  Read any new data from the Redis server
+#
+# Globals :
+#		TELEMETRY - Array of telemetry items for headers and database usage
+#
+proc redisReader { fh } {
+global TELEMETRY
+    while  { [gets $fh res] > -1 } {
+###      debuglog "redis : $res"
+      if { [lindex $res 0] == "timestamp" || [string range $res 0 3] == "tcs." } {
+         set id $res
+         gets $fh res ; gets $fh res
+         set TELEMETRY($id) [string trim $res "\{\}"]
+      }
+    }
+}
+
+## Documented proc \c redisConnect .
+#
+#  Make a socket connection to the Redis server (WIYN only)
+#
+#
+# Globals :
+#		REDIS - Array of Redis server configuration
+#
+proc redisConnect { } {
+  global REDIS
+   set handle [socket -async $REDIS(ip) 6379]
+   fconfigure $handle -buffering line
+   fconfigure $handle -blocking 0
+   set REDIS(handle) $handle
+}
+
+## Documented proc \c redisUpdate .
+#
+#  Send a set of Redis queries to update all the WIYN telemetry
+#
+#
+# Globals :
+#		REDIS - Array of Redis server configuration
+#
+proc redisUpdate { } {
+global REDIS
+   foreach key "tcs-geometry tcs-target tcs-time tcs-telescop tcs-weather" {
+     puts $REDIS(handle) "hgetall wiyn:$key"
+   }
+   after 100
+   redisReader $REDIS(handle)
+}
+
+
+## Documented proc \c redisPrint .
+#
+#  Print the current Redis telemetry values to the log
+#
+#
+# Globals :
+#		TELEMETRY - Array of telemetry items for headers and database usage
+#
+proc redisPrint { } {
+global TELEMETRY
+   foreach i [lsort [array names TELEMETRY]] {
+      debuglog "$i = $TELEMETRY($i)"
+   }
+}
+
+
+# \endcode
 
 set TLMKEYS "
 wiyn:tcs-nir
@@ -104,40 +187,4 @@ wiyn:oss-mirror"
 
 set REDIS(ip) wiyn-db.kpno.noao.edu
 
-proc redisReader { fh } {
-global TELEMETRY
-    while  { [gets $fh res] > -1 } {
-###      debuglog "redis : $res"
-      if { [lindex $res 0] == "timestamp" || [string range $res 0 3] == "tcs." } {
-         set id $res
-         gets $fh res ; gets $fh res
-         set TELEMETRY($id) [string trim $res "\{\}"]
-      }
-    }
-}
-
-proc redisConnect { } {
-  global REDIS
-   set handle [socket -async $REDIS(ip) 6379]
-   fconfigure $handle -buffering line
-   fconfigure $handle -blocking 0
-   set REDIS(handle) $handle
-}
-
-proc redisUpdate { } {
-global REDIS
-   foreach key "tcs-geometry tcs-target tcs-time tcs-telescop tcs-weather" {
-     puts $REDIS(handle) "hgetall wiyn:$key"
-   }
-   after 100
-   redisReader $REDIS(handle)
-}
-
-
-proc redisPrint { } {
-global TELEMETRY
-   foreach i [lsort [array names TELEMETRY]] {
-      debuglog "$i = $TELEMETRY($i)"
-   }
-}
 

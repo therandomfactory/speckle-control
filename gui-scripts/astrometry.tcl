@@ -1,4 +1,31 @@
-
+## \file astrometry.tcl
+# \brief This contains procedures for updating WCS in the headers and ds9
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
+#
+#
+#\code
+## Documented proc \c updateds9wcs .
+# \param[in] ra RA coordinate
+# \param[in] dec DEC coordinate
+#
+#  Update the DS9 World Coordinate system based upon current RA,DEC
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue
+#		ACQREGION - Region of interest parameters\n
+#		SCOPE - Array of telescope information
+#		CAMSTATUS - Camera parameters
+#		PI - pi
+#		DS9 - Name of a ds9 executable , ds9red or ds9blue
+#
 proc updateds9wcs { ra dec } {
 global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
   set radeg [hms_to_radians $ra]*180/$PI]
@@ -25,6 +52,23 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
 }
 
 
+## Documented proc \c headerAstrometry .
+# \param[in] tclFits file handle for opened FITS file
+# \param[in] ra RA coordinate
+# \param[in] dec DEC coordinate
+#
+#  Update the FITS header  World Coordinate system based upon current RA,DEC
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue
+#		ACQREGION - Region of interest parameters\n
+#		SCOPE - Array of telescope information
+#		CAMSTATUS - Camera parameters
+#		PI - pi
+#		DS9 - Name of a ds9 executable , ds9red or ds9blue
+#
 proc headerAstrometry { fid ra dec } {
 global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM
   set radeg [expr [hms_to_radians $ra]*180/$PI]
@@ -55,10 +99,17 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM
   $fid put keyword $r
   set r [fitshdrrecord  RADECSYS string "FK5"	"Default coordinate system type"]
   $fid put keyword $r
-  set r [fitshdrrecord  EQUINOX	 float 2000.	"Default coordinate system Equinox"]
-  $fid put keyword $r
 }
 
+## Documented proc \c dms_to_radians .
+# \param[in] dms dd:mm:ss for conversion
+#
+# Convert ddd:mm:ss to radians
+#
+#
+# Globals :
+#		PI - pi
+#
 proc dms_to_radians { dms } {
 global PI
    set t [string trim $dms "+ "]
@@ -71,12 +122,23 @@ global PI
    set r [expr $s * ([scan [lindex $f 0] %d] + [scan [lindex $f 1] %d]/60.0 + [scan [lindex $f 2] %d]/3600.0 )/180. * $PI]
 }
 
+## Documented proc \c hms_to_radians .
+# \param[in] hms hh:mm:ss for conversion
+#
+# Convert hh:mm:ss to radians
+#
+#
+# Globals :
+#		PI - pi
+#
 proc hms_to_radians { hms } {
 global PI
    set f [split $hms ":"]
    set r [expr ([scan [lindex $f 0] %d] + [scan [lindex $f 1] %d]/60.0 + [scan [lindex $f 2] %d]/3600.0 )/12. * $PI]
 }
 
+
+# \endcode
 
 set PI 3.141592653589
 

@@ -1,4 +1,20 @@
-
+## \file checkusb.tcl
+# \brief This contains a procedure to check the usb devices
+#
+# This Source Code Form is subject to the terms of the GNU Public
+# License, v. 2 If a copy of the GPL was not distributed with this file,
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+#
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) 
+#
+#
+#
+#\code
+## Documented proc \c debuglog .
+# \param[in] devices List of keyword to identify speckle devices
+#
+# Test the user rw permissions of the USB devices
+#
 proc checkUsbPermissions { {devices "Andor Newport" } } {
    set all [split [exec lsusb] \n]
    if { [file exists /dev/bus/usb] } {
@@ -32,5 +48,7 @@ proc checkUsbPermissions { {devices "Andor Newport" } } {
      }
    }
 }
+
+#\endcode
 
 

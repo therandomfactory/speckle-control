@@ -1,3 +1,10 @@
+/** 
+ * \file andor_tcl.c
+ * \brief Tcl wrappers for the main camera control and data acquisition functions
+ * 
+ * This class provides a minimal interface for USB device control
+ */
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,61 +75,436 @@ static at_32 cameraB;
 static at_32 numCameras;
 andor_setup andorSetup[2];
 fitsfile *fptr;       /* pointer to the FITS file, defined in fitsio.h */
+fitsfile *fptrin;       /* pointer to the FITS file, defined in fitsio.h */
+/** 
+ * \brief Add an array of timing data as a FITS Binary Extension to the data file
+ * \param numexp Number of exposures in the image cube
+ */
 int append_fitsTimings(int numexp);
 
 int Shmem_id = 0;
+/** 
+ * \brief Calculate FFT of the image data
+ * \param width Width of image in pixels
+ * \param height Height of image in pixels
+ * \param imageData Input data pointer
+ * \param outputData FFT output data pointer
+ */
 void dofft(int width, int height, int *imageData, int* outputData);
-void addavg(at_32 *im, at_32 *avg, int n);
+
+/** 
+ * \brief Calculate average for final FFT
+ * \param avg FFT data pointer
+ * \param n Image dimensions
+ * \param numexp Number of accumulated frames to average
+ */
 void calcavg(at_32 *avg, int n, int numexp);
+
+
+/** 
+ * \brief Add to running average for final FFT
+ * \param im Image data pointer
+ * \param avg Output added image
+ * \param n Number of accumulated frames to average
+ */
+void addavg(at_32 *im, at_32 *avg, int n);
+
+
+/** 
+ * \brief Copy line pixels from image
+ * \param tobuf Destination buffer pointer
+ * \param frombuf Origin buffer pointer
+ * \param count Number of pixels to copy
+ * \param offset Offset in destination buffer
+ */
 void copyline (int *tobuf, int *frombuf, int count, int offset);
+
+
+/** 
+ * \brief Create minimal FITS header, the rest is populated from the tcl side
+ * \param fptr FITS file handle
+ */
 void create_fits_header(fitsfile *fptr);
+
+/** 
+ * \brief Store iamge data to FITS file
+ * \param cameraId Andor camera number , 0 or 1
+ * \param filename Name of FITS file
+ * \param iexp Number of frame (for Kinetics acquisition)
+ * \param numexp Total number of frames (for Kinetics)
+ */
 int cAndorStoreFrame(int cameraId, char *filename, int iexp,int numexp);
+
+
+/** 
+ * \brief Display image by copying it to shared memory area
+ * \param cameraId Andor camera number , 0 or 1
+ * \param ifft Optional display of FFT data instead
+ */
 int cAndorDisplayFrame(int cameraId, int ifft);
+
+
+/** 
+ * \brief Display image by copying it to a specific ds9red or ds9blue shared memory area
+ * \param cameraId Andor camera number , 0 or 1
+ * \param ifft Optional display of FFT data instead
+ */
 int cAndorDisplaySingle(int cameraId, int ifft);
+
+
+/** 
+ * \brief Store iamge data to FITS file, support ROI and binning
+ * \param cameraId Andor camera number , 0 or 1
+ * \param filename Name of FITS file
+ * \param iexp Number of frame (for Kinetics acquisition)
+ * \param numexp Total number of frames (for Kinetics)
+ */
 int cAndorStoreROI(int cameraId, char *filename,int bitpix, int iexp,int numexp);
 
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorSetupCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorConnectShmem(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorConnectShmem0(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorConnectShmem1(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorConnectShmem2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorStartAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorSelectCamera(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorClearLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorDisplayLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorAccumulateLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
+int tcl_andorReadFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorDisplayFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorFakeData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorDisplaySingleFFT(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorStoreFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorDisplayAvgFFT(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorGetOldestFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorGetAcquiredNum(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorSetROI(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorSetCropMode(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorWaitForData(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorWaitForIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorPrepDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorPrepDataFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorShutDown(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorGetDataCube(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 #ifdef TCL_USB_THREAD
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorStartUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorStopUsbThread(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorStartUsb(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorStopUsb(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 /*void *andor_usb_thread(void *arg); */
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorLockUsbMutex(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorUnlockUsbMutex(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 #endif
 
@@ -132,9 +514,37 @@ int tcl_andorSetTemperature(ClientData clientData, Tcl_Interp *interp, int argc,
 int tcl_andorCooler(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
  */
 
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorGetProperty(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorSetControl(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorGetControl(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 
 static char export_script[]={ " \
@@ -154,6 +564,13 @@ static int doTest1(void)
 }
 
 /*ARGSUSED*/
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 static int cmdTest1(ClientData data, Tcl_Interp *interp,
                int argc, char *argv[])
 {
@@ -166,6 +583,11 @@ static int cmdTest1(ClientData data, Tcl_Interp *interp,
 }
 
 /*  package code  */
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ *
+ */
 int Andortclinit_Init(Tcl_Interp *interp)
 {
 
@@ -198,8 +620,9 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorFakeData", (Tcl_CmdProc *) tcl_andorFakeData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorClearLucky", (Tcl_CmdProc *) tcl_andorClearLucky, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplaySingleFFT", (Tcl_CmdProc *) tcl_andorDisplaySingleFFT, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorReadFrameI2", (Tcl_CmdProc *) tcl_andorReadFrameI2, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplayLucky", (Tcl_CmdProc *) tcl_andorDisplayLucky, NULL, NULL);
-  Tcl_CreateCommand(interp, "andorAccumlateLucky", (Tcl_CmdProc *) tcl_andorAccumulateLucky, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorAccumulateLucky", (Tcl_CmdProc *) tcl_andorAccumulateLucky, NULL, NULL);
   Tcl_CreateCommand(interp, "andorDisplayAvgFFT", (Tcl_CmdProc *) tcl_andorDisplayAvgFFT, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStoreFrame", (Tcl_CmdProc *) tcl_andorStoreFrame, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStoreFrameI2", (Tcl_CmdProc *) tcl_andorStoreFrameI2, NULL, NULL);
@@ -237,12 +660,6 @@ int Andortclinit_Init(Tcl_Interp *interp)
   return TCL_OK;
 }
 
-/*  dummy  */
-
-int _eprintf()
-{
-return TCL_OK;
-}
 
 
 int tcl_andorShutDown(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
@@ -477,6 +894,60 @@ int tcl_andorSetControl(ClientData clientData, Tcl_Interp *interp, int argc, cha
 
  return TCL_ERROR;
 }
+
+
+int tcl_andorReadFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  char filename[1024];
+  int fpixel,ipix;
+  int width,height,iexp,numexp,cameraId;
+  int status=0;
+  int *copyTo;
+ 
+ /* Check number of arguments provided and return an error if necessary */
+  if (argc < 6) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId filename width height iexp numexp\"", (char *)NULL);
+     return TCL_ERROR;
+  }
+  sscanf(argv[1],"%d",&cameraId);
+  strcpy(filename,argv[2]);
+  sscanf(argv[3],"%d",&width);
+  sscanf(argv[4],"%d",&height);
+  sscanf(argv[5],"%d",&iexp);
+  sscanf(argv[6],"%d",&numexp);
+ 
+  if ( cameraId == 0 ) {
+     copyTo = &imageDataA;
+  }
+
+  if ( cameraId == 1 ) {
+     copyTo = &imageDataB;
+  }
+
+  if ( iexp == 1 ) {
+     fits_open_file(&fptrin,filename,READONLY,&status);
+     if (status != 0) {
+        return TCL_ERROR;
+     }
+  }
+  
+  fpixel=width*height*(iexp-1)+1;
+  fits_read_img(fptrin, TUSHORT, fpixel, width*height, 0, &imageFrameI2, 0, &status);
+  if (status != 0) {
+     return TCL_ERROR;
+  }
+  for (ipix = 0;ipix < width*height ; ipix++) {
+      copyTo[ipix] = (long)imageFrameI2[ipix];
+  }
+
+  if ( iexp == numexp ) {
+     fits_close_file(fptrin,&status);
+  }
+
+  return TCL_OK;
+
+}
+
 
 
 int tcl_andorStoreFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
@@ -1450,7 +1921,7 @@ int tcl_andorDisplayLucky(ClientData clientData, Tcl_Interp *interp, int argc, c
   int ifft=1;
 
   /* Check number of arguments provided and return an error if necessary */
-  if (argc < 5) {
+  if (argc < 3) {
      Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId width height\"", (char *)NULL);
      return TCL_ERROR;
   }
@@ -1459,13 +1930,11 @@ int tcl_andorDisplayLucky(ClientData clientData, Tcl_Interp *interp, int argc, c
   sscanf(argv[3],"%d",&height);
 
   if ( cameraId == 0 ) {
-      calcavg(outputAvgA,width*height,numexp);
       for ( irow=0;irow<width;irow++) {
         copyline(SharedMem0 + irow*width, getLucky0 + irow*width, width*4, 0);
       }
   }
   if ( cameraId == 1 ) {
-      calcavg(outputAvgB,width*height,numexp);
       for ( irow=0;irow<width;irow++) {
         copyline(SharedMem1 + irow*width, getLucky1 + irow*width, width*4, 0);
       }
@@ -1820,77 +2289,75 @@ int tcl_andorClearLucky(ClientData clientData, Tcl_Interp *interp, int argc, cha
     }
     SharedMem2->iLuckyCount[0] = 0;
     SharedMem2->iLuckyCount[1] = 0;
+
+    return TCL_OK;
 }
 
 int tcl_andorAccumulateLucky(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
     int maxsum,i,j,xmaxat,ymaxat,idim,isum;
     int line,pixel;
-    int ithresh;
+    int ithresh,stepsize,smoothing;
     int cameraId;
     int status;
     unsigned int *cframe;
     int ii,jj,csum,destx,desty;
 
-    if (argc < 3) {
-      Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," cameraId idim thresh\"", (char *)NULL);
+    if (argc < 5) {
+      Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," cameraId stepsize smoothing idim thresh\"", (char *)NULL);
       return TCL_ERROR;
     }
 
   sscanf(argv[1],"%d",&cameraId);
-  sscanf(argv[2],"%d",&idim);
-  sscanf(argv[3],"%d",&ithresh);
-
+  sscanf(argv[2],"%d",&stepsize);
+  sscanf(argv[3],"%d",&smoothing);
+  sscanf(argv[4],"%d",&idim);
+  sscanf(argv[5],"%d",&ithresh);
+  
   if ( cameraId == 0 ) {
-     status = SetCurrentCamera(cameraA);
      cframe = &imageDataA;
   } else {
-     status = SetCurrentCamera(cameraB);
      cframe = &imageDataB;
   }
-  if (status != DRV_SUCCESS) {
-     sprintf(result,"Failed to select camera - %d",cameraId);
-     Tcl_SetResult(interp,result,TCL_STATIC);
-     return TCL_ERROR;
-  }
-
+   
     xmaxat = 0;
     ymaxat = 0;
-    maxsum = 0.0;
-    for (line = 4; line <= idim-4; line=line++) {
-       for (pixel = 4; pixel <= idim-4; pixel=pixel++) {
-        isum = 0;
-        for (ii=-4;ii<=4;ii++) {
-          for (jj=-4;jj<=4;jj++) {
-             isum = isum + cframe[(line+ii) * idim + pixel+jj];
+    maxsum = 0;
+    for (line = MINBORDER; line <= idim-MINBORDER; line=line+stepsize) {
+       for (pixel = MINBORDER; pixel <= idim-MINBORDER; pixel=pixel+stepsize) {
+        csum = 0;
+        for (ii=-1*smoothing;ii<=smoothing;ii++) {
+          for (jj=-1*smoothing;jj<=smoothing;jj++) {
+             csum = csum + cframe[(line+ii) * idim + pixel+jj];
           }
         }
-        if (isum > maxsum) {
+        if (csum > maxsum) {
            xmaxat = pixel;
            ymaxat = line;
            maxsum = csum;
         }
-       }
+      }
     }
+    maxsum = maxsum / (smoothing*smoothing*4);
 
-    if (maxsum/89 > ithresh) {
+    if (maxsum > ithresh) {
       SharedMem2->iLuckyCount[cameraId]++;
-      for (line = 0;line<idim; line=line++) {
-         for (line = 0; pixel<idim; pixel=pixel++) {
+      for (line = 0;line<idim; line++) {
+         for (pixel = 0; pixel<idim; pixel++) {
              destx = xmaxat-line+idim/2;
              desty = ymaxat-pixel+idim/2;
              if (destx > 0 && destx < idim && desty > 0 && desty < idim) {
                if (cameraId == 0) {
                  getLucky0[destx+desty*idim] = getLucky0[destx+desty*idim] + cframe[line+pixel*idim];
                }
-               if (cameraId == 0) {
+               if (cameraId == 1) {
                  getLucky1[destx+desty*idim] = getLucky1[destx+desty*idim] + cframe[line+pixel*idim];
                }
              }
          }
       }
     }
-    sprintf(result,"%d",ithresh);
+    sprintf(result,"%d %d %d %d",ithresh,maxsum,xmaxat,ymaxat);
     Tcl_SetResult(interp,result,TCL_STATIC);
     return TCL_OK;
 }
@@ -2057,6 +2524,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
 		      } else {
 			  status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
 		      }
+                      fitsTimings[count] = (double)(tm2.tv_sec) + (double)tm2.tv_nsec/1000000000.;
                       count  = count+1;
                       SharedMem2->iFrame[cameraId] = count;
                       ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
@@ -2068,7 +2536,6 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                     usleep(500);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
-                    fitsTimings[count-1] = (double)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
                     if (deltat > maxt || SharedMem2->iabort > 0) {
                          count=numexp;
                          AbortAcquisition();
@@ -2162,7 +2629,6 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
                     usleep(5000);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
-                    fitsTimings[count-1] = (double)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
                     if (deltat > 50 || SharedMem2->iabort > 0 ) {
                          count=numexp;
                          AbortAcquisition();
@@ -2596,9 +3062,9 @@ int tcl_andorGetAcquiredData(ClientData clientData, Tcl_Interp *interp, int argc
      return TCL_ERROR;
   }
 
-   StartAcquisition();
-   GetStatus(&status);
-   while(status==DRV_ACQUIRING) {
+  StartAcquisition();
+  GetStatus(&status);
+  while(status==DRV_ACQUIRING) {
      GetTotalNumberImagesAcquired(&num);
      GetStatus(&status);
   }

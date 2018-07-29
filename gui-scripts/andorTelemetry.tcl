@@ -1,5 +1,32 @@
-
-
+## \file andorTelemetry.tcl
+# \brief This contains procedures for updating camera telemetry items
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
+#
+#
+#\code
+## Documented proc \c updateAndorTelemetry .
+# \param[in] arm Instrument arm red/blue
+#
+#  Update the items of telemetry related to camera specifics, used for populating\n
+# the headers and database
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		SPECKLE_DIR - Directory path to speckle code\n
+#		ANDOR_ARM - Instrument arm this camera is installed in red/blue
+#		ANDOR_ROI - Region of interest parameters\n
+#		CAM - Andor camera id used in the C code, 0 or 1\n
+#		TELEMETRY - Array of telemetry items for header/database usage
+#		SCOPE - Array of telescope information
+#		CAMSTATUS - Camera parameters
+#
 proc updateAndorTelemetry { arm } {
 global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.head) "Andor iXon Emccd"
@@ -45,7 +72,13 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.scope.site) $SCOPE(telescope)
 }
 
-
+## Documented proc \c showTelemetry .
+#
+#  Print the values of all the telemetry items
+#
+#
+# Globals :
+#		TELEMETRY - Array of telemetry items for header/database usage
 proc showTelemetry { } {
 global TELEMETRY
    foreach i [lsort [array names TELEMETRY]] {
@@ -53,6 +86,7 @@ global TELEMETRY
    }
 }
 
+# \endcode
 
 #set initial defaults
 set ANDOR_CFG(VSSpeed,0) "0.6"

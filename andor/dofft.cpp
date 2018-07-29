@@ -1,4 +1,8 @@
-/* Use VIPS library to compute fft 
+/** 
+ * \file dofft.cpp
+ * \brief Calculate FFT using the VIPS library functions
+ * 
+ * Use VIPS library to compute fft 
  *
  *  compile with $(pkg-config --cflags vips)
  *  link with $(pkg-config --libs vips)

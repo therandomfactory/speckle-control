@@ -1,11 +1,29 @@
+## \file mimic.tcl
+# \brief This contains the mimic diagram create and update routines
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, v. 2 If a copy of the GPL was not distributed with this file,\n
+# You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html\n
+#\n
+# Copyright(c) 2018 The Random Factory (www.randomfactory.com) \n
+#\n
 #
 #  This code manages the mimic diagram to provide at-a-glance instrument status
 #
+#\code
+## Documented proc \c debuglog .
+# \param[in] baseimg Image GIF to use as background
 #
-
+# Globals :\n
+#		SCOPE - Array of telescope parameters\n
+#		MOFF - Offset for gemini picture\n
+#		XO - x offset\n
+#		YO - y offset\n
+#		SPECKLE_DIR - Directory path to speckle code\n
+#
 proc createMimicDiagram { baseimg } {
 global MOFF XO YO SPECKLE_DIR SCOPE
-global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut XO YO MIMIC
+global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut
   catch {destroy .mimicSpeckle}
   set XO [lindex $MOFF($baseimg) 0]
   set YO [lindex $MOFF($baseimg) 1]
@@ -53,6 +71,16 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
 }
 
 
+## Documented proc \c mimicMode .
+# \param[in] baseimg Image GIF to use as background
+#
+# Change any aspect of the mimic diagram
+#
+# Globals :\n
+#		MIMIC - Array of mimic diagram settings\n
+#		XO - x offset\n
+#		YO - y offset\n
+#
 proc mimicMode { arm mode {value ""} } {
 global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut XO YO MIMIC
    set MIMIC($arm,$mode) "$value"
@@ -118,13 +146,15 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
    }
 }
 
-proc mimicOffset { x y } {
-global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut
-   foreach w "oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut" {
-       .mimicSpeckle.myCanvas move [set [set w]] $x $y
-   }
-}
 
+## Documented proc \c mimicMode .
+# \param[in] baseimg Image GIF to use as background
+#
+# Update the mimic diagram with saved settings
+#
+# Globals :\n
+#		MIMIC - Array of mimic diagram settings\n
+#
 proc updateMimic { } {
 global MIMIC
   foreach w [array names MIMIC] {
@@ -135,6 +165,8 @@ global MIMIC
   }
 }
 
+
+# \endcode
 
 set MOFF(mimic-picoin) "-29 7"
 set MOFF(mimic) 	"0 0"

@@ -685,6 +685,12 @@ if { [file exists $SCOPE(datadir)] } {
  }
 }
 
+catch {
+    set all [lsort [glob $SCOPE(datadir)/N*.fits]]
+    set last [split [lindex $all end] _]
+    set SCOPE(seqnum) [expr [string trimleft [lindex $last 2] 0] +1]
+}
+
 
 
 speckleGuiMode observingGui

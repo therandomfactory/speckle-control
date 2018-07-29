@@ -1,3 +1,10 @@
+/** 
+ * \file andor_tcl.h
+ * \brief Tcl wrappers for the main camera control and data acquisition functions
+ * 
+ * This class provides a minimal interface for USB device control
+ */
+
 
 #ifndef __ANDOR_TCL__
 #define __ANDOR_TCL__
@@ -102,8 +109,7 @@ typedef struct {
         float processed_frames_per_second; /* FPS for camlink port */
         float preamp_gain;      /* Gain of preamp */
         float vertical_speed;   /* Current Vertical Speed */
-        float horizontal_speed[ANDOR_NUM_AMPLIFIERS];
-                                /* Current Horizontal Speed */
+        float horizontal_speed[ANDOR_NUM_AMPLIFIERS];  /* Current Horizontal Speed */
         andor_image image; /* Readout area for the chip */
         int read_mode;          /* One of the readmodes */
         int acquisition_mode;   /* One of the acqmodes */
@@ -138,9 +144,23 @@ typedef struct {
 /* Globals */
 
 
+/** 
+ * \brief Open a connection to an Andor camera
+ * \param iSelectedCamera
+ * \param image
+ * \param preamp_gain
+ * \param vertical_speed
+ * \param ccd_horizontal_speed
+ * \param em_horizontal_speed
+ *
+ */
 int andor_open(int iSelectedCamera, andor_image image,
                int preamp_gain, int vertical_speed, int ccd_horizontal_speed,
                 int em_horizontal_speed);
+/** 
+ * \brief Configure camera with "setup" parameters
+ * \param setup Geometry and readout parameters
+ */
 int andor_setup_camera(andor_setup setup);
 int andor_close(void);
 int andor_send_setup(void);
