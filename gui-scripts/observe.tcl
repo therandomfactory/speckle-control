@@ -297,7 +297,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  andorSetControl 0 frame 0
  andorSetControl 1 frame 0
  set autofilter [checkAutoFilter]
- while { autofilter != "" } {
+ while { $autofilter != "" } {
    set nfilter [lindex $autofilter 0]
    if { $nfilter > 0 } {
     selectFilter red $nfilter
