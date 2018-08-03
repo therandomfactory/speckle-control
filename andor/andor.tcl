@@ -318,8 +318,9 @@ global LASTACQ STATUS SCOPE ACQREGION
 #		STATUS - Array of exposure statuses
 #
 proc startfastvideo { } {
-global STATUS
+global STATUS ANDOR_CFG
    set STATUS(abort) 0
+   set ANDOR_CFG(kineticMode) 1
    setKineticMode
    andorset vspeed red VSSpeed 0
    andorset emhs red EMHSSpeed 0
@@ -355,7 +356,8 @@ global ANDOR_CCD ANDOR_EMCCD
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
-     set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / 0.04))]
+     set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / 0.04))]\
+     if { $perrun > 100 } {set perrun 100}
      commandAndor red "numberkinetics $perrun"
      commandAndor blue "numberkinetics $perrun"
      commandAndor red  "numberaccumulations $SCOPE(numaccum)"

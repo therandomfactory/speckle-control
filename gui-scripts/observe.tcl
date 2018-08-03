@@ -105,13 +105,16 @@ proc  acquisitionmode { rdim } {
 global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   puts stdout "rdim == $rdim"
   if { $rdim != "manual"} {
-        commandAndor red "setframe fullframe"
+        set ANDOR_CFG(binning) 1
+        commandAndor red  "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+        commandAndor blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+        commandAndor red  "setframe fullframe"
         commandAndor blue "setframe fullframe"
 ###        positionZabers fullframe
   }
   set SCOPE(numseq) 1
   set SCOPE(numframes) 1
-  if { $rdim != "manual" && $rdim != 1024} {
+  if { $rdim != "manual" } {
     set LASTACQ "fullframe"
     startsequence
     after 2000
