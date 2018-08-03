@@ -321,6 +321,10 @@ proc startfastvideo { } {
 global STATUS
    set STATUS(abort) 0
    setKineticMode
+   andorset vspeed red VSSpeed 0
+   andorset emhs red EMHSSpeed 0
+   andorset vspeed blue VSSpeed 0
+   andorset emhs blue EMHSSpeed 0
    fastvideomode
 }
 
