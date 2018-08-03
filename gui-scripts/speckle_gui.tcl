@@ -376,16 +376,10 @@ proc syncgui  { } {
 global CAMSTATUS ANDOR_CFG
    .lowlevel.vspeed configure -text $CAMSTATUS(red,VSSpeed)
    .lowlevel.bvspeed configure -text $CAMSTATUS(blue,VSSpeed)
-   if { $CAMSTATUS(red,OutputAmplifier) == 1 } {
-     .lowlevel.ccdhs configure -text $CAMSTATUS(red,HSSpeed)
-   } else {
-     .lowlevel.emhs configure -text $CAMSTATUS(red,EMHSSpeed)
-   }
-   if { $CAMSTATUS(blue,OutputAmplifier) == 1 } {
-     .lowlevel.bccdhs configure -text $CAMSTATUS(blue,HSSpeed)
-   } else {
-     .lowlevel.bemhs configure -text $CAMSTATUS(blue,EMHSSpeed)
-   }
+   .lowlevel.ccdhs configure -text $CAMSTATUS(red,HSSpeed)
+   .lowlevel.emhs configure -text $CAMSTATUS(red,EMHSSpeed)
+   .lowlevel.bccdhs configure -text $CAMSTATUS(blue,HSSpeed)
+   .lowlevel.bemhs configure -text $CAMSTATUS(blue,EMHSSpeed)
 }
 
 

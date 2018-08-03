@@ -320,6 +320,7 @@ global LASTACQ STATUS SCOPE ACQREGION
 proc startfastvideo { } {
 global STATUS
    set STATUS(abort) 0
+   setKineticMode
    fastvideomode
 }
 
@@ -338,6 +339,7 @@ global STATUS
 #
 proc fastvideomode { } {
 global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG INSTRUMENT
+global ANDOR_CCD ANDOR_EMCCD
 #   commandAndor red "imagename videomode 1" 0
 #   commandAndor blue "imagename videomode 1" 0
 #   exec rm -f $SCOPE(datadir)/videomode_red.fits
@@ -356,8 +358,8 @@ global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG INSTRUMENT
      commandAndor blue "numberaccumulations $SCOPE(numaccum)"
      commandAndor red  "vsspeed $ANDOR_CFG(red,VSSpeed)"
      commandAndor blue "vsspeed $ANDOR_CFG(blue,VSSpeed)"
-     commandAndor red  "preampgain $ANDOR_CFG(red,PreAmpGain)"
-     commandAndor blue "preampgain $ANDOR_CFG(blue,PreAmpGain)"
+     commandAndor red  "preampgain $CAMSTATUS(red,PreAmpGain)"
+     commandAndor blue "preampgain $CAMSTATUS(blue,PreAmpGain)"
      if { $INSTRUMENT(red,emccd) } {
        commandAndor red "outputamp $ANDOR_EMCCD"
        commandAndor red "emadvanced $INSTRUMENT(red,highgain)"

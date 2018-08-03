@@ -39,17 +39,19 @@ proc debuglog { msg } {
 proc cAndorSetProperty { cam prop val {val2 ""} } {
 global ANDOR_CFG ANDOR_ARM
    if { $prop == "HSSpeed" } {
-      if { $val == 0 } { set res [andorSetProperty $cam HSSpeed 0 $val2] ; set prop EMHSSpeed }
-      if { $val == 1 } { set res [andorSetProperty $cam HSSpeed 1 $val2] }
+      if { $val == 0 } { set res [andorSetProperty $cam HSSpeed 0 $val2] ; set prop EMHSSpeed ; set val $val2}
+      if { $val == 1 } { set res [andorSetProperty $cam HSSpeed 1 $val2] ; set val $val2}
    } else {
      set res [andorSetProperty $cam $prop $val]
    }
    if { $res == "" } {
      set ANDOR_CFG($cam,$prop) $val
      set ANDOR_CFG($ANDOR_ARM,$prop) $val
+     puts stdout "Setting ANDOR_CFG($ANDOR_ARM,$prop) to $val"
    } else {
      set ANDOR_CFG($cam,$prop) "fail -$res"
      set ANDOR_CFG($ANDOR_ARM,$prop) "fail - $val"
+     puts stdout "ERROR Setting ANDOR_CFG($ANDOR_ARM,$prop) to $val"
    }
    return $res
 }
