@@ -637,6 +637,8 @@ wm withdraw .camerastatus
 
 set CAMSTATUS(red,TKinetics) 0.04
 set CAMSTATUS(blue,TKinetics) 0.04
+set CAMSTATUS(red,PreAmpGain ) 1
+set CAMSTATUS(blue,PreAmpGain) 1
 
 checkbutton .lowlevel.emccd  -bg gray -text "EMCCD" -variable INSTRUMENT(red,emccd) -command "checkemccdgain red"  -highlightthickness 0
 checkbutton .lowlevel.hgain  -bg gray -text "High Gain" -variable INSTRUMENT(red,highgain) -command "checkemccdgain red"  -highlightthickness 0
@@ -933,7 +935,7 @@ if { [file exists $env(HOME)/.specklegui] } {
 }
 
 
-set SCOPE(imagename) "N[exec date +%Y%m%d]_[format %6.6d [set SCOPE(seqnum)]]"
+set SCOPE(imagename) "N[exec date +%Y%m%d]"
 catch {
     set all [lsort [glob $SCOPE(datadir)/N*.fits]]
     set last [split [lindex $all end] _]

@@ -348,19 +348,16 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      set tpredict [lindex [commandAndor red status] end]
      if { $LASTACQ == "fullframe" } {
         set TELEMETRY(speckle.andor.mode) "fullframe"
-        if { $ANDOR_CFG(kineticMode) } {
+     } else {
+        set TELEMETRY(speckle.andor.mode) "roi"
+     }
+     if { $ANDOR_CFG(kineticMode) && $SCOPE(numframes) > 1 } {
            acquireCubes
            set ifrmnum $SCOPE(numframes)
            set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
-        } else {
-           acquireFrames
-        }
-        set perframe $SCOPE(exposure)
      } else {
-        set TELEMETRY(speckle.andor.mode) "roi"
-        acquireCubes
-        set ifrmnum $SCOPE(numframes)
-        set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
+           set perframe $SCOPE(exposure)
+           acquireFrames
      }
      set now [clock seconds]
      set FRAME 0

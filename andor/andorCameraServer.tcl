@@ -899,7 +899,7 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
          filter          { set SCOPE(filter) [lindex $msg 1] ; puts $sock "OK" }
          readoutcfg      { set res [configReadout [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5] [lindex $msg 6] [lindex $msg 7]] ; puts $sock $res}
          comments        { set SCOPE(comments) [lrange $msg 1 end] ;  puts $sock "OK" }
-         autofitds9      { set ANDOR_CFG(fitsds9) [lindex $msg 1] ;  puts $sock "OK" }
+         autofitds9      { set ANDOR_CFG(fitds9) [lindex $msg 1] ;  puts $sock "OK" }
          configure       { set ANDOR_CFG($CAM,hbin) [lindex $msg 1]
                            set ANDOR_CFG($CAM,vbin) [lindex $msg 2]
                            set ANDOR_ROI(xs) [lindex $msg 3]
