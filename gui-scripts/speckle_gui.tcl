@@ -732,8 +732,8 @@ set ANDOR_CFG(EMHSSpeed,3) "1 MHz"
 set ANDOR_CFG(HSSpeed,0) "1 MHz"
 set ANDOR_CFG(HSSpeed,1) "100 KHz"
 
-set INSTRUMENT(red,emccd) 1
-set INSTRUMENT(blue,emccd) 1
+set INSTRUMENT(red,emccd) 0
+set INSTRUMENT(blue,emccd) 0
 
 place .lowlevel.bemccd -x 20 -y 100
 place .lowlevel.bhgain -x 120 -y 100
@@ -777,6 +777,8 @@ ttk::progressbar .lowlevel.p -orient horizontal -length 900  -mode determinate
 place .lowlevel.p -x 20 -y 130
 label .lowlevel.progress -text "Observation status : Idle" -fg NavyBlue -bg gray
 place .lowlevel.progress -x 20 -y 154
+label .lowlevel.datarate -text "Data Rate : ??? Mbps" -fg NavyBlue -bg gray
+place .lowlevel.datarate -x 500 -y 154
 
 #set INSTRUMENT(red) 1
 #set INSTRUMENT(blue) 1

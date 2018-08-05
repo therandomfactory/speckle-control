@@ -1,6 +1,6 @@
-commandAndors SetNumberKinetics 1
-commandAndors SetFrameTransferMode $ANDORCODE(AC_ACQMODE_FRAMETRANSFER)
-commandAndors outputamp 1
+commandCameras SetNumberKinetics 1
+commandCameras SetFrameTransferMode $ANDORCODE(AC_ACQMODE_FRAMETRANSFER)
+commandCameras outputamp 1
 set SCOPE(exposure) 1.1
 set SCOPE(numframes) 1
 

@@ -227,6 +227,29 @@ global SCOPE SPECKLE_DIR INSTRUMENT
 
 ## Documented proc \c startsequence .
 # 
+#  This routine checks the data rate
+#
+#
+#  Globals    :  
+#               SCOPE	- Telescope parameters, gui setup
+#		CONFIG - Image geometry configuration
+#		LASTACQ - Type of last image acqusition
+#		ANDOR_DEF - Andor defaults
+#               ACQREGION - Sub-frame region coordinates
+#		ANDOR_CFG - Array of camera settings
+proc checkDatarate { } {
+global SCOPE ANDOR_CFG ACQREGION
+   set ANDOR_CFG(mbps) [expr int(1/$SCOPE(exposure)*2*$ACQREGION(geom)*$ACQREGION(geom)/$ANDOR_CFG(binning)/$ANDOR_CFG(binning)*4/1024/1024)]
+   if { $ANDOR_CFG(mbps) > 59 } {
+      .lowlevel.datarate configure -text "Data Rate : $ANDOR_CFG(mbps) Mbps" -fg yellow
+   } else {
+      .lowlevel.datarate configure -text "Data Rate : $ANDOR_CFG(mbps) Mbps" -fg NavyBlue
+   }
+}
+
+
+## Documented proc \c startsequence .
+# 
 #  This routine manages a sequence of exposures. It updates bias columns\n
 #  specifications in case they have been changed, then it loops thru\n
 #  a set of frames, updating the progress bar.
@@ -352,10 +375,12 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         set TELEMETRY(speckle.andor.mode) "roi"
      }
      if { $ANDOR_CFG(kineticMode) && $SCOPE(numframes) > 1 } {
+           checkDatarate
            acquireCubes
            set ifrmnum $SCOPE(numframes)
            set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
      } else {
+           .lowlevel.datarate configure -text ""
            set perframe $SCOPE(exposure)
            acquireFrames
      }
@@ -368,7 +393,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
         after 20
         if { $LASTACQ == "fullframe" } {
-           incr i 1
+           set i $SCOPE(numframes)
+           after [expr int($SCOPE(exposure)*1000)]
         } else {
            set i [andorGetControl 0 frame]
         }

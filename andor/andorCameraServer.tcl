@@ -169,6 +169,8 @@ debuglog "Andors control registers @ $shmid2"
 
 set DS9 ds9[set ANDOR_ARM]
 initads9 [lindex $shmid 0] 1024 1024
+set TELEMETRY(tcs.telescope.ra) "12:00:00"
+set TELEMETRY(tcs.telescope.dec) "32:00:00"
 
 set ANDOR_CFG(shmem) [lindex $shmid 0]
 exec xpaset -p $DS9 single
@@ -176,7 +178,7 @@ exec xpaset -p $DS9 zoom to fit
 andorPrepDataFrame
 cAndorSetProperty $CAM Shutter 0
 cAndorSetProperty $CAM FrameTransferMode 1
-cAndorSetProperty $CAM OutputAmplifier 0
+cAndorSetProperty $CAM OutputAmplifier 1
 cAndorSetProperty $CAM EMAdvanced 1
 cAndorSetProperty $CAM EMCCDGain 1
 #cAndorSetProperty $CAM VSSpeed 1

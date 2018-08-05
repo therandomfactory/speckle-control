@@ -57,6 +57,8 @@ int imageDataB[1024*1024];
 int outputData[1024*1024];
 int outputAvgA[1024*1024];
 int outputAvgB[1024*1024];
+unsigned short imageDataAI2[1024*1024];
+unsigned short imageDataBI2[1024*1024];
 int getLucky0[1024*1024];
 int getLucky1[1024*1024];
 float imageFrame[1024*1024];
@@ -1221,7 +1223,7 @@ int cAndorStoreROI(int cameraId, char *filename, int bitpix, int iexp,int numexp
        for (ih=0;ih<height;ih++) {
          if ( bitpix = FLOAT_IMG )  { fitsROI_float[iw+ih*width] = (float)imageDataA[iw+ih*width]; }
          if ( bitpix = ULONG_IMG )  { fitsROI_ulong[iw+ih*width] = (unsigned long)imageDataA[iw+ih*width]; }
-         if ( bitpix = USHORT_IMG ) { fitsROI_ushort[iw+ih*width] = (unsigned short)imageDataA[iw+ih*width]; }
+         if ( bitpix = USHORT_IMG ) { fitsROI_ushort[iw+ih*width] = (unsigned short)imageDataAI2[iw+ih*width]; }
        }
      }
    }
@@ -1231,7 +1233,7 @@ int cAndorStoreROI(int cameraId, char *filename, int bitpix, int iexp,int numexp
        for (ih=0;ih<height;ih++) {
          if ( bitpix = FLOAT_IMG )  { fitsROI_float[iw+ih*width] = (float)imageDataB[iw+ih*width]; }
          if ( bitpix = ULONG_IMG )  { fitsROI_ulong[iw+ih*width] = (unsigned long)imageDataB[iw+ih*width]; }
-         if ( bitpix = USHORT_IMG ) { fitsROI_ushort[iw+ih*width] = (unsigned short)imageDataB[iw+ih*width]; }
+         if ( bitpix = USHORT_IMG ) { fitsROI_ushort[iw+ih*width] = (unsigned short)imageDataBI2[iw+ih*width]; }
        }
      }
   }
@@ -2472,6 +2474,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   int ifft=0;
   int count;
   int ipeak;
+  int ipix;
   int maxt;
   long deltat;
   float texposure, taccumulate, tkinetics;
@@ -2520,20 +2523,34 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                       }
                       ngot = num;
  		      if ( cameraId == 0 ) {
-		          status = GetOldestImage(imageDataA, andorSetup[cameraId].npix);
-		      } else {
-			  status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
+                          if (bitpix == USHORT_IMG) {
+  		            status = GetOldestImage16(imageDataAI2, andorSetup[cameraId].npix);
+                            for (ipix=0;ipix<andorSetup[cameraId].npix; ipix++) {
+                               imageDataA[ipix] = (int)imageDataAI2[ipix];
+                            }
+                          } else {
+  		            status = GetOldestImage(imageDataA, andorSetup[cameraId].npix);
+                          }
+  		      } else {
+                          if (bitpix == USHORT_IMG) {
+			    status = GetOldestImage16(imageDataBI2, andorSetup[cameraId].npix);
+                            for (ipix=0;ipix<andorSetup[cameraId].npix; ipix++) {
+                               imageDataB[ipix] = (int)imageDataBI2[ipix];
+                            }
+                          } else {
+			    status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
+                          }
 		      }
                       fitsTimings[count] = (double)(tm2.tv_sec) + (double)tm2.tv_nsec/1000000000.;
+                      printf("frame %d , peak = %d , t = %16.4lf status=%d\n",count,ipeak,fitsTimings[count],status);
                       count  = count+1;
                       SharedMem2->iFrame[cameraId] = count;
                       ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
-                      printf("frame %d , count=%d , peak = %d , status=%d\n",ngot,count,ipeak,status);
                       fflush(NULL);
-                      cAndorStoreROI(cameraId, filename, bitpix, count ,numexp);                                   
+                      cAndorStoreROI(cameraId, filename, bitpix, count ,numexp);
                       cAndorDisplaySingle(cameraId, ifft);
                     }
-                    usleep(500);
+                    usleep(5000);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
                     if (deltat > maxt || SharedMem2->iabort > 0) {
@@ -2543,14 +2560,13 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                     }
                     GetStatus(&status);
 		}
-                usleep(5000);
-                clock_gettime(CLOCK_REALTIME,&tm2);
-                deltat = tm2.tv_sec - tm1.tv_sec;
-                if (deltat > maxt  || SharedMem2->iabort > 0) {
-                   count=numexp;
+                if (count < numexp ) {
                    AbortAcquisition();
-/*                   SharedMem2->iabort = 0; */
+                   printf("Cancelled at : %ld\n",tm2.tv_sec);
+                   count = numexp;
                 }
+                GetStatus(&status);
+                usleep(5000);
   }
 
   printf("\nAcq End at : %ld\n",tm2.tv_sec);

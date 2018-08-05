@@ -395,7 +395,7 @@ global ANDOR_CCD ANDOR_EMCCD
       .main.abort configure -fg black -relief raised
       after [expr int($SCOPE(exposure)*1000)+1000] fastvideomode
    } else {
-       andorSetControl 0 abort
+       andorSetControl 0 abort 1
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
       .main.abort configure -fg gray -relief sunken

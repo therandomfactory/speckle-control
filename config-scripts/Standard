@@ -2,15 +2,15 @@
 set ANDOR_CFG(fitsbits) ushort
 set SCOPE(numframes) 1000
 set SCOPE(numaccum) 1
-commandAndors SetFrameTransferMode $ANDORCODE(AC_ACQMODE_FRAMETRANSFER)
-commandAndors SetTemperature -60
+commandCameras SetFrameTransferMode $ANDORCODE(AC_ACQMODE_FRAMETRANSFER)
+commandCameras SetTemperature -60
 set ANDOR_DEF(hbin) 1
 set ANDOR_DEF(vbin) 1
 set ANDOR_DEF(shutter) $ANDOR_SHUTTER(close)
 #vertical clock voltage amplitude = 0
-commandAndors "preampgain 2"
-commandAndors "vsspeed 1"
-commandAndors "hsspeed 0 1"
-commandAndors "baseclamp 1"
+commandCameras "preampgain 2"
+commandCameras "vsspeed 1"
+commandCameras "hsspeed 0 1"
+commandCameras "baseclamp 1"
 
 
