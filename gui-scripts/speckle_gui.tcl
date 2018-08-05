@@ -637,7 +637,7 @@ wm withdraw .camerastatus
 
 set CAMSTATUS(red,TKinetics) 0.04
 set CAMSTATUS(blue,TKinetics) 0.04
-set CAMSTATUS(red,PreAmpGain ) 1
+set CAMSTATUS(red,PreAmpGain) 1
 set CAMSTATUS(blue,PreAmpGain) 1
 
 checkbutton .lowlevel.emccd  -bg gray -text "EMCCD" -variable INSTRUMENT(red,emccd) -command "checkemccdgain red"  -highlightthickness 0

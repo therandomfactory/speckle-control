@@ -134,7 +134,7 @@ set ANDOR_CFG($CAM,HSSpeed) 1
 set ANDOR_CFG($CAM,EMHSSpeed) 1
 set ANDOR_CFG($CAM,hbin) 1
 set ANDOR_CFG($CAM,vbin) 1
-set ANDOR_CFG(configure) "1 1 1 1024 1 1024 2 2 1 3"
+set ANDOR_CFG(configure) "1 1 1 1024 1 1024 1 1 1 1"
 andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
 debuglog "Configured camera id $CAM for ccd mode"
 
