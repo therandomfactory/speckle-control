@@ -322,6 +322,7 @@ global STATUS ANDOR_CFG
    set STATUS(abort) 0
    set ANDOR_CFG(kineticMode) 1
    setKineticMode
+   lowlevel.datarate configure -text ""
    andorset vspeed red VSSpeed 0
    andorset emhs red EMHSSpeed 0
    andorset vspeed blue VSSpeed 0
@@ -358,6 +359,7 @@ global ANDOR_CCD ANDOR_EMCCD
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
      set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / 0.04))]
      if { $perrun > 100 } {set perrun 100}
+     if { $perrun < 20 } {set perrun 20}
      commandAndor red "numberkinetics $perrun"
      commandAndor blue "numberkinetics $perrun"
      commandAndor red  "numberaccumulations $SCOPE(numaccum)"
