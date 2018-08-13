@@ -322,7 +322,7 @@ global STATUS ANDOR_CFG
    set STATUS(abort) 0
    set ANDOR_CFG(kineticMode) 1
    setKineticMode
-   lowlevel.datarate configure -text ""
+   .lowlevel.datarate configure -text ""
    andorset vspeed red VSSpeed 0
    andorset emhs red EMHSSpeed 0
    andorset vspeed blue VSSpeed 0
