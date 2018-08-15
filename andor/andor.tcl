@@ -327,6 +327,8 @@ global STATUS ANDOR_CFG
    andorset emhs red EMHSSpeed 0
    andorset vspeed blue VSSpeed 0
    andorset emhs blue EMHSSpeed 0
+   speckleshutter red open
+   speckleshutter blue open
    fastvideomode
 }
 
@@ -403,7 +405,9 @@ global ANDOR_CCD ANDOR_EMCCD
       .main.abort configure -fg gray -relief sunken
       set ANDOR_CFG(kineticMode) 0
       setKineticMode
-   }
+      speckleshutter red during
+      speckleshutter blue during
+  }
 }
 
 
