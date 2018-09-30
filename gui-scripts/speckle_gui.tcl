@@ -569,9 +569,9 @@ place .lowlevel.zbspec -x 20 -y 380
 button .lowlevel.zbhome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos B home"
 place .lowlevel.zbhome -x 20 -y 420
 
-menubutton .lowlevel.rmode -text "Mode=wide"  -width 10 -bg gray80 -menu .lowlevel.rmode.m -relief raised
+menubutton .lowlevel.rmode -text "Mode=wide"  -width 20 -bg gray80 -menu .lowlevel.rmode.m -relief raised
 menu .lowlevel.rmode.m
-place .lowlevel.rmode -x 620 -y 0
+place .lowlevel.rmode -x 745 -y 0
 .lowlevel.rmode.m add command -label "Wide Field" -command "specklemode wide"
 .lowlevel.rmode.m add command -label "Speckle" -command "specklemode speckle"
 
