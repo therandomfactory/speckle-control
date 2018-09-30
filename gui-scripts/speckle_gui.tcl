@@ -98,9 +98,12 @@ global SPECKLE_FILTER
 #	
 proc savespecklegui { } {
 global SCOPE env
+   set ignore "longitude latitude site telescope"
    set fout [open $env(HOME)/.specklegui w]
    foreach i [array names SCOPE] {
-      puts $fout "set SCOPE($i) \"$SCOPE($i)\""
+      if { [lsearch $ignore $i] < 0 } {
+        puts $fout "set SCOPE($i) \"$SCOPE($i)\""
+      }
    }
    close  $fout
 }
