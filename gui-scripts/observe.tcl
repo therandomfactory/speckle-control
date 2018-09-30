@@ -322,16 +322,21 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  commandAndor blue "datadir $SCOPE(datadir)"
  andorSetControl 0 frame 0
  andorSetControl 1 frame 0
- set autofilter [checkAutoFilter]
+ set autofilter [checkAutoFilter blue]
+ set rautofilter [checkAutoFilter red]
  while { $autofilter != "" } {
-   set nfilter [lindex $autofilter 0]
-   if { $nfilter > 0 } {
-    selectFilter red $nfilter
-    selectFilter blue $nfilter
-    commandAndor red  "filter $SPECKLE_FILTER(red,current)"
+   set bfilter [lindex $autofilter 0]
+   if { $bfilter > 0 } {
+    selectFilter blue $bfilter
     commandAndor blue "filter $SPECKLE_FILTER(blue,current)"
    }
+   set rfilter [lindex $rautofilter 0]
+   if { $rfilter > 0 } {
+    selectFilter red $rfilter
+    commandAndor red  "filter $SPECKLE_FILTER(red,current)"
+   }
    set autofilter [lrange $autofilter 1 end]
+   set rautofilter [lrange $rautofilter 1 end]
    while { $iseqnum < $SCOPE(numseq) } {
     set ifrmnum 0
     while { $ifrmnum < $SCOPE(numframes) } {

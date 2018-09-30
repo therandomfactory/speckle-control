@@ -106,6 +106,21 @@ global DATAQUAL DATAQUALT TELEMETRY
 proc speckleGuiMode { mode } {
 global SPECKLE
   wm geometry . $SPECKLE($mode)
+  if { $mode == "engineeringGui" } {
+    place .main.lsim -x 20 -y 227
+    place .main.simandor -x 150 -y 227
+    place .main.simzaber -x 250 -y 227
+    place .main.simfilter -x 250 -y 252
+    place .main.simtlm -x 150 -y 252
+    catch {place .main.simpico -x 85 -y 227}
+  } else {
+    place .main.lsim -x 20 -y 2227
+    place .main.simandor -x 150 -y 2227
+    place .main.simzaber -x 250 -y 2227
+    place .main.simfilter -x 250 -y 2252
+    place .main.simtlm -x 150 -y 2252
+    catch {place .main.simpico -x 85 -y 2227}
+  }
 }
 
 ## Documented proc \c validInteger .
@@ -197,23 +212,20 @@ proc validFloat {win event X oldX} {
 proc setKineticMode { } {
 global ANDOR_CFG ACQREGION
   if { $ANDOR_CFG(kineticMode) }  {
-    if { $ACQREGION(geom) == 1024 } {
+    if { $ACQREGION(geom) != 1024 } {
       commandAndor red "setframe roi"
       commandAndor blue "setframe roi"
       set LASTACQ roi
       .lowlevel.rmode configure -text "Mode=ROI"
-      .lowlevel.bmode configure -text "Mode=ROI"
      } else {
       commandAndor red  "setframe fullkinetic"
       commandAndor blue "setframe fullkinetic"
      .lowlevel.rmode configure -text "Mode=FULL"
-     .lowlevel.bmode configure -text "Mode=FULL"
     }
   } else {
     commandAndor red "setframe fullframe"
     commandAndor blue "setframe fullframe"
-    .lowlevel.rmode configure -text "Mode=Single"
-    .lowlevel.bmode configure -text "Mode=Single"
+    .lowlevel.rmode configure -text "Mode=FULL"
   }
 }
 
@@ -366,18 +378,15 @@ wm withdraw .countdown
 wm title . "Speckle Instrument Control"
 frame .mbar -width 936 -height 30 -bg gray
 menubutton .mbar.file -text "File" -fg black -bg gray -menu .mbar.file.m
-menubutton .mbar.observe -text "Set ROI's" -fg black -bg gray -menu .mbar.observe.m
 menubutton .mbar.temp -text "Temperature" -fg black -bg gray -menu .mbar.temp.m
 menubutton .mbar.help -text "Help" -fg black -bg gray -menu .mbar.help.m
 menubutton .mbar.tools -text "Tools" -fg black -bg gray -menu .mbar.tools.m
 pack .mbar
 place .mbar.file -x 0 -y 0
-place .mbar.observe -x 80 -y 0
 place .mbar.temp -x 180 -y 0
 place .mbar.tools -x 300 -y 0
 place .mbar.help -x 880 -y 0
 menu .mbar.file.m 
-menu .mbar.observe.m
 menu .mbar.temp.m
 menu .mbar.tools.m
 menu .mbar.help.m
@@ -388,13 +397,7 @@ menu .mbar.help.m
 .mbar.file.m add command -label "FLOAT image format" -command "setfitsbits FLOAT_IMG"
 
 #.mbar.file.m add command -label "Save As" -command filesaveas
-.mbar.file.m add command -label "Exit" -command shutdown
-.mbar.observe.m add command -label "Acq-roi-128" -command "observe region128"
-.mbar.observe.m add command -label "Acq-roi-256" -command "observe region256"
-.mbar.observe.m add command -label "Acq-roi-512" -command "observe region512"
-.mbar.observe.m add command -label "Acq-full" -command "observe regionall"
-.mbar.observe.m add command -label "Adjust ROI" -command "observe manual"
-.mbar.observe.m add command -label "Reset full-frame" -command "observe fullframe"
+.mbar.file.m add command -label "Shutdown" -command shutdown
 .mbar.temp.m add command -label "Cooler on" -command "setpoint on"
 .mbar.temp.m add command -label "Cooler off" -command "setpoint off"
 .mbar.temp.m add command -label "Cooler to ambient" -command  {set ok [confirmaction "Ramp temperature to ambient"] ; if {$ok} {setpoint amb}}
@@ -446,7 +449,7 @@ place .main.numexp -x 100 -y 50
 set opts "Object Focus Acquire Flat SkyFlat Dark Zero"
 ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype) -justify right
 SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 1000}
-place .main.numseq -x 100 -y 106
+place .main.numseq -x 100 -y 109
 label .main.laccum -text "Accum." -bg gray
 SpinBox .main.numaccum -width 10   -range "1 10000 1" -textvariable SCOPE(numaccum) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 1000}
 place .main.exptype -x 100 -y 80
@@ -456,14 +459,14 @@ label .main.lnum -text "Num. Frames" -bg gray
 label .main.lseq -text "Num. Seq." -bg gray
 label .main.ltyp -text "Exp. Type" -bg gray
 place .main.laccum -x 200 -y 106
-place .main.lexp -x 20 -y 23
-place .main.lnum -x 20 -y 53
-place .main.ltyp -x 20 -y 83
-place .main.lseq -x 20 -y 107
+place .main.lexp -x 16 -y 23
+place .main.lnum -x 16 -y 53
+place .main.ltyp -x 16 -y 83
+place .main.lseq -x 16 -y 109
 checkbutton .main.kinetic -bg gray  -text "Kinetic mode" -variable ANDOR_CFG(kineticMode) -command setKineticMode -highlightthickness 0
-place .main.kinetic -x 210 -y 82
+place .main.kinetic -x 210 -y 52
 checkbutton .main.showfft -bg gray  -text "Display FFT" -variable ANDOR_CFG(showfft) -command setDisplayMode -highlightthickness 0
-place .main.showfft -x 210 -y 52
+place .main.showfft -x 210 -y 82
 
 label .main.lbin -text Binning  -bg gray
 SpinBox .main.binning -width 4 -range "1 16 1" -textvariable ANDOR_CFG(binning) -justify right 
@@ -474,10 +477,10 @@ set SCOPE(exptype) Object
 set SCOPE(numaccum) 1
 set SCOPE(numseq) 1
 
-button .main.seldir -width 38 -text "Configure data directory" -command "choosedir data data"
+button .main.seldir -width 38 -text "$SCOPE(datadir)" -command "choosedir data data"
 place .main.seldir -x 20 -y 286
 label .main.lname -bg gray -fg black -text "File name :"
-place .main.lname -x 20 -y 135
+place .main.lname -x 16 -y 135
 entry .main.imagename -width 18 -bg white -fg black -textvariable SCOPE(imagename) -justify right
 place .main.imagename -x 100 -y 135
 
@@ -486,6 +489,15 @@ place .main.rcamtemp -x 353 -y 2
 label .main.bcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
 place .main.bcamtemp -x 453 -y 2
 
+menubutton .main.rois -width 40 -text "Set ROI's" -relief raised -fg black -bg gray -menu .main.rois.m
+place .main.rois -x 570 -y 290
+menu .main.rois.m
+.main.rois.m add command -label "Acq-roi-128" -command "observe region128"
+.main.rois.m add command -label "Acq-roi-256" -command "observe region256"
+.main.rois.m add command -label "Acq-roi-512" -command "observe region512"
+.main.rois.m add command -label "Acq-full" -command "observe regionall"
+.main.rois.m add command -label "Adjust ROI" -command "observe manual"
+.main.rois.m add command -label "Reset full-frame" -command "observe fullframe"
 
 
 .main.imagename insert 0 "N[exec date +%Y%m%d]_000000_000001"
@@ -615,7 +627,8 @@ set STATUS(busy) 0
 load $SPECKLE_DIR/lib/andorTclInit.so
 andorConnectShmem2
 initControl
-
+set ANDOR_CFG(kineticMode) 1
+setKineticMode 
 
 
 set CCDID 0
@@ -634,6 +647,8 @@ set OBSPARS(Flat)    "1.0 1 1"
 set OBSPARS(Dark)    "100.0 1 0"
 set OBSPARS(Zero)    "0.01 1 0"
 set OBSPARS(Skyflat) "0.1 1 1"
+set OBSPARS(PSFstandard)    "0.01 1 0"
+set OBSPARS(CalBinary)    "0.01 1 0"
 
 set LASTBIN(x) 1
 set LASTBIN(y) 1
@@ -681,7 +696,7 @@ if { [file exists $SCOPE(datadir)] } {
   set all [glob $SCOPE(datadir)/N*.fits]
   set last [split [lindex $all end] "_."]
   set SCOPE(seqnum) [string trimleft [lindex $last 1] 0]
-  set SCOPE(imagename) "N[exec date +%Y%m%d]_ [format %6.6d $iseq]_000001"
+  set SCOPE(imagename) "N[exec date +%Y%m%d]"
  }
 }
 

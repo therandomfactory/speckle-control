@@ -40,7 +40,7 @@ global SCOPE TELEMETRY FITSKEY IMGMETA
 #	
 proc shutdown { {id 0} } {
 global SCOPE
-   set it [tk_dialog .d "Exit" "Confirm exit" {} -1 "Cancel" "EXIT"]
+   set it [tk_dialog .d "Exit" "Confirm Shutdown" {} -1 "Cancel" "Shutdown"]
    if { $it } {
      if { $SCOPE(telescope) == "GEMINI" } {
         debuglog "Moving Gemini mechanisms to stowed positions"
@@ -48,6 +48,9 @@ global SCOPE
         zaberGoto focus stow
         zaberGoto pickoff out
      }
+     zaberGoto A wide
+     zaberGoto B wide
+     zaberGoto input wide
      savespecklegui
      catch { commandAndor red shutdown }
      catch { commandAndor blue shutdown }
@@ -196,20 +199,21 @@ global SPECKLE_DIR
 #		ANDOR_MODE - Observing mode, fullframe or roi\n
 #		LASTACQ - Last used observing mode 
 #
-proc specklemode { arm name } {
+proc specklemode { name } {
 global ANDOR_MODE LASTACQ
     .lowlevel.rmode configure -text "Mode=$name"
-    .lowlevel.bmode configure -text "Mode=$name"
-    debuglog "Setting arm $arm up for $name"
-    if { $name == "wide" && $LASTACQ != "fullframe" } {
+    foreach arm "red blue" {
+     debuglog "Setting arm $arm up for $name"
+     if { $name == "wide" && $LASTACQ != "fullframe" } {
        commandAndor $arm "setframe fullframe"
        positionSpeckle $arm fullframe
-    }
-    if { $name == "speckle" && $LASTACQ != "roi" } {
+     }
+     if { $name == "speckle" && $LASTACQ != "roi" } {
        commandAndor $arm "setframe roi"
        positionSpeckle $arm roi
-     }
-    debuglog "$arm setup for $name"
+      }
+     debuglog "$arm setup for $name"
+    }
 }
 
 
@@ -565,39 +569,20 @@ place .lowlevel.zbspec -x 20 -y 380
 button .lowlevel.zbhome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos B home"
 place .lowlevel.zbhome -x 20 -y 420
 
-menubutton .lowlevel.rmode -text Mode  -width 10 -bg gray80 -menu .lowlevel.rmode.m -relief raised
+menubutton .lowlevel.rmode -text "Mode=wide"  -width 10 -bg gray80 -menu .lowlevel.rmode.m -relief raised
 menu .lowlevel.rmode.m
-place .lowlevel.rmode -x 420 -y 70
-.lowlevel.rmode.m add command -label "Wide Field" -command "specklemode red wide"
-.lowlevel.rmode.m add command -label "Speckle" -command "specklemode red speckle"
-.lowlevel.rmode.m add command -label "Custom" -command "specklemode red custom"
+place .lowlevel.rmode -x 620 -y 0
+.lowlevel.rmode.m add command -label "Wide Field" -command "specklemode wide"
+.lowlevel.rmode.m add command -label "Speckle" -command "specklemode speckle"
 
-menubutton .lowlevel.bmode -text Mode -width 10 -bg gray80 -menu .lowlevel.bmode.m
-menu .lowlevel.bmode.m
-place .lowlevel.bmode -x 20 -y 70
-.lowlevel.bmode.m add command -label "Wide Field" -command "specklemode blue wide"
-.lowlevel.bmode.m add command -label "Speckle" -command "specklemode blue speckle"
-.lowlevel.bmode.m add command -label "Custom" -command "specklemode blue custom"
 
 menubutton .lowlevel.rfilter -text "Filter = clear"  -width 16 -bg gray80 -menu .lowlevel.rfilter.m -relief raised
 menu .lowlevel.rfilter.m
 place .lowlevel.rfilter -x 518 -y 70
-.lowlevel.rfilter.m add command -label "i" -command "specklefilter red Red-I"
-.lowlevel.rfilter.m add command -label "z" -command "specklefilter red Red-Z"
-.lowlevel.rfilter.m add command -label "716" -command "specklefilter red Red-716"
-.lowlevel.rfilter.m add command -label "832" -command "specklefilter red Red-832"
-.lowlevel.rfilter.m add command -label "clear" -command "specklefilter red clear"
-.lowlevel.rfilter.m add command -label "block" -command "specklefilter red block"
 
 menubutton .lowlevel.bfilter -text "Filter = clear"  -width 16 -bg gray80 -menu .lowlevel.bfilter.m -relief raised
 menu .lowlevel.bfilter.m
 place .lowlevel.bfilter -x 118 -y 70
-.lowlevel.bfilter.m add command -label "u" -command "specklefilter blue Blue-U"
-.lowlevel.bfilter.m add command -label "g" -command "specklefilter blue Blue-G"
-.lowlevel.bfilter.m add command -label "r" -command "specklefilter blue Blue-R"
-.lowlevel.bfilter.m add command -label "467" -command "specklefilter blue Blue-467"
-.lowlevel.bfilter.m add command -label "562" -command "specklefilter blue Blue-562"
-.lowlevel.bfilter.m add command -label "clear" -command "specklefilter blue clear"
 
 
 set SPECKLE_FILTER(red,current) clear
@@ -784,8 +769,8 @@ place .lowlevel.datarate -x 500 -y 154
 #set INSTRUMENT(blue) 1
 set SCOPE(exposure) 0.04
 set LASTACQ fullframe
-specklemode red wide
-specklemode blue wide
+specklemode wide
+specklemode wide
 
 catch {
   source $SPECKLE_DIR/gui-scripts/mimic.tcl 
@@ -799,6 +784,20 @@ source $SPECKLE_DIR/zaber/zaber.tcl
 
 showstatus "Initializing Filter Wheeels"
 source $SPECKLE_DIR/oriel/filterWheel.tcl
+
+.lowlevel.bfilter.m add command -label "$FWHEELS(blue,1)" -command "specklefilter blue $FWHEELS(blue,1)"
+.lowlevel.bfilter.m add command -label "$FWHEELS(blue,2)" -command "specklefilter blue $FWHEELS(blue,2)"
+.lowlevel.bfilter.m add command -label "$FWHEELS(blue,3)" -command "specklefilter blue $FWHEELS(blue,3)"
+.lowlevel.bfilter.m add command -label "$FWHEELS(blue,4)" -command "specklefilter blue $FWHEELS(blue,4)"
+.lowlevel.bfilter.m add command -label "$FWHEELS(blue,5)" -command "specklefilter blue $FWHEELS(blue,5)"
+.lowlevel.bfilter.m add command -label "$FWHEELS(blue,6)" -command "specklefilter blue $FWHEELS(blue,6)"
+
+.lowlevel.rfilter.m add command -label "$FWHEELS(red,1)" -command "specklefilter red $FWHEELS(red,1)"
+.lowlevel.rfilter.m add command -label "$FWHEELS(red,2)" -command "specklefilter red $FWHEELS(red,2)"
+.lowlevel.rfilter.m add command -label "$FWHEELS(red,3)" -command "specklefilter red $FWHEELS(red,3)"
+.lowlevel.rfilter.m add command -label "$FWHEELS(red,4)" -command "specklefilter red $FWHEELS(red,4)"
+.lowlevel.rfilter.m add command -label "$FWHEELS(red,5)" -command "specklefilter red $FWHEELS(red,5)"
+.lowlevel.rfilter.m add command -label "$FWHEELS(red,6)" -command "specklefilter red $FWHEELS(red,6)"
   
 .mbar.tools.m add command -label "HOME all stages" -command homeZabers
 .mbar.tools.m add command -label "zabers to wide mode" -command "positionZabers fullframe"
