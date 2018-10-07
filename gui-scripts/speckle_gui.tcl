@@ -493,26 +493,26 @@ set INSTRUMENT(clone) 0
 
 button .lowlevel.rtempset -bg gray -text "Temp Set" -width 6 -command "andorsetpoint red"
 entry .lowlevel.vrtempset -bg white -textvariable ANDOR_CFG(red,setpoint) -width 6  -justify right -validate all -vcmd {validInteger %W %V %P %s -80 20}
-place .lowlevel.rtempset -x 524 -y 28
+place .lowlevel.rtempset -x 528 -y 28
 place .lowlevel.vrtempset -x 610 -y 33
 
 button .lowlevel.btempset -bg gray -text "Temp Set" -width 6 -command "andorsetpoint blue"
 entry .lowlevel.vbtempset -bg white -textvariable ANDOR_CFG(blue,setpoint) -width 6  -justify right -validate all -vcmd {validInteger %W %V %P %s -80 20}
-place .lowlevel.btempset -x 126 -y 28
+place .lowlevel.btempset -x 130 -y 28
 place .lowlevel.vbtempset -x 210 -y 33
 
 
 set ANDOR_CFG(red,setpoint) -60
 set ANDOR_CFG(blue,setpoint) -60
 
-menubutton .lowlevel.rshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.rshut.m -relief raised
+menubutton .lowlevel.rshut -text Shutter  -width 12 -bg gray80 -menu .lowlevel.rshut.m -relief raised
 menu .lowlevel.rshut.m
 place .lowlevel.rshut -x 420 -y 30
 .lowlevel.rshut.m add command -label "Shutter=During" -command "speckleshutter red during"
 .lowlevel.rshut.m add command -label "Shutter=Close" -command "speckleshutter red close"
 .lowlevel.rshut.m add command -label "Shutter=Open" -command "speckleshutter red open"
 
-menubutton .lowlevel.bshut -text Shutter  -width 10 -bg gray80 -menu .lowlevel.bshut.m -relief raised
+menubutton .lowlevel.bshut -text Shutter  -width 12 -bg gray80 -menu .lowlevel.bshut.m -relief raised
 menu .lowlevel.bshut.m
 place .lowlevel.bshut -x 20 -y 30
 .lowlevel.bshut.m add command -label "Shutter=During" -command "speckleshutter blue during"
@@ -772,7 +772,6 @@ place .lowlevel.datarate -x 500 -y 154
 #set INSTRUMENT(blue) 1
 set SCOPE(exposure) 0.04
 set LASTACQ fullframe
-specklemode wide
 specklemode wide
 
 catch {
