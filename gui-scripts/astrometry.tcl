@@ -28,8 +28,8 @@
 #
 proc updateds9wcs { ra dec } {
 global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
-  set radeg [hms_to_radians $ra]*180/$PI]
-  set decdeg [dms_to_radians $dec]*180/$PI]
+  set radeg [expr [hms_to_radians $ra]*180/$PI]
+  set decdeg [expr [dms_to_radians $dec]*180/$PI]
   set fout [open /tmp/[set ANDOR_ARM]wcs.wcs w]
   puts $fout "CRVAL1 $decdeg"
   puts $fout "CRVAL2 $radeg"
