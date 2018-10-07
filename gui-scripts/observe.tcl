@@ -373,7 +373,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
-     set tpredict [lindex [commandAndor red status] end]
+     set tpredict [lindex [commandAndor red status] 15]
      if { $tpredict > $SCOPE(exposure) } {
 ##        set SCOPE(exposure) $tpredict
         .main.exposure configure -entryfg red
