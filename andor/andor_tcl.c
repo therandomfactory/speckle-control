@@ -1996,9 +1996,9 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
      sscanf(argv[3],"%d",&ivalue);
      status = SetOutputAmplifier(ivalue);
      if (status != DRV_SUCCESS) {
-        andorSetup[cameraId].amplifier = ivalue;
         return status;
      }
+     andorSetup[cameraId].amplifier = ivalue;
   }
 
 
@@ -2006,27 +2006,27 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
      sscanf(argv[3],"%d",&ivalue);
      status = SetEMAdvanced(ivalue);
      if (status != DRV_SUCCESS) {
-        andorSetup[cameraId].em_advanced = ivalue;
         return status;
      }
+     andorSetup[cameraId].em_advanced = ivalue;
   }
 
   if (strcmp(argv[2],"EMCCDGain") == 0) {
      sscanf(argv[3],"%d",&ivalue);
      status = SetEMCCDGain(ivalue);
      if (status != DRV_SUCCESS) {
-        andorSetup[cameraId].em_gain = ivalue;
         return status;
      }
+     andorSetup[cameraId].em_gain = ivalue;
   }
 
   if (strcmp(argv[2],"VSSpeed") == 0) {
      sscanf(argv[3],"%d",&ivalue);
      status = SetVSSpeed(ivalue);
      if (status != DRV_SUCCESS) {
-        andorSetup[cameraId].vertical_speed_index = ivalue;
         return status;
      }
+     andorSetup[cameraId].vertical_speed_index = ivalue;
   }
 
   if (strcmp(argv[2],"VSAmplitude") == 0) {
@@ -2049,9 +2049,9 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
      sscanf(argv[3],"%d",&ivalue);
      status = SetPreAmpGain(ivalue);
      if (status != DRV_SUCCESS) {
-        andorSetup[cameraId].preamp_gain_index = ivalue;
         return status;
      }
+     andorSetup[cameraId].preamp_gain_index = ivalue;
   }
 
   if (strcmp(argv[2],"ReadMode") == 0) {
@@ -2083,9 +2083,9 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
      sscanf(argv[4],"%d",&ivalue);
      status = SetHSSpeed(imode,ivalue);
      if (status != DRV_SUCCESS) {
-        andorSetup[cameraId].horizontal_speed_index[imode] = ivalue;
         return status;
      }
+     andorSetup[cameraId].horizontal_speed_index[imode] = ivalue;
   }
 
  if (strcmp(argv[2],"NumberAccumulations") == 0) {
