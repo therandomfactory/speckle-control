@@ -3,4 +3,6 @@ $HOME/speckle-control/andor/usbpermit.tcl
 $HOME/speckle-control/oriel/usbpermit.tcl
 $HOME/speckle-control/zaber/usbpermit.tcl
 sudo chmod a+rw /dev/ttyUSB*
+echo "********Device permissions set*********"
+sleep 4
 
