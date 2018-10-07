@@ -374,8 +374,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
      set tpredict [lindex [commandAndor red status] end]
-     if { $tpredict > $SCOPE(exspoure) } {
-        set SCOPE(exposure) $tpredict
+     if { $tpredict > $SCOPE(exposure) } {
+##        set SCOPE(exposure) $tpredict
         .main.exposure configure -entryfg red
      } else {
         .main.exposure configure -entryfg black
