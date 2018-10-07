@@ -469,7 +469,7 @@ checkbutton .main.showfft -bg gray  -text "Display FFT" -variable ANDOR_CFG(show
 place .main.showfft -x 210 -y 82
 
 label .main.lbin -text Binning  -bg gray
-SpinBox .main.binning -width 4 -range "1 16 1" -textvariable ANDOR_CFG(binning) -justify right 
+SpinBox .main.binning -width 4 -values "1 2 4 8 16" -textvariable ANDOR_CFG(binning) -justify right 
 place .main.lbin -x 220 -y 23
 place .main.binning -x 280 -y 20
 
