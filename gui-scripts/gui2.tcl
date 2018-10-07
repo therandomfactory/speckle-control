@@ -446,7 +446,7 @@ SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exp
 place .main.exposure -x 100 -y 20
 SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 30000}
 place .main.numexp -x 100 -y 50
-set opts "Object Focus Acquire Flat SkyFlat Dark Zero"
+set opts "Object Focus Acquire Flat SkyFlat Dark Zero PSFstandard CalBinary"
 ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype) -justify right
 SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 1000}
 place .main.numseq -x 100 -y 109
