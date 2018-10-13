@@ -220,12 +220,12 @@ global ANDOR_CFG ACQREGION
      } else {
       commandAndor red  "setframe fullkinetic"
       commandAndor blue "setframe fullkinetic"
-     .lowlevel.rmode configure -text "Mode=FULL"
+     .lowlevel.rmode configure -text "Mode=Wide field"
     }
   } else {
     commandAndor red "setframe fullframe"
     commandAndor blue "setframe fullframe"
-    .lowlevel.rmode configure -text "Mode=FULL"
+    .lowlevel.rmode configure -text "Mode=Wide field"
   }
 }
 

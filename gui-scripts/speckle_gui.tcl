@@ -310,6 +310,11 @@ global INSTRUMENT
          commandAndor $arm "emadvanced 0"
       }
    }
+   if { $INSTRUMENT($arm,emccd) } {
+      commandAndor $arm "outputamp 0"
+   } else {
+      commandAndor $arm "outputamp 1"
+   }
 }
 
 
@@ -754,7 +759,7 @@ button .main.video -width 5 -height 2 -text "Video" -relief raised -bg gray -com
 place .main.video  -x 100 -y 167
 
 place .main.abort   -x 180 -y 167
-text .main.comment -height 16 -width 50 
+text .main.comment -height 14 -width 50 
 label .main.lcomment -text "Comments :" -bg gray
 checkbutton .main.clrcomment -bg gray -variable SCOPE(autoclrcmt) -text "Auto-clear"  -highlightthickness 0
 place .main.comment -x 560 -y 50

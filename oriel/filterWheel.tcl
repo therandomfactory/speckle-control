@@ -102,8 +102,12 @@ global FILTERWHEEL FWHEELS MAXFILTERS
   }
   .filters.f$id$n configure -bg yellow -activebackground yellow
   update
-  set result [setOrielFilter $FWHEELS($id,handle) $n]
-  set msg [split $result \n]
+  if { $FWHEELS(sim) == 0 } {
+    set result [setOrielFilter $FWHEELS($id,handle) $n]
+    set msg [split $result \n]
+  } else {
+    set msg $n
+  }
   if { [string range [lindex $msg 3] 0 9] == "USB error:" } {
     set it [ tk_dialog .d "SPECKLE Filter Wheel $id" "$result" {} -1 OK]
   } else {
@@ -224,6 +228,8 @@ proc resetFilterWheel { id } {
 #  Call low level code to move filter to selected position
 #
 proc setOrielFilter { id n } {
+global FWHEELS
+ if { $FWHEELS(sim) == 0 } {
    oriel_write_cmd $id FILT?
    after 200
    set res [oriel_read_result $id]
@@ -249,6 +255,9 @@ proc setOrielFilter { id n } {
       return $n
    }
    return -1
+ } else {
+   return $n
+ }
 }
 
 ## Documented proc \c checkAutoFilter .

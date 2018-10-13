@@ -86,6 +86,7 @@ source $SPECKLE_DIR/andorsConfiguration.[set ckey]
 source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl 
 source $SPECKLE_DIR/gui-scripts/camera_init.tcl 
 if { $env(TELESCOPE) == "GEMINI" } {
+  proc redisUpdate { } { }
   set SCOPE(telescope) "GEMINI"
   set SCOPE(instrument) speckle
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl 
@@ -476,7 +477,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   }
   set count 0
   set dofft 0
-  if { $npix < 1024 } {set dofft 1}
+  if { $npix < 1024 } {set dofft [andorGetControl 0 showfft]}
   if { $ANDOR_CFG(red) > -1} {
       andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $ANDOR_CFG(fitsbits) $dofft
   }
@@ -487,7 +488,10 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
   if { $ANDOR_CFG(red) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
-#    andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
+    if { $dofft } {
+      andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
+      exec xpaset -p $DS9 save fits $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red_fft.fits
+    }
     catch {andorAbortAcq $ANDOR_CFG(red)}
     set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
     set ANDOR_CFG(red,peak) [andorGetControl $ANDOR_CFG(red) peak]
@@ -495,7 +499,10 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   }
   if { $ANDOR_CFG(blue) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
-#    andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n
+    if { $dofft } {
+      andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n
+      exec xpaset -p $DS9 save fits $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue_fft.fits
+    }
     catch {andorAbortAcq $ANDOR_CFG(blue)}
     set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
     set ANDOR_CFG(blue,peak) [andorGetControl $ANDOR_CFG(blue) peak]

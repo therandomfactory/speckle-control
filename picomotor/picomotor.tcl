@@ -72,7 +72,7 @@ proc echoPicosConfig { fcfg } {
 global PICOS
    puts $fcfg  "# Picos stage configuration parameters : [exec date]"
    foreach i "X Y " {
-     foreach p "ip in out home engineer jog++ jog+ jog-- jog-" {
+     foreach p "in out home engineer jog++ jog+ jog-- jog-" {
          puts $fcfg "set PICOS($i,$p) \"$PICOS($i,$p)\""
      }
      puts $fcfg ""
@@ -306,7 +306,7 @@ if { [info exists env(SPECKLE_SIM)] } {
        set PICOS(Y,position) 0
    } else {
        loadPicosConfig
-       picosConnect 
+###       picosConnect 
        picosInitialize
    }
 }

@@ -171,7 +171,6 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   commandAndor blue "setframe roi"
   set LASTACQ roi
   .lowlevel.rmode configure -text "Mode=ROI"
-  .lowlevel.bmode configure -text "Mode=ROI"
   } else {
     set ACQREGION(geom) 1024
     set ACQREGION(rxs) 1
@@ -182,16 +181,13 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
     set ACQREGION(bxe) 1024
     set ACQREGION(bys) 1
     set ACQREGION(bye) 1024
+    .lowlevel.rmode configure -text "Mode=Wide field"
     if { $ANDOR_CFG(kineticMode) } {
       commandAndor red "setframe fullkinetic"
       commandAndor blue "setframe fullkinetic"
-     .lowlevel.rmode configure -text "Mode=FULL"
-     .lowlevel.bmode configure -text "Mode=FULL"
     } else {
       commandAndor red "setframe fullframe"
       commandAndor blue "setframe fullframe"
-     .lowlevel.rmode configure -text "Mode=Single"
-     .lowlevel.bmode configure -text "Mode=Single"
     }
   }
 }

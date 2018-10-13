@@ -8,7 +8,7 @@ export LD_LIBRARY_PATH=${SPECKLE_DIR}/lib:${LD_LIBRARY_PATH}
 export SPECKLE_DATADIR=$HOME/data
 export XPA_METHOD=local
 xpans &
-ds9red &
-ds9blue &
+ds9red -geometry +1200+0 &
+ds9blue -geometry +0+0 &
 $SPECKLE_DIR/gui-scripts/gui2.tcl
 
