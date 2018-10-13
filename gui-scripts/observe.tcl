@@ -386,17 +386,19 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
            acquireCubes
            set ifrmnum $SCOPE(numframes)
            set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
+           set totaltime [expr $perframe * $SCOPE(numframes) +1]
      } else {
            .lowlevel.datarate configure -text ""
            set perframe $SCOPE(exposure)
+           set totaltime [expr $perframe * $SCOPE(numframes) +1]
            acquireFrames
      }
      set now [clock seconds]
      set FRAME 0
-     set REMAINING 0
      while { $i < $SCOPE(numframes) && $STATUS(abort) == 0 } {
         set FRAME $i
-        set REMAINING [expr [clock seconds] - $now]
+        set elapsedtime [expr [clock seconds] - $now]
+        if { $elapsedtime > $totaltime } { set STATUS(abort) 1 }
         if { $DEBUG} {debuglog "$SCOPE(exptype) frame $i"}
         after 20
         if { $LASTACQ == "fullframe" } {
