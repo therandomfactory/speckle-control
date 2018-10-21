@@ -29,13 +29,15 @@
 #
 proc updateAndorTelemetry { arm } {
 global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
+   set state(0) "Off"
+   set state(1) "On"
    set TELEMETRY(speckle.andor.head) "Andor iXon Emccd"
    if { $ANDOR_CFG($arm,EMCCDGain) > 0 } {
      set TELEMETRY(speckle.andor.amplifier) "CCD"
    } else {
      set TELEMETRY(speckle.andor.amplifier) "Electron Multiplying"
    }
-   set TELEMETRY(speckle.andor.imagename) "[set ANDOR_CFG(imagename)]_[set ANDOR_ARM].fits"
+   set TELEMETRY(speckle.andor.imagename) "[set ANDOR_CFG(imagename)][string range [set ANDOR_ARM] 0 0].fits"
    set TELEMETRY(speckle.andor.acquisition_mode) "Single scan"
    if { $TELEMETRY(speckle.andor.numberkinetics) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics mode" }
    set TELEMETRY(speckle.andor.int_time) $ANDOR_CFG($arm,ExposureTime)
@@ -45,6 +47,8 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.accumulationcycle) $ANDOR_CFG($arm,AccumulationCycleTime)
    set TELEMETRY(speckle.andor.read_mode) "Frame transfer"
    set TELEMETRY(speckle.andor.fullframe) "1,1024,1,1024"
+   set TELEMETRY(speckle.andor.frametransfer) $state($ANDOR_CFG($arm,FrameTransferMode))
+   set TELEMETRY(speckle.andor.biasclamp) $state($ANDOR_CFG($arm,BaselineClamp))
    set TELEMETRY(speckle.andor.hbin) $ANDOR_CFG($arm,hbin)
    set TELEMETRY(speckle.andor.roi) "$ANDOR_ROI(xs),$ANDOR_ROI(xe),$ANDOR_ROI(ys),$ANDOR_ROI(ye)"
    set TELEMETRY(speckle.andor.vbin) $ANDOR_CFG($arm,vbin)
@@ -126,6 +130,9 @@ set TELEMETRY(speckle.andor.accumulationcycle) 0.0
 set TELEMETRY(speckle.andor.numberkinetics) 1
 set TELEMETRY(speckle.andor.acquisition_mode) "CCD"
 set TELEMETRY(speckle.andor.read_mode) "Frame transfer"
+set TELEMETRY(speckle.andor.numberkinetics) 1
+set TELEMETRY(speckle.andor.frametransfer) "On"
+set TELEMETRY(speckle.andor.biasclamp) "On"
 set TELEMETRY(speckle.andor.fullframe) "1,1024,1,1024"
 set TELEMETRY(speckle.andor.hbin) $ANDOR_CFG(red,hbin)
 set TELEMETRY(speckle.andor.roi) "1,1024,1,1024"

@@ -73,9 +73,9 @@ proc headerAstrometry { fid ra dec } {
 global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM
   set radeg [expr [hms_to_radians $ra]*180/$PI]
   set decdeg [expr [dms_to_radians $dec]*180/$PI]
-  set r [fitshdrrecord  CRVAL1	 string "$decdeg"	"R.A. of reference pixel \[deg\]"]
+  set r [fitshdrrecord  CRVAL1	 string "$decdeg"	"Declination of reference pixel \[deg\]"]
   $fid put keyword $r
-  set r [fitshdrrecord  CRVAL2	 string "$radeg"	"Declination of reference pixel \[deg\]"]
+  set r [fitshdrrecord  CRVAL2	 string "$radeg"	"RA of reference pixel \[deg\]"]
   $fid put keyword $r
   set r [fitshdrrecord  CRPIX1	 integer [expr $ACQREGION(geom)/$ANDOR_CFG(binning)/2]	"Coordinate reference pixel in X"]
   $fid put keyword $r
@@ -91,9 +91,9 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM
   $fid put keyword $r
   set r [fitshdrrecord  CD2_2	 double  [expr $PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]	"Coordinate scale matrix \[degrees / pixel\]"]
   $fid put keyword $r
-  set r [fitshdrrecord  CTYPE1	 string "RA--TAN"	"Coordinate type"]
+  set r [fitshdrrecord  CTYPE1	 string "DEC--TAN"	"Coordinate type"]
   $fid put keyword $r
-  set r [fitshdrrecord  CTYPE2	 string  "DEC--TAN"	"Coordinate type"]
+  set r [fitshdrrecord  CTYPE2	 string  "RA--TAN"	"Coordinate type"]
   $fid put keyword $r
   set r [fitshdrrecord  WCSNAME  string "FK5"	"World coordinate system type"]
   $fid put keyword $r

@@ -176,18 +176,25 @@ set TELEMETRY(tcs.telescope.dec) "32:00:00"
 set ANDOR_CFG(shmem) [lindex $shmid 0]
 exec xpaset -p $DS9 single
 exec xpaset -p $DS9 zoom to fit
+exec xpaset -p $DS9 scale zscale
+if { $ANDOR_ARM == "red" } {
+   exec xpaset -p $DS9 cmap Heat
+} else {
+   exec xpaset -p $DS9 cmap Cool
+}
+
 andorPrepDataFrame
 cAndorSetProperty $CAM Shutter 0
 cAndorSetProperty $CAM FrameTransferMode 1
-cAndorSetProperty $CAM OutputAmplifier 1
+cAndorSetProperty $CAM OutputAmplifier 0
 cAndorSetProperty $CAM EMAdvanced 1
 cAndorSetProperty $CAM EMCCDGain 1
-#cAndorSetProperty $CAM VSSpeed 1
+cAndorSetProperty $CAM VSSpeed 1
 #cAndorSetProperty $CAM VSAmplitude 0
 cAndorSetProperty $CAM BaselineClamp 1
 cAndorSetProperty $CAM PreAmpGain 1
-#cAndorSetProperty $CAM HSSpeed 1 0
-#cAndorSetProperty $CAM HSSpeed 0 1
+cAndorSetProperty $CAM HSSpeed 1 1
+cAndorSetProperty $CAM HSSpeed 0 1
 cAndorSetProperty $CAM ReadMode 4
 cAndorSetProperty $CAM KineticCycleTime 0.0
 cAndorSetProperty $CAM NumberAccumulations 1
@@ -195,6 +202,9 @@ cAndorSetProperty $CAM NumberKinetics 1
 cAndorSetProperty $CAM AccumulationCycleTime 0.0
 cAndorSetProperty $CAM ExposureTime 0.04
 cAndorSetProperty $CAM SetTemperature -60
+cAndorSetProperty $CAM AcquisitionMode 1
+set ANDOR_CFG($ANDOR_ARM,min) 300
+set ANDOR_CFG($ANDOR_ARM,peak) 1000
 	
 # Special incantations to "make things work"
 #SetAcquisitionMode 5
@@ -203,11 +213,6 @@ cAndorSetProperty $CAM SetTemperature -60
 #after 1000
 #andorAbortAcq
 
-cAndorSetProperty $CAM AcquisitionMode 1
-set ANDOR_CFG($ANDOR_ARM,EMCCDGain) 0
-set ANDOR_CFG($ANDOR_ARM,EMAdvanced) 0
-set ANDOR_CFG($ANDOR_ARM,min) 300
-set ANDOR_CFG($ANDOR_ARM,peak) 1000
 
 
 ## Documented proc \c showstatus .
@@ -326,25 +331,25 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     SetExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(red)]
-      andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $dimen $dimen 1 1
+      andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
-      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
       exec xpaset -p $DS9 frame 2
       if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
-      exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+      exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
       set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(blue)]
-      andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $dimen $dimen 1 1
+      andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
-      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
       exec xpaset -p $DS9 frame 2
       if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
-      exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
     }
     puts stdout "$TELEMETRY(speckle.andor.peak_estimate)"
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
@@ -378,22 +383,22 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
-      andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $n $n 1 1
-      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+      andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $n $n 1 1
+      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
       exec xpaset -p $DS9 frame 1
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
-      exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+      exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
       andorSetROI $ANDOR_CFG(blue) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(blue)
-      andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $n $n 1 1
-      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $n $n 1 1
+      appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
       exec xpaset -p $DS9 frame 1
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
-      exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+      exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
     }
     set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
@@ -447,20 +452,23 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   redisUpdate
   setutc
+  set scset [exec xpaget $DS9 scale]
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
-    exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*$ANDOR_CFG(scalepeak)]
+    if { $scset == "zscale" } {
+      exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*$ANDOR_CFG(scalepeak)]
+    }
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   if { $ANDOR_ARM == "red" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
-    exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*$ANDOR_CFG(scalepeak)]
+    if { $scset == "zscale" } {
+       exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*$ANDOR_CFG(scalepeak)]
+    }
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
@@ -479,18 +487,18 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   set dofft 0
   if { $npix < 1024 } {set dofft [andorGetControl 0 showfft]}
   if { $ANDOR_CFG(red) > -1} {
-      andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits $ANDOR_CFG(fitsbits) $dofft
+      andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $ANDOR_CFG(fitsbits) $dofft
   }
   if { $ANDOR_CFG(blue) > -1 } {
-      andorGetSingleCube $ANDOR_CFG(blue) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits $ANDOR_CFG(fitsbits) $dofft
+      andorGetSingleCube $ANDOR_CFG(blue) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $ANDOR_CFG(fitsbits) $dofft
   }
   update idletasks
   set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
   if { $ANDOR_CFG(red) > -1} {
-    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red.fits
+    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
     if { $dofft } {
       andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
-      exec xpaset -p $DS9 save fits $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_red_fft.fits
+      exec xpaset -p $DS9 save fits $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]rfft.fits
     }
     catch {andorAbortAcq $ANDOR_CFG(red)}
     set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
@@ -498,10 +506,10 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
     set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(red,peak) 
   }
   if { $ANDOR_CFG(blue) > -1} {
-    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue.fits
+    appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
     if { $dofft } {
       andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n
-      exec xpaset -p $DS9 save fits $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]_blue_fft.fits
+      exec xpaset -p $DS9 save fits $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]bfft.fits
     }
     catch {andorAbortAcq $ANDOR_CFG(blue)}
     set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
@@ -533,20 +541,23 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
 proc acquireFastVideo { exp x y npix n } {
 global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   debuglog "Starting fast video sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
+  set scset [exec xpaget $DS9 scale]
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Cool
-    exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*$ANDOR_CFG(scalepeak)]
+    if { $scset == "zscale" } {
+      exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*$ANDOR_CFG(scalepeak)]
+    }
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   if { $ANDOR_ARM == "red" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
     exec xpaset -p $DS9 cmap Heat
-    exec xpaset -p $DS9 scale linear
-    exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*$ANDOR_CFG(scalepeak)]
+    if { $scset == "zscale" } {
+      exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*$ANDOR_CFG(scalepeak)]
+    }
     if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)

@@ -81,10 +81,12 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
       }
    }
    echoGeminiTelemetry
+   set TELEMETRY(speckle.scope.instrument) $SCOPE(instrument)
    set SCOPE(ProgID) $TELEMETRY($GEMINI(programid))
    set SCOPE(ra) $TELEMETRY($GEMINI(targetra))
    set SCOPE(dec) $TELEMETRY($GEMINI(targetdec))
    set SCOPE(target) $TELEMETRY($GEMINI(targetname))
+   set SCOPE(telescope)  $TELEMETRY($GEMINI(telescope))
    set TELEMETRY(tcs.target.name) $SCOPE(target)
 #   set all [lsort [array names GEMINI]]
 #   foreach i $all {

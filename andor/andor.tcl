@@ -206,13 +206,13 @@ global ANDOR_SOCKET SCOPE
    } else {
      if { [string range $cmd 0 3] == "grab" } {
         if { $echk } {
-           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)_[set SCOPE(seqnum)]_red.fits"
+           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)[set SCOPE(seqnum)]_red.fits"
            if { [file exists $nrchk] } {
               set it [ tk_dialog .d "File exists" "The file named\n $nrchk\n already exists" {} -1 OK]
               debuglog "Cannot overwrite file $nrchk"
               return 0
             }
-           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)_[set SCOPE(seqnum)]_blue.fits"
+           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)[set SCOPE(seqnum)]_blue.fits"
            if { [file exists $nbchk] } {
               set it [ tk_dialog .d "File exists" "The file named\n $nbchk\n already exists" {} -1 OK]
               debuglog "Cannot overwrite file $nbchk"
@@ -320,6 +320,7 @@ global LASTACQ STATUS SCOPE ACQREGION
 proc startfastvideo { } {
 global STATUS ANDOR_CFG
    set STATUS(abort) 0
+   set ANDOR_CFG(waskinetic) $ANDOR_CFG(kineticMode)
    set ANDOR_CFG(kineticMode) 1
    setKineticMode
    .lowlevel.datarate configure -text ""
@@ -338,7 +339,6 @@ global STATUS ANDOR_CFG
 #
 #
 # Globals :\n
-#		LASTACQ - Type of last acquisition fulframe/roi\n
 #		SCOPE - Array of telescope settings\n
 #		STATUS - Array of exposure statuses\n
 #		ACQREGION - ROI properties xs,xe,ys,ye\n
@@ -346,7 +346,7 @@ global STATUS ANDOR_CFG
 #		ANDOR_CFG - Andor camera properties
 #
 proc fastvideomode { } {
-global LASTACQ STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG INSTRUMENT
+global STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG INSTRUMENT
 global ANDOR_CCD ANDOR_EMCCD
 #   commandAndor red "imagename videomode 1" 0
 #   commandAndor blue "imagename videomode 1" 0
@@ -386,7 +386,7 @@ global ANDOR_CCD ANDOR_EMCCD
        commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
      } else {
        commandAndor blue "outputamp $ANDOR_CCD"
-       commandAndor blue "hsspeed 1 $ANDOR_CFG(red,HSSpeed)"
+       commandAndor blue "hsspeed 1 $ANDOR_CFG(blue,HSSpeed)"
      }
      commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $perrun"
      commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]  $perrun"
@@ -403,8 +403,10 @@ global ANDOR_CCD ANDOR_EMCCD
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
       .main.abort configure -fg gray -relief sunken
-      set ANDOR_CFG(kineticMode) 0
-      setKineticMode
+      if { $ANDOR_CFG(waskinetic) == 0 } {
+        set ANDOR_CFG(kineticMode) 0
+        setKineticMode
+      }
       speckleshutter red during
       speckleshutter blue during
   }
@@ -516,11 +518,12 @@ global INSTRUMENT SCOPE LASTACQ ACQREGION ANDOR_CFG
 #
 # Globals :\n
 #		INSTRUMENT - Array of instrument settings\n
+#		LASTACQ - Type of last acquisition fulframe/roi\n
 #		SCOPE - Array of telescope settings\n
 #		STATUS - Array of exposure statuses
 #
 proc acquireFrames { } {
-global INSTRUMENT SCOPE
+global INSTRUMENT SCOPE LASTACQ
    if { $INSTRUMENT(red) } {
       commandAndor red "setframe fullframe"
       commandAndor red "grabframe $SCOPE(exposure)"
@@ -540,12 +543,13 @@ global INSTRUMENT SCOPE
 #
 # Globals :\n
 #		SPECKLE_DIR - Directory path to speckle software installation\n
+#		LASTACQ - Type of last acquisition fulframe/roi\n
 #		ANDOR_SOCKET - Array of (2) socket file handles\n
 #		SCOPE - Array of telescope settings\n
 #		ACQREGION - ROI properties xs,xe,ys,ye\n
 #
 proc resetAndors { mode } {
-global SPECKLE_DIR ANDOR_SOCKET ACQREGION
+global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ
    debuglog "Resetting Andors for $mode" 
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
@@ -575,11 +579,12 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION
 #
 # Globals :\n
 #		SPECKLE_DIR - Directory path to speckle software installation\n
+#		LASTACQ - Type of last acquisition fulframe/roi\n
 #		ANDOR_SOCKET - Array of (2) socket file handles\n
 #		ACQREGION - ROI properties xs,xe,ys,ye
 #
 proc resetSingleAndors { mode } {
-global SPECKLE_DIR ANDOR_SOCKET ACQREGION
+global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ
    debuglog "Resetting Andors for $mode" 
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
@@ -595,6 +600,7 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION
    }
    after 15000
    connectToAndors
+   after 5000 updateTemps
    debuglog "Andor reset complete"
 }
 #\endcode

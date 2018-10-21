@@ -270,6 +270,8 @@ set SCOPE(telescope) GEMINI
 set SCOPE(site) GEMINI_N
 set SCOPE(latitude) 19:49:00
 set SCOPE(longitude) 155:28:00
+
+
 if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
   set SCOPE(latitude) 31:57:11.78
   set SCOPE(longitude) 07:26:27.97
@@ -410,6 +412,8 @@ menu .mbar.help.m
 .mbar.tools.m add command -label "Filter Selection" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
 .mbar.tools.m add command -label "Plot timings" -command "plotTimings"
+.mbar.tools.m add command -label "ds9 red" -command "exec ds9red -geometry +1200+0 &"
+.mbar.tools.m add command -label "ds9 blue" -command "exec ds9blue -geometry +0+0 &"
 
 set FITSBITS(SHORT_IMG)    16
 set FITSBITS(LONG_IMG)     32
@@ -500,11 +504,10 @@ menu .main.rois.m
 .main.rois.m add command -label "Reset full-frame" -command "observe fullframe"
 
 
-.main.imagename insert 0 "N[exec date +%Y%m%d]_000000_000001"
 entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 999999}
 place .main.seqnum -x 270 -y 135
 set SCOPE(seqnum) 1
-button .main.observe -width 5 -height 2 -text "Observe" -bg gray -command startsequence
+button .main.observe -width 5 -height 2 -text "Observe" -bg green -command startsequence
 button .main.abort -width 5 -height 2 -text "Abort" -relief sunken -bg gray -command abortsequence
 place .main.observe -x 20  -y 167
 place .main.abort   -x 120 -y 167
@@ -667,6 +670,7 @@ set SCOPE(datadir) $env(HOME)/data
 set SCOPE(darktime) 0.0
 set SCOPE(numframes) 1
 set SCOPE(numseq) 1
+set SCOPE(instrument) "Speckle"
 
 #
 #  Start monitoring the temperature
@@ -689,15 +693,19 @@ wm protocol .mimicSpeckle WM_DELETE_WINDOW {wm iconify .status}
 wm protocol .camerastatus WM_DELETE_WINDOW {wm iconify .status}
 wm protocol .filters WM_DELETE_WINDOW {wm iconify .status}
 
-set d [string tolower [exec date +%B]]
+set d [string tolower [exec date -u +%B]]
 
 if { [file exists $SCOPE(datadir)] } {
  catch {
   set all [glob $SCOPE(datadir)/N*.fits]
   set last [split [lindex $all end] "_."]
   set SCOPE(seqnum) [string trimleft [lindex $last 1] 0]
-  set SCOPE(imagename) "N[exec date +%Y%m%d]"
  }
+}
+
+set SCOPE(imagename) "N[exec date -u +%Y%m%d]"
+if ( $SCOPE(site) == "GEMINI_S" } {
+   set SCOPE(imagename) "S[exec date -u +%Y%m%d]"
 }
 
 catch {

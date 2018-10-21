@@ -243,6 +243,16 @@ global SCOPE ANDOR_CFG ACQREGION
    }
 }
 
+proc updateTemps { } {
+     set redtemp  [lindex [commandAndor red gettemp] 0]
+     set bluetemp  [lindex [commandAndor blue gettemp] 0]
+     mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
+     mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
+     .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
+     .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
+}
+
+
 
 ## Documented proc \c startsequence .
 # 
@@ -323,17 +333,18 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  while { $autofilter != "" } {
    set bfilter [lindex $autofilter 0]
    if { $bfilter > 0 } {
-    selectFilter blue $bfilter
+    selectfilter blue $bfilter
     commandAndor blue "filter $SPECKLE_FILTER(blue,current)"
    }
    set rfilter [lindex $rautofilter 0]
    if { $rfilter > 0 } {
-    selectFilter red $rfilter
+    selectfilter red $rfilter
     commandAndor red  "filter $SPECKLE_FILTER(red,current)"
    }
    set autofilter [lrange $autofilter 1 end]
    set rautofilter [lrange $rautofilter 1 end]
    while { $iseqnum < $SCOPE(numseq) } {
+    .lowlevel.p configure -value 0
     set ifrmnum 0
     while { $ifrmnum < $SCOPE(numframes) } {
      incr iseqnum 1
@@ -356,19 +367,14 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
        mimicMode red open
        mimicMode blue open
      }
-     commandAndor red "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
-     commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+     commandAndor red "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+     commandAndor blue "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
      if { $LASTACQ == "fullframe" && $SCOPE(numframes) > 1 } {
-       commandAndor red "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
-       commandAndor blue "imagename $SCOPE(imagename)_[format %6.6d $SCOPE(seqnum)]_[format %6.6d $ifrmnum] $SCOPE(overwrite)"
+       commandAndor red "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)][format %6.6d $ifrmnum] $SCOPE(overwrite)"
+       commandAndor blue "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)][format %6.6d $ifrmnum] $SCOPE(overwrite)"
      }
      incr SCOPE(seqnum) 1
-     set redtemp  [lindex [commandAndor red gettemp] 0]
-     set bluetemp  [lindex [commandAndor blue gettemp] 0]
-     mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
-     mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
-     .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
-     .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
+     updateTemps
      set tpredict [lindex [commandAndor red status] 15]
      if { $tpredict > $SCOPE(exposure) } {
 ##        set SCOPE(exposure) $tpredict

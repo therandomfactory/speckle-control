@@ -58,7 +58,7 @@ global CAMERAS ANDOR ANDOR_SOCKET SCOPE
         debuglog "Moving Gemini mechanisms to stowed positions"
         picosOutPosition
         zaberGoto focus stow
-        zaberGoto pickoff out
+        zaberGoto pickoff stow
      }
      savespecklegui
      catch { commandAndor red shutdown }

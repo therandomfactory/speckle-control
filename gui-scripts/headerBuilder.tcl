@@ -218,10 +218,15 @@ global TIMER
 
 ## Documented proc \c obsid .
 #
-#  Generate an observstion identifier
+#  Generate an observation identifier
 #
 proc obsid {  } {
-  set obsid "wiyn.speckle.20[exec date -u +\%y\%m\%dT\%H\%M\%S]"
+global SCOPE TELEMETRY
+  if { $SCOPE(telescope) == "WIYN" } {
+    set obsid "[set SCOPE(telescope).speckle.20[exec date -u +\%y\%m\%dT\%H\%M\%S]"
+  } else {
+    set obsid $TELEMETRY(speckle.scope.program)
+  }
   return $obsid
 }
 
@@ -318,9 +323,6 @@ global SPECKLEHDRLOG SCOPE env TELEMETRY
   }
   if { [info proc headerAstrometry] == "headerAstrometry" } {
      headerAstrometry $fid $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec) 
-  }
-  if { [info proc header$SCOPE(instrument)] == "header$SCOPE(instrument)" } {
-     eval {header$SCOPE(instrument) $fid}
   }
   if { [info proc headerComments] == "headerComments" } {
      fits close $fid

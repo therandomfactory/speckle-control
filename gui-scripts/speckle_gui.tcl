@@ -46,7 +46,7 @@ global SCOPE
         debuglog "Moving Gemini mechanisms to stowed positions"
         catch {picosOutPosition}
         zaberGoto focus stow
-        zaberGoto pickoff out
+        zaberGoto pickoff stow
      }
      zaberGoto A wide
      zaberGoto B wide
@@ -136,7 +136,7 @@ global FWHEELS
 #		SPECKLE_DIR - Directory path of speckle code
 #	
 proc loadconfig { fname } {
-global SPECKLE_DIR
+global SPECKLE_DIR SCOPE INSTRUMENT ANDORCODE ANDOR_CFG ANDOR_DEF ANDOR_SHUTTER
    if { $fname == "user" } {
       set it [tk_getOpenFile -initialdir $SPECKLE_DIR/config-scripts]
       if { $it == "" } {return}
@@ -207,12 +207,12 @@ global ANDOR_MODE LASTACQ
     .lowlevel.rmode configure -text "Mode=$name"
     foreach arm "red blue" {
      debuglog "Setting arm $arm up for $name"
-     if { $name == "wide" && $LASTACQ != "fullframe" } {
-       commandAndor $arm "setframe fullframe"
+     if { $name == "wide" } {
+###       commandAndor $arm "setframe fullframe"
        positionSpeckle $arm fullframe
      }
-     if { $name == "speckle" && $LASTACQ != "roi" } {
-       commandAndor $arm "setframe roi"
+     if { $name == "speckle" } {
+###       commandAndor $arm "setframe roi"
        positionSpeckle $arm roi
       }
      debuglog "$arm setup for $name"
@@ -228,11 +228,10 @@ global ANDOR_MODE LASTACQ
 #
 #  Globals    :\n
 #		ANDOR_MODE - Observing mode, fullframe or roi\n
-#		LASTACQ - Last used observing mode \n
 #		ANDOR_SHUTTER - camera shutter selected mode
 #
 proc speckleshutter { arm name } {
-global ANDOR_MODE LASTACQ ANDOR_SHUTTER
+global ANDOR_MODE ANDOR_SHUTTER
     .lowlevel.rshut configure -text "Shutter=$name"
     .lowlevel.bshut configure -text "Shutter=$name"
     mimicMode $arm $name
@@ -290,7 +289,7 @@ global DATAQUAL ZABERS FWHEELS
 #  Check EM gain against Advanced mode requirements and setting
 #
 #  Globals    :
-#		INSTRUMENT - Array od instrument configuration
+#		INSTRUMENT - Array of instrument configuration
 #
 proc checkemccdgain { arm } {
 global INSTRUMENT
@@ -315,6 +314,20 @@ global INSTRUMENT
    } else {
       commandAndor $arm "outputamp 1"
    }
+}
+
+## Documented proc \c checkframetransfer .
+# \param[in] arm Instrument arm, red or blue
+#
+#  Check Frame Transfer mode requirements and setting
+#
+#  Globals    :
+#		INSTRUMENT - Array of instrument configuration
+#
+proc checkframetransfer { arm } {
+global INSTRUMENT
+   debuglog "Set $arm camera Frame Transfer to $INSTRUMENT($arm,frametransfer)"
+   commandAndor $arm "frametransfer $INSTRUMENT($arm,frametransfer)"
 }
 
 
@@ -530,8 +543,8 @@ checkbutton .lowlevel.bautofit  -bg gray -text "Autofit ds9" -variable INSTRUMEN
 place .lowlevel.rautofit -x 680 -y 33
 place .lowlevel.bautofit -x 280 -y 33
 
-checkbutton .lowlevel.rfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(red,frametransfer) -highlightthickness 0
-checkbutton .lowlevel.bfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(blue,frametransfer) -highlightthickness 0
+checkbutton .lowlevel.rfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(red,frametransfer) -command "checkframetransfer red" -highlightthickness 0
+checkbutton .lowlevel.bfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(blue,frametransfer) -command "checkframetransfer blue" -highlightthickness 0
 place .lowlevel.rfxfer -x 620 -y 3
 place .lowlevel.bfxfer -x 220 -y 3
 set ANDOR_CFG(red,frametransfer) 1
@@ -619,9 +632,11 @@ foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain EMHSSp
    place .camerastatus.vblue[set p] -x 220 -y $iy
    incr iy 25
 }
+button .camerastatus.refresh -text "Refresh" -fg black -bg grey -width 45 -command "cameraStatuses"
+place .camerastatus.refresh -x 20 -y 500
 button .camerastatus.done -text "Close" -fg black -bg orange -width 45 -command "wm withdraw .camerastatus"
-place .camerastatus.done -x 20 -y 500
-wm geometry .camerastatus 430x550+20+20
+place .camerastatus.done -x 20 -y 530
+wm geometry .camerastatus 430x580+20+20
 foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
    set CAMSTATUS(red,$p) "???"
    set CAMSTATUS(blue,$p) "???"
@@ -826,8 +841,8 @@ if { $ZABERS(A,arm) == "red" } {
 if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus extend" -command "zaberGoto focus extend"
   .mbar.tools.m add command -label "zaber focus stow" -command "zaberGoto focus stow"
-  .mbar.tools.m add command -label "zaber pickoff in" -command "zaberGoto pickoff in "
-  .mbar.tools.m add command -label "zaber pickoff out" -command "zaberGoto pickpoff out"
+  .mbar.tools.m add command -label "zaber pickoff extend" -command "zaberGoto pickoff extend"
+  .mbar.tools.m add command -label "zaber pickoff stow" -command "zaberGoto pickpoff stow"
 }
 
 
@@ -857,9 +872,9 @@ button .lowlevel.zpgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos 
 entry .lowlevel.vzpgoto -bg white -textvariable ZABERS(pickoff,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
 place .lowlevel.zpgoto -x 670 -y 305
 place .lowlevel.vzpgoto -x 780 -y 307
-button .lowlevel.zpin -bg gray -text "Set IN to current" -width 20 -command "zaberConfigurePos pickoff in "
+button .lowlevel.zpin -bg gray -text "Set EXTEND to current" -width 20 -command "zaberConfigurePos pickoff extend"
 place .lowlevel.zpin -x 670 -y 350
-button .lowlevel.zpout -bg gray -text "Set OUT to current" -width 20 -command "zaberConfigurePos pickoff out"
+button .lowlevel.zpout -bg gray -text "Set STOW to current" -width 20 -command "zaberConfigurePos pickoff stow"
 place .lowlevel.zpout -x 670 -y 392
 button .lowlevel.pksave -text Save -bg gray70 -width 6 -command "specklesave pickoff"
 button .lowlevel.pkload -text Load -bg gray70 -width 6 -command "speckleload pickoff"
