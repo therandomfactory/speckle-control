@@ -206,13 +206,13 @@ global ANDOR_SOCKET SCOPE
    } else {
      if { [string range $cmd 0 3] == "grab" } {
         if { $echk } {
-           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)[set SCOPE(seqnum)]_red.fits"
+           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)[set SCOPE(seqnum)]r.fits"
            if { [file exists $nrchk] } {
               set it [ tk_dialog .d "File exists" "The file named\n $nrchk\n already exists" {} -1 OK]
               debuglog "Cannot overwrite file $nrchk"
               return 0
             }
-           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)[set SCOPE(seqnum)]_blue.fits"
+           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)[set SCOPE(seqnum)]b.fits"
            if { [file exists $nbchk] } {
               set it [ tk_dialog .d "File exists" "The file named\n $nbchk\n already exists" {} -1 OK]
               debuglog "Cannot overwrite file $nbchk"
