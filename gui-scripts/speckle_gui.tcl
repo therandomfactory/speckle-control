@@ -391,7 +391,7 @@ global ANDOR_CFG
 
 ## Documented proc \c syncgui .
 #
-#  Syncrojnize GUI widgets with current camera settings
+#  Syncronize GUI widgets with current camera settings
 #
 #  Globals    :\n
 #		ANDOR_CFG - Array of Andor camera configuration data\n
@@ -406,6 +406,24 @@ global CAMSTATUS ANDOR_CFG
    .lowlevel.bccdhs configure -text $CAMSTATUS(blue,HSSpeed)
    .lowlevel.bemhs configure -text $CAMSTATUS(blue,EMHSSpeed)
 }
+
+## Documented proc \c closestgain .
+#
+#  Calculate closest approved gain setting
+#
+proc closestgain  { target } {
+ set options "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000"
+ set diff 1000
+ foreach v $options {
+   if { [expr abs($target-$v)] < $diff } {
+      set diff  [expr abs($target-$v)]
+      set best $v
+   }
+ }
+ return $best
+}
+
+
 
 
 # \endcode
@@ -494,12 +512,12 @@ place .lowlevel.blue -x 20 -y 3
 #place .lowlevel.clone -x 240 -y 3
 
 label .lowlevel.lemgain  -bg gray -text "EM Gain"
-SpinBox .lowlevel.emgain -width 4  -bg gray50  -range "0 1000 1" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
+SpinBox .lowlevel.emgain -width 4  -bg gray50  -values "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
 place .lowlevel.lemgain -x 616 -y 103
 place .lowlevel.emgain -x 670 -y 100
 
 label .lowlevel.lbemgain  -bg gray -text "EM Gain"
-SpinBox .lowlevel.bemgain -width 4  -bg gray  -range "0 1000 1" -textvariable INSTRUMENT(blue,emgain) -command "checkemccdgain blue" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
+SpinBox .lowlevel.bemgain -width 4  -bg gray  -values "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" -textvariable INSTRUMENT(blue,emgain) -command "checkemccdgain blue" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
 place .lowlevel.lbemgain -x 220 -y 103
 place .lowlevel.bemgain -x 274 -y 100
 
@@ -569,7 +587,7 @@ button .lowlevel.zahome -bg gray -text "Set HOME to current" -width 20 -command 
 place .lowlevel.zahome -x 420 -y 420
 
 button .lowlevel.zigoto -bg gray -text "Move to" -width 8 -command "zaberEngpos input"
-entry .lowlevel.vzigoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+entry .lowlevel.vzigoto -bg white -textvariable ZABERS(input,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
 place .lowlevel.zigoto -x 220 -y 300
 place .lowlevel.vzigoto -x 330 -y 302
 button .lowlevel.ziwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos input wide"
@@ -792,7 +810,7 @@ place .lowlevel.datarate -x 500 -y 154
 #set INSTRUMENT(blue) 1
 set SCOPE(exposure) 0.04
 set LASTACQ fullframe
-specklemode wide
+
 
 catch {
   source $SPECKLE_DIR/gui-scripts/mimic.tcl 
@@ -802,6 +820,7 @@ catch {
 
 showstatus "Initializing Zabers"
 source $SPECKLE_DIR/zaber/zaber.tcl 
+specklemode wide
 
 
 showstatus "Initializing Filter Wheeels"

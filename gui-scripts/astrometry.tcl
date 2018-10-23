@@ -141,7 +141,10 @@ global PI
 # \endcode
 
 set PI 3.141592653589
-
+set PSCALES(Gemini-North,fullframe) 	[expr 0.0725/3600./180.*$PI]
+set PSCALES(Gemini-North,speckle)	[expr 0.0096/3600./180.*$PI]
+set PSCALES(Gemini-South,fullframe) 	[expr 0.0725/3600./180.*$PI]
+set PSCALES(Gemini-South,speckle)	[expr 0.0096/3600./180.*$PI]
 set PSCALES(WIYN,fullframe) 	[expr 0.0813/3600./180.*$PI]
 set PSCALES(WIYN,speckle) 	[expr 0.0182/3600./180.*$PI]
 set PSCALES(GEMINI,fullframe) 	[expr 0.0725/3600./180.*$PI]

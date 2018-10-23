@@ -704,7 +704,7 @@ if { [file exists $SCOPE(datadir)] } {
 }
 
 set SCOPE(imagename) "N[exec date -u +%Y%m%d]"
-if ( $SCOPE(site) == "GEMINI_S" } {
+if { $SCOPE(site) == "GEMINI_S" } {
    set SCOPE(imagename) "S[exec date -u +%Y%m%d]"
 }
 
