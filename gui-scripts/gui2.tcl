@@ -632,6 +632,8 @@ andorConnectShmem2
 initControl
 set ANDOR_CFG(kineticMode) 1
 setKineticMode 
+commandAndor red "outputamp $ANDOR_EMCCD"
+commandAndor blue "outputamp $ANDOR_EMCCD"
 
 
 set CCDID 0

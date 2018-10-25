@@ -201,8 +201,6 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
   set TELEMETRY(speckle.andor.preamp_gain) $ANDOR_CFG(preampgain)
   set TELEMETRY(speckle.andor.serial_number) $ANDOR_CFG($CAM,SerialNumber)
   set TELEMETRY(speckle.andor.target_temperature) $ANDOR_CFG(temperature)
-  set TELEMETRY(speckle.andor.inputzaber) $ANDOR_CFG(inputzaber)
-  set TELEMETRY(speckle.andor.fieldzaber) $ANDOR_CFG(fieldzaber)
   set TELEMETRY(speckle.andor.numaccum)  $ANDOR_CFG(numberaccumulations)
   set TELEMETRY(speckle.andor.frametransfer) $ANDOR_CFG(frametransfer)
   set TELEMETRY(speckle.andor.numberkinetics) $ANDOR_CFG(numberkinetics)
