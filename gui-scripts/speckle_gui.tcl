@@ -577,14 +577,14 @@ set TELEMETRY(speckle.mode.andor) "widefield"
 
 button .lowlevel.zagoto -bg gray -text "Move to" -width 8 -command "zaberEngpos A"
 entry .lowlevel.vzagoto -bg white -textvariable ZABERS(A,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.zagoto -x 420 -y 300
-place .lowlevel.vzagoto -x 530 -y 302
+place .lowlevel.zagoto -x 20 -y 300
+place .lowlevel.vzagoto -x 130 -y 302
 button .lowlevel.zawide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos A wide"
-place .lowlevel.zawide -x 420 -y 340
+place .lowlevel.zawide -x 20 -y 340
 button .lowlevel.zaspec -bg gray -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos A speckle"
-place .lowlevel.zaspec -x 420 -y 380
+place .lowlevel.zaspec -x 20 -y 380
 button .lowlevel.zahome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos A home"
-place .lowlevel.zahome -x 420 -y 420
+place .lowlevel.zahome -x 20 -y 420
 
 button .lowlevel.zigoto -bg gray -text "Move to" -width 8 -command "zaberEngpos input"
 entry .lowlevel.vzigoto -bg white -textvariable ZABERS(input,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
@@ -599,14 +599,14 @@ place .lowlevel.zihome -x 220 -y 420
 
 button .lowlevel.zbgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos B"
 entry .lowlevel.vzbgoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.zbgoto -x 20 -y 300
-place .lowlevel.vzbgoto -x 130 -y 302
+place .lowlevel.zbgoto -x 420 -y 300
+place .lowlevel.vzbgoto -x 530 -y 302
 button .lowlevel.zbwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos B wide"
-place .lowlevel.zbwide -x 20 -y 340
+place .lowlevel.zbwide -x 420 -y 340
 button .lowlevel.zbspec -bg gray -text "Set SPECKLE to current" -width 20 -command "zaberConfigurePos B speckle"
-place .lowlevel.zbspec -x 20 -y 380
+place .lowlevel.zbspec -x 420 -y 380
 button .lowlevel.zbhome -bg gray -text "Set HOME to current" -width 20 -command "zaberConfigurePos B home"
-place .lowlevel.zbhome -x 20 -y 420
+place .lowlevel.zbhome -x 420 -y 420
 
 menubutton .lowlevel.rmode -text "Mode=wide"  -width 20 -bg gray80 -menu .lowlevel.rmode.m -relief raised
 menu .lowlevel.rmode.m

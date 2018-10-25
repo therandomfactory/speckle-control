@@ -635,6 +635,8 @@ setKineticMode
 commandAndor red "outputamp $ANDOR_EMCCD"
 commandAndor blue "outputamp $ANDOR_EMCCD"
 
+set INSTRUMENT(red,emccd) 1
+set INSTRUMENT(blue,emccd) 1
 
 set CCDID 0
 set RAWTEMP 0
@@ -719,6 +721,7 @@ catch {
 
 
 speckleGuiMode observingGui
+startfastvideo
 
 
 
