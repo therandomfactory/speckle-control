@@ -172,6 +172,7 @@ set DS9 ds9[set ANDOR_ARM]
 initads9 [lindex $shmid 0] 1024 1024
 set TELEMETRY(tcs.telescope.ra) "12:00:00"
 set TELEMETRY(tcs.telescope.dec) "32:00:00"
+set SCOPE(telescope) $env(TELESCOPE)
 
 set ANDOR_CFG(shmem) [lindex $shmid 0]
 exec xpaset -p $DS9 single
