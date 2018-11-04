@@ -324,10 +324,10 @@ global STATUS ANDOR_CFG
    set ANDOR_CFG(kineticMode) 1
    setKineticMode
    .lowlevel.datarate configure -text ""
-   andorset vspeed red VSSpeed 0
-   andorset emhs red EMHSSpeed 0
-   andorset vspeed blue VSSpeed 0
-   andorset emhs blue EMHSSpeed 0
+#   andorset vspeed red VSSpeed 0
+#   andorset emhs red EMHSSpeed 0
+#   andorset vspeed blue VSSpeed 0
+#   andorset emhs blue EMHSSpeed 0
    speckleshutter red open
    speckleshutter blue open
    fastvideomode
@@ -359,7 +359,7 @@ global ANDOR_CCD ANDOR_EMCCD
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
-     set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / 0.04))]
+     set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / $SCOPE(exposure))]
      if { $perrun > 100 } {set perrun 100}
      if { $perrun < 20 } {set perrun 20}
      commandAndor red "numberkinetics $perrun"

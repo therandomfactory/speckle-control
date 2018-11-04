@@ -325,9 +325,9 @@ global INSTRUMENT
 #		INSTRUMENT - Array of instrument configuration
 #
 proc checkframetransfer { arm } {
-global INSTRUMENT
-   debuglog "Set $arm camera Frame Transfer to $INSTRUMENT($arm,frametransfer)"
-   commandAndor $arm "frametransfer $INSTRUMENT($arm,frametransfer)"
+global ANDOR_CFG
+   debuglog "Set $arm camera Frame Transfer to $ANDOR_CFG($arm,frametransfer)"
+   commandAndor $arm "frametransfer $ANDOR_CFG($arm,frametransfer)"
 }
 
 
@@ -454,7 +454,6 @@ set CAMSTATUS(CoolerMode) 1
 set SCOPE(latitude) 31:57:11.78
 set SCOPE(longitude) 07:26:27.97
 set SCOPE(camera) "Andor iXon Ultra"
-set SCOPE(instrument) speckle
 set SCOPE(observer) ""
 set SCOPE(target) test
 set SCOPE(imagetype) OBJECT
@@ -673,7 +672,7 @@ label .lowlevel.lvspeed  -bg gray -text "VSpeed"
 
 checkbutton .lowlevel.emchk  -bg gray -text "Recommend" -variable INSTRUMENT(red,emcheck) -highlightthickness 0
 
-menubutton .lowlevel.vspeed -width 12 -text "0.6 usec" -fg black -bg gray -menu .lowlevel.vspeed.m -relief raised
+menubutton .lowlevel.vspeed -width 12 -text "1.13 usec" -fg black -bg gray -menu .lowlevel.vspeed.m -relief raised
 menu .lowlevel.vspeed.m
 .lowlevel.vspeed.m  add command -label "0.6 usec"  -command "andorset vspeed red VSSpeed 0"
 .lowlevel.vspeed.m  add command -label "1.13 usec"  -command "andorset vspeed red VSSpeed 1"
@@ -727,7 +726,7 @@ label .lowlevel.lbccdhs  -bg gray -text "CCD HS"
 #SpinBox .lowlevel.bccdhs -width 4  -bg gray  -range "0 3 1" -textvariable INSTRUMENT(blue,ccdhs) -validate all -vcmd {validInteger %W %V %P %s 0 3}
 
 
-menubutton .lowlevel.bvspeed  -width 12 -text "0.6 usec" -fg black -bg gray -menu .lowlevel.bvspeed.m -relief raised
+menubutton .lowlevel.bvspeed  -width 12 -text "1.13 usec" -fg black -bg gray -menu .lowlevel.bvspeed.m -relief raised
 menu .lowlevel.bvspeed.m
 .lowlevel.bvspeed.m  add command -label "0.6 usec"  -command "andorset bvspeed blue VSSpeed 0"
 .lowlevel.bvspeed.m  add command -label "1.13 usec"  -command "andorset bvspeed blue VSSpeed 1"

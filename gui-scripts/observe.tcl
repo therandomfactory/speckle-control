@@ -23,7 +23,7 @@ proc abortsequence { } {
 global STATUS
   set STATUS(abort) 1
   andorSetControl 0 abort
-  .main.observe configure -text "Observe" -bg gray -relief raised -command startsequence
+  .main.observe configure -text "Observe" -bg green -relief raised -command startsequence
   .main.abort configure -bg gray -relief sunken -fg LightGray
   mimicMode red close
   mimicMode blue close
@@ -113,6 +113,8 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
 ###        positionZabers fullframe
   }
   set SCOPE(numseq) 1
+  set numframes $SCOPE(numframes)
+  set numseq $SCOPE(numseq)
   set SCOPE(numframes) 1
   if { $rdim != "manual" } {
     set LASTACQ "fullframe"
@@ -138,8 +140,8 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   exec xpaset -p ds9red regions system physical
   exec xpaset -p ds9blue regions system physical
   if { $rdim != 1024 } {
-  set reg [split [exec xpaget ds9red regions] \n]
-  foreach i $reg {
+    set reg [split [exec xpaget ds9red regions] \n]
+    foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
         set r [lrange [split $i ",()"] 1 4]
         set ACQREGION(rxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
@@ -148,9 +150,9 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
         set ACQREGION(rye) [expr $ACQREGION(rys) + [lindex $r 3] -1]
         puts stdout "selected red region $r"
      }
-  }
-  set reg [split [exec xpaget ds9blue regions] \n]
-  foreach i $reg {
+    }
+    set reg [split [exec xpaget ds9blue regions] \n]
+    foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
         set r [lrange [split $i ",()"] 1 4]
         set ACQREGION(bxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
@@ -159,18 +161,18 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
         set ACQREGION(bye) [expr $ACQREGION(bys) + [lindex $r 3] -1]
         puts stdout "selected red region $r"
      }
-  }
-  set CONFIG(geometry.StartCol) [expr $ACQREGION(rxs)]
-  set CONFIG(geometry.StartRow) [expr $ACQREGION(rys)]
-  set CONFIG(geometry.NumCols) $rdim
-  set CONFIG(geometry.NumRows) $rdim
-  set ACQREGION(geom) $CONFIG(geometry.NumCols)
-  debuglog "ROI's are red  = $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(rxe) $ACQREGION(rye)" 
-  debuglog "ROI's are blue = $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(bxe) $ACQREGION(bye)"
-  commandAndor red "setframe roi"
-  commandAndor blue "setframe roi"
-  set LASTACQ roi
-  .lowlevel.rmode configure -text "Mode=ROI"
+    }
+    set CONFIG(geometry.StartCol) [expr $ACQREGION(rxs)]
+    set CONFIG(geometry.StartRow) [expr $ACQREGION(rys)]
+    set CONFIG(geometry.NumCols) $rdim
+    set CONFIG(geometry.NumRows) $rdim
+    set ACQREGION(geom) $CONFIG(geometry.NumCols)
+    debuglog "ROI's are red  = $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(rxe) $ACQREGION(rye)" 
+    debuglog "ROI's are blue = $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(bxe) $ACQREGION(bye)"
+    commandAndor red "setframe roi"
+    commandAndor blue "setframe roi"
+    set LASTACQ roi
+    .lowlevel.rmode configure -text "Mode=ROI"
   } else {
     set ACQREGION(geom) 1024
     set ACQREGION(rxs) 1
@@ -190,6 +192,8 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
       commandAndor blue "setframe fullframe"
     }
   }
+  set SCOPE(numframes) $numframes
+  set SCOPE(numseq) $numseq
 }
 
 
@@ -221,7 +225,7 @@ global SCOPE SPECKLE_DIR INSTRUMENT
   }
 }
 
-## Documented proc \c startsequence .
+## Documented proc \c checkDataRate .
 # 
 #  This routine checks the data rate
 #
@@ -243,6 +247,11 @@ global SCOPE ANDOR_CFG ACQREGION
    }
 }
 
+## Documented proc \c updateTemps .
+# 
+#  This routine checks the temperatures
+#
+#
 proc updateTemps { } {
      set redtemp  [lindex [commandAndor red gettemp] 0]
      set bluetemp  [lindex [commandAndor blue gettemp] 0]
@@ -252,6 +261,73 @@ proc updateTemps { } {
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
 }
 
+## Documented proc \c prepsequence .
+# 
+#  This routine prepares for a sequence of exposures. 
+#
+#  Globals    :  
+#               SCOPE	- Telescope parameters, gui setup
+#		ANDOR_DEF - Andor defaults
+#		ANDOR_CFG - Array of camera settings
+#               SCOPE	- Telescope parameters, gui setup
+#		DATAQUAL - Array of data quality information
+#		INSTRUMENT - Array of instrument configuration data
+#
+proc prepsequence { } {
+global SCOPE DATAQUAL INSTRUMENT
+global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
+ redisUpdate
+ zaberCheck
+ specklesynctelem red
+ specklesynctelem blue
+ set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
+ .lowlevel.p configure -value 0.0
+ speckleshutter red auto
+ speckleshutter blue auto
+ commandAndor red  "frametransfer $ANDOR_CFG(red,frametransfer)"
+ commandAndor blue "frametransfer $ANDOR_CFG(blue,frametransfer)"
+ commandAndor red  "numberkinetics $SCOPE(numframes)"
+ commandAndor blue "numberkinetics $SCOPE(numframes)"
+ commandAndor red  "numberaccumulations $SCOPE(numaccum)"
+ commandAndor blue "numberaccumulations $SCOPE(numaccum)"
+ commandAndor red  "programid $SCOPE(ProgID)"
+ commandAndor blue "programid $SCOPE(ProgID)"
+ commandAndor red  "autofitds9 $INSTRUMENT(red,fitds9)"
+ commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
+ commandAndor red  "vsspeed $ANDOR_CFG(red,VSSpeed)"
+ commandAndor blue "vsspeed $ANDOR_CFG(blue,VSSpeed)"
+ commandAndor red  "setexposure $SCOPE(exposure)"
+ commandAndor blue "setexposure $SCOPE(exposure)"
+ setBinning
+ if { $INSTRUMENT(red,emccd) } {
+   commandAndor red "outputamp $ANDOR_EMCCD"
+   commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
+   commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
+   commandAndor red "hsspeed 0 $ANDOR_CFG(red,EMHSSpeed)"
+ } else {
+   commandAndor red "outputamp $ANDOR_CCD"
+   commandAndor red "hsspeed 1 $ANDOR_CFG(red,HSSpeed)"
+ }
+ if { $INSTRUMENT(blue,emccd) } {
+   commandAndor blue "outputamp $ANDOR_EMCCD"
+   commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
+   commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
+   commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
+ } else {
+   commandAndor blue "outputamp $ANDOR_CCD"
+   commandAndor blue "hsspeed 1 $ANDOR_CFG(blue,HSSpeed)"
+ }
+ set tred [commandAndor red "gettimings"]
+ set tblue [commandAndor blue "gettimings"]
+ debuglog "Red camera timings are $tred,  Blue camera timings are $tblue"
+ commandAndor red  "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
+ commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
+ set cmt [join [split [string trim [.main.comment get 0.0 end]] \n] "|"]
+ commandAndor red "comments $cmt"
+ commandAndor blue "comments $cmt"
+ commandAndor red "datadir $SCOPE(datadir)"
+ commandAndor blue "datadir $SCOPE(datadir)"
+}
 
 
 ## Documented proc \c startsequence .
@@ -282,50 +358,7 @@ proc startsequence { } {
 global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  set iseqnum 0
- redisUpdate
- zaberCheck
- specklesynctelem red
- specklesynctelem blue
- set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
- .lowlevel.p configure -value 0.0
- speckleshutter red auto
- speckleshutter blue auto
- commandAndor red  "frametransfer $ANDOR_CFG(red,frametransfer)"
- commandAndor blue "frametransfer $ANDOR_CFG(blue,frametransfer)"
- commandAndor red  "numberkinetics $SCOPE(numframes)"
- commandAndor blue "numberkinetics $SCOPE(numframes)"
- commandAndor red  "numberaccumulations $SCOPE(numaccum)"
- commandAndor blue "numberaccumulations $SCOPE(numaccum)"
- commandAndor red  "programid $SCOPE(ProgID)"
- commandAndor blue "programid $SCOPE(ProgID)"
- commandAndor red  "autofitds9 $INSTRUMENT(red,fitds9)"
- commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
- commandAndor red  "vsspeed $ANDOR_CFG(red,VSSpeed)"
- commandAndor blue "vsspeed $ANDOR_CFG(blue,VSSpeed)"
- setBinning
- if { $INSTRUMENT(red,emccd) } {
-   commandAndor red "outputamp $ANDOR_EMCCD"
-   commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
-   commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
-   commandAndor red "hsspeed 0 $ANDOR_CFG(red,EMHSSpeed)"
- } else {
-   commandAndor red "outputamp $ANDOR_CCD"
- }
- if { $INSTRUMENT(blue,emccd) } {
-   commandAndor blue "outputamp $ANDOR_EMCCD"
-   commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
-   commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
-   commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
- } else {
-   commandAndor blue "outputamp $ANDOR_CCD"
- }
- commandAndor red  "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
- commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
- set cmt [join [split [string trim [.main.comment get 0.0 end]] \n] "|"]
- commandAndor red "comments $cmt"
- commandAndor blue "comments $cmt"
- commandAndor red "datadir $SCOPE(datadir)"
- commandAndor blue "datadir $SCOPE(datadir)"
+ prepsequence
  andorSetControl 0 frame 0
  andorSetControl 1 frame 0
  set autofilter [checkAutoFilter blue]
@@ -352,7 +385,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      set dfrmnum $ifrmnum
      set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
      set STATUS(abort) 0
-     .main.observe configure -text "working" -bg green -relief sunken
+     .main.observe configure -text "working" -bg yellow -relief sunken
      .main.abort configure -bg orange -relief raised -fg black
      wm geometry .countdown
      set i 1
@@ -418,7 +451,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         update
      }
      set SCOPE(exposureEnd) [expr [clock milliseconds]/1000.0]
-     .main.observe configure -text "Observe" -bg gray -relief raised
+     .main.observe configure -text "Observe" -bg green -relief raised
      .main.abort configure -bg gray -relief sunken -fg LightGray
 #     speckleshutter red close
 #     speckleshutter blue close

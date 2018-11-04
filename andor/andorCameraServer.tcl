@@ -39,8 +39,9 @@ proc debuglog { msg } {
 proc cAndorSetProperty { cam prop val {val2 ""} } {
 global ANDOR_CFG ANDOR_ARM
    if { $prop == "HSSpeed" } {
-      if { $val == 0 } { set res [andorSetProperty $cam HSSpeed 0 $val2] ; set prop EMHSSpeed ; set val $val2}
-      if { $val == 1 } { set res [andorSetProperty $cam HSSpeed 1 $val2] ; set val $val2}
+      if { $val == 0 } { set res [andorSetProperty $cam HSSpeed 0 $val2] ; set prop EMHSSpeed}
+      if { $val == 1 } { set res [andorSetProperty $cam HSSpeed 1 $val2]}
+      set val $val2
    } else {
      set res [andorSetProperty $cam $prop $val]
    }
@@ -131,11 +132,11 @@ set ANDOR_CFG(fitds9) 0
 set ANDOR_CFG($CAM,OutputAmplifier) 1
 set ANDOR_CFG($CAM,PreAmpGain) 1
 set ANDOR_CFG($CAM,VSSpeed) 1
-set ANDOR_CFG($CAM,HSSpeed) 1
+set ANDOR_CFG($CAM,HSSpeed) 0
 set ANDOR_CFG($CAM,EMHSSpeed) 1
 set ANDOR_CFG($CAM,hbin) 1
 set ANDOR_CFG($CAM,vbin) 1
-set ANDOR_CFG(configure) "1 1 1 1024 1 1024 1 1 1 1"
+set ANDOR_CFG(configure) "1 1 1 1024 1 1024 1 1 0 1"
 andorConfigure $CAM 1 1 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
 debuglog "Configured camera id $CAM for ccd mode"
 
@@ -193,8 +194,8 @@ cAndorSetProperty $CAM EMCCDGain 1
 cAndorSetProperty $CAM VSSpeed 1
 #cAndorSetProperty $CAM VSAmplitude 0
 cAndorSetProperty $CAM BaselineClamp 1
-cAndorSetProperty $CAM PreAmpGain 1
-cAndorSetProperty $CAM HSSpeed 1 1
+cAndorSetProperty $CAM PreAmpGain 0
+cAndorSetProperty $CAM HSSpeed 1 0
 cAndorSetProperty $CAM HSSpeed 0 1
 cAndorSetProperty $CAM ReadMode 4
 cAndorSetProperty $CAM KineticCycleTime 0.0
@@ -279,25 +280,36 @@ global CAM ANDOR_CFG
 #		SCOPE - Array of telescope settings
 #
 proc configureFrame { mode } {
-global CAM ANDOR_ROI ANDOR_CFG SCOPE
+global CAM ANDOR_ROI ANDOR_CFG SCOPE TELEMETRY
    if { $mode == "fullframe" } {
      debuglog "Configure camera $CAM for fullframe"
      andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin) 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
      cAndorSetProperty $CAM AcquisitionMode 1
-     cAndorSetProperty $CAM OutputAmplifier 0
+     set TELEMETRY(speckle.andor.kinetic_mode) 0
+#     cAndorSetProperty $CAM OutputAmplifier 0
      set SCOPE(numframes) 1
    }
    if { $mode == "roi" } {
      debuglog "Configure camera $CAM for ROI : $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye)"
      andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin)  $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
-     cAndorSetProperty $CAM AcquisitionMode 3
-     cAndorSetProperty $CAM OutputAmplifier 0
+     set TELEMETRY(speckle.andor.kinetic_mode) 1
+     if { $ANDOR_CFG($CAM,NumberAccumulations) > 1 } {
+        cAndorSetProperty $CAM AcquisitionMode 2
+     } else {
+        cAndorSetProperty $CAM AcquisitionMode 3
+     }
+#     cAndorSetProperty $CAM OutputAmplifier 0
    }
    if { $mode == "fullkinetic" } {
      debuglog "Configure camera $CAM for fullframe"
      andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin) 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
-     cAndorSetProperty $CAM AcquisitionMode 3
-     cAndorSetProperty $CAM OutputAmplifier 0
+     set TELEMETRY(speckle.andor.kinetic_mode) 1
+     if { $ANDOR_CFG($CAM,NumberAccumulations) > 1 } {
+        cAndorSetProperty $CAM AcquisitionMode 2
+     } else {
+        cAndorSetProperty $CAM AcquisitionMode 3
+     }
+#     cAndorSetProperty $CAM OutputAmplifier 0
    }
 }
 
@@ -678,10 +690,10 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CODE CAM
       }
    }
    switch vsspeed { 
-	  4.33usec   { set res [cAndorSetProperty $CAM VSSpeed 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          2.2usec    { set res [cAndorSetProperty $CAM VSSpeed 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+	  4.33usec   { set res [cAndorSetProperty $CAM VSSpeed 4] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          2.2usec    { set res [cAndorSetProperty $CAM VSSpeed 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
           1.13usec   { set res [cAndorSetProperty $CAM VSSpeed 2] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
-          0.6usec    { set res [cAndorSetProperty $CAM VSSpeed 3] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
+          0.6usec    { set res [cAndorSetProperty $CAM VSSpeed 1] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
    }
    switch vsamplitude { 
 	  normal   { set res [cAndorSetProperty $CAM VSAmplitude 0] ; if { $res != $ANDOR_CODE(DRV_SUCCESS) } {return $res} }
@@ -880,6 +892,7 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
          scalepeak       { set ANDOR_CFG(scalepeak) [lindex $msg 1] ; puts $sock "OK"}
          fitsbits        { set ANDOR_CFG(fitsbits) $FITSBITS([lindex $msg 1]) ; puts $sock "OK"}
          whicharm        { puts $sock $ANDOR_ARM }
+         gettimings      { set it [andorGetProperty $CAM timings] ; puts $sock $it }
          forceroi        { forceROI  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex $msg 2]]" }
          datadir         { set SPECKLE_DATADIR [lindex $msg 1] ; puts $sock "OK"}
@@ -900,7 +913,7 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
          readmode        { set it [cAndorSetProperty $CAM ReadMode [lindex $msg 1]] ; puts $sock $it}
          acquisition     { set it [cAndorSetProperty $CAM AcquisitionMode [lindex $msg 1]] ; puts $sock $it}
          kineticcycletime      { set it [cAndorSetProperty $CAM KineticCycleTime [lindex $msg 1]] ; puts $sock $it}
-         numberaccumulations    { set it [cAndorSetProperty $CAM NumberAccumulations [lindex $msg 1]] ; puts $sock $it}
+         numberaccumulations   { set it [cAndorSetProperty $CAM NumberAccumulations [lindex $msg 1]] ; puts $sock $it}
          numberkinetics        { set it [cAndorSetProperty $CAM NumberKinetics [lindex $msg 1]] ; puts $sock $it}
          accumulationcycletime { set it [cAndorSetProperty $CAM AccumulationCycleTime [lindex $msg 1]] ; puts $sock $it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
@@ -934,7 +947,6 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
      			   andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin)  $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
 			   puts $sock "OK"
                          }
-         setupcamera     { set it [andorSetupCamera $CAM [lindex $msg 1]] ; puts $sock $it}
          default         { if { [string range [lindex $msg 0] 0 2] == "Get" } {
                              puts $sock [eval [lindex $msg 0]]
                            } else {

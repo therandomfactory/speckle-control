@@ -2851,11 +2851,11 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
      return TCL_ERROR;
   }
 
+/*
   status = GetDetector(&andorSetup[cameraId].width, &andorSetup[cameraId].height);
   status = GetTemperatureRange(&andorSetup[cameraId].minimum_temperature, &andorSetup[cameraId].maximum_temperature);
   status = GetNumberPreAmpGains(&andorSetup[cameraId].num_preamp_gains);
   status = GetNumberVSSpeeds(&andorSetup[cameraId].num_vertical_speeds);
-/*
   for(j = 0; j < ANDOR_NUM_AMPLIFIERS; j++) {
      status = GetNumberHSSpeeds(0, j, &andorSetup[cameraId].num_horizontal_speeds[j]);
      num_hspeeds = andorSetup[cameraId].num_horizontal_speeds[j];
@@ -2863,13 +2863,13 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
 	andor_get_horizontal_speed(j, i, &fspeed);
      }
   }
- */
   status = GetEMGainRange(&andorSetup[cameraId].minimum_em_gain, &andorSetup[cameraId].maximum_em_gain);
   status = GetNumberADChannels(&num_ad);
-
   andorSetup[cameraId].amplifier = DFT_ANDOR_AMPLIFIER;
   andorSetup[cameraId].em_gain = DFT_ANDOR_EM_GAIN;
   andorSetup[cameraId].em_advanced = DFT_ANDOR_EM_ADVANCED;
+ */
+
   andorSetup[cameraId].horizontal_speed_index[ANDOR_CCD] = ccd_horizontal_speed;
   andorSetup[cameraId].horizontal_speed_index[ANDOR_EMCCD] = em_horizontal_speed;
   andorSetup[cameraId].vertical_speed_index = vertical_speed;
@@ -2886,11 +2886,6 @@ int tcl_andorConfigure(ClientData clientData, Tcl_Interp *interp, int argc, char
   andorSetup[cameraId].exposure_time = DFT_ANDOR_EXPOSURE_TIME;
   status = SetImage(andorSetup[cameraId].image.hbin,andorSetup[cameraId].image.vbin,andorSetup[cameraId].image.hstart,andorSetup[cameraId].image.hend,andorSetup[cameraId].image.vstart,andorSetup[cameraId].image.vend);
   printf("status = %d in tcl_andorConfigure, %d,%d,%d,%d,%d,%d\n",status,andorSetup[cameraId].image.hbin,andorSetup[cameraId].image.vbin,andorSetup[cameraId].image.hstart,andorSetup[cameraId].image.hend,andorSetup[cameraId].image.vstart,andorSetup[cameraId].image.vend);
-
-//  status = andor_set_temperature(DFT_ANDOR_TEMPERATURE);
-//  status = andor_cooler_off();
-// andor_setup_camera
-
 
   return TCL_OK;
 }

@@ -14,7 +14,7 @@ set FWHEELS(red,6)		"clear"
 set FWHEELS(blue,1)		"Blue-U"
 set FWHEELS(blue,2)		"Blue-G"
 set FWHEELS(blue,3)		"Blue-R"
-set FWHEELS(blue,4)		"Blue-467"
+set FWHEELS(blue,4)		"Blue-466"
 set FWHEELS(blue,5)		"Blue-562"
 set FWHEELS(blue,6)		"clear"
 

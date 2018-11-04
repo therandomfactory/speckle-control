@@ -223,9 +223,9 @@ global TIMER
 proc obsid {  } {
 global SCOPE TELEMETRY
   if { $SCOPE(telescope) == "WIYN" } {
-    set obsid "[set SCOPE(telescope).speckle.20[exec date -u +\%y\%m\%dT\%H\%M\%S]"
+    set obsid "[set SCOPE(telescope)].speckle.20[exec date -u +\%y\%m\%dT\%H\%M\%S]"
   } else {
-    set obsid $TELEMETRY(speckle.scope.program)
+    set obsid $TELEMETRY(speckle.scope.obsid)
   }
   return $obsid
 }

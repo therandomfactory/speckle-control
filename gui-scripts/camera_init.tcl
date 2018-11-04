@@ -78,7 +78,6 @@ set CAMSTATUS(CoolerMode) 1
 set SCOPE(latitude) 31:57:11.78
 set SCOPE(longitude) 07:26:27.97
 set SCOPE(camera) "Andor iXon Ultra"
-set SCOPE(instrument) speckle
 set SCOPE(observer) ""
 set SCOPE(target) test
 set SCOPE(imagetype) OBJECT

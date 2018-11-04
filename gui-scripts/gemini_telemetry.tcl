@@ -206,7 +206,6 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
   set TELEMETRY(speckle.andor.numberkinetics) $ANDOR_CFG(numberkinetics)
   set TELEMETRY(speckle.andor.accumulationcycletime) $ANDOR_CFG(accumulationcycletime)
   set TELEMETRY(speckle.andor.ccdtemp) $ANDOR_CFG(ccdtemp)
-  set TELEMETRY(speckle.andor.filter) $ANDOR_CFG(filter)
 }
 
 # \encdode
@@ -221,16 +220,16 @@ set ANDOR_CFG(readmode) 0
 set ANDOR_CFG(configure) "1 1 1 1024 1 1024 0 0 0 0"
 set ANDOR_CFG(fitsbits) default
 set ANDOR_CFG(emccdgain) 0
-set ANDOR_CFG(vsspeed) 0
+set ANDOR_CFG(vsspeed) 1
 set ANDOR_CFG(outputamp) 0
-set ANDOR_CFG(preampgain) 0
+set ANDOR_CFG(preampgain) 1
 set ANDOR_CFG(0,SerialNumber) 12345
 set ANDOR_CFG(1,SerialNumber) 54321
 set ANDOR_CFG(temperature) 0.0
 set ANDOR_CFG(inputzaber) "NA"
 set ANDOR_CFG(fieldzaber) "NA"
 set ANDOR_CFG(numberaccumulations) 0
-set ANDOR_CFG(frametransfer) 0
+set ANDOR_CFG(frametransfer) 1
 set ANDOR_CFG(numberkinetics) 0
 set ANDOR_CFG(accumulationcycletime) 0.0
 set ANDOR_CFG(ccdtemp) 0.0
@@ -258,7 +257,7 @@ set GEMINI(lst) tcs.time.LAST
 set GEMINI(mjd) tcs.time.MJD
 set GEMINI(offsetdec) tcs.telescope.decoffset
 set GEMINI(offsetra) tcs.telescope.raoffset
-set GEMINI(programid) speckle.scope.program
+set GEMINI(programid) speckle.scope.obsid
 set GEMINI(rotator) tcs.nir.position
 set GEMINI(targetname) speckle.scope.name
 set GEMINI(targetra) tcs.target.az

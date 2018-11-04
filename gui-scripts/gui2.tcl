@@ -355,7 +355,6 @@ set STATUS(readout) 0
 #  Update status display
 #
 showstatus "Building user interface"
-set SCOPE(instrument) "SPECKLE"
 set SCOPE(equinox) "2000.0"
 
 #
@@ -527,6 +526,9 @@ place .main.simtlm -x 150 -y 252
 if { $SCOPE(telescope) == "GEMINI" } {
   checkbutton .main.simpico -bg gray  -text "Picos" -variable PICOS(sim) -highlightthickness 0
   place .main.simpico -x 85 -y 227
+  set SCOPE(instrument) "Alopeke"
+} else {
+  set SCOPE(instrument) "NESSI"
 }
    
 menubutton .main.rawiq -text "DQ - image" -width 21 -fg black -bg gray -menu .main.rawiq.m -relief raised
@@ -721,7 +723,7 @@ catch {
 
 
 speckleGuiMode observingGui
-startfastvideo
+
 
 
 
