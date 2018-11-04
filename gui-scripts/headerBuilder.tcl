@@ -107,6 +107,7 @@ global FROMSTARTEXP CACHETELEMETRY ANDOR_ARM
   updateAndorTelemetry $ANDOR_ARM
   set type wiyn-speckle
   if { $SCOPE(telescope) == "GEMINI" } {set type gemini-speckle}
+  showTelemetry
   set fhead "[fitshdrrecord HDR_REV string {3.00 18-Feb-2008} Header-Rev ]\n" 
   foreach i $HEADERS($type) {
      if { $PDEBUG > 1 } {debuglog "processing $i"}

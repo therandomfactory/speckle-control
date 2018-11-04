@@ -676,7 +676,6 @@ set SCOPE(datadir) $env(HOME)/data
 set SCOPE(darktime) 0.0
 set SCOPE(numframes) 1
 set SCOPE(numseq) 1
-set SCOPE(instrument) "Speckle"
 
 #
 #  Start monitoring the temperature

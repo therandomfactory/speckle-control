@@ -89,7 +89,7 @@ source $SPECKLE_DIR/gui-scripts/camera_init.tcl
 if { $env(TELESCOPE) == "GEMINI" } {
   proc redisUpdate { } { }
   set SCOPE(telescope) "GEMINI"
-  set SCOPE(instrument) speckle
+  set SCOPE(instrument) "Alopeke"
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl 
   set GEMINITLM(sim) 0
   if { [info exists env(SPECKLE_SIM)] } {

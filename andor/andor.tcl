@@ -359,7 +359,7 @@ global ANDOR_CCD ANDOR_EMCCD
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
-     set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / $SCOPE(exposure))]
+     set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / $SCOPE(exposure)))]
      if { $perrun > 100 } {set perrun 100}
      if { $perrun < 20 } {set perrun 20}
      commandAndor red "numberkinetics $perrun"
@@ -564,7 +564,7 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }
-   after 15000
+   after 25000
    connectToAndors
    debuglog "Andor reset complete"
 }
@@ -598,7 +598,7 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }
-   after 15000
+   after 25000
    connectToAndors
    after 5000 updateTemps
    debuglog "Andor reset complete"

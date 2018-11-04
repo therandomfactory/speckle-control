@@ -34,10 +34,12 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.head) "Andor iXon Emccd"
    if { $ANDOR_CFG($arm,EMCCDGain) > 0 } {
      set TELEMETRY(speckle.andor.amplifier) "CCD"
+     set TELEMETRY(speckle.andor.emccdmode) "Off"
    } else {
      set TELEMETRY(speckle.andor.amplifier) "Electron Multiplying"
+     set TELEMETRY(speckle.andor.emccdmode) "On"
    }
-   set TELEMETRY(speckle.andor.imagename) "[set ANDOR_CFG(imagename)][string range [set ANDOR_ARM] 0 0].fits"
+   set TELEMETRY(speckle.andor.imgname) "[set ANDOR_CFG(imagename)][string range [set ANDOR_ARM] 0 0].fits"
    set TELEMETRY(speckle.andor.acquisition_mode) "Single scan"
    if { $TELEMETRY(speckle.andor.numberkinetics) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics mode" }
    set TELEMETRY(speckle.andor.int_time) $ANDOR_CFG($arm,ExposureTime)

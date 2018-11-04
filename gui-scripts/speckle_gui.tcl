@@ -679,7 +679,7 @@ menu .lowlevel.vspeed.m
 .lowlevel.vspeed.m  add command -label "2.2 usec"  -command "andorset vspeed red VSSpeed 2"
 .lowlevel.vspeed.m  add command -label "4.33 usec"  -command "andorset vspeed red VSSpeed 3"
 
-menubutton .lowlevel.emhs  -width 12 -text "30 MHz" -fg black -bg gray -menu .lowlevel.emhs.m -relief raised
+menubutton .lowlevel.emhs  -width 12 -text "20 MHz" -fg black -bg gray -menu .lowlevel.emhs.m -relief raised
 menu .lowlevel.emhs.m
 .lowlevel.emhs.m  add command -label "30 MHz"  -command "andorset emhs red EMHSSpeed 0"
 .lowlevel.emhs.m  add command -label "20 MHz"  -command "andorset emhs red EMHSSpeed 1"
@@ -733,7 +733,7 @@ menu .lowlevel.bvspeed.m
 .lowlevel.bvspeed.m  add command -label "2.2 usec"  -command "andorset bvspeed blue VSSpeed 2"
 .lowlevel.bvspeed.m  add command -label "4.33 usec"  -command "andorset bvspeed blue VSSpeed 3"
 
-menubutton .lowlevel.bemhs  -width 12 -text "30 MHz" -fg black -bg gray -menu .lowlevel.bemhs.m -relief raised
+menubutton .lowlevel.bemhs  -width 12 -text "20 MHz" -fg black -bg gray -menu .lowlevel.bemhs.m -relief raised
 menu .lowlevel.bemhs.m
 .lowlevel.bemhs.m  add command -label "30 MHz"  -command "andorset bemhs blue EMHSSpeed 0"
 .lowlevel.bemhs.m  add command -label "20 MHz"  -command "andorset bemhs blue EMHSSpeed 1"

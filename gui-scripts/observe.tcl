@@ -241,9 +241,9 @@ proc checkDatarate { } {
 global SCOPE ANDOR_CFG ACQREGION
    set ANDOR_CFG(mbps) [expr int(1/$SCOPE(exposure)*2*$ACQREGION(geom)*$ACQREGION(geom)/$ANDOR_CFG(binning)/$ANDOR_CFG(binning)*4/1024/1024)]
    if { $ANDOR_CFG(mbps) > 59 } {
-      .lowlevel.datarate configure -text "Data Rate : $ANDOR_CFG(mbps) Mbps" -fg yellow
+      .lowlevel.datarate configure -text "Data Rate : $ANDOR_CFG(mbps) MB/s" -fg yellow
    } else {
-      .lowlevel.datarate configure -text "Data Rate : $ANDOR_CFG(mbps) Mbps" -fg NavyBlue
+      .lowlevel.datarate configure -text "Data Rate : $ANDOR_CFG(mbps) MB/s" -fg NavyBlue
    }
 }
 
@@ -408,7 +408,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      }
      incr SCOPE(seqnum) 1
      updateTemps
-     set tpredict [lindex [commandAndor red status] 15]
+     set tpredict [expr [lindex [commandAndor red status] 15] + 0.001
      if { $tpredict > $SCOPE(exposure) } {
 ##        set SCOPE(exposure) $tpredict
         .main.exposure configure -entryfg red
@@ -455,6 +455,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      .main.abort configure -bg gray -relief sunken -fg LightGray
 #     speckleshutter red close
 #     speckleshutter blue close
+     .lowlevel.p configure -value 0
      .lowlevel.progress configure -text "Observation status : Idle"
      if { $STATUS(abort) } {return}
     }
