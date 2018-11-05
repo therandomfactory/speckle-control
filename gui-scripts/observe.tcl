@@ -408,7 +408,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      }
      incr SCOPE(seqnum) 1
      updateTemps
-     set tpredict [expr [lindex [commandAndor red status] 15] + 0.001
+     set tpredict [expr [lindex [commandAndor red status] 15] + 0.001]
      if { $tpredict > $SCOPE(exposure) } {
 ##        set SCOPE(exposure) $tpredict
         .main.exposure configure -entryfg red
