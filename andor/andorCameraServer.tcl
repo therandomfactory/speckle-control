@@ -334,6 +334,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     redisUpdate
     setutc
     set t [clock seconds]
+    set ACQREGION(geom) 1024
     set dimen [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]
     set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     set TELEMETRY(speckle.andor.numexp) 1
@@ -386,12 +387,13 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
 #		TELEMETRY - Array of telemetry items for header/database usage
 #
 proc acquireDataROI { exp x y n } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     debuglog "Starting $ANDOR_ARM ROI sequence with exposure = $exp"
     redisUpdate
     setutc
     set t [clock seconds]
     SetExposureTime $exp
+    set ACQREGION(geom) $n
     set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
@@ -461,11 +463,12 @@ global ANDOR_CFG
 #		TELEMETRY - Array of telemetry items for header/database usage
 #
 proc acquireDataCube { exp x y npix n } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQREGION
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   redisUpdate
   setutc
   set scset [exec xpaget $DS9 scale]
+  set ACQREGION(geom) $npix
   if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 frame 1
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$npix,ydim=$npix,bitpix=32\\\]
