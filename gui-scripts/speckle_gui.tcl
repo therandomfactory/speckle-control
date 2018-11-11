@@ -311,6 +311,7 @@ global INSTRUMENT
    }
    if { $INSTRUMENT($arm,emccd) } {
       commandAndor $arm "outputamp 0"
+      commandAndor $arm "emccdgain $INSTRUMENT($arm,emgain)
    } else {
       commandAndor $arm "outputamp 1"
    }

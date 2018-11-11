@@ -242,6 +242,18 @@ global ANDOR_CFG
    andorSetControl 0 showfft $ANDOR_CFG(showfft)
 }
 
+## Documented proc \c restartads9 .
+# \param[in] arm Red or Blue
+# \param[in] geom Display geometry
+# 
+# Restart a ds9 instance
+#
+#
+proc restartads9  { arm geom } {
+  exec ds9[set arm] -geometry $geom &
+  after 3000 commandAndor $arm connectads9
+}
+
 
 ## Documented proc \c setBinning .
 # 
@@ -411,8 +423,8 @@ menu .mbar.help.m
 .mbar.tools.m add command -label "Filter Selection" -command "wm deiconify .filters"
 .mbar.tools.m add command -label "Camera status" -command "cameraStatuses"
 .mbar.tools.m add command -label "Plot timings" -command "plotTimings"
-.mbar.tools.m add command -label "ds9 red" -command "exec ds9red -geometry +1200+0 &"
-.mbar.tools.m add command -label "ds9 blue" -command "exec ds9blue -geometry +0+0 &"
+.mbar.tools.m add command -label "ds9 red"  -command "restartads9 red +1200+0"
+.mbar.tools.m add command -label "ds9 blue" -command "restartads9 blue +0+0"
 
 set FITSBITS(SHORT_IMG)    16
 set FITSBITS(LONG_IMG)     32

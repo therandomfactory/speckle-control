@@ -44,6 +44,7 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    if { $TELEMETRY(speckle.andor.numberkinetics) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics mode" }
    set TELEMETRY(speckle.andor.int_time) $ANDOR_CFG($arm,ExposureTime)
    set TELEMETRY(speckle.andor.kinetic_time) $ANDOR_CFG($arm,KineticCycleTime)
+   set TELEMETRY(speckle.andor.exptime) $ANDOR_CFG($arm,ExposureTime)
    set TELEMETRY(speckle.andor.numaccum) $ANDOR_CFG($arm,NumberAccumulations)
    if { $TELEMETRY(speckle.andor.numaccum) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics + Accumulate mode" }
    set TELEMETRY(speckle.andor.accumulationcycle) $ANDOR_CFG($arm,AccumulationCycleTime)

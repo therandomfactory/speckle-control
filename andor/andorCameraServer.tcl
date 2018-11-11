@@ -215,6 +215,28 @@ set ANDOR_CFG($ANDOR_ARM,peak) 1000
 #after 1000
 #andorAbortAcq
 
+## Documented proc \c connectads9 .
+#
+#  Reconnect to a ds9 instance
+#
+#
+# Globals :\n
+#		ANDOR_CFG - Andor camera properties\n
+#		CAM - Andor camera id used in the C code, 0 or 1
+#
+proc connectads9 { } {
+global ANDOR_CFG CAM
+   initads9 $ANDOR_CFG(shmem) 1024 1024
+   exec xpaset -p $DS9 single
+   exec xpaset -p $DS9 zoom to fit
+   exec xpaset -p $DS9 scale zscale
+   if { $ANDOR_ARM == "red" } {
+      exec xpaset -p $DS9 cmap Heat
+   } else {
+      exec xpaset -p $DS9 cmap Cool
+   }
+}
+
 
 
 ## Documented proc \c showstatus .
@@ -329,7 +351,7 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE TELEMETRY
 #		TELEMETRY - Array of telemetry items for header/database usage
 #
 proc acquireDataFrame { exp } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
     debuglog "Starting $ANDOR_ARM full-frame with exposure = $exp"
     redisUpdate
     setutc
@@ -342,7 +364,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
     if { $ANDOR_ARM == "blue" } {
       exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$dimen,ydim=$dimen,bitpix=32\\\]
     }
-    SetExposureTime $exp
+    cAndorSetProperty $CAM ExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(red)]
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $dimen $dimen 1 1
@@ -387,12 +409,12 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
 #		TELEMETRY - Array of telemetry items for header/database usage
 #
 proc acquireDataROI { exp x y n } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
     debuglog "Starting $ANDOR_ARM ROI sequence with exposure = $exp"
     redisUpdate
     setutc
     set t [clock seconds]
-    SetExposureTime $exp
+    cAndorSetProperty $CAM ExposureTime $exp
     set ACQREGION(geom) $n
     set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     if { $ANDOR_CFG(red) > -1} {
@@ -463,7 +485,7 @@ global ANDOR_CFG
 #		TELEMETRY - Array of telemetry items for header/database usage
 #
 proc acquireDataCube { exp x y npix n } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQREGION
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQREGION CAM
   debuglog "Starting $ANDOR_ARM roi cube sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   redisUpdate
   setutc
@@ -492,7 +514,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
   set TELEMETRY(speckle.andor.numexp) $n
   set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
   set TELEMETRY(speckle.andor.numberkinetics) $n
-  SetExposureTime $exp
+  cAndorSetProperty $CAM ExposureTime $exp
   if { $ANDOR_CFG(red) > -1} {
      andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
   }
@@ -555,7 +577,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
 #		TELEMETRY - Array of telemetry items for header/database usage
 #
 proc acquireFastVideo { exp x y npix n } {
-global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
+global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY CAM
   debuglog "Starting fast video sequence with exposure = $exp x=$x y=$y geom=$npix n=$n"
   set scset [exec xpaget $DS9 scale]
   if { $ANDOR_ARM == "blue" } {
@@ -581,7 +603,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY
   set TELEMETRY(speckle.andor.numexp) $n
   set TELEMETRY(speckle.andor.exposureStart) [clock seconds]
   set TELEMETRY(speckle.andor.numberkinetics) $n
-  SetExposureTime $exp
+  cAndorSetProperty $CAM ExposureTime $exp
   if { $ANDOR_CFG(red) > -1} {
      andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
   }
@@ -936,6 +958,7 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
          filter          { set SCOPE(filter) [lindex $msg 1] ; puts $sock "OK" }
          readoutcfg      { set res [configReadout [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5] [lindex $msg 6] [lindex $msg 7]] ; puts $sock $res}
          comments        { set SCOPE(comments) [lrange $msg 1 end] ;  puts $sock "OK" }
+         connectds9      { connectads9 ; puts $sock "OK" }
          autofitds9      { set ANDOR_CFG(fitds9) [lindex $msg 1] ;  puts $sock "OK" }
          configure       { set ANDOR_CFG($CAM,hbin) [lindex $msg 1]
                            set ANDOR_CFG($CAM,vbin) [lindex $msg 2]
