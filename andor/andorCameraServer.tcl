@@ -38,6 +38,8 @@ proc debuglog { msg } {
 #
 proc cAndorSetProperty { cam prop val {val2 ""} } {
 global ANDOR_CFG ANDOR_ARM
+  set res "SetProperty failed"
+  catch {
    if { $prop == "HSSpeed" } {
       if { $val == 0 } { set res [andorSetProperty $cam HSSpeed 0 $val2] ; set prop EMHSSpeed}
       if { $val == 1 } { set res [andorSetProperty $cam HSSpeed 1 $val2]}
@@ -54,7 +56,8 @@ global ANDOR_CFG ANDOR_ARM
      set ANDOR_CFG($ANDOR_ARM,$prop) "fail - $val"
      puts stdout "ERROR Setting ANDOR_CFG($ANDOR_ARM,$prop) to $val"
    }
-   return $res
+  }
+  return $res
 }
 
 ## Documented proc \c setutc .
@@ -160,9 +163,6 @@ foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilt
      set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
 }
-SetExposureTime 0.04
-cAndorSetProperty $CAM Temperature -60
-cAndorSetProperty $CAM Cooler 1
 
 set shmid [andorConnectShmem[set CAM] 1024 1024]
 debuglog "$ANDOR_ARM memory buffers @ $shmid"
@@ -186,9 +186,18 @@ if { $ANDOR_ARM == "red" } {
 }
 
 andorPrepDataFrame
-cAndorSetProperty $CAM Shutter 0
-cAndorSetProperty $CAM FrameTransferMode 1
+cAndorSetProperty $CAM SetTemperature -60
+cAndorSetProperty $CAM Cooler 1
 cAndorSetProperty $CAM OutputAmplifier 0
+cAndorSetProperty $CAM AcquisitionMode 1
+cAndorSetProperty $CAM ReadMode 4
+cAndorSetProperty $CAM Shutter 0
+cAndorSetProperty $CAM ExposureTime 0.04
+cAndorSetProperty $CAM FrameTransferMode 1
+cAndorSetProperty $CAM KineticCycleTime 0.0
+cAndorSetProperty $CAM NumberAccumulations 1
+cAndorSetProperty $CAM NumberKinetics 1
+cAndorSetProperty $CAM AccumulationCycleTime 0.0
 cAndorSetProperty $CAM EMAdvanced 1
 cAndorSetProperty $CAM EMCCDGain 1
 cAndorSetProperty $CAM VSSpeed 1
@@ -197,14 +206,6 @@ cAndorSetProperty $CAM BaselineClamp 1
 cAndorSetProperty $CAM PreAmpGain 0
 cAndorSetProperty $CAM HSSpeed 1 0
 cAndorSetProperty $CAM HSSpeed 0 1
-cAndorSetProperty $CAM ReadMode 4
-cAndorSetProperty $CAM KineticCycleTime 0.0
-cAndorSetProperty $CAM NumberAccumulations 1
-cAndorSetProperty $CAM NumberKinetics 1
-cAndorSetProperty $CAM AccumulationCycleTime 0.0
-cAndorSetProperty $CAM ExposureTime 0.04
-cAndorSetProperty $CAM SetTemperature -60
-cAndorSetProperty $CAM AcquisitionMode 1
 set ANDOR_CFG($ANDOR_ARM,min) 300
 set ANDOR_CFG($ANDOR_ARM,peak) 1000
 	
@@ -225,7 +226,7 @@ set ANDOR_CFG($ANDOR_ARM,peak) 1000
 #		CAM - Andor camera id used in the C code, 0 or 1
 #
 proc connectads9 { } {
-global ANDOR_CFG CAM
+global ANDOR_CFG CAM SPECKLE_DIR DS9 ANDOR_ARM
    initads9 $ANDOR_CFG(shmem) 1024 1024
    exec xpaset -p $DS9 single
    exec xpaset -p $DS9 zoom to fit
@@ -235,6 +236,8 @@ global ANDOR_CFG CAM
    } else {
       exec xpaset -p $DS9 cmap Cool
    }
+   exec xpaset -p $DS9 source $SPECKLE_DIR/andor/ds9refresher.tcl
+   debuglog "Reconnected to ds9 $DS9"
 }
 
 
@@ -308,7 +311,7 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE TELEMETRY
      andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin) 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
      cAndorSetProperty $CAM AcquisitionMode 1
      set TELEMETRY(speckle.andor.kinetic_mode) 0
-#     cAndorSetProperty $CAM OutputAmplifier 0
+     cAndorSetProperty $CAM OutputAmplifier 0
      set SCOPE(numframes) 1
    }
    if { $mode == "roi" } {
@@ -318,9 +321,9 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE TELEMETRY
      if { $ANDOR_CFG($CAM,NumberAccumulations) > 1 } {
         cAndorSetProperty $CAM AcquisitionMode 2
      } else {
-        cAndorSetProperty $CAM AcquisitionMode 3
-     }
-#     cAndorSetProperty $CAM OutputAmplifier 0
+       cAndorSetProperty $CAM AcquisitionMode 3
+    }
+     cAndorSetProperty $CAM OutputAmplifier 0
    }
    if { $mode == "fullkinetic" } {
      debuglog "Configure camera $CAM for fullframe"
@@ -331,7 +334,7 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE TELEMETRY
      } else {
         cAndorSetProperty $CAM AcquisitionMode 3
      }
-#     cAndorSetProperty $CAM OutputAmplifier 0
+     cAndorSetProperty $CAM OutputAmplifier 0
    }
 }
 
@@ -371,7 +374,11 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
       exec xpaset -p $DS9 frame 2
-      if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
+      if { $ANDOR_CFG(fitds9) } {
+         exec xpaset -p $DS9 zoom to fit
+      } else {
+         exec xpaset -p $DS9 zoom 1
+      }
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
@@ -382,7 +389,11 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
       exec xpaset -p $DS9 frame 2
-      if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
+      if { $ANDOR_CFG(fitds9) } {
+         exec xpaset -p $DS9 zoom to fit
+      } else {
+         exec xpaset -p $DS9 zoom 1
+      }
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
@@ -498,7 +509,11 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
     if { $scset == "zscale" } {
       exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*$ANDOR_CFG(scalepeak)]
     }
-    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
+    if { $ANDOR_CFG(fitds9) } {
+         exec xpaset -p $DS9 zoom to fit
+      } else {
+         exec xpaset -p $DS9 zoom 1
+    }
   }
   if { $ANDOR_ARM == "red" } {
     exec xpaset -p $DS9 frame 1
@@ -507,7 +522,11 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
     if { $scset == "zscale" } {
        exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*$ANDOR_CFG(scalepeak)]
     }
-    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
+    if { $ANDOR_CFG(fitds9) } {
+         exec xpaset -p $DS9 zoom to fit
+    } else {
+         exec xpaset -p $DS9 zoom 1
+    }
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
   refreshads9 [expr int($exp*2000)] [expr $n*4]
@@ -523,6 +542,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
   }
   set count 0
   set dofft 0
+  debuglog "FITSBITS = $ANDOR_CFG(fitsbits)"
   if { $npix < 1024 } {set dofft [andorGetControl 0 showfft]}
   if { $ANDOR_CFG(red) > -1} {
       andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $ANDOR_CFG(fitsbits) $dofft
@@ -587,7 +607,11 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY CAM
     if { $scset == "zscale" } {
       exec xpaset -p $DS9 scale limits $ANDOR_CFG(blue,min) [expr $ANDOR_CFG(blue,peak)*$ANDOR_CFG(scalepeak)]
     }
-    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
+     if { $ANDOR_CFG(fitds9) } {
+         exec xpaset -p $DS9 zoom to fit
+    } else {
+         exec xpaset -p $DS9 zoom 1
+    }
   }
   if { $ANDOR_ARM == "red" } {
     exec xpaset -p $DS9 frame 1
@@ -596,7 +620,11 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY CAM
     if { $scset == "zscale" } {
       exec xpaset -p $DS9 scale limits $ANDOR_CFG(red,min) [expr $ANDOR_CFG(red,peak)*$ANDOR_CFG(scalepeak)]
     }
-    if { $ANDOR_CFG(fitds9) } {exec xpaset -p $DS9 zoom to fit}
+    if { $ANDOR_CFG(fitds9) } {
+         exec xpaset -p $DS9 zoom to fit
+    } else {
+         exec xpaset -p $DS9 zoom 1
+    }
   }
   updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
   refreshads9 [expr int($exp*2000)] [expr $n*4]
@@ -942,7 +970,9 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
          numberkinetics        { set it [cAndorSetProperty $CAM NumberKinetics [lindex $msg 1]] ; puts $sock $it}
          accumulationcycletime { set it [cAndorSetProperty $CAM AccumulationCycleTime [lindex $msg 1]] ; puts $sock $it}
          setexposure     { SetExposureTime [lindex $msg 1] ; puts $sock "OK"}
+         triggermode     { SetTriggerMode [lindex $msg 1] ; puts $sock "OK"}
          settemperature  { SetTemperature [lindex $msg 1] ; puts $sock "OK"}
+         setcooler       { andorCooler $CAM [lindex $msg 1] ; puts $sock "OK"}
          positiontelem   { set TELEMETRY(speckle.andor.inputzaber) [lindex $msg 1]
                            set TELEMETRY(speckle.andor.fieldzaber) [lindex $msg 2]
                            set TELEMETRY(speckle.andor.filter) [lindex $msg 3]

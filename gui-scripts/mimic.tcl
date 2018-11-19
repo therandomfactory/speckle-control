@@ -88,10 +88,12 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
      if { $mode == "wide" } {
        .mimicSpeckle.myCanvas moveto $oredwide [expr $XO+450] [expr $YO+115]
        .mimicSpeckle.myCanvas moveto $oredspck [expr $XO+460 ] [expr $YO+180]
+       .lowlevel.rmode configure -text "Mode=Wide field"
      }
      if { $mode == "speckle" } {
        .mimicSpeckle.myCanvas moveto $oredwide [expr $XO+450 ] [expr $YO+60]
        .mimicSpeckle.myCanvas moveto $oredspck [expr $XO+460 ] [expr $YO+135]
+       .lowlevel.rmode configure -text "Mode=Speckle"
      }
      if { $mode == "open" } {
        .mimicSpeckle.myCanvas moveto $oredshut [expr $XO+670 ] [expr $YO+124]
@@ -113,10 +115,12 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
      if { $mode == "wide" } {
        .mimicSpeckle.myCanvas moveto $obluewide [expr $XO+276 ] [expr $YO+260]
        .mimicSpeckle.myCanvas moveto $obluespck [expr $XO+341 ] [expr $YO+268]
+       .lowlevel.rmode configure -text "Mode=Wide field"
      }
      if { $mode == "speckle" } {
        .mimicSpeckle.myCanvas moveto $obluewide [expr $XO+221 ] [expr $YO+260]
        .mimicSpeckle.myCanvas moveto $obluespck [expr $XO+297 ] [expr $YO+268]
+       .lowlevel.rmode configure -text "Mode=Speckle"
      }
      if { $mode == "open" } {
        .mimicSpeckle.myCanvas moveto $oblueshut [expr $XO+286 ] [expr $YO+468]

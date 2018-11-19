@@ -63,7 +63,7 @@ proc redisConnect { } {
 #
 proc redisUpdate { } {
 global REDIS
-   foreach key "tcs-geometry tcs-target tcs-time tcs-telescop tcs-weather" {
+   foreach key "tcs-geometry tcs-time tcs-telescop tcs-weather oss-secondary" {
      puts $REDIS(handle) "hgetall wiyn:$key"
    }
    after 100
@@ -88,6 +88,11 @@ global TELEMETRY
 
 
 # \endcode
+
+# Redis commands : 
+#   keys *  - list all the key sets
+#   hset wiyn:speckle.test key "value"
+#
 
 set TLMKEYS "
 wiyn:tcs-nir

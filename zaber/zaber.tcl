@@ -103,7 +103,7 @@ set ZABERS(port) $ZABERS(port)
      puts $fcfg "set ZABERS(input,$p) \"$ZABERS(input,$p)\""
    }
    if { $SCOPE(telescope) == "GEMINI" } {
-     foreach p "device extend stow" {  
+     foreach p "device in out" {  
        puts $fcfg "set ZABERS(pickoff,$p) \"$ZABERS(pickoff,$p)\""
      }
      foreach p "device extend stow" {  
@@ -275,8 +275,8 @@ global ZABERS SCOPE
      after 200
     zaberReader $ZABERS(handle)
     set ZABERS(pickoff,readpos) $ZABERS(pickoff,pos)
-    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,extend))] < 5 } {set ZABERS(pickoff,readpos) "extend"}
-    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,stow))] < 5 } {set ZABERS(pickoff,readpos) "stow"}
+    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,in))] < 5 } {set ZABERS(pickoff,readpos) "in"}
+    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,out))] < 5 } {set ZABERS(pickoff,readpos) "out"}
     .mimicSpeckle.zaberFocus configure -text "Zaber Focus : $ZABERS(focus,pos) : $ZABERS(focus,readpos)"
     .mimicSpeckle.zaberPickoff configure -text "Zaber Pickoff : $ZABERS(pickoff,pos) : $ZABERS(pickoff,readpos)"
   }
@@ -346,6 +346,41 @@ global ZABERS
      debuglog "Zaber simulate : $name $pos"
    } else {
      zaberCommand $name  "move abs $pos"
+   }
+}
+
+
+
+## Documented proc \c zaberJogger .
+# \param[in] op  Operation
+#
+#  Send commands set a device position
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc zaberJogger  { op } {
+global ZABERS
+   if { $ZABERS(sim) } {
+     debuglog "Zaber simulate : jog $op"
+   } else {
+     switch $op {
+        red   { set ZABERS(jogtarget) A ; .lowlevel.jogz configure -text A}
+        blue  { set ZABERS(jogtarget) B ; .lowlevel.jogz configure -text B}
+        focus -
+        pickoff -
+        input { set ZABERS(jogtarget) $op ; .lowlevel.jogz configure -text $op}
+        plus  { 
+                set newpos [expr $ZABERS(jogtarget) + 10]
+                zaberCommand $ZABERS(jogtarget) "move abs $newpos"
+                .lowlevel.vzab configure -text $newpos
+              }
+        minus { 
+                set newpos [expr $ZABERS(jogtarget) - 10]
+                zaberCommand $ZABERS(jogtarget) "move abs $newpos" 
+                .lowlevel.vzab configure -text $newpos
+              }
+     }
    }
 }
 
@@ -430,8 +465,8 @@ Supported commands :
     home
     speckle
     wide
-    stow
-    extend
+    in
+    out
     move abs nnn
     move rel nnn
     set xxx
@@ -513,8 +548,8 @@ proc zaberService { name cmd {a1 ""} {a2 ""} } {
       estop       {zaberStopAll}
       home        {zaberCommand $name home}
       speckle     {zaberGoto $name speckle}
-      extend      {zaberCommand $name extend}
-      stow        {zaberCommand $name stow}
+      in          {zaberCommand $name in}
+      out         {zaberCommand $name out}
       wide        {zaberGoto $name wide}
       move        {zaberCommand $name "move $a1 $a2"}
       set         {zaberSetProperty $a1 $a2}
@@ -588,7 +623,7 @@ if { $ZABERS(sim) == 0 } {
        zaberCommand focus home
        zaberCommand pickoff home
        after 2000
-       zaberGoto pickoff stow	
+       zaberGoto pickoff out	
        zaberGoto focus stow 
   }
 } else {

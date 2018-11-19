@@ -276,23 +276,26 @@ global INSTRUMENT
 #		ACQREGION - ROI properties xs,xe,ys,ye
 #
 proc videomode { } {
-global LASTACQ STATUS SCOPE ACQREGION
-   commandAndor red "imagename videomode 1" 0
-   commandAndor blue "imagename videomode 1" 0
+global LASTACQ STATUS SCOPE ACQREGION INSTRUMENT
+   set ANDOR_CFG(videomode) 1
+   commandAndor red "imagename videomode 1"
+   commandAndor blue "imagename videomode 1"
    exec rm -f $SCOPE(datadir)/videomode_red.fits
    exec rm -f $SCOPE(datadir)/videomode_blue.fits
    set redtemp  [lindex [commandAndor red gettemp] 0]
    set bluetemp  [lindex [commandAndor blue gettemp] 0]
+   commandAndor red "autofitds9 $INSTRUMENT(red,fitds9)"
+   commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
    mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
    mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
    .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
    .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
    if { $LASTACQ == "fullframe" } {
-      commandAndor red "grabframe $SCOPE(exposure)" 0
-      commandAndor blue "grabframe $SCOPE(exposure)" 0
+      commandAndor red "grabframe $SCOPE(exposure)"
+      commandAndor blue "grabframe $SCOPE(exposure)"
    } else {
-      commandAndor red "grabroi $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom)" 0
-      commandAndor blue "grabroi $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom)" 0
+      commandAndor red "grabroi $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom)"
+      commandAndor blue "grabroi $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom)"
    }
    if { $STATUS(abort) == 0 } {
       if { $SCOPE(exposure) > 0.0 } {
@@ -307,6 +310,7 @@ global LASTACQ STATUS SCOPE ACQREGION
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
       .main.abort configure -fg gray -relief sunken
+      set ANDOR_CFG(videomode) 0
    }
 }
   
@@ -564,7 +568,7 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }
-   after 25000
+   after 40000
    connectToAndors
    debuglog "Andor reset complete"
 }
@@ -584,17 +588,21 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ
 #		ACQREGION - ROI properties xs,xe,ys,ye
 #
 proc resetSingleAndors { mode } {
-global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ
+global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ env
    debuglog "Resetting Andors for $mode" 
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
+   set geom1 "+20+800" ; set geom2 "+1100+800"
+   if { $env(TELESCOPE) == "WIYN"} {
+     set geom2 "+20+800" ; set geom1 "+1100+800"
+   }
    if { $mode == "fullframe" } {
-     exec xterm -geometry +20+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
-     exec xterm -geometry +1100+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
+     exec xterm -geometry $geom1 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
+     exec xterm -geometry $geom2 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
      set LASTACQ fullframe
    } else {
-     exec xterm -geometry +20+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
-     exec xterm -geometry +1100+800 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry $geom1 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry $geom2 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }
@@ -605,6 +613,7 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ
 }
 #\endcode
 
+set ANDOR_CFG(videomode) 0
 
 set ANDOR_MODES(readout) 		"full_vertical_binning multi_track random_track single_track image"
 set ANDOR_MODES(acquisition)		"single_scan accumulate kinetics fast_kinetics run_till_abort"

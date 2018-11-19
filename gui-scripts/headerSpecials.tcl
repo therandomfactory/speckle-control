@@ -74,6 +74,10 @@ proc catchfloat { value } {
   return "float $value"
 }
 
+proc catchbigfloat { value } {
+  return "bigfloat $value"
+}
+
 ## Documented proc \c catchmnir .
 # \param[in] value Value of header data to be processed
 #
@@ -137,6 +141,7 @@ global TOMPG
 # Process generic hms  header item
 #
 proc catchhms { value } {
+   set value [expr $value*12./3.14159]
    set h [expr int($value)]
    set m [expr int(($value-$h)*60.)]
    set s [format %6.3f [expr ($value-$h-$m/60.)*3600.]]
@@ -151,8 +156,9 @@ proc catchhms { value } {
 # Process generic dms header item
 #
 proc catchdms { value } {
-    set sign ""
-    if { $value < 0.0 } {set sign "-"}
+   set value [expr $value*180./3.14159]
+   set sign ""
+   if { $value < 0.0 } {set sign "-"}
    set value [expr abs($value)]
    set d [expr int($value)]
    set m [expr int(($value-$d)*60.)]

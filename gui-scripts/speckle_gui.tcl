@@ -27,6 +27,7 @@ global SCOPE TELEMETRY FITSKEY IMGMETA
    }
    if { $SCOPE(telescope) == "WIYN" } {
       redisUpdate
+      set TELEMETRY(speckle.scope.program) $SCOPE(ProgID)
    }
 }
 
@@ -294,7 +295,7 @@ global DATAQUAL ZABERS FWHEELS
 proc checkemccdgain { arm } {
 global INSTRUMENT
    debuglog "Set $arm camera EMCCD gain to $INSTRUMENT($arm,emccd)"
-   commandAndor $arm "emccdgain $INSTRUMENT($arm,emccd)"
+   set INSTRUMENT($arm,emgain) [closestgain $INSTRUMENT($arm,emgain)]
    if { $INSTRUMENT($arm,highgain) == 0 || $INSTRUMENT($arm,emccd) == 0 } {
       if { $INSTRUMENT($arm,emgain) > 300 } {set INSTRUMENT($arm,emgain) 300}
       .mbar configure -bg gray
@@ -309,9 +310,10 @@ global INSTRUMENT
          commandAndor $arm "emadvanced 0"
       }
    }
+   if { $INSTRUMENT($arm,emgain) > 1000 } {set INSTRUMENT($arm,emgain) 0}
    if { $INSTRUMENT($arm,emccd) } {
       commandAndor $arm "outputamp 0"
-      commandAndor $arm "emccdgain $INSTRUMENT($arm,emgain)
+      commandAndor $arm "emccdgain $INSTRUMENT($arm,emgain)"
    } else {
       commandAndor $arm "outputamp 1"
    }
@@ -330,6 +332,31 @@ global ANDOR_CFG
    debuglog "Set $arm camera Frame Transfer to $ANDOR_CFG($arm,frametransfer)"
    commandAndor $arm "frametransfer $ANDOR_CFG($arm,frametransfer)"
 }
+
+## Documented proc \c setpoint .
+# \param[in] state  Cooler state on/off/amb
+#
+#  Set the setpoint cooling mode
+#
+#
+proc setpoint { state } {
+global ANDOR_CFG
+  if { $state == "on" } {
+     commandAndor red "setcooler 1"
+     commandAndor blue "setcooler 1"
+     .main.rcamtemp configure -bg blue
+     .main.bcamtemp configure -bg blue
+  }
+  if { $state == "off" } {
+     commandAndor red "setcooler 0"
+     commandAndor blue "setcooler 0"
+     .main.rcamtemp configure -bg white
+     .main.bcamtemp configure -bg white
+  }
+  if { $state == "amb" } {
+  }
+}
+
 
 
 ## Documented proc \c cameraStatuses .
@@ -413,6 +440,7 @@ global CAMSTATUS ANDOR_CFG
 #  Calculate closest approved gain setting
 #
 proc closestgain  { target } {
+ set best 0
  set options "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000"
  set diff 1000
  foreach v $options {
@@ -715,7 +743,7 @@ place .lowlevel.emchk -x 725 -y 110
 
 checkbutton .lowlevel.bemccd  -bg gray -text "EMCCD" -variable INSTRUMENT(blue,emccd) -command "checkemccdgain blue" -highlightthickness 0
 checkbutton .lowlevel.bhgain  -bg gray -text "High Gain" -variable INSTRUMENT(blue,highgain) -command "checkemccdgain blue" -highlightthickness 0
-checkbutton .lowlevel.abemccd  -bg gray -text "Auto Set" -variable INSTRUMENT(red,autoemccd) -highlightthickness 0
+checkbutton .lowlevel.abemccd  -bg gray -text "Auto Set" -variable INSTRUMENT(blue,autoemccd) -highlightthickness 0
 label .lowlevel.lbvspeed  -bg gray -text "Vspeed"
 
 checkbutton .lowlevel.bemchk  -bg gray -text "Recommend" -variable INSTRUMENT(blue,emcheck) -highlightthickness 0
@@ -800,11 +828,14 @@ place .main.lcomment -x 560 -y 23
 place .main.clrcomment -x 640 -y 23
 
 ttk::progressbar .lowlevel.p -orient horizontal -length 900  -mode determinate
+ttk::progressbar .lowlevel.seqp -orient horizontal -length 900  -mode determinate
 place .lowlevel.p -x 20 -y 130
+place .lowlevel.seqp -x 20 -y 150
+
 label .lowlevel.progress -text "Observation status : Idle" -fg NavyBlue -bg gray
-place .lowlevel.progress -x 20 -y 154
+place .lowlevel.progress -x 20 -y 170
 label .lowlevel.datarate -text "Data Rate : ??? Mbps" -fg NavyBlue -bg gray
-place .lowlevel.datarate -x 500 -y 154
+place .lowlevel.datarate -x 500 -y 170
 
 #set INSTRUMENT(red) 1
 #set INSTRUMENT(blue) 1
@@ -857,6 +888,28 @@ if { $ZABERS(A,arm) == "red" } {
 .mbar.tools.m add command -label "zaber input wide" -command "zaberGoto input wide"
 .mbar.tools.m add command -label "zaber input speckle" -command "zaberGoto input speckle"
 
+label .lowlevel.rzab -text "Zaber position" -bg gray
+place .lowlevel.rzab -x 760 -y 230
+button .lowlevel.rzabm  -width 3 -text "<<<" -command "zaberJogger minus" -bg gray
+button .lowlevel.rzabp  -width 3 -text ">>>" -command "zaberJogger plus" -bg gray
+place .lowlevel.rzab -x 760 -y 260
+place .lowlevel.rzabm -x 700 -y 260
+place .lowlevel.rzabp -x 860 -y 260
+label .lowlevel.vzab -width 6 -bg gray -text "??????"
+place .lowlevel.vzab -x 780 -y 265
+menubutton .lowlevel.jogz -width 12 -text "Zaber ????" -fg black -bg gray -menu .lowlevel.jogz.m -relief raised
+menu .lowlevel.jogz.m
+.lowlevel.jogz.m  add command -label "Input"  -command "zaberJogger input"
+.lowlevel.jogz.m  add command -label "Red"    -command "zaberJogger red"
+.lowlevel.jogz.m  add command -label "Blue"   -command "zaberJogger blue"
+if { $SCOPE(telescope) == "GEMINI" } {
+  .lowlevel.jogz.m  add command -label "Focus"    -command "zaberJogger focus"
+  .lowlevel.jogz.m  add command -label "Pickoff"   -command "zaberJogger pickoff"
+}
+
+
+place .lowlevel.jogz -x 760 -y 200
+
 if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus extend" -command "zaberGoto focus extend"
   .mbar.tools.m add command -label "zaber focus stow" -command "zaberGoto focus stow"
@@ -865,17 +918,21 @@ if { $SCOPE(telescope) == "GEMINI" } {
 }
 
 
-set SPECKLE(observingGui) 936x540
+set SPECKLE(observingGui) 936x550
 wm geometry .mimicSpeckle +660+30
 
 if { $SCOPE(telescope) == "WIYN" } {
-   .lowlevel configure -height 520 -width 936
+   .lowlevel configure -height 550 -width 936
    wm geometry . 936x900
    set SPECKLE(engineeringGui) 936x900
-   source $SPECKLE_DIR/gui-scripts/redisquery.tcl
-   redisConnect
-   redisUpdate
-
+   if { 0 } {
+     source $SPECKLE_DIR/gui-scripts/redisquery.tcl
+     redisConnect
+     redisUpdate
+   }
+   if { 1 } {
+     source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
+   }
 
 } else {
 

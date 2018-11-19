@@ -101,17 +101,23 @@ global FILTERWHEEL FWHEELS MAXFILTERS
      incr i 1
   }
   .filters.f$id$n configure -bg yellow -activebackground yellow
-  update
-  if { $FWHEELS(sim) == 0 } {
-    set result [setOrielFilter $FWHEELS($id,handle) $n]
-    set msg [split $result \n]
+  if { $id == "red" } {
+     .lowlevel.rfilter configure -bg yellow -activebackground yellow
   } else {
-    set msg $n
+     .lowlevel.bfilter configure -bg yellow -activebackground yellow
   }
+  update
+  set result [setOrielFilter $FWHEELS($id,handle) $n]
+  set msg [split $result \n]
   if { [string range [lindex $msg 3] 0 9] == "USB error:" } {
     set it [ tk_dialog .d "SPECKLE Filter Wheel $id" "$result" {} -1 OK]
   } else {
     .filters.f$id$n configure -bg green -relief sunken -activebackground green
+     if { $id == "red" } {
+        .lowlevel.rfilter configure -bg green -activebackground green
+     } else {
+        .lowlevel.bfilter configure -bg green -activebackground green
+    }
     mimicMode $id filter $FWHEELS($id,$n)
     if { $id == "red" } {
       .lowlevel.rfilter configure -text "Filter = $FWHEELS(red,$n)"
@@ -228,8 +234,6 @@ proc resetFilterWheel { id } {
 #  Call low level code to move filter to selected position
 #
 proc setOrielFilter { id n } {
-global FWHEELS
- if { $FWHEELS(sim) == 0 } {
    oriel_write_cmd $id FILT?
    after 200
    set res [oriel_read_result $id]
@@ -255,9 +259,6 @@ global FWHEELS
       return $n
    }
    return -1
- } else {
-   return $n
- }
 }
 
 ## Documented proc \c checkAutoFilter .
@@ -318,7 +319,7 @@ while { $i < $MAXFILTERS } {
    button .filters.fred$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter red $i" -width 8
    entry  .filters.namered$i -textvariable FWHEELS(red,$i) -bg LightBlue -fg black -width 20
    entry  .filters.focusred$i -textvariable FWHEELS(red,$i,focus) -bg LightBlue -fg black -width 8
-   place  .filters.auto$i -x 10 -y $iy
+   place  .filters.auto$i -x 420 -y $iy
    place  .filters.fred$i -x 460 -y $iy
    checkbutton .filters.bauto$i -bg gray -variable FWHEELS(blueauto,$i) -highlightthickness 0
    button .filters.fblue$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter blue $i" -width 8
@@ -326,7 +327,7 @@ while { $i < $MAXFILTERS } {
    entry  .filters.focusblue$i -textvariable FWHEELS(blue,$i,focus) -bg LightBlue -fg black -width 8
    place  .filters.fblue$i -x 50 -y $iy
    incr iy 3
-   place  .filters.bauto$i -x 420 -y $iy
+   place  .filters.bauto$i -x 10 -y $iy
    place  .filters.namered$i -x 560 -y $iy
    place  .filters.focusred$i -x 740 -y $iy
    place  .filters.nameblue$i -x 150 -y $iy

@@ -132,7 +132,8 @@ global FROMSTARTEXP CACHETELEMETRY ANDOR_ARM
           set type string
           set value "Not available"
        } else {
-         set parse [eval $cmd]
+         set value NA
+         catch {set parse [eval $cmd]}
          set value [lrange $parse 1 end]
          set type [lindex $parse 0]
        }
@@ -283,6 +284,10 @@ proc fitshdrrecord { key type value text } {
               if { [expr abs($value)] < 10000 } {set fmt 18.6f}
               set record [string toupper "[format %-8s $key]=  [format %$fmt $v1]"]
              }
+     bigfloat   {
+              if { [expr abs($value)] < 10000 } {set fmt 18.9f}
+              set record [string toupper "[format %-8s $key]=  [format %$fmt $v1]"]
+             }
      double  {
               if { [expr abs($value)] < 10000 } {set fmt 18.6f}
               if { [expr abs($value)] < 1 } {set fmt 18.12f}
@@ -309,7 +314,7 @@ proc fitshdrrecord { key type value text } {
 #		SPECKLEHDRLOG - Cache of header details
 #
 proc appendHeader { imgname } {
-global SPECKLEHDRLOG SCOPE env TELEMETRY
+global SPECKLEHDRLOG SCOPE env TELEMETRY INSTRUMENT
   set hdr [fillheader $env(TELESCOPE)-$SCOPE(instrument)]
   puts $SPECKLEHDRLOG "$hdr"
   set fid [fits open $imgname]
@@ -412,6 +417,43 @@ proc getFocus { } {
     return $current
 }
 
+proc subscribestreams { } {
+global STREAMS PDEBUG TOMPG ACTIVE
+  foreach s $STREAMS {
+   if { [info exists ACTIVE($s)] } {
+    set stat 0
+    catch {set stat [$TOMPG subscribe $s]}
+    if { $stat == 0 } {return error}
+    if { $PDEBUG } {debuglog "Subscribed to stream $s"}
+   }
+  }
+}
+
+
+proc newdata { name par state type value } {
+global TELEMETRY
+##  puts stdout "got $name = $value"
+  set TELEMETRY($name) [join [split $value "\{\}\""] " "]
+  catch {set TELEMETRY($name,t) $type}
+}
+
+
+proc activatestreams { } {
+global TOMPG HEADERS ACTIVE
+  switch $TOMPG {
+     kpno_36  { set type tcs-36 }
+     kpno_09m  { set type tcs-36 }
+     kpno_2m   { set type tcs-2m }
+     kpno_4m   { set type tcs-4m }
+     wiyn      { set type wiyn-speckle }
+  }
+  foreach i $HEADERS($type) {
+     set stream [join [lrange [split $i "."] 0 1] "."]
+     set ACTIVE($stream) 1
+  }
+}
+
+
 # \endcode
 
 #
@@ -433,7 +475,6 @@ if { [info exists env(TELESCOPE)] } {
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
 load $SPECKLE_DIR/lib/libfitstcl.so
-
 ###load /usr/local/gui/lib/libxtcs.so
 
 source $SPECKLE_DIR/gui-scripts/headerSpecials.tcl
@@ -442,22 +483,41 @@ source $SPECKLE_DIR/gui-scripts/andorTelemetry.tcl
 loadstreamdefs $SPECKLE_DIR/gui-scripts/telem-[string tolower $env(TELESCOPE)].conf
 loadhdrdefs $SPECKLE_DIR/gui-scripts/headers.conf
 if { $env(TELESCOPE) == "WIYN" } {
+  set SCOPE(instrument) "NESSI"
+  set TOMPG wiyn
+ if { 0 } {
   source $SPECKLE_DIR/gui-scripts/redisquery.tcl
   redisConnect
   redisUpdate
   puts stdout "Connected to REDIS server"
+ }
+ if { 1 } {
+  load $env(SPECKLE_DIR)/lib/gwc/lib/libnames.so
+  load $env(SPECKLE_DIR)/lib/gwc/lib/libmsg.so
+  load $env(SPECKLE_DIR)/lib/gwc/lib/libgwc.so
+  connect wiyn speckle
+  activatestreams
+  subscribestreams
+  foreach i [array names TELEMETRY] {
+   if { [lindex [split $i .] 0] != "speckle" && $i != "timestamp" } {
+     $TOMPG atevent $i "newdata $i" always
+   }
+  }
+  foreach i "LSTHDR ELMAP AZMAP TRACK EPOCH TARGRA 
+        TARGDEC RA DEC RAOFFST DECOFFST ZD AIRMASS
+        ROTANGLE FOCUS ROTPORT FOLDPOS" {
+   set FROMSTARTEXP($i) 1
+  }
+  puts stdout "Connected to MPG router"
+ }
 } else {
+  set SCOPE(instrument) "Alopeke"
   proc redisquery { } { }
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
   geminiConnect north
 }
 
-foreach i "LSTHDR ELMAP AZMAP TRACK EPOCH TARGRA 
-        TARGDEC RA DEC RAOFFST DECOFFST ZD AIRMASS
-        ROTANGLE FOCUS ROTPORT FOLDPOS" {
-   set FROMSTARTEXP($i) 1
-}
-
+proc redisUpdate { } { }
 
 after 5000 cachetelemetry
 

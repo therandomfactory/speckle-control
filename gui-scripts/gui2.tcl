@@ -216,16 +216,16 @@ global ANDOR_CFG ACQREGION
       commandAndor red "setframe roi"
       commandAndor blue "setframe roi"
       set LASTACQ roi
-      .lowlevel.rmode configure -text "Mode=ROI"
+##      .lowlevel.rmode configure -text "Mode=ROI"
      } else {
       commandAndor red  "setframe fullkinetic"
       commandAndor blue "setframe fullkinetic"
-     .lowlevel.rmode configure -text "Mode=Wide field"
+##     .lowlevel.rmode configure -text "Mode=Wide field"
     }
   } else {
     commandAndor red "setframe fullframe"
     commandAndor blue "setframe fullframe"
-    .lowlevel.rmode configure -text "Mode=Wide field"
+##    .lowlevel.rmode configure -text "Mode=Wide field"
   }
 }
 
@@ -251,7 +251,7 @@ global ANDOR_CFG
 #
 proc restartads9  { arm geom } {
   exec ds9[set arm] -geometry $geom &
-  after 3000 commandAndor $arm connectads9
+  after 3000 commandAndor $arm connectds9
 }
 
 
@@ -512,7 +512,6 @@ menu .main.rois.m
 .main.rois.m add command -label "Acq-roi-512" -command "observe region512"
 .main.rois.m add command -label "Acq-full" -command "observe regionall"
 .main.rois.m add command -label "Adjust ROI" -command "observe manual"
-.main.rois.m add command -label "Reset full-frame" -command "observe fullframe"
 
 
 entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 999999}
@@ -720,9 +719,11 @@ if { [file exists $SCOPE(datadir)] } {
  }
 }
 
+set SCOPE(instrument) "Speckle"
 set SCOPE(imagename) "N[exec date -u +%Y%m%d]"
 if { $SCOPE(site) == "GEMINI_S" } {
    set SCOPE(imagename) "S[exec date -u +%Y%m%d]"
+   set SCOPE(instrument) "Alopeke"
 }
 
 catch {
