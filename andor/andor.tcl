@@ -201,18 +201,18 @@ global ANDOR_SOCKET INSTRUMENT
 proc commandAndor { arm cmd {echk 1} } {
 global ANDOR_SOCKET SCOPE
    if { $ANDOR_SOCKET($arm) == 0 } {
-     debuglog "WARNING : $arm arm camera not connected"
+     debuglog "WARNING : $arm arm camera not connected : $arm $cmd $echk"
      return 0
    } else {
      if { [string range $cmd 0 3] == "grab" } {
         if { $echk } {
-           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)[set SCOPE(seqnum)]r.fits"
+           set nrchk "$SCOPE(datadir)/$SCOPE(imagename)[format %6.6d $SCOPE(seqnum)]r.fits"
            if { [file exists $nrchk] } {
               set it [ tk_dialog .d "File exists" "The file named\n $nrchk\n already exists" {} -1 OK]
               debuglog "Cannot overwrite file $nrchk"
               return 0
             }
-           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)[set SCOPE(seqnum)]b.fits"
+           set nbchk "$SCOPE(datadir)/$SCOPE(imagename)[format %6.6d $SCOPE(seqnum)]b.fits"
            if { [file exists $nbchk] } {
               set it [ tk_dialog .d "File exists" "The file named\n $nbchk\n already exists" {} -1 OK]
               debuglog "Cannot overwrite file $nbchk"

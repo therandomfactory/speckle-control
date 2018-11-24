@@ -361,26 +361,24 @@ global ZABERS
 #
 proc zaberJogger  { op } {
 global ZABERS
-   if { $ZABERS(sim) } {
-     debuglog "Zaber simulate : jog $op"
-   } else {
-     switch $op {
-        red   { set ZABERS(jogtarget) A ; .lowlevel.jogz configure -text A}
-        blue  { set ZABERS(jogtarget) B ; .lowlevel.jogz configure -text B}
+   switch $op {
+        red   { set ZABERS(jogtarget) A ; .lowlevel.jogz configure -text "Zaber = A"}
+        blue  { set ZABERS(jogtarget) B ; .lowlevel.jogz configure -text "Zaber = B"}
         focus -
         pickoff -
-        input { set ZABERS(jogtarget) $op ; .lowlevel.jogz configure -text $op}
+        input { set ZABERS(jogtarget) $op ; .lowlevel.jogz configure -text "Zaber = $op"}
         plus  { 
-                set newpos [expr $ZABERS(jogtarget) + 10]
+                set newpos [expr $ZABERS($ZABERS(jogtarget),readpos) + 10]
                 zaberCommand $ZABERS(jogtarget) "move abs $newpos"
                 .lowlevel.vzab configure -text $newpos
+                if { $ZABERS(sim) } {set ZABERS($ZABERS(jogtarget),readpos) $newpos}
               }
         minus { 
-                set newpos [expr $ZABERS(jogtarget) - 10]
+                set newpos [expr $ZABERS($ZABERS(jogtarget),readpos) - 10]
                 zaberCommand $ZABERS(jogtarget) "move abs $newpos" 
                 .lowlevel.vzab configure -text $newpos
+                if { $ZABERS(sim) } {set ZABERS($ZABERS(jogtarget),readpos) $newpos}
               }
-     }
    }
 }
 
@@ -618,8 +616,8 @@ if { $ZABERS(sim) == 0 } {
   zaberGoto B wide
   zaberGoto input wide
   if { $SCOPE(telescope) == "GEMINI" } {
-       set ZABERS(focus,readpos) "simulate"
-       set ZABERS(pickoff,readpos) "simulate"
+       set ZABERS(focus,readpos) 999999
+       set ZABERS(pickoff,readpos) 999999
        zaberCommand focus home
        zaberCommand pickoff home
        after 2000
@@ -627,9 +625,9 @@ if { $ZABERS(sim) == 0 } {
        zaberGoto focus stow 
   }
 } else {
-  set ZABERS(input,readpos) "simulate"
-  set ZABERS(A,readpos) "simulate"
-  set ZABERS(B,readpos) "simulate"
+  set ZABERS(input,readpos) 999999
+  set ZABERS(A,readpos) 999999
+  set ZABERS(B,readpos) 999999
 }
 
 

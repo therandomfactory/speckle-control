@@ -1221,9 +1221,9 @@ int cAndorStoreROI(int cameraId, char *filename, int bitpix, int iexp,int numexp
        copyFrom = &imageDataA;
        for (iw=0;iw<width;iw++) {
        for (ih=0;ih<height;ih++) {
-         if ( bitpix = FLOAT_IMG )  { fitsROI_float[iw+ih*width] = (float)imageDataA[iw+ih*width]; }
-         if ( bitpix = ULONG_IMG )  { fitsROI_ulong[iw+ih*width] = (unsigned long)imageDataA[iw+ih*width]; }
-         if ( bitpix = USHORT_IMG ) { fitsROI_ushort[iw+ih*width] = (unsigned short)imageDataAI2[iw+ih*width]; }
+         if ( bitpix == FLOAT_IMG )  { fitsROI_float[iw+ih*width] = (float)imageDataA[iw+ih*width]; }
+         if ( bitpix == ULONG_IMG )  { fitsROI_ulong[iw+ih*width] = (unsigned long)imageDataA[iw+ih*width]; }
+         if ( bitpix == USHORT_IMG ) { fitsROI_ushort[iw+ih*width] = (unsigned short)imageDataAI2[iw+ih*width]; }
        }
      }
    }
@@ -1231,9 +1231,9 @@ int cAndorStoreROI(int cameraId, char *filename, int bitpix, int iexp,int numexp
        copyFrom = &imageDataB;
        for (iw=0;iw<width;iw++) {
        for (ih=0;ih<height;ih++) {
-         if ( bitpix = FLOAT_IMG )  { fitsROI_float[iw+ih*width] = (float)imageDataB[iw+ih*width]; }
-         if ( bitpix = ULONG_IMG )  { fitsROI_ulong[iw+ih*width] = (unsigned long)imageDataB[iw+ih*width]; }
-         if ( bitpix = USHORT_IMG ) { fitsROI_ushort[iw+ih*width] = (unsigned short)imageDataBI2[iw+ih*width]; }
+         if ( bitpix == FLOAT_IMG )  { fitsROI_float[iw+ih*width] = (float)imageDataB[iw+ih*width]; }
+         if ( bitpix == ULONG_IMG )  { fitsROI_ulong[iw+ih*width] = (unsigned long)imageDataB[iw+ih*width]; }
+         if ( bitpix == USHORT_IMG ) { fitsROI_ushort[iw+ih*width] = (unsigned short)imageDataBI2[iw+ih*width]; }
        }
      }
   }
@@ -1254,9 +1254,9 @@ int cAndorStoreROI(int cameraId, char *filename, int bitpix, int iexp,int numexp
           return status;
     }
    
-    if ( bitpix = FLOAT_IMG )  { fits_write_img(fptr, TFLOAT,  fpixel, nelements, &fitsROI_float, &status);}
-    if ( bitpix = ULONG_IMG )  { fits_write_img(fptr, TULONG,  fpixel, nelements, &fitsROI_ulong, &status);}
-    if ( bitpix = USHORT_IMG ) { fits_write_img(fptr, TUSHORT, fpixel, nelements, &fitsROI_ushort, &status);}
+    if ( bitpix == FLOAT_IMG )  { fits_write_img(fptr, TFLOAT,  fpixel, nelements, &fitsROI_float, &status);}
+    if ( bitpix == ULONG_IMG )  { fits_write_img(fptr, TULONG,  fpixel, nelements, &fitsROI_ulong, &status);}
+    if ( bitpix == USHORT_IMG ) { fits_write_img(fptr, TUSHORT, fpixel, nelements, &fitsROI_ushort, &status);}
 
     if (status != 0) {
           return status;
@@ -1286,9 +1286,9 @@ int cAndorStoreROI(int cameraId, char *filename, int bitpix, int iexp,int numexp
      }
      fpixel=width*height*(iexp-1)+1;
      nelements = naxes3[0] * naxes3[1];          /* number of pixels to write */
-     if ( bitpix = FLOAT_IMG )  { fits_write_img(fptr, TFLOAT,  fpixel, nelements, &fitsROI_float, &status);}
-     if ( bitpix = ULONG_IMG )  { fits_write_img(fptr, TULONG,  fpixel, nelements, &fitsROI_ulong, &status);}
-     if ( bitpix = USHORT_IMG ) { fits_write_img(fptr, TUSHORT, fpixel, nelements, &fitsROI_ushort, &status);}
+     if ( bitpix == FLOAT_IMG )  { fits_write_img(fptr, TFLOAT,  fpixel, nelements, &fitsROI_float, &status);}
+     if ( bitpix == ULONG_IMG )  { fits_write_img(fptr, TULONG,  fpixel, nelements, &fitsROI_ulong, &status);}
+     if ( bitpix == USHORT_IMG ) { fits_write_img(fptr, TUSHORT, fpixel, nelements, &fitsROI_ushort, &status);}
 
      if (status != 0) {
          return status;
@@ -1465,7 +1465,7 @@ int tcl_andorStoreFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, c
   int status;
   int *copyFrom;
   char filename[1024];
-  int bitpix   =  USHORT_IMG; /* 32-bit unsigned int pixel values       */
+  int bitpix   =  USHORT_IMG; /* 16-bit unsigned int pixel values       */
   long naxes3[3];   
   long naxes[2];
   int fpixel=1;
@@ -1487,7 +1487,7 @@ int tcl_andorStoreFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, c
      if (width < 1024) {
        for (iw=0;iw<width;iw++) {
        for (ih=0;ih<height;ih++) {
-         fitsROI4[iw+ih*width] = (unsigned int)imageDataA[iw+ih*width];
+         fitsROI2[iw+ih*width] = (unsigned short)imageDataA[iw+ih*width];
        }
        }
      }
@@ -1987,6 +1987,13 @@ int tcl_andorSetProperty(ClientData clientData, Tcl_Interp *interp, int argc, ch
   if (strcmp(argv[2],"FrameTransferMode") == 0) {
      sscanf(argv[3],"%d",&ivalue);
      status = SetFrameTransferMode(ivalue);
+     if (status != DRV_SUCCESS) {
+        return status;
+     }
+  }
+  if (strcmp(argv[2],"Spool") == 0) {
+     sscanf(argv[3],"%d",&ivalue);
+     status = SetSpool(1,ivalue,"tmp",10);
      if (status != DRV_SUCCESS) {
         return status;
      }
@@ -2642,7 +2649,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
                       fflush(NULL);
                       cAndorDisplaySingle(cameraId, ifft);
                     }
-                    usleep(5000);
+                    usleep(10000);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
                     if (deltat > 50 || SharedMem2->iabort > 0 ) {
@@ -2652,7 +2659,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
                     }
                     GetStatus(&status);
 		}
-                usleep(5000);
+                usleep(25000);
                 clock_gettime(CLOCK_REALTIME,&tm2);
                 deltat = tm2.tv_sec - tm1.tv_sec;
                 if (deltat > 50 || SharedMem2->iabort  > 0) {

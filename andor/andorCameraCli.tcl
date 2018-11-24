@@ -93,7 +93,7 @@ if { $env(TELESCOPE) == "GEMINI" } {
   set GEMINITLM(sim) 0
   if { [info exists env(SPECKLE_SIM)] } {
     set simdev [split $env(SPECKLE_SIM) ,]
-    if { [lsearch $simdev geminitlm] > -1 } {
+    if { [lsearch $simdev telemetry] > -1 } {
        set GEMINITLM(sim) 1
        debuglog "Gemini telemetry in SIMULATION mode"
        simGeminiTelemetry

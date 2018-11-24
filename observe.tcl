@@ -281,12 +281,12 @@ proc updateTemps { } {
      mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      if { $redtemp > -55 } {
-        .main.rcamtemp configure -fg red
+        .main.rcamtemp configure -fg orange
      } else {
         .main.rcamtemp configure -fg blue
      }
      if { $bluetemp > -55 } {
-        .main.bcamtemp configure -fg red
+        .main.bcamtemp configure -fg orange
      } else {
         .main.bcamtemp configure -fg blue
      }
