@@ -1,0 +1,27 @@
+var guider__calc_8c =
+[
+    [ "calc_centroid", "guider__calc_8c.html#a58a69b1cc997d4b12fd9a164f90b39ac", null ],
+    [ "calc_cmass", "guider__calc_8c.html#ae7d46c63106db053621d24963cbec4da", null ],
+    [ "calc_cmoment", "guider__calc_8c.html#a65e36bd51db06e8b9582eb301a1871db", null ],
+    [ "calc_gaussian", "guider__calc_8c.html#abc601da2ebcf2ac7c3bdab0cefbb202b", null ],
+    [ "calc_plsphot", "guider__calc_8c.html#acd94849393237a9235657e18ffa41623", null ],
+    [ "calc_quadrant", "guider__calc_8c.html#a96f6c0664685f4ceee1b762d61235343", null ],
+    [ "fmax", "guider__calc_8c.html#a418eb86addfb1c9d1f1cf9e29e1468f0", null ],
+    [ "fwhmx_iraf", "guider__calc_8c.html#a3ab0693aba99439309c5a6c60588c9b7", null ],
+    [ "gaussfit", "guider__calc_8c.html#a0c08d2a692641d9c70dd4d0a07c15d9d", null ],
+    [ "qfwhm", "guider__calc_8c.html#ac5ce85ff4a9381de188e54464aa9c4ad", null ],
+    [ "quickcenter", "guider__calc_8c.html#aef5be4faf89d8a7a10c167f32bd26be9", null ],
+    [ "acc", "guider__calc_8c.html#af37ca83f06ee60dbc0ea580b860ba8a1", null ],
+    [ "alim", "guider__calc_8c.html#a60388c896684d0cfa1eb62f3408cd4e5", null ],
+    [ "fH", "guider__calc_8c.html#a3bca3dd90804a3832705eaaea39f3500", null ],
+    [ "fV", "guider__calc_8c.html#a25687618960ba0290ac6afc0762568f8", null ],
+    [ "fX", "guider__calc_8c.html#a8102fd036fc1f1eb359ca043909b2e9c", null ],
+    [ "gdrDebug", "guider__calc_8c.html#a5fcde1f04d013e8cd2fd039a3d4e9881", null ],
+    [ "Guider", "guider__calc_8c.html#a824ab3cd6db297ec9209c844af2d22ca", null ],
+    [ "image_bk", "guider__calc_8c.html#a7c83550e338ce27aea7e8879a3ad24e3", null ],
+    [ "image_fw", "guider__calc_8c.html#a52a09a2916dc8de808ed2803d9c65ab6", null ],
+    [ "image_mx", "guider__calc_8c.html#af1d1bb43f06e433593352881730306ce", null ],
+    [ "image_tc", "guider__calc_8c.html#a9514ce84094bf60ccd3d08fb38750405", null ],
+    [ "lossOfSignal", "guider__calc_8c.html#a88e25abe04ad54019f947195174b0525", null ],
+    [ "nsaturated", "guider__calc_8c.html#a4b41e31cf8e6e2415215fd5d1a16317e", null ]
+];

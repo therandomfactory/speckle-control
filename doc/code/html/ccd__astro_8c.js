@@ -1,0 +1,27 @@
+var ccd__astro_8c =
+[
+    [ "DASIN", "ccd__astro_8c.html#a0d7f1d879501873bf3477409898f2c77", null ],
+    [ "DATAN2", "ccd__astro_8c.html#a3c3f6c06c99f5f2aa436f253104fc99f", null ],
+    [ "DCOS", "ccd__astro_8c.html#ab5263fe8b4034adaa87390477bacd874", null ],
+    [ "deghr", "ccd__astro_8c.html#a23e7b5b636d7d8a44548f25b991a0562", null ],
+    [ "degrad", "ccd__astro_8c.html#a4f290ef8550589b60e07c92fe19e06cd", null ],
+    [ "DSIN", "ccd__astro_8c.html#aff931f8163297e4b4d26cff78c29621d", null ],
+    [ "hrdeg", "ccd__astro_8c.html#ae118c4a78016f5ff238c297ee568bfe1", null ],
+    [ "hrrad", "ccd__astro_8c.html#a6decddc4963c95defff0266089716730", null ],
+    [ "J2000", "ccd__astro_8c.html#afd09200b4253bfff7b9a890591e09292", null ],
+    [ "MJD0", "ccd__astro_8c.html#a17c22d077b2c872fa05d3482ea45caac", null ],
+    [ "MJDF0", "ccd__astro_8c.html#ad03bc5507beb566bb1956c9a53110deb", null ],
+    [ "PI", "ccd__astro_8c.html#a598a3330b3c21701223ee0ca14316eca", null ],
+    [ "raddeg", "ccd__astro_8c.html#a14e9da27d3ef91d14d3f049dc591f220", null ],
+    [ "radhr", "ccd__astro_8c.html#a64bcc0020d85100174c95e50e916b15a", null ],
+    [ "SIDRATE", "ccd__astro_8c.html#a339259d0a0e3e4de8593894ac41b2313", null ],
+    [ "SPD", "ccd__astro_8c.html#a3fee30674709bf7cf2601f2e499372cf", null ],
+    [ "cal_mjd", "ccd__astro_8c.html#a0c5ebe59481b38a5d393554a2b7ca9a6", null ],
+    [ "hjd", "ccd__astro_8c.html#a78ac3d1dc354cda2cd6064841ec6d978", null ],
+    [ "mjd_cal", "ccd__astro_8c.html#a7de792bd2e3b0e68f0f2fbaf67547b77", null ],
+    [ "mjd_year", "ccd__astro_8c.html#afa6f866f9e7bebfc1001ec63efdb44a7", null ],
+    [ "precess", "ccd__astro_8c.html#aae1165f6e4eb1d6d3292e28b1f8640f6", null ],
+    [ "range", "ccd__astro_8c.html#a95f97bc2c6a39966a664c3b924d5eacb", null ],
+    [ "to_uppercase", "ccd__astro_8c.html#ade7d4965d4cd932c046ad5416b2a75d3", null ],
+    [ "year_mjd", "ccd__astro_8c.html#ac63bb3146f5155f9ab55477883d6e7fd", null ]
+];

@@ -1,0 +1,27 @@
+var newstar_8c =
+[
+    [ "OK", "newstar_8c.html#aba51915c87d64af47fb1cc59348961c9", null ],
+    [ "SPREAD", "newstar_8c.html#a4b38d4791e6e2295c823c6add6f393c8", null ],
+    [ "STATUS", "newstar_8c.html#a59279bee44f34d08b3cbf3a89fb0d8d9", null ],
+    [ "SWAP", "newstar_8c.html#aac9153aee4bdb92701df902e06a74eb3", null ],
+    [ "VOID", "newstar_8c.html#a7f319bfc2492a2136964194204e7a8cf", null ],
+    [ "XROISIZE", "newstar_8c.html#aa4c14811609bfffb59e2ebe1e4111ec1", null ],
+    [ "covsrt", "newstar_8c.html#a72762c5c8b2d45931090a848ef81d24c", null ],
+    [ "dmatrix", "newstar_8c.html#a3298d346d951a0f093a90b251ff83981", null ],
+    [ "dvector", "newstar_8c.html#a50a6274883081fced51203fbfd455acc", null ],
+    [ "fgauss", "newstar_8c.html#a06537e5f95552a8cb0fa41a5093da24a", null ],
+    [ "free_dmatrix", "newstar_8c.html#adaec44c9a213f1abf0024b8dd18a1dc2", null ],
+    [ "free_dvector", "newstar_8c.html#ade97c412868dfcf63ffa3db5ce03ec70", null ],
+    [ "free_ivector", "newstar_8c.html#aee25e218394217a134e805ea09fb0fe9", null ],
+    [ "gaussfit", "newstar_8c.html#a862d6cf2a1a5f6383735d4c2ec8f189e", null ],
+    [ "gaussj", "newstar_8c.html#a3e72a37e594142d02e90bf26d41224e3", null ],
+    [ "ivector", "newstar_8c.html#ab38575a4eddf2ba9c79e01a88e206b90", null ],
+    [ "mrqcofa", "newstar_8c.html#ab2309acd2098751295cc7864574e5da3", null ],
+    [ "mrqcofc", "newstar_8c.html#a32362a6194fc7124faf1c968585e9afe", null ],
+    [ "mrqmin", "newstar_8c.html#ad377d19609f4a0a364a670762647b5c0", null ],
+    [ "qfwhm", "newstar_8c.html#ac5ce85ff4a9381de188e54464aa9c4ad", null ],
+    [ "alpha", "newstar_8c.html#afb37fb8f65c9e7eac8963eb09c3f40b2", null ],
+    [ "covar", "newstar_8c.html#a330d30378b0125bfeb6657c94630ac3d", null ],
+    [ "oneda", "newstar_8c.html#ad951611c10b571bd3b658060899b480d", null ],
+    [ "testbuffer", "newstar_8c.html#a30960ff0260133d2a6030815dfc788df", null ]
+];

@@ -1,0 +1,26 @@
+var withds9_8tcl =
+[
+    [ "addhistory", "withds9_8tcl.html#abac2aa48126466704963545c028e5009", null ],
+    [ "addpakwcs", "withds9_8tcl.html#a396ce96ba495affb3464005d06355acc", null ],
+    [ "adjustnd", "withds9_8tcl.html#a8c6c4b3016fa2829fd85328e2fc9db64", null ],
+    [ "choosedir", "withds9_8tcl.html#a9bb1b6c95dd0f632972a267ac72d3632", null ],
+    [ "markusno", "withds9_8tcl.html#a7d7d12fb27ff2e397197c170d223b6a5", null ],
+    [ "powercamera", "withds9_8tcl.html#acab3e089d28faac52355f5f9c486f8c3", null ],
+    [ "pxlBinning", "withds9_8tcl.html#ab934314168c963832f0e703eb2e9c7ca", null ],
+    [ "pxlConfigure", "withds9_8tcl.html#a3ea21895ce238913e38d8740b0cab383", null ],
+    [ "pxlFind", "withds9_8tcl.html#aa0dc584a2922e3437afc1388d8bf9306", null ],
+    [ "pxlFullFrame", "withds9_8tcl.html#a2060e2661aea18d9b8e6319d886b6649", null ],
+    [ "pxlInit", "withds9_8tcl.html#a33818552228b6ce6ac94ec67b9d1fce6", null ],
+    [ "pxlROIGrid", "withds9_8tcl.html#a156951dad7e5d285ef58ec9aa2bea8cf", null ],
+    [ "pxlSetItem", "withds9_8tcl.html#a1b9b0b2479252e0010cdef8985f7f487", null ],
+    [ "pxlSetROI", "withds9_8tcl.html#a111019fe5e545b2104484e5c0b507305", null ],
+    [ "pxlSetup", "withds9_8tcl.html#a3a91043bc04dd60898801733b5cc2d21", null ],
+    [ "pxlShmemDisp", "withds9_8tcl.html#ad25212cfa7d74071ff6452b2a0e0b8da", null ],
+    [ "pxlShmemSnap", "withds9_8tcl.html#abed678f3c777f33202f3d62d12a1ec34", null ],
+    [ "pxlSnapshot", "withds9_8tcl.html#a93e01f249527e8d79b35c5f5a16977ea", null ],
+    [ "pxlStart", "withds9_8tcl.html#ad06b251d87cf8ec53c9f0491282ef983", null ],
+    [ "pxlStream", "withds9_8tcl.html#a3f6896c6de44e558879039814ede4bf1", null ],
+    [ "pxlStreamds9", "withds9_8tcl.html#a2f8143a8ed22c79450c88da2192a4cd0", null ],
+    [ "pxlUpdate", "withds9_8tcl.html#a31382f84ba38b59cd9852d05539b44e1", null ],
+    [ "updatewcs", "withds9_8tcl.html#ad1978708d4d96003aff5bbf64add414a", null ]
+];

@@ -1,0 +1,26 @@
+var gauss_8c =
+[
+    [ "ERROR", "gauss_8c.html#a8fe83ac76edc595f6b98cd4a4127aed5", null ],
+    [ "MA", "gauss_8c.html#a11702dcb3f3ec928229185eb96686127", null ],
+    [ "OK", "gauss_8c.html#aba51915c87d64af47fb1cc59348961c9", null ],
+    [ "SPREAD", "gauss_8c.html#a4b38d4791e6e2295c823c6add6f393c8", null ],
+    [ "STATUS", "gauss_8c.html#a59279bee44f34d08b3cbf3a89fb0d8d9", null ],
+    [ "SWAP", "gauss_8c.html#aac9153aee4bdb92701df902e06a74eb3", null ],
+    [ "VOID", "gauss_8c.html#a7f319bfc2492a2136964194204e7a8cf", null ],
+    [ "cog", "gauss_8c.html#a67474cd3e2b996fa85386c01c060be9a", null ],
+    [ "covsrt", "gauss_8c.html#a74e1271d578994a52620ba9daccf4ea4", null ],
+    [ "dmatrix", "gauss_8c.html#a9829823d1fef07b2a9636d185a61cfa8", null ],
+    [ "dvector", "gauss_8c.html#aadf545b87862c6aa65798a2937ffc0e9", null ],
+    [ "fgauss", "gauss_8c.html#a2268a095c566e019e74f7c77c5af7c84", null ],
+    [ "free_dmatrix", "gauss_8c.html#adaec44c9a213f1abf0024b8dd18a1dc2", null ],
+    [ "free_dvector", "gauss_8c.html#ade97c412868dfcf63ffa3db5ce03ec70", null ],
+    [ "free_ivector", "gauss_8c.html#aee25e218394217a134e805ea09fb0fe9", null ],
+    [ "gaussj", "gauss_8c.html#a60bda3739a879ebef1cc0a70ed23b8ab", null ],
+    [ "ivector", "gauss_8c.html#aca882f7a5b36bcde356527ff80df861d", null ],
+    [ "mrqcof", "gauss_8c.html#a4510e6a917d2ce0c84aa612ebd3d3ec8", null ],
+    [ "mrqmin", "gauss_8c.html#add130c38dd65c995905f66409c358a59", null ],
+    [ "oldgaussfit", "gauss_8c.html#a40ea6504a52e0e1df59d95cc993ab15b", null ],
+    [ "quickcenter", "gauss_8c.html#a47caf5ee2ea5b9be233d421a6a7886ca", null ],
+    [ "inten", "gauss_8c.html#ac111f235e9f3dde6174eb42e6b41171b", null ],
+    [ "mininten", "gauss_8c.html#a7f535d51514aa653196b7a1d2dc67a7d", null ]
+];
