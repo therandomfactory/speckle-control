@@ -2711,6 +2711,10 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
   int status=-1;
   int cameraCount=0;
   int numCamReq=0;
+  int cameraId;
+  int PCB,Decode,dummy1,dummy2,CameraFirmwareVersion,CameraFirmwareBuild;
+  int eprom,coffile,vxdrev,vxdver,dllrev,dllver,i,j,num_hspeeds,num_ad;
+  float speed;
 
   if (result==NULL) {result = malloc(256);}
 
@@ -2748,12 +2752,33 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
   }
 
   if (numCamReq == 1) { 
+    cameraId=0;
     SetCurrentCamera(cameraA);
     status = Initialize("/usr/local/etc/andor");
     sleep(2);
-    SetReadMode(4);
+    status = GetDetector(&andorSetup[cameraId].width, &andorSetup[cameraId].height);
+    status = GetHardwareVersion(&PCB, &Decode, &dummy1, &dummy2, &CameraFirmwareVersion, &CameraFirmwareBuild);
+    status = GetNumberPreAmpGains(&andorSetup[cameraId].num_preamp_gains);
+    status = GetNumberVSSpeeds(&andorSetup[cameraId].num_vertical_speeds);
+    status = GetVSSpeed(0, &speed);
+    for(j = 0; j < ANDOR_NUM_AMPLIFIERS; j++) {
+      status = GetNumberHSSpeeds(0, j, &andorSetup[cameraId].num_horizontal_speeds[j]);
+      num_hspeeds = andorSetup[cameraId].num_horizontal_speeds[j];
+      for (i=0; i<num_hspeeds; i++) {
+	status = GetHSSpeeds(j, i, &speed);
+      }
+    }
+    status = GetSoftwareVersion(&eprom,&coffile,&vxdrev,&vxdver,&dllrev,&dllver);
+    status = GetHSSpeed(0, 0, 0, &speed);
+    status = GetEMGainRange(&andorSetup[cameraId].minimum_em_gain, &andorSetup[cameraId].maximum_em_gain);
+    status = GetNumberADChannels(&num_ad);
+    status = GetTemperatureRange(&andorSetup[cameraId].minimum_temperature, &andorSetup[cameraId].maximum_temperature);
+    andorSetup[cameraId].amplifier = DFT_ANDOR_AMPLIFIER;
+    andorSetup[cameraId].em_gain = DFT_ANDOR_EM_GAIN;
+    andorSetup[cameraId].em_advanced = DFT_ANDOR_EM_ADVANCED;
   //Set Acquisition mode to --Single scan--
     SetAcquisitionMode(1);
+    SetReadMode(4);
     status = SetShutter(1, 1, 50, 50);
     SetFrameTransferMode(1);
     if (status != DRV_SUCCESS) {
@@ -2764,12 +2789,33 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
   }
 
   if (numCamReq == 2) { 
+    cameraId=1;
     SetCurrentCamera(cameraB);
     status = Initialize("/usr/local/etc/andor");
     sleep(2);
-    SetReadMode(4);
+    status = GetDetector(&andorSetup[cameraId].width, &andorSetup[cameraId].height);
+    status = GetHardwareVersion(&PCB, &Decode, &dummy1, &dummy2, &CameraFirmwareVersion, &CameraFirmwareBuild);
+    status = GetNumberPreAmpGains(&andorSetup[cameraId].num_preamp_gains);
+    status = GetNumberVSSpeeds(&andorSetup[cameraId].num_vertical_speeds);
+    status = GetVSSpeed(0, &speed);
+    for(j = 0; j < ANDOR_NUM_AMPLIFIERS; j++) {
+      status = GetNumberHSSpeeds(0, j, &andorSetup[cameraId].num_horizontal_speeds[j]);
+      num_hspeeds = andorSetup[cameraId].num_horizontal_speeds[j];
+      for (i=0; i<num_hspeeds; i++) {
+	status = GetHSSpeeds(j, i, &speed);
+      }
+    }
+    status = GetSoftwareVersion(&eprom,&coffile,&vxdrev,&vxdver,&dllrev,&dllver);
+    status = GetHSSpeed(0, 0, 0, &speed);
+    status = GetEMGainRange(&andorSetup[cameraId].minimum_em_gain, &andorSetup[cameraId].maximum_em_gain);
+    status = GetNumberADChannels(&num_ad);
+    status = GetTemperatureRange(&andorSetup[cameraId].minimum_temperature, &andorSetup[cameraId].maximum_temperature);
+    andorSetup[cameraId].amplifier = DFT_ANDOR_AMPLIFIER;
+    andorSetup[cameraId].em_gain = DFT_ANDOR_EM_GAIN;
+    andorSetup[cameraId].em_advanced = DFT_ANDOR_EM_ADVANCED;
     //Set Acquisition mode to --Single scan--
     SetAcquisitionMode(1);
+    SetReadMode(4);
     status = SetShutter(1, 1, 50, 50);
     SetFrameTransferMode(1);
     if (status != DRV_SUCCESS) {
