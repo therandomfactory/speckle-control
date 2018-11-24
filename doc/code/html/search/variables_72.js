@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['raw_5fframe',['raw_frame',['../andor__tcl_8h.html#a7ef27af956cb61e3e41a63d10c40e4bc',1,'andor_tcl.h']]],
+  ['read_5fmode',['read_mode',['../structandor__setup.html#a541c7d85ec33ec99bab24c7daf5f246b',1,'andor_setup']]],
+  ['repeat',['repeat',['../structiterator_col.html#a4316f8b44d3df0ca6c847ee578ef2f2a',1,'iteratorCol']]],
+  ['request_5fcompress_5ftype',['request_compress_type',['../struct_f_i_t_sfile.html#a05cdbe338c295cfccbda8a34dacaa626',1,'FITSfile']]],
+  ['request_5fdither_5foffset',['request_dither_offset',['../struct_f_i_t_sfile.html#a353aeb27ce5ee436088402da906a7b27',1,'FITSfile']]],
+  ['request_5fhcomp_5fscale',['request_hcomp_scale',['../struct_f_i_t_sfile.html#aedc0a11b1f2b453567229922a62aef12',1,'FITSfile']]],
+  ['request_5fhcomp_5fsmooth',['request_hcomp_smooth',['../struct_f_i_t_sfile.html#a566ffdc1c8e3eb42dc0d9e70756e1857',1,'FITSfile']]],
+  ['request_5flossy_5fint_5fcompress',['request_lossy_int_compress',['../struct_f_i_t_sfile.html#a1db55901960960dd7ae34624b4190403',1,'FITSfile']]],
+  ['request_5fquantize_5fdither',['request_quantize_dither',['../struct_f_i_t_sfile.html#adc4c6b158913e8c96ace81fc7ceeeade',1,'FITSfile']]],
+  ['request_5ftilesize',['request_tilesize',['../struct_f_i_t_sfile.html#a5ca8df72baf3d0c126dc3a58c305a2fc',1,'FITSfile']]],
+  ['result',['result',['../andor__tcl_8c.html#a179b70ad0fead86555368dc8edf9469e',1,'result():&#160;andor_tcl.c'],['../oriel__tcl_8cpp.html#a179b70ad0fead86555368dc8edf9469e',1,'result():&#160;oriel_tcl.cpp']]],
+  ['rice_5fblocksize',['rice_blocksize',['../struct_f_i_t_sfile.html#ac8a275b27999153533f11acbe8a502b0',1,'FITSfile']]],
+  ['rice_5fbytepix',['rice_bytepix',['../struct_f_i_t_sfile.html#ac4544f7b56af4f0b85155036942b9300',1,'FITSfile']]],
+  ['roi',['roi',['../struct_g_u_i_d_e_r.html#aeb6546c24bad5e16f4b738de2b6fadd0',1,'GUIDER']]],
+  ['rotangle',['rotAngle',['../structrot_pair.html#ab50cff79f2af17499e80ea0a7fbb50fc',1,'rotPair']]],
+  ['rotdata',['RotData',['../derotate_8c.html#a21b8c4224c16982ff3cc25fb48f69058',1,'derotate.c']]],
+  ['rotflag',['Rotflag',['../derotate_8c.html#ae3249b419f83c9d6023859758fa0fdae',1,'derotate.c']]],
+  ['row',['row',['../structwtbarr.html#a2ff7c235353320c6dd98951484012ee7',1,'wtbarr']]],
+  ['rowlength',['rowlength',['../struct_f_i_t_sfile.html#a619b4020d7dd533c8b69b451c40df5fe',1,'FITSfile']]],
+  ['rsep2',['rSep2',['../structrot_pair.html#a6568f8c12d365d42d45108bd7dcd0e67',1,'rotPair']]],
+  ['running',['running',['../structandor__setup.html#ac071de4a26fd61809b2f4a26aa5b4317',1,'andor_setup']]]
+];
