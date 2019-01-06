@@ -180,9 +180,11 @@ global ANDOR_SOCKET INSTRUMENT
    }
    if { $ANDOR_SOCKET(red) == 0 } {
       debuglog "No connecton to Red arm camera"
+      wm withdraw .status
    }
    if { $ANDOR_SOCKET(blue) == 0 } {
       debuglog "No connecton to Blue arm camera"
+      wm withdraw .status
    }
 }
 
@@ -378,19 +380,19 @@ global ANDOR_CCD ANDOR_EMCCD
        commandAndor red "outputamp $ANDOR_EMCCD"
        commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
        commandAndor red "emccdgain $INSTRUMENT(red,emgain)"
-       commandAndor red "hsspeed 0 $ANDOR_CFG(red,EMHSSpeed)"
+#       commandAndor red "hsspeed 0 $ANDOR_CFG(red,EMHSSpeed)"
      } else {
        commandAndor red "outputamp $ANDOR_CCD"
-       commandAndor red "hsspeed 1 $ANDOR_CFG(red,HSSpeed)"
+#       commandAndor red "hsspeed 1 $ANDOR_CFG(red,HSSpeed)"
      }
      if { $INSTRUMENT(blue,emccd) } {
        commandAndor blue "outputamp $ANDOR_EMCCD"
        commandAndor blue "emadvanced $INSTRUMENT(blue,highgain)"
        commandAndor blue "emccdgain $INSTRUMENT(blue,emgain)"
-       commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
+#       commandAndor blue "hsspeed 0 $ANDOR_CFG(blue,EMHSSpeed)"
      } else {
        commandAndor blue "outputamp $ANDOR_CCD"
-       commandAndor blue "hsspeed 1 $ANDOR_CFG(blue,HSSpeed)"
+#       commandAndor blue "hsspeed 1 $ANDOR_CFG(blue,HSSpeed)"
      }
      commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $perrun"
      commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]  $perrun"

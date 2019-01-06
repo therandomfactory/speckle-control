@@ -389,18 +389,16 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
     set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     set TELEMETRY(speckle.andor.numexp) 1
     set TELEMETRY(speckle.andor.numberkinetics) 0
-##    if { $ANDOR_ARM == "blue" } {
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$dimen,ydim=$dimen,bitpix=32\\\]
-##    }
     cAndorSetProperty $CAM ExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
       set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(red)]
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
+      after 400
       exec xpaset -p $DS9 frame 2
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
-      after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
@@ -408,9 +406,9 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
+      after 400
       exec xpaset -p $DS9 frame 2
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
-      after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
     }
     if { $ANDOR_CFG(fitds9) } {
@@ -453,9 +451,9 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       andorGetData $ANDOR_CFG(red)
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $n $n 1 1
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
+      after 400
       exec xpaset -p $DS9 frame 1
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
-      after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
     }
     if { $ANDOR_CFG(blue) > -1 } {
@@ -463,9 +461,9 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       andorGetData $ANDOR_CFG(blue)
       andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $n $n 1 1
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
+      after 400
       exec xpaset -p $DS9 frame 1
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
-      after 400
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
     }
     if { $ANDOR_CFG(fitds9) } {

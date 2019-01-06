@@ -22,7 +22,7 @@
 proc abortsequence { } {
 global STATUS
   set STATUS(abort) 1
-  andorSetControl 0 abort
+  andorSetControl 0 abort 0
   .main.observe configure -text "Observe" -bg green -relief raised -command startsequence
   .main.abort configure -bg gray -relief sunken -fg LightGray
   mimicMode red close
@@ -281,12 +281,12 @@ proc updateTemps { } {
      mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      if { $redtemp > -55 } {
-        .main.rcamtemp configure -fg red
+        .main.rcamtemp configure -fg orange
      } else {
         .main.rcamtemp configure -fg blue
      }
      if { $bluetemp > -55 } {
-        .main.bcamtemp configure -fg red
+        .main.bcamtemp configure -fg orange
      } else {
         .main.bcamtemp configure -fg blue
      }
@@ -533,7 +533,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
    }
  }
  abortsequence
- if { $SCOPE(autoclrcmt) } {.main.comment delete 0.0 end }
+ if { $SCOPE(autoclrcmt) && $save == "keep" } {.main.comment delete 0.0 end }
  .lowlevel.seqp configure -value 0
 }
 

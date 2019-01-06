@@ -1,6 +1,6 @@
 #!/usr/bin/wish
 #
-# Define the global environment, everything lives under /opt/apogee
+# Define the global environment, everything lives under $HOME/speckle-control
 # Change SPECKLE_DIR to move the code somewhere else
 #
 ## \file gui2.tcl
@@ -730,6 +730,12 @@ catch {
 
 
 speckleGuiMode observingGui
+debuglog "****************************************************************"
+debuglog "************                                       *************"
+debuglog "************  Speckle GUI initialization complete  *************"
+debuglog "************                                       *************"
+debuglog "****************************************************************"
+
 
 
 

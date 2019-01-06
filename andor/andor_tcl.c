@@ -851,7 +851,7 @@ int tcl_andorSetControl(ClientData clientData, Tcl_Interp *interp, int argc, cha
   int status;
 
   /* Check number of arguments provided and return an error if necessary */
-  if (argc < 3) {
+  if (argc < 4) {
      Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0],"  cameraId register -thresh-\"", (char *)NULL);
      return TCL_ERROR;
   }
@@ -2765,11 +2765,11 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
       status = GetNumberHSSpeeds(0, j, &andorSetup[cameraId].num_horizontal_speeds[j]);
       num_hspeeds = andorSetup[cameraId].num_horizontal_speeds[j];
       for (i=0; i<num_hspeeds; i++) {
-	status = GetHSSpeeds(j, i, &speed);
+	status = GetHSSpeed(j, ANDOR_EMCCD, i, &speed);
       }
     }
     status = GetSoftwareVersion(&eprom,&coffile,&vxdrev,&vxdver,&dllrev,&dllver);
-    status = GetHSSpeed(0, 0, 0, &speed);
+    status = GetHSSpeed(0, ANDOR_EMCCD, 0, &speed);
     status = GetEMGainRange(&andorSetup[cameraId].minimum_em_gain, &andorSetup[cameraId].maximum_em_gain);
     status = GetNumberADChannels(&num_ad);
     status = GetTemperatureRange(&andorSetup[cameraId].minimum_temperature, &andorSetup[cameraId].maximum_temperature);
@@ -2802,7 +2802,7 @@ int tcl_andorInit(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
       status = GetNumberHSSpeeds(0, j, &andorSetup[cameraId].num_horizontal_speeds[j]);
       num_hspeeds = andorSetup[cameraId].num_horizontal_speeds[j];
       for (i=0; i<num_hspeeds; i++) {
-	status = GetHSSpeeds(j, i, &speed);
+	status = GetHSSpeed(j, ANDOR_EMCCD, i, &speed);
       }
     }
     status = GetSoftwareVersion(&eprom,&coffile,&vxdrev,&vxdver,&dllrev,&dllver);
