@@ -408,22 +408,24 @@ global TELEMETRY CACHETELEMETRY
 # Initialize WIYN telemetry
 #
 proc initWIYNTelemetry { {method mpg} } {
-global TELEMETRY SPECKLE_DIR env
- set SPKTELEM(sim) 0
- if { [info exists env(SPECKLE_SIM)] } {
-   set simdev [split $env(SPECKLE_SIM) ,]
-   if { [lsearch $simdev telemetry] > -1 } {
+global TELEMETRY SPECKLE_DIR SPKTELEM env
+   set SPKTELEM(sim) 0
+   if { [info exists env(SPECKLE_SIM)] } {
+     set simdev [split $env(SPECKLE_SIM) ,]
+     if { [lsearch $simdev telemetry] > -1 } {
        set SPKTELEM(sim) 1
        debuglog "WIYN telemetry in SIMULATION mode"
        simWIYNTelemetry
-   } else {
-     if { $method == "redis" } {
+       return 
+     }
+   }
+   if { $method == "redis" } {
        source $SPECKLE_DIR/gui-scripts/redisquery.tcl
        redisConnect
        redisUpdate
        puts stdout "Connected to REDIS server"
-     }
-     if { $method == "mpg" } {
+   }
+   if { $method == "mpg" } {
        load $SPECKLE_DIR/lib/gwc/lib/libnames.so
        load $SPECKLE_DIR/lib/gwc/lib/libmsg.so
        load $SPECKLE_DIR/lib/gwc/lib/libgwc.so
@@ -440,10 +442,8 @@ global TELEMETRY SPECKLE_DIR env
         ROTANGLE FOCUS ROTPORT FOLDPOS" {
            set FROMSTARTEXP($i) 1
        }
-     }
-     puts stdout "Connected to MPG router"
+       puts stdout "Connected to MPG router"
    }
- }
 }
 
 

@@ -91,6 +91,7 @@ source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
 source $SPECKLE_DIR/gui-scripts/camera_init.tcl 
 if { $env(TELESCOPE) == "GEMINI" } {
   proc redisUpdate { } { }
+  proc updateRedisTelemetry  { item value } { }
   set SCOPE(telescope) "GEMINI"
   set SCOPE(instrument) "Alopeke"
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl 
@@ -812,30 +813,42 @@ proc printreadoutcfgs { } {
 #  Test the possible camera readout parameter configurations
 #
 proc testreadoutcfgs { } {
-global ANDOR_RET
-    set amp CCD
+global ANDOR_RET CAM
+    set amp 1
     foreach hsspeed "1Mhz 100KHz" {
-      foreach vsspeed "4.33usec 2.2usec 1.13usec 0.6sec" {
-        foreach preamp "1 2" {
-         foreach vsamplitude "normal +1 +2 +3 +4" {
-            puts stdout "$ANDOR_RET([configReadout $amp $hsspeed $preamp $vsspeed $vsamplitude 0 0]) - Amp=$amp hspeed=$hsspeed preamp=$preamp vspeed=$vsspeed vsamplitude=$vsamplitude"
-         }
+      foreach vsspeed "4.33usec 2.2usec 1.13usec 0.6usec" {
+        foreach preamp "0 1" {
+#         foreach vsamplitude "normal +1 +2 +3 +4" {
+            andorStartAcq
+            while { [GetStatus] != 20073 } {
+              after 500
+            }
+            set t [andorGetProperty $CAM timings]
+            puts stdout "exp=$t [configReadout $amp $hsspeed $vsspeed normal $preamp 0 0] - Amp=$amp hspeed=$hsspeed preamp=$preamp vspeed=$vsspeed"
+#         }
         }
       }
     }
-    set amp EMCCD
+    set amp 0
     foreach hsspeed "30MHz 20MHz 10MHz 1MHz" {
-      foreach vsspeed "4.33usec 2.2usec 1.13usec 0.6sec" {
-        foreach preamp "1 2" {
-         foreach vsamplitude "normal +1 +2 +3 +4" {
-           foreach emmode "255 4095 linear real" {
-             puts stdout "$ANDOR_RET([configReadout $amp $hsspeed $preamp $vsspeed $vsamplitude 0 $emmode]) Amp=$amp hspeed=$hsspeed preamp=$preamp vspeed=$vsspeed emmode=$emmode vsamplitude=$vsamplitude"
-           }
-         }
+      foreach vsspeed "4.33usec 2.2usec 1.13usec 0.6usec" {
+        foreach preamp "0 1" {
+#         foreach vsamplitude "normal +1 +2 +3 +4" {
+#           foreach emmode "255 4095 linear real" {
+              andorStartAcq
+              while { [GetStatus] != 20073 } {
+                after 500
+              }
+             set t [andorGetProperty $CAM timings]
+             puts stdout "exp=$t [configReadout $amp $hsspeed $vsspeed normal $preamp 0 0] Amp=$amp hspeed=$hsspeed preamp=$preamp vspeed=$vsspeed"
+#          }
+#        }
        }
       }
     }
 }
+
+
 
 ## Documented proc \c locateStar .
 # \param[in] steps Number of pixel offset per sampling

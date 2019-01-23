@@ -931,14 +931,10 @@ if { $SCOPE(telescope) == "WIYN" } {
    .lowlevel configure -height 550 -width 936
    wm geometry . 936x900
    set SPECKLE(engineeringGui) 936x900
-   if { 0 } {
-     source $SPECKLE_DIR/gui-scripts/redisquery.tcl
-     redisConnect
-     redisUpdate
-   }
-   if { 1 } {
-     source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
-   }
+   source $SPECKLE_DIR/gui-scripts/redisquery.tcl
+   redisConnect
+   proc redisUpdate { } { }
+   source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
 
 } else {
 

@@ -86,6 +86,10 @@ global TELEMETRY
    }
 }
 
+proc updateRedisTelemetry { item value } {
+global REDIS
+   puts $REDIS(handle) "hset wiyn:speckle.status $item \"$value\""   
+}
 
 
 # \endcode

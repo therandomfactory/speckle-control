@@ -33,11 +33,11 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set state(1) "On"
    set TELEMETRY(speckle.andor.head) "Andor iXon Emccd"
    if { $ANDOR_CFG($arm,EMCCDGain) > 0 } {
-     set TELEMETRY(speckle.andor.amplifier) "CCD"
-     set TELEMETRY(speckle.andor.emccdmode) "Off"
-   } else {
      set TELEMETRY(speckle.andor.amplifier) "Electron Multiplying"
      set TELEMETRY(speckle.andor.emccdmode) "On"
+   } else {
+     set TELEMETRY(speckle.andor.amplifier) "CCD"
+     set TELEMETRY(speckle.andor.emccdmode) "Off"
    }
    set TELEMETRY(speckle.andor.imagename) "[set ANDOR_CFG(imagename)][string range [set ANDOR_ARM] 0 0].fits"
    set TELEMETRY(speckle.andor.acquisition_mode) "Single scan"
@@ -62,7 +62,7 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.em_gain) $ANDOR_CFG($arm,EMCCDGain)
    set TELEMETRY(speckle.andor.preamp_gain) [expr $ANDOR_CFG($arm,PreAmpGain) +1]
    set TELEMETRY(speckle.andor.serial_number) $ANDOR_CFG($CAM,SerialNumber) 
-   set TELEMETRY(speckle.andor.target_temperature) [lindex $ANDOR_CFG($arm,SetTemperature) 0]
+   set TELEMETRY(speckle.andor.target_temperature) $ANDOR_CFG($arm,Temperature)
    set TELEMETRY(speckle.andor.ccdtemp) $ANDOR_CFG(ccdtemp) 
    set TELEMETRY(speckle.andor.prescans) 0
    set TELEMETRY(speckle.andor.vertical_speed) $ANDOR_CFG(VSSpeed,$ANDOR_CFG($CAM,VSSpeed))

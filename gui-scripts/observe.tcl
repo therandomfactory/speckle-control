@@ -111,6 +111,7 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF ANDOR_CFG
 proc  acquisitionmode { rdim } {
 global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   puts stdout "rdim == $rdim"
+  redisUpdateTelemetry mode acquiring
   if { $rdim != "manual"} {
         set ANDOR_CFG(binning) 1
         commandAndor red  "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
@@ -435,13 +436,16 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
    set autofilter [lrange $autofilter 1 end]
    set rautofilter [lrange $rautofilter 1 end]
    set iseqnum 0
+   redisUpdateTelemetry mode observing
+   redisUpdateTelemetry exposure $SCOPE(exptype)
    while { $iseqnum < $SCOPE(numseq) } {
     .lowlevel.p configure -value 0
     set ifrmnum 0
     incr iseqnum 1
     .lowlevel.seqp configure -value [expr $iseqnum*100/$SCOPE(numseq)]
     while { $ifrmnum < $SCOPE(numframes) } {
-     set cmt [join [split [string trim [.main.comment get 0.0 end]] \n] "|"]
+     set clncmt [join [split [.main.comment get 0.0 end] "\`\"\'\[\]\{\}\&\%\$\\"] _]
+     set cmt [join [split [string trim $clncmt] \n] "|"]
      commandAndor red "comments $cmt"
      commandAndor blue "comments $cmt"
      incr ifrmnum 1
@@ -453,15 +457,11 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      wm geometry .countdown
      set i 1
      if { $SCOPE(exptype) == "Zero" || $SCOPE(exptype) == "Dark" } {
-       commandAndor red  "shutter $ANDOR_SHUTTER(close)"
-       commandAndor blue "shutter $ANDOR_SHUTTER(close)"
-       mimicMode red close
-       mimicMode blue close
-     } else {
-       commandAndor red  "shutter $ANDOR_SHUTTER(auto)"
-       commandAndor blue "shutter $ANDOR_SHUTTER(auto)"
-       mimicMode red open
-       mimicMode blue open
+       speckleshutter red close
+       speckleshutter blue close
+      } else {
+       speckleshutter red auto
+       speckleshutter blue auto
      }
      if { $save == "ignore" } {
         exec rm -f $SCOPE(datadir)/forROIr.fits
@@ -528,10 +528,15 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
 #     speckleshutter blue close
      .lowlevel.p configure -value 0
      .lowlevel.progress configure -text "Observation status : Idle"
-     if { $STATUS(abort) && $autofilter == ""} {return}
+     if { $STATUS(abort) && $autofilter == ""} {
+        redisUpdateTelemetry mode idle
+        return
+     }
     }
    }
  }
+ redisUpdateTelemetry mode idle
+ after 500
  abortsequence
  if { $SCOPE(autoclrcmt) && $save == "keep" } {.main.comment delete 0.0 end }
  .lowlevel.seqp configure -value 0
