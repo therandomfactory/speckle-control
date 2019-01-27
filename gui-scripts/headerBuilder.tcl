@@ -442,8 +442,8 @@ global TELEMETRY SPECKLE_DIR SPKTELEM env
         ROTANGLE FOCUS ROTPORT FOLDPOS" {
            set FROMSTARTEXP($i) 1
        }
-       puts stdout "Connected to MPG router"
    }
+   puts stdout "Connected to MPG router"
 }
 
 
