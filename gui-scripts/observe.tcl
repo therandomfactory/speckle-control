@@ -463,6 +463,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
        speckleshutter red auto
        speckleshutter blue auto
      }
+     after 200
      if { $save == "ignore" } {
         exec rm -f $SCOPE(datadir)/forROIr.fits
         exec rm -f $SCOPE(datadir)/forROIb.fits
@@ -501,6 +502,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
            set perframe $SCOPE(exposure)
            set totaltime [expr $perframe * $SCOPE(numframes) +1]
            acquireFrames
+           after 1000
      }
      set now [clock seconds]
      set FRAME 0

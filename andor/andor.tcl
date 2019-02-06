@@ -368,6 +368,8 @@ global ANDOR_CCD ANDOR_EMCCD
      set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / $SCOPE(exposure)))]
      if { $perrun > 100 } {set perrun 100}
      if { $perrun < 20 } {set perrun 20}
+     commandAndor red  "setexposure $SCOPE(exposure)"
+     commandAndor blue  "setexposure $SCOPE(exposure)"
      commandAndor red "numberkinetics $perrun"
      commandAndor blue "numberkinetics $perrun"
      commandAndor red  "numberaccumulations $SCOPE(numaccum)"
@@ -405,6 +407,7 @@ global ANDOR_CCD ANDOR_EMCCD
       .main.abort configure -fg black -relief raised
       after [expr int($SCOPE(exposure)*1000)+1000] fastvideomode
    } else {
+       after 200
        andorSetControl 0 abort 1
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence

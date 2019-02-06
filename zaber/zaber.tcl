@@ -103,7 +103,7 @@ set ZABERS(port) $ZABERS(port)
      puts $fcfg "set ZABERS(input,$p) \"$ZABERS(input,$p)\""
    }
    if { $SCOPE(telescope) == "GEMINI" } {
-     foreach p "device in out" {  
+     foreach p "device extend stow" {  
        puts $fcfg "set ZABERS(pickoff,$p) \"$ZABERS(pickoff,$p)\""
      }
      foreach p "device extend stow" {  
@@ -275,8 +275,8 @@ global ZABERS SCOPE
      after 200
     zaberReader $ZABERS(handle)
     set ZABERS(pickoff,readpos) $ZABERS(pickoff,pos)
-    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,in))] < 5 } {set ZABERS(pickoff,readpos) "in"}
-    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,out))] < 5 } {set ZABERS(pickoff,readpos) "out"}
+    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,extend))] < 5 } {set ZABERS(pickoff,readpos) "extend"}
+    if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,stow))] < 5 } {set ZABERS(pickoff,readpos) "stow"}
     .mimicSpeckle.zaberFocus configure -text "Zaber Focus : $ZABERS(focus,pos) : $ZABERS(focus,readpos)"
     .mimicSpeckle.zaberPickoff configure -text "Zaber Pickoff : $ZABERS(pickoff,pos) : $ZABERS(pickoff,readpos)"
   }
@@ -621,7 +621,7 @@ if { $ZABERS(sim) == 0 } {
        zaberCommand focus home
        zaberCommand pickoff home
        after 2000
-       zaberGoto pickoff out	
+       zaberGoto pickoff extend	
        zaberGoto focus stow 
   }
 } else {

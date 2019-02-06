@@ -257,7 +257,7 @@ global ANDOR_CFG CAM SPECKLE_DIR DS9 ANDOR_ARM
 #
 proc warmUpCamera { } {
 global ANDOR_CFG CAM ANDOR_ARM
-   cAndorSetProperty $CAM "Temperature -20.0"
+   cAndorSetProperty $CAM Temperature -20.0
    set warming 1
    while { $warming } {
       set tnow [andorGetProperty $CAM temperature]
