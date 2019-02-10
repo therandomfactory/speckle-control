@@ -895,16 +895,16 @@ if { $ZABERS(A,arm) == "red" } {
 .mbar.tools.m add command -label "zaber input speckle" -command "zaberGoto input speckle"
 
 label .lowlevel.lzab -text "Zaber Jogger" -bg gray
-place .lowlevel.lzab -x 666 -y 175
+place .lowlevel.lzab -x 666 -y 195
 label .lowlevel.rzab -text "adjust position" -bg gray
-place .lowlevel.rzab -x 760 -y 210
+place .lowlevel.rzab -x 760 -y 220
 button .lowlevel.rzabm  -width 3 -text "<<<" -command "zaberJogger minus" -bg gray
 button .lowlevel.rzabp  -width 3 -text ">>>" -command "zaberJogger plus" -bg gray
 place .lowlevel.rzab -x 760 -y 230
 place .lowlevel.rzabm -x 700 -y 224
 place .lowlevel.rzabp -x 870 -y 224
 label .lowlevel.vzab -width 8 -bg gray -text "??????"
-place .lowlevel.vzab -x 775 -y 230
+place .lowlevel.vzab -x 775 -y 245
 menubutton .lowlevel.jogz -width 12 -text "Zaber ????" -fg black -bg gray80 -menu .lowlevel.jogz.m -relief raised
 menu .lowlevel.jogz.m
 .lowlevel.jogz.m  add command -label "Input"  -command "zaberJogger input"
@@ -914,7 +914,7 @@ if { $SCOPE(telescope) == "GEMINI" } {
   .lowlevel.jogz.m  add command -label "Focus"    -command "zaberJogger focus"
   .lowlevel.jogz.m  add command -label "Pickoff"   -command "zaberJogger pickoff"
 }
-place .lowlevel.jogz -x 756 -y 175
+place .lowlevel.jogz -x 756 -y 195
 
 if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus extend" -command "zaberGoto focus extend"
