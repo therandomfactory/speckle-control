@@ -59,7 +59,7 @@ void dofft(int width, int height, int *imageData, int* outputData)
         for (i=0;i<width;i++) {
              for (j=0;j<height;j++) {
                  outpixels = (double *)VIPS_IMAGE_ADDR(vipsout,i,j);
-                 outputData[i*256+j] = (int)(outpixels[0]*1000.+scale);
+                 outputData[i*width+j] = (int)(outpixels[0]*1000.+scale);
              }
         }
         g_object_unref(vipsin);
