@@ -639,6 +639,5 @@ if { $ZABERS(sim) == 0 } {
 }
 
 set ZABERS(delta) 10
-zaberJogger input
 
 

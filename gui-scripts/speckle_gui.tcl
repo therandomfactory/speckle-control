@@ -898,7 +898,6 @@ label .lowlevel.lzab -text "Zaber Jogger" -bg gray
 place .lowlevel.lzab -x 666 -y 195
 button .lowlevel.rzabm  -width 3 -text "<<<" -command "zaberJogger minus" -bg gray
 button .lowlevel.rzabp  -width 3 -text ">>>" -command "zaberJogger plus" -bg gray
-place .lowlevel.rzab -x 760 -y 230
 place .lowlevel.rzabm -x 700 -y 224
 place .lowlevel.rzabp -x 870 -y 224
 label .lowlevel.vzab -width 8 -bg gray -text "??????"
@@ -915,6 +914,7 @@ if { $SCOPE(telescope) == "GEMINI" } {
 place .lowlevel.jogz -x 756 -y 195
 entry .lowlevel.vdelta -width 5 -bg white -textvariable ZABERS(delta)
 place .lowlevel.vdelta -x 782 -y 222
+
 
 if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus extend" -command "zaberGoto focus extend"
@@ -1042,6 +1042,7 @@ catch {
     set last [split [lindex $all end] _]
     set SCOPE(seqnum) [expr [string trimleft [lindex $last 2] 0] +1]
 }
+
 
 
 

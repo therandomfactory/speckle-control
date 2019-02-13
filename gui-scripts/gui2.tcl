@@ -729,7 +729,7 @@ catch {
 }
 
 
-
+zaberJogger input
 speckleGuiMode observingGui
 debuglog "****************************************************************"
 debuglog "************                                       *************"
