@@ -914,6 +914,8 @@ if { $SCOPE(telescope) == "GEMINI" } {
 place .lowlevel.jogz -x 756 -y 195
 entry .lowlevel.vdelta -width 5 -bg white -textvariable ZABERS(delta)
 place .lowlevel.vdelta -x 782 -y 222
+button .lowlevel.zupd -text "check" -command "zaberCheck" -bg gray
+place .lowlevel.zupd -x 870 -y 195
 
 
 if { $SCOPE(telescope) == "GEMINI" } {

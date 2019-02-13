@@ -439,6 +439,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
    redisUpdateTelemetry mode observing
    redisUpdateTelemetry exposure $SCOPE(exptype)
    while { $iseqnum < $SCOPE(numseq) } {
+    after 1000
     .lowlevel.p configure -value 0
     set ifrmnum 0
     incr iseqnum 1
@@ -470,11 +471,11 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         commandAndor red "imagename forROI 1"
         commandAndor blue "imagename forROI 1"
      } else {
-       commandAndor red "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
-       commandAndor blue "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+       commandAndor red "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
+       commandAndor blue "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
        if { $LASTACQ == "fullframe" && $SCOPE(numframes) > 1 } {
-         commandAndor red "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
-         commandAndor blue "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+         commandAndor red "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
+         commandAndor blue "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
        }
      }
      incr SCOPE(seqnum) 1
@@ -532,6 +533,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      .lowlevel.progress configure -text "Observation status : Idle"
      if { $STATUS(abort) && $autofilter == ""} {
         redisUpdateTelemetry mode idle
+        .lowlevel.p configure -value 0
+        .lowlevel.seqp configure -value 0
         return
      }
     }
@@ -541,6 +544,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  after 500
  abortsequence
  if { $SCOPE(autoclrcmt) && $save == "keep" } {.main.comment delete 0.0 end }
+ .lowlevel.p configure -value 0
  .lowlevel.seqp configure -value 0
 }
 

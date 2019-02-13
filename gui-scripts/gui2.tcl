@@ -715,12 +715,19 @@ if { [file exists $SCOPE(datadir)] } {
  }
 }
 
-set SCOPE(imagename) "N[exec date -u +%Y%m%d]"
+set SCOPE(imagename) "N[exec date -u +%Y%m%d]A"
 if { $SCOPE(site) != "WIYN" } {
-   set SCOPE(imagename) "S[exec date -u +%Y%m%d]"
+   set SCOPE(imagename) "N[exec date -u +%Y%m%d]A"
    set SCOPE(instrument) "Alopeke"
    proc redisUpdateTelemetry { {mode ""} {obs "" } } { }
 }
+
+if { $SCOPE(site) == "GEMINI-S" } {
+   set SCOPE(imagename) "S[exec date -u +%Y%m%d]Z"
+   set SCOPE(instrument) "Zorro"
+}
+
+
 
 catch {
     set all [lsort [glob $SCOPE(datadir)/N*.fits]]

@@ -375,14 +375,14 @@ global ZABERS
               }
         plus  { 
                 set newpos [expr $ZABERS($ZABERS(jogtarget),pos) + $ZABERS(delta)]
-                zaberCommand $ZABERS(jogtarget) "move abs $newpos"
+                zaberCommand $ZABERS(jogtarget) "move rel $ZABERS(delta)"
                 .lowlevel.vzab configure -text $newpos
                 after 500 zaberCheck
                 set ZABERS($ZABERS(jogtarget),pos) $newpos
               }
         minus { 
                 set newpos [expr $ZABERS($ZABERS(jogtarget),pos) - $ZABERS(delta)]
-                zaberCommand $ZABERS(jogtarget) "move abs $newpos" 
+                zaberCommand $ZABERS(jogtarget) "move rel -$ZABERS(delta)" 
                 .lowlevel.vzab configure -text $newpos
                 after 500 zaberCheck
                 set ZABERS($ZABERS(jogtarget),pos) $newpos
