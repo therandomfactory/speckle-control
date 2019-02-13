@@ -361,23 +361,31 @@ global ZABERS
 #
 proc zaberJogger  { op } {
 global ZABERS
-   switch $op {
-        red   { set ZABERS(jogtarget) A ; .lowlevel.jogz configure -text "Zaber = A"}
-        blue  { set ZABERS(jogtarget) B ; .lowlevel.jogz configure -text "Zaber = B"}
+    switch $op {
+        red   { set ZABERS(jogtarget) A ; .lowlevel.jogz configure -text "Zaber = A"
+                .lowlevel.vzab configure -text $ZABERS($ZABERS(jogtarget),pos)
+              }
+        blue  { set ZABERS(jogtarget) B ; .lowlevel.jogz configure -text "Zaber = B"
+                .lowlevel.vzab configure -text $ZABERS($ZABERS(jogtarget),pos)
+              }
         focus -
         pickoff -
-        input { set ZABERS(jogtarget) $op ; .lowlevel.jogz configure -text "Zaber = $op"}
+        input { set ZABERS(jogtarget) $op ; .lowlevel.jogz configure -text "Zaber = $op"
+                .lowlevel.vzab configure -text $ZABERS($ZABERS(jogtarget),pos)
+              }
         plus  { 
-                set newpos [expr $ZABERS($ZABERS(jogtarget),readpos) + 10]
+                set newpos [expr $ZABERS($ZABERS(jogtarget),pos) + $ZABERS(delta)]
                 zaberCommand $ZABERS(jogtarget) "move abs $newpos"
                 .lowlevel.vzab configure -text $newpos
-                if { $ZABERS(sim) } {set ZABERS($ZABERS(jogtarget),readpos) $newpos}
+                after 500 zaberCheck
+                set ZABERS($ZABERS(jogtarget),pos) $newpos
               }
         minus { 
-                set newpos [expr $ZABERS($ZABERS(jogtarget),readpos) - 10]
+                set newpos [expr $ZABERS($ZABERS(jogtarget),pos) - $ZABERS(delta)]
                 zaberCommand $ZABERS(jogtarget) "move abs $newpos" 
                 .lowlevel.vzab configure -text $newpos
-                if { $ZABERS(sim) } {set ZABERS($ZABERS(jogtarget),readpos) $newpos}
+                after 500 zaberCheck
+                set ZABERS($ZABERS(jogtarget),pos) $newpos
               }
    }
 }
@@ -630,6 +638,7 @@ if { $ZABERS(sim) == 0 } {
   set ZABERS(B,readpos) 999999
 }
 
-
+set ZABERS(delta) 10
+zaberJogger input
 
 

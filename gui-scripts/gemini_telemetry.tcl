@@ -259,7 +259,7 @@ set GEMINI(offsetdec) 	tcs.telescope.decoffset
 set GEMINI(offsetra) 	tcs.telescope.raoffset
 set GEMINI(programid) 	speckle.scope.obsid
 set GEMINI(rotator) 	tcs.nir.position
-set GEMINI(targetname) 	speckle.scope.name
+set GEMINI(targetname) 	speckle.scope.target
 set GEMINI(targetra) 	tcs.target.az
 set GEMINI(targetdec) 	tcs.target.alt
 set GEMINI(targetepoch) tcs.target.epoch

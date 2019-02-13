@@ -163,6 +163,7 @@ global FROMSTARTEXP CACHETELEMETRY ANDOR_ARM
      }
   }
   set fhead "$fhead[fitshdrrecord OBSID string [obsid] Observation-ID]\n"
+  set fhead "$fhead[fitshdrrecord GEMPRGID string [obsid] Observation-ID]\n"
   set fhead "$fhead[fitshdrrecord SPKLESEQ integer $SEQNUM SPECKLENFO-sequence]\n"
   set fhead "$fhead[fitshdrrecord SPKLEDAT string [lrange [exec date] 1 3] SPECKLENFO-timestamp]"
   if { [string trim [lindex $args 1]] != "" } {
@@ -512,6 +513,7 @@ set SEQNUM 1
 
 if { [info exists env(TELESCOPE)] } {
      set TOMPG $env(TELESCOPE)
+     set SCOPE(telescope) $env(TELESCOPE)
 } else {
      puts stdout "SPECKLE Diagnostics - Telescope environment not defined"
 }
@@ -519,6 +521,14 @@ if { [info exists env(TELESCOPE)] } {
 set SPECKLE_DIR $env(SPECKLE_DIR)
 load $SPECKLE_DIR/lib/libfitstcl.so
 ###load /usr/local/gui/lib/libxtcs.so
+if { $env(TELESCOPE) == "WIYN" } {
+  set SCOPE(instrument) "NESSI"
+  set TOMPG wiyn
+} else {
+  set SCOPE(instrument) "Alopeke"
+  proc redisquery { } { }
+}
+
 
 source $SPECKLE_DIR/gui-scripts/headerSpecials.tcl
 source $SPECKLE_DIR/gui-scripts/astrometry.tcl
@@ -527,13 +537,9 @@ source $SPECKLE_DIR/gui-scripts/andorTelemetry.tcl
 loadstreamdefs $SPECKLE_DIR/gui-scripts/telem-[string tolower $env(TELESCOPE)].conf
 loadhdrdefs $SPECKLE_DIR/gui-scripts/headers.conf
 if { $env(TELESCOPE) == "WIYN" } {
-  set SCOPE(instrument) "NESSI"
-  set TOMPG wiyn
   source $SPECKLE_DIR/gui-scripts/simwiyntlm.tcl
   initWIYNTelemetry mpg
 } else {
-  set SCOPE(instrument) "Alopeke"
-  proc redisquery { } { }
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
   geminiConnect north
 }
