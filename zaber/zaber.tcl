@@ -629,7 +629,7 @@ if { $ZABERS(sim) == 0 } {
        zaberCommand focus home
        zaberCommand pickoff home
        after 2000
-       zaberGoto pickoff extend	
+       zaberGoto pickoff stow
        zaberGoto focus stow 
   }
 } else {

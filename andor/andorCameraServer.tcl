@@ -80,6 +80,7 @@ global SCOPE CAMSTATUS
 wm withdraw .
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
+set SCOPE(telescope) $env(TELESCOPE)
 load $SPECKLE_DIR/lib/andorTclInit.so
 load $SPECKLE_DIR/lib/libfitstcl.so
 load $SPECKLE_DIR/lib/libccd.so
@@ -116,6 +117,7 @@ set hstart [lindex $argv 1]
 set hend   [lindex $argv 2]
 set vstart [lindex $argv 3]
 set vend   [lindex $argv 4]
+set withcli [lindex $argv 5]
 set SPECKLE_DATADIR $env(SPECKLE_DATADIR)
 
 debuglog "Establishing server for camera $cameraNum"
@@ -213,10 +215,13 @@ set ANDOR_CFG($ANDOR_ARM,peak) 1000
 	
 # Special incantations to "make things work"
 #SetAcquisitionMode 5
-#PrepareAcquisition
+#andorPrepareAcq
 #andorStartAcq
 #after 1000
 #andorAbortAcq
+#cAndorSetProperty $CAM AcquisitionMode 1
+#andorSetSpool 1 4 ramimage 10
+
 
 ## Documented proc \c connectads9 .
 #
@@ -662,6 +667,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY CAM
   }
   update idletasks
   set TELEMETRY(speckle.andor.exposureEnd) [clock seconds]
+  after 200
   if { $ANDOR_CFG(red) > -1} {
 #    if { $dofft } {andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n}
     catch {andorAbortAcq $ANDOR_CFG(red)}
@@ -975,7 +981,9 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
          whicharm        { puts $sock $ANDOR_ARM }
          gettimings      { set it [andorGetProperty $CAM timings] ; puts $sock $it }
          forceroi        { forceROI  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}
+         prepareacq      { set it [andorPrepareAcq] ; puts $sock $it }
          locatestar      { puts $sock "[locateStar [lindex $msg 1] [lindex $msg 2]]" }
+         setspool        { andorSetSpool  [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] ; puts $sock "OK"}
          datadir         { set SPECKLE_DATADIR [lindex $msg 1] ; puts $sock "OK"}
          imagename       { set ANDOR_CFG(imagename) [lindex $msg 1] ; set SCOPE(datadir) [lindex $msg 1] ; set ANDOR_CFG(overwrite) [lindex $msg 2] ; puts $sock "OK"}
          imagetype       { set TELEMETRY(speckle.scope.imagetype) [lindex $msg 1] ; puts $sock "OK"}
@@ -1100,10 +1108,11 @@ proc accept {sock addr port} {
 
 # \endcode
 
-
+if { $withcli == "" } {
 # Create a server socket on port $svcPort.
 # Call proc accept when a client attempts a connection.
-set svcPort [expr 2000 + $cameraNum]
-socket -server accept $svcPort
-vwait events    ;# handle events till variable events is set
+  set svcPort [expr 2000 + $cameraNum]
+  socket -server accept $svcPort
+  vwait events    ;# handle events till variable events is set
+}
 

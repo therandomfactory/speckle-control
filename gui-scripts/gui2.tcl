@@ -441,7 +441,7 @@ set iy 10
 foreach item "target ProgID ra dec telescope instrument" {
    label .main.l$item -bg gray -fg black -text $item
    place .main.l$item -x 300 -y $iy
-   entry .main.v$item -bg white -fg black -relief sunken -width 12 -textvariable SCOPE($item) -justify right
+   entry .main.v$item -bg white -fg black -relief sunken -width 18 -textvariable SCOPE($item) -justify right
    place .main.v$item -x 400 -y $iy
    incr iy 24 
 }
@@ -634,6 +634,9 @@ source $SPECKLE_DIR/gui-scripts/speckle_gui.tcl
 #  Call the camera setup code, and the telescope setup code
 #
 showstatus "Initializing cameras"
+set ANDOR_SOCKET(red) 0
+set ANDOR_SOCKET(blue) 0
+
 resetSingleAndors fullframe
 set STATUS(busy) 0
 load $SPECKLE_DIR/lib/andorTclInit.so

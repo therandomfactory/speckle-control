@@ -365,7 +365,7 @@ global ANDOR_CCD ANDOR_EMCCD
      mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
      .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
      .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
-     set perrun [expr int(100 / ($CAMSTATUS(blue,TKinetics) / $SCOPE(exposure)))]
+     set perrun [expr int(100 * ($CAMSTATUS(blue,TKinetics) / $SCOPE(exposure)))]
      if { $perrun > 100 } {set perrun 100}
      if { $perrun < 20 } {set perrun 20}
      commandAndor red  "setexposure $SCOPE(exposure)"
@@ -405,9 +405,11 @@ global ANDOR_CCD ANDOR_EMCCD
       .main.video configure -relief sunken -fg yellow
       .main.observe configure -fg LightGray -relief sunken -command ""
       .main.abort configure -fg black -relief raised
-      after [expr int($SCOPE(exposure)*1000)+1000] fastvideomode
+###      after [expr int($SCOPE(exposure)*1000)+1000] fastvideomode
+      debuglog "Fast video start exp=$SCOPE(exposure) for $perrun frames"
+      after [expr int($SCOPE(exposure)*$perrun*1000)+1000] fastvideomode
    } else {
-       after 200
+       after 500
        andorSetControl 0 abort 1
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
@@ -422,8 +424,8 @@ global ANDOR_CCD ANDOR_EMCCD
 }
 
 
-set CAMSTATUS(blue,TKinetics) .30
-set CAMSTATUS(red,TKinetics)  .30
+set CAMSTATUS(blue,TKinetics) .06
+set CAMSTATUS(red,TKinetics)  .06
 
 ## Documented proc \c startvideomode .
 #

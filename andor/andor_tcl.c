@@ -250,6 +250,14 @@ int tcl_andorSelectCamera(ClientData clientData, Tcl_Interp *interp, int argc, c
  * \param arcv Arguments
  *
  */
+int tcl_andorPrepareAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
 int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 /** 
  * \param ClientData Tcl handle
@@ -291,6 +299,14 @@ int tcl_andorReadFrameI2(ClientData clientData, Tcl_Interp *interp, int argc, ch
  *
  */
 int tcl_andorDisplayFrame(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
+/** 
+ * \param ClientData Tcl handle
+ * \param Tcl_Interp interpreter pointer
+ * \param argc Argument count
+ * \param arcv Arguments
+ *
+ */
+int tcl_andorSetSpool(ClientData clientData, Tcl_Interp *interp, int argc, char **argv);
 /** 
  * \param ClientData Tcl handle
  * \param Tcl_Interp interpreter pointer
@@ -636,7 +652,9 @@ int Andortclinit_Init(Tcl_Interp *interp)
   Tcl_CreateCommand(interp, "andorSelectCamera", (Tcl_CmdProc *) tcl_andorSelectCamera, NULL, NULL);
   Tcl_CreateCommand(interp, "andorStartAcq", (Tcl_CmdProc *) tcl_andorStartAcquisition, NULL, NULL);
   Tcl_CreateCommand(interp, "andorFastVideo", (Tcl_CmdProc *) tcl_andorFastVideo, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorPrepareAcq", (Tcl_CmdProc *) tcl_andorPrepareAcquisition, NULL, NULL);
   Tcl_CreateCommand(interp, "andorAbortAcq", (Tcl_CmdProc *) tcl_andorAbortAcquisition, NULL, NULL);
+  Tcl_CreateCommand(interp, "andorSetSpool", (Tcl_CmdProc *) tcl_andorSetSpool, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetData", (Tcl_CmdProc *) tcl_andorGetAcquiredData, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetFrame", (Tcl_CmdProc *) tcl_andorGetOldestFrame, NULL, NULL);
   Tcl_CreateCommand(interp, "andorGetFrameN", (Tcl_CmdProc *) tcl_andorGetAcquiredNum, NULL, NULL);
@@ -1619,6 +1637,29 @@ int tcl_andorFakeData(ClientData clientData, Tcl_Interp *interp, int argc, char 
 }
 
 
+int tcl_andorSetSpool(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+   int iactive;
+   int nbframes;
+   int imode;
+   int status;
+
+   if ( argc < 5 ) {
+           Tcl_AppendResult (interp, "wrong # args: should be \"", argv[0], " active mode name nbframes\"", (char *) NULL);
+           return TCL_ERROR;
+   }
+   sscanf (argv[1],"%d", &iactive);
+   sscanf (argv[2],"%d", &imode);
+   sscanf (argv[4],"%d", &nbframes);
+   status = SetSpool(iactive,imode,argv[3],nbframes);     
+   if (status != 0) {
+       return status;
+   }
+ 
+   return TCL_OK;
+
+}
+
 
 int tcl_andorLocateStar(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {
@@ -2442,7 +2483,7 @@ int tcl_andorGetDataCube(ClientData clientData, Tcl_Interp *interp, int argc, ch
                       cAndorStoreFrame(cameraId, filename, ngot ,numexp);                                   
                       cAndorDisplayFrame(cameraId, ifft);
                     }
-                    usleep(5000);
+                    usleep(100);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
                     fitsTimings[count-1] = (float)(tm2.tv_sec) + (float)tm2.tv_nsec/1000000000.;
@@ -2452,7 +2493,7 @@ int tcl_andorGetDataCube(ClientData clientData, Tcl_Interp *interp, int argc, ch
                     }
                     GetStatus(&status);
 		}
-                usleep(5000);
+                usleep(1000);
                 clock_gettime(CLOCK_REALTIME,&tm2);
                 deltat = tm2.tv_sec - tm1.tv_sec;
                 if (deltat > 50) {
@@ -2557,23 +2598,24 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                       cAndorStoreROI(cameraId, filename, bitpix, count ,numexp);
                       cAndorDisplaySingle(cameraId, ifft);
                     }
-                    usleep(5000);
+                    usleep(100);
+                    GetStatus(&status);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
                     if (deltat > maxt || SharedMem2->iabort > 0) {
                          count=numexp;
                          AbortAcquisition();
+                         status=0;
 /*                         SharedMem2->iabort = 0; */
                     }
-                    GetStatus(&status);
 		}
                 if (count < numexp ) {
                    AbortAcquisition();
                    printf("Cancelled at : %ld\n",tm2.tv_sec);
                    count = numexp;
                 }
-                GetStatus(&status);
                 usleep(5000);
+                GetStatus(&status);
   }
 
   printf("\nAcq End at : %ld\n",tm2.tv_sec);
@@ -2595,8 +2637,10 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
   int numpix=0;
   int bitpix;
   int ifft=0;
+  int maxt;
   int count;
   int ipeak;
+  float texposure, taccumulate, tkinetics;
   long deltat;
   struct timespec tm1,tm2;
   char filename[1024];
@@ -2623,18 +2667,20 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
   num=0;
   ngot=0;
   count=0;
+  status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
+  maxt = (int) (numexp * tkinetics +1);
   SharedMem2->iabort=0;
   clock_gettime(CLOCK_REALTIME,&tm1);
   printf("Start at : %ld\n",tm1.tv_sec);
   StartAcquisition();
   GetStatus(&status);
-  while (count < numexp) {
+/*  while (count < numexp) { */
 		while(status==DRV_ACQUIRING) {
                     GetTotalNumberImagesAcquired(&num);
                     if ( num > ngot ) {
                       if (num ==1 ) {
                         clock_gettime(CLOCK_REALTIME,&tm1);
-                        printf("Acq Start at : %ld\n",tm1.tv_sec);
+                        printf("Acq Start at : %ld numexp=%d  tkinetics=%f\n",tm1.tv_sec,numexp,tkinetics);
                       }
                       ngot = num;
  		      if ( cameraId == 0 ) {
@@ -2649,25 +2695,25 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
                       fflush(NULL);
                       cAndorDisplaySingle(cameraId, ifft);
                     }
-                    usleep(10000);
+                    usleep(1000);
+                    GetStatus(&status);
                     clock_gettime(CLOCK_REALTIME,&tm2);
                     deltat = tm2.tv_sec - tm1.tv_sec;
-                    if (deltat > 50 || SharedMem2->iabort > 0 ) {
+                    if (deltat > maxt || SharedMem2->iabort > 0 ) {
                          count=numexp;
                          AbortAcquisition();
+                         status=0;
 /*                         SharedMem2->iabort = 0; */
                     }
-                    GetStatus(&status);
 		}
-                usleep(25000);
                 clock_gettime(CLOCK_REALTIME,&tm2);
                 deltat = tm2.tv_sec - tm1.tv_sec;
-                if (deltat > 50 || SharedMem2->iabort  > 0) {
+                if (deltat > maxt || SharedMem2->iabort  > 0) {
                    count=numexp;
                    AbortAcquisition();
 /*                   SharedMem2->iabort = 0; */
                 }
-  }
+/*  } */
 
   printf("\nAcq End at : %ld\n",tm2.tv_sec);
   printf("%ld milliseconds per frame\n",(tm2.tv_sec-tm1.tv_sec)*1000/numexp);
@@ -3055,7 +3101,7 @@ int tcl_andorIdle(ClientData clientData, Tcl_Interp *interp, int argc, char **ar
   status = SetKineticCycleTime(0.0) ;
   andorSetup[cameraId].acquisition_mode = ANDOR_ACQMODE_RUN_TILL_ABORT;
   status = SetAcquisitionMode(andorSetup[cameraId].acquisition_mode);
-  status = SetFrameTransferMode(1) ;
+  status = SetFrameTransferMode(1);
  
 
   return TCL_OK;
@@ -3076,6 +3122,19 @@ int tcl_andorStartAcquisition(ClientData clientData, Tcl_Interp *interp, int arg
   return TCL_OK;
 }
 
+
+int tcl_andorPrepareAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+{
+  int status=0;
+
+  status = PrepareAcquisition();
+  if (status != DRV_SUCCESS) {
+     sprintf(result,"Failed to select prepare acquisition %d",status);
+     Tcl_SetResult(interp,result,TCL_STATIC);
+     return TCL_ERROR;
+  }
+  return TCL_OK;
+}
 
 int tcl_andorAbortAcquisition(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 {

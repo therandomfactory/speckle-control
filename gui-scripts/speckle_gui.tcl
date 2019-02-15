@@ -826,12 +826,12 @@ button .main.video -width 5 -height 2 -text "Video" -relief raised -bg gray -com
 place .main.video  -x 200 -y 167
 
 place .main.abort   -x 280 -y 167
-text .main.comment -height 8 -width 50 
+text .main.comment -height 8 -width 45 
 label .main.lcomment -text "Comments :" -bg gray
 checkbutton .main.clrcomment -bg gray -variable SCOPE(autoclrcmt) -text "Auto-clear"  -highlightthickness 0
-place .main.comment -x 560 -y 50
-place .main.lcomment -x 560 -y 23
-place .main.clrcomment -x 640 -y 23
+place .main.comment -x 605 -y 50
+place .main.lcomment -x 605 -y 23
+place .main.clrcomment -x 690 -y 23
 
 ttk::progressbar .lowlevel.p -orient horizontal -length 900  -mode determinate
 ttk::progressbar .lowlevel.seqp -orient horizontal -length 900  -mode determinate
@@ -914,8 +914,8 @@ if { $SCOPE(telescope) == "GEMINI" } {
 place .lowlevel.jogz -x 756 -y 195
 entry .lowlevel.vdelta -width 5 -bg white -textvariable ZABERS(delta)
 place .lowlevel.vdelta -x 782 -y 222
-button .lowlevel.zupd -text "check" -command "zaberCheck" -bg gray
-place .lowlevel.zupd -x 870 -y 195
+button .main.mzupd -text "Check Zaber positions" -command "zaberCheck" -bg gray -width 20
+place .main.mzupd -x 600 -y 284
 
 
 if { $SCOPE(telescope) == "GEMINI" } {
@@ -929,6 +929,12 @@ if { $SCOPE(telescope) == "GEMINI" } {
 set SPECKLE(observingGui) 936x550
 wm geometry .mimicSpeckle +660+30
 
+#
+#  NOTE : If and when the WIYN redis server can be proven to provide the 
+#         up to date telemetry we can switch back to that and stop using the
+#         legacy MPG router
+#
+
 if { $SCOPE(telescope) == "WIYN" } {
    .lowlevel configure -height 550 -width 936
    wm geometry . 936x900
@@ -940,7 +946,9 @@ if { $SCOPE(telescope) == "WIYN" } {
 
 } else {
 
-proc redisUpdate { } { }
+proc redisUpdate { } {
+  updateGeminiTeleemtry
+}
 
 set SPECKLE(engineeringGui) 936x1100
 wm geometry . 936x1100
@@ -1013,8 +1021,8 @@ source $SPECKLE_DIR/picomotor/picomotor.tcl
 
 if { $SCOPE(telescope) == "GEMINI" } {
  showstatus "Connecting to Gemini Telemetry service"
+ source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
  source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
-
  set SPKTELEM(sim) 0
  if { [info exists env(SPECKLE_SIM)] } {
    set simdev [split $env(SPECKLE_SIM) ,]
@@ -1028,6 +1036,7 @@ if { $SCOPE(telescope) == "GEMINI" } {
 
 if { $SPKTELEM(sim) == 0 } {
   geminiConnect north
+  after 3000 updateGeminiTelemetry
 }
 
 
