@@ -37,6 +37,7 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
   puts $fout "CRPIX2 [expr $ACQREGION(geom)/$ANDOR_CFG(binning)/2]"
   set fac 1.0
   if { $ANDOR_ARM == "blue" } {set fac -1.0}
+  if { $SCOPE(telescope) == "GEMINI" } {set fac [expr -1.0 * $fac]}
   puts $fout "CD1_1 [expr $fac*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"              
      
   puts $fout "CD1_2 0.0"
@@ -83,6 +84,7 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM
   $fid put keyword $r
   set fac 1.0
   if { $ANDOR_ARM == "blue" } {set fac -1.0}
+  if { $SCOPE(telescope) == "GEMINI" } {set fac [expr -1.0 * $fac]}
   set r [fitshdrrecord  CD1_1	 double [expr $fac*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]  "Coordinate scale matrix \[degrees / pixel\]"]           
   $fid put keyword $r
   set r [fitshdrrecord  CD1_2	 double  0.0	"Coordinate scale matrix \[degrees / pixel\]"]

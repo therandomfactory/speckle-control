@@ -294,30 +294,36 @@ global DATAQUAL ZABERS FWHEELS
 #
 proc checkemccdgain { arm {var1 ""} {var2 ""} {rw ""} } {
 global INSTRUMENT
+   if { $var1 != "" } {
+      set INSTRUMENT($arm,emgain) $var1
+   }
    debuglog "Set $arm camera EMCCD gain to $INSTRUMENT($arm,emccd)"
-   set INSTRUMENT($arm,emgain) [closestgain $INSTRUMENT($arm,emgain)]
    if { $INSTRUMENT($arm,highgain) == 0 || $INSTRUMENT($arm,emccd) == 0 } {
       if { $INSTRUMENT($arm,emgain) > 300 } {set INSTRUMENT($arm,emgain) 300}
       .mbar configure -bg gray
    }
-   if { $INSTRUMENT($arm,highgain) && $INSTRUMENT($arm,emccd) } {
-      if { $INSTRUMENT($arm,emgain) > 300 } {
+   .mbar configure -bg gray
+   foreach carm "red blue" {
+    if { $INSTRUMENT($carm,highgain) && $INSTRUMENT($carm,emccd) } {
+      if { $INSTRUMENT($carm,emgain) > 300 } {
          debuglog "$arm camera EMCCD gain >300 WARNING"
          .mbar configure -bg orange
-         commandAndor $arm "emadvanced 1"
+         commandAndor $carm "emadvanced 1"
       } else {
-         .mbar configure -bg gray
-         commandAndor $arm "emadvanced 0"
+         commandAndor $carm "emadvanced 0"
       }
+    }
    }
-   if { $INSTRUMENT($arm,emgain) > 1000 } {set INSTRUMENT($arm,emgain) 0}
    if { $INSTRUMENT($arm,emccd) } {
       commandAndor $arm "outputamp 0"
       commandAndor $arm "emccdgain $INSTRUMENT($arm,emgain)"
    } else {
       commandAndor $arm "outputamp 1"
    }
+   if { $arm == "red" } { .lowlevel.emgain configure -text $INSTRUMENT(red,emgain) }
+   if { $arm == "blue" } { .lowlevel.bemgain configure -text $INSTRUMENT(blue,emgain) }
 }
+
 
 ## Documented proc \c checkframetransfer .
 # \param[in] arm Instrument arm, red or blue
@@ -544,18 +550,25 @@ place .lowlevel.blue -x 20 -y 3
 #place .lowlevel.clone -x 240 -y 3
 
 label .lowlevel.lemgain  -bg gray -text "EM Gain"
-SpinBox .lowlevel.emgain -width 4  -bg gray50  -values "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" -textvariable INSTRUMENT(red,emgain) -command "checkemccdgain red" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
+menubutton .lowlevel.emgain -width 4  -bg gray50  -menu .lowlevel.emgain.m -relief raised -text 0
+menu .lowlevel.emgain.m
+foreach ev "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" {
+  .lowlevel.emgain.m add command -label $ev -command "checkemccdgain red $ev"
+}
 place .lowlevel.lemgain -x 596 -y 100
 place .lowlevel.emgain -x 650 -y 98
-trace variable INSTRUMENT(red,emgain) w "checkemccdgain red"
 
 label .lowlevel.lbemgain  -bg gray -text "EM Gain"
-SpinBox .lowlevel.bemgain -width 4  -bg gray  -values "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" -textvariable INSTRUMENT(blue,emgain) -command "checkemccdgain blue" -validate all -vcmd {validInteger %W %V %P %s 0 4095}
+menubutton .lowlevel.bemgain -width 4  -bg gray50  -menu .lowlevel.bemgain.m -relief raised -text 0
+menu .lowlevel.bemgain.m
+foreach ev "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" {
+  .lowlevel.bemgain.m add command -label $ev -command "checkemccdgain blue $ev"
+}
 place .lowlevel.lbemgain -x 200 -y 100
 place .lowlevel.bemgain -x 254 -y 98
-trace variable  INSTRUMENT(blue,emgain) w "checkemccdgain blue"
 
-
+set INSTRUMENT(red,emgain) 0
+set INSTRUMENT(blue,emgain) 0
 
 label .lowlevel.input -text "INPUT" -bg white
 place .lowlevel.input -x 280 -y 270
@@ -610,7 +623,7 @@ set ZABERS(input,target) 0
 set TELEMETRY(speckle.mode.andor) "widefield"
 
 button .lowlevel.zagoto -bg gray -text "Move to" -width 8 -command "zaberEngpos A"
-entry .lowlevel.vzagoto -bg white -textvariable ZABERS(A,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+entry .lowlevel.vzagoto -bg white -textvariable ZABERS(A,target) -width 10  -justify right
 place .lowlevel.zagoto -x 20 -y 300
 place .lowlevel.vzagoto -x 130 -y 302
 button .lowlevel.zawide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos A wide"
@@ -621,7 +634,7 @@ button .lowlevel.zahome -bg gray -text "Set HOME to current" -width 20 -command 
 place .lowlevel.zahome -x 20 -y 420
 
 button .lowlevel.zigoto -bg gray -text "Move to" -width 8 -command "zaberEngpos input"
-entry .lowlevel.vzigoto -bg white -textvariable ZABERS(input,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+entry .lowlevel.vzigoto -bg white -textvariable ZABERS(input,target) -width 10  -justify right
 place .lowlevel.zigoto -x 220 -y 300
 place .lowlevel.vzigoto -x 330 -y 302
 button .lowlevel.ziwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos input wide"
@@ -632,7 +645,7 @@ button .lowlevel.zihome -bg gray -text "Set HOME to current" -width 20 -command 
 place .lowlevel.zihome -x 220 -y 420
 
 button .lowlevel.zbgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos B"
-entry .lowlevel.vzbgoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+entry .lowlevel.vzbgoto -bg white -textvariable ZABERS(B,target) -width 10  -justify right
 place .lowlevel.zbgoto -x 420 -y 300
 place .lowlevel.vzbgoto -x 530 -y 302
 button .lowlevel.zbwide -bg gray -text "Set WIDE to current" -width 20 -command "zaberConfigurePos B wide"
@@ -877,6 +890,7 @@ source $SPECKLE_DIR/oriel/filterWheel.tcl
 .lowlevel.rfilter.m add command -label "$FWHEELS(red,5)" -command "specklefilter red $FWHEELS(red,5)"
 .lowlevel.rfilter.m add command -label "$FWHEELS(red,6)" -command "specklefilter red $FWHEELS(red,6)"
   
+.mbar.tools.m add command -label "Mimic diagram" -command "wm deiconify .mimicSpeckle"
 .mbar.tools.m add command -label "HOME all stages" -command homeZabers
 .mbar.tools.m add command -label "zabers to wide mode" -command "positionZabers fullframe"
 .mbar.tools.m add command -label "zabers to speckle mode" -command "positionZabers roi"
@@ -916,7 +930,8 @@ entry .lowlevel.vdelta -width 5 -bg white -textvariable ZABERS(delta)
 place .lowlevel.vdelta -x 782 -y 222
 button .main.mzupd -text "Check Zaber positions" -command "zaberCheck" -bg gray -width 20
 place .main.mzupd -x 600 -y 284
-
+button .lowlevel.hzupd -text "HOME" -command "zaberJogger home" -bg gray -width 3
+place .lowlevel.hzupd -x 870 -y 193
 
 if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus extend" -command "zaberGoto focus extend"
@@ -947,7 +962,7 @@ if { $SCOPE(telescope) == "WIYN" } {
 } else {
 
 proc redisUpdate { } {
-  updateGeminiTeleemtry
+  updateGeminiTelemetry
 }
 
 set SPECKLE(engineeringGui) 936x1100

@@ -74,7 +74,7 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
    after 500
    while { [gets $GEMINICFG(handle) rec] > -1 } {
       if { [info exists GEMINI([lindex $rec 1])] } {
-        set TELEMETRY($GEMINI([lindex $rec 1])) [lindex $rec 2]
+        set TELEMETRY($GEMINI([lindex $rec 1])) [lrange $rec 2 end]
         debuglog "Got $rec"
       } else {
         debuglog "Got unknown $rec"

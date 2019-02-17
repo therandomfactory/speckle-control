@@ -275,7 +275,14 @@ global FWHEELS
    return $aseq
 }
 
-
+## Documented proc \c filterEmccdGain .
+#
+#  Returns sequence for automatic filter cycling
+#
+proc filterEmccdGain { arm n em } {
+global FWHEELS
+   set FWHEELS($arm,$n,emgain) $em
+}
 
 
 # \endcode
@@ -297,20 +304,24 @@ label .filters.lauto  -text "Auto" -bg gray -fg black
 label .filters.lpos   -text "Red" -bg gray -fg black
 label .filters.lname  -text "Red Filter Name" -bg gray -fg black
 label .filters.lfocus -text "Focus offset" -bg gray -fg black
+label .filters.lexpred -text "Exp" -bg gray -fg black
 label .filters.lbauto  -text "Auto" -bg gray -fg black
 label .filters.lbpos   -text "Blue" -bg gray -fg black
 label .filters.lbname  -text "Blue Filter Name" -bg gray -fg black
 label .filters.lbfocus -text "Focus offset" -bg gray -fg black
+label .filters.lexpblue -text "Exp" -bg gray -fg black
 place .filters.lauto -x 5 -y 20
 place .filters.lbpos -x 80 -y 20
 place .filters.lbname -x 180 -y 20
-place .filters.lbfocus -x 320 -y 20
-place .filters.lbauto -x 420 -y 20
-place .filters.lpos -x 490 -y 20
-place .filters.lname -x 590 -y 20
-place .filters.lfocus -x 740 -y 20
+place .filters.lbfocus -x 330 -y 20
+place .filters.lexpblue -x 510 -y 20
+place .filters.lbauto -x 580 -y 20
+place .filters.lpos -x 650 -y 20
+place .filters.lname -x 730 -y 20
+place .filters.lfocus -x 900 -y 20
+place .filters.lexpred -x 1080 -y 20
 
-wm geometry .filters 823x[expr $MAXFILTERS*35 + 110]+10+170
+wm geometry .filters 1160x[expr $MAXFILTERS*35 + 110]+10+170
 set i 0
 set iy 50
 while { $i < $MAXFILTERS } {
@@ -319,19 +330,35 @@ while { $i < $MAXFILTERS } {
    button .filters.fred$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter red $i" -width 8
    entry  .filters.namered$i -textvariable FWHEELS(red,$i) -bg LightBlue -fg black -width 20
    entry  .filters.focusred$i -textvariable FWHEELS(red,$i,focus) -bg LightBlue -fg black -width 8
-   place  .filters.auto$i -x 420 -y $iy
-   place  .filters.fred$i -x 460 -y $iy
+   entry  .filters.expred$i -textvariable FWHEELS(red,$i,exp) -bg LightBlue -fg black -width 8
+   place  .filters.auto$i -x 580 -y $iy
+   place  .filters.fred$i -x 620 -y $iy
+   menubutton .filters.remgain$i -width 4  -bg gray50  -menu .filters.remgain$i.m -relief raised -text "EM=0"
+   menu .filters.remgain$i.m
+   foreach ev "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" {
+     .filters.remgain$i.m add command -label $ev -command "filterEmccdGain red $i $ev"
+   }
+   place  .filters.remgain$i -x 990 -y $iy
    checkbutton .filters.bauto$i -bg gray -variable FWHEELS(blueauto,$i) -highlightthickness 0
    button .filters.fblue$i -text "$i" -relief raised -bg gray -fg black -command "selectfilter blue $i" -width 8
    entry  .filters.nameblue$i -textvariable FWHEELS(blue,$i) -bg LightBlue -fg black -width 20
    entry  .filters.focusblue$i -textvariable FWHEELS(blue,$i,focus) -bg LightBlue -fg black -width 8
+   entry  .filters.expblue$i -textvariable FWHEELS(blue,$i,exp) -bg LightBlue -fg black -width 8
    place  .filters.fblue$i -x 50 -y $iy
    incr iy 3
    place  .filters.bauto$i -x 10 -y $iy
-   place  .filters.namered$i -x 560 -y $iy
-   place  .filters.focusred$i -x 740 -y $iy
-   place  .filters.nameblue$i -x 150 -y $iy
-   place  .filters.focusblue$i -x 325 -y $iy
+   place  .filters.namered$i -x 730 -y $iy
+   place  .filters.focusred$i -x 910 -y $iy
+   place  .filters.expred$i -x 1060 -y $iy
+   place  .filters.nameblue$i -x 160 -y $iy
+   place  .filters.focusblue$i -x 335 -y $iy
+   place  .filters.expblue$i -x 485 -y $iy
+   menubutton .filters.bemgain$i -width 4  -bg gray50  -menu .filters.bemgain$i.m -relief raised -text "EM=0"
+   menu .filters.bemgain$i.m
+   foreach ev "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" {
+     .filters.bemgain$i.m add command -label $ev -command "filterEmccdGain blue $i $ev"
+   }
+   place  .filters.bemgain$i -x 420 -y $iy
    incr iy 30
 }
 
@@ -339,8 +366,8 @@ button .filters.load -text "Load configuration" -fg black -bg green -width 32 -c
 button .filters.save -text "Save configuration" -fg black -bg green -width 32 -command "saveFiltersConfig"
 button .filters.exit -text "Close" -fg black -bg orange -width 32 -command "wm withdraw .filters"
 place .filters.load -x 10 -y [expr $iy+30]
-place .filters.save -x 272 -y [expr $iy+30]
-place .filters.exit -x 522 -y [expr $iy+30]
+place .filters.save -x 350 -y [expr $iy+30]
+place .filters.exit -x 700 -y [expr $iy+30]
 
 
 
@@ -354,6 +381,10 @@ foreach p "1 2 3 4 5 6" {
   if { $FWHEELS(blue,$p) == "clear" } {
      set FWHEELS(blue,clear) $p
   }
+  set FWHEELS(red,$p,emgain) 0
+  set FWHEELS(blue,$p,emgain) 0
+  set FWHEELS(red,$p,exp) 0.06
+  set FWHEELS(blue,$p,exp) 0.06
 }
 
 

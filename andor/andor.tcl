@@ -278,7 +278,7 @@ global INSTRUMENT
 #		ACQREGION - ROI properties xs,xe,ys,ye
 #
 proc videomode { } {
-global LASTACQ STATUS SCOPE ACQREGION INSTRUMENT
+global LASTACQ STATUS SCOPE ACQREGION INSTRUMENT ANDOR_CFG
    set ANDOR_CFG(videomode) 1
    commandAndor red "imagename videomode 1"
    commandAndor blue "imagename videomode 1"
@@ -509,16 +509,16 @@ proc initControl { } {
 #		ANDOR_CFG - Andor camera properties
 #
 proc acquireCubes { } {
-global INSTRUMENT SCOPE LASTACQ ACQREGION ANDOR_CFG
+global INSTRUMENT SCOPE LASTACQ ACQREGION ANDOR_CFG FWHEELS
    set n [expr $ACQREGION(xe) - $ACQREGION(xs) +1]
    if { $INSTRUMENT(red) } {
 #      commandAndor red "setframe roi"
-      commandAndor red "grabcube $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $SCOPE(numframes)"
+      commandAndor red "grabcube $FWHEELS(red,exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $SCOPE(numframes)"
       set LASTACQ roi
    }
    if { $INSTRUMENT(blue) } {
 #      commandAndor blue "setframe roi"
-      commandAndor blue "grabcube $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $SCOPE(numframes)"
+      commandAndor blue "grabcube $FWHEELS(blue,exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $SCOPE(numframes)"
       set LASTACQ roi
    }
 }
@@ -534,15 +534,15 @@ global INSTRUMENT SCOPE LASTACQ ACQREGION ANDOR_CFG
 #		STATUS - Array of exposure statuses
 #
 proc acquireFrames { } {
-global INSTRUMENT SCOPE LASTACQ
+global INSTRUMENT SCOPE LASTACQ FWHEELS
    if { $INSTRUMENT(red) } {
       commandAndor red "setframe fullframe"
-      commandAndor red "grabframe $SCOPE(exposure)"
+      commandAndor red "grabframe $FWHEELS(red,exposure)"
       set LASTACQ fullframe
    }
    if { $INSTRUMENT(blue) } {
       commandAndor blue "setframe fullframe"
-      commandAndor blue "grabframe $SCOPE(exposure)"
+      commandAndor blue "grabframe $FWHEELS(blue,exposure)"
       set LASTACQ fullframe
    }
 }

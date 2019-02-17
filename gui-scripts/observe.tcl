@@ -27,6 +27,8 @@ global STATUS
   .main.abort configure -bg gray -relief sunken -fg LightGray
   mimicMode red close
   mimicMode blue close
+ .lowlevel.p configure -value 0
+ .lowlevel.seqp configure -value 0
 }
 
  
@@ -120,10 +122,10 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
         commandAndor blue "setframe fullframe"
 ###        positionZabers fullframe
   }
-  set SCOPE(numseq) 1
   set numframes $SCOPE(numframes)
   set numseq $SCOPE(numseq)
   set SCOPE(numframes) 1
+  set SCOPE(numseq) 1
   if { $rdim != "manual" } {
     set LASTACQ "fullframe"
     startsequence ignore
@@ -143,7 +145,6 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
     set SCOPE(blue,bias) [expr int([lindex $resr 2])]
     set SCOPE(blue,peak) [expr int([lindex $resr 3])]
   }
-  set chk [checkgain]
   mimicMode red roi [set rdim]x[set rdim]
   mimicMode blue roi [set rdim]x[set rdim]
   exec xpaset -p ds9red regions system physical
@@ -220,7 +221,7 @@ proc checkgain { {table table.dat} } {
 global SCOPE SPECKLE_DIR INSTRUMENT
   catch {
    if { $INSTRUMENT(red,emcheck) } {
-     set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $SCOPE(red,bias) $SCOPE(red,peak)]
+     set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $INSTRUMENT(red,emgain) $SCOPE(red,peak)]
      if { [lindex [split $res \n] 6] == "Changes to EM Gain are recommended." } {
        if { $INSTRUMENT(red,autoemccd) } {
          set newgain [lindex [split [lindex [lindex [split $res \n] 7] 3] =] 1]
@@ -228,21 +229,27 @@ global SCOPE SPECKLE_DIR INSTRUMENT
 debuglog "want to set red emgain to $newgain"
          set INSTRUMENT(red,emgain) $newgain
        } else {
-         set it [tk_dialog .d "RED CAMERA EM GAIN" $res {} -1 "OK"]
+         set it [tk_dialog .d "RED CAMERA EM GAIN" $res {} -1 "NO" "OK"]
+         if { $it } {
+            set INSTRUMENT(red,emgain) $newgain
+         }
        }
      }
    }
   }
   catch { 
    if { $INSTRUMENT(blue,emcheck) } {
-     set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $SCOPE(blue,bias) $SCOPE(blue,peak)]
+     set res [exec $SPECKLE_DIR/gui-scripts/autogain.py $SPECKLE_DIR/$table $INSTRUMENT(blue,emgain) $SCOPE(blue,peak)]
      if { [lindex [split $res \n] 6] == "Changes to EM Gain are recommended." } {
        if { $INSTRUMENT(blue,autoemccd) } {
          set newgain [lindex [split [lindex [lindex [split $res \n] 7] 3] =] 1]
          set INSTRUMENT(blue,emgain) $newgain
 debuglog "want to set blue emgain to $newgain"
        } else {
-          set it [tk_dialog .d "BLUE CAMERA EM GAIN" $res {} -1 "OK"]
+          set it [tk_dialog .d "BLUE CAMERA EM GAIN" $res {} -1 "NO" "OK"]
+          if { $it } {
+            set INSTRUMENT(blue,emgain) $newgain
+          }
        }
      }
    }
@@ -340,6 +347,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  speckleshutter blue auto
  commandAndor red  "setexposure $SCOPE(exposure)"
  commandAndor blue "setexposure $SCOPE(exposure)"
+ commandAndor red  "imagetype $SCOPE(exptype)"
+ commandAndor blue "imagetype $SCOPE(exptype)"
 # commandAndor red  "triggermode 1"
 # commandAndor blue "triggermode 1"
  commandAndor red  "frametransfer $ANDOR_CFG(red,frametransfer)"
@@ -359,6 +368,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  commandAndor red  "autofitds9 $INSTRUMENT(red,fitds9)"
  commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
  setBinning
+ set chk [checkgain]
  if { $INSTRUMENT(red,emccd) } {
    commandAndor red "outputamp $ANDOR_EMCCD"
    commandAndor red "emadvanced $INSTRUMENT(red,highgain)"
@@ -403,8 +413,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
 #		ANDOR_SOCKET - Andor camera server socket handles
 #		ANDOR_SHUTTER - Shutter mode names
 #               SCOPE	- Telescope parameters, gui setup
+#		FWHEELS - Filter data
 #               OBSPARS	- Default observation parameters
-#               FRAME	- Frame number in a sequence
 #               STATUS	- Exposure status
 #               DEBUG	- Set to 1 for verbose logging
 #		TELEMETRY - Array of telemetry for headers and database usage
@@ -412,7 +422,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
 #		INSTRUMENT - Array of instrument configuration data
 #
 proc startsequence { {save keep} } {
-global SCOPE OBSPARS FRAME STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
+global SCOPE OBSPARS FWHEELS STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  set iseqnum 0
  prepsequence
@@ -422,16 +432,26 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  }
  set autofilter [checkAutoFilter blue]
  set rautofilter [checkAutoFilter red]
+ set FWHEELS(red,exposure) $SCOPE(exposure)
+ set FWHEELS(blue,exposure) $SCOPE(exposure)
  while { $autofilter != "" } {
    set bfilter [lindex $autofilter 0]
    if { $bfilter > 0 } {
     selectfilter blue $bfilter
     commandAndor blue "filter $SPECKLE_FILTER(blue,current)"
+    commandAndor blue "emccdgain $FWHEELS(blue,$bfilter,emgain)"
+    set FWHEELS(blue,exposure) $FWHEELS(blue,$bfilter,exp)
+    set SCOPE(exposure) $FWHEELS(blue,$bfilter,exp)
    }
    set rfilter [lindex $rautofilter 0]
    if { $rfilter > 0 } {
     selectfilter red $rfilter
     commandAndor red  "filter $SPECKLE_FILTER(red,current)"
+    commandAndor red "emccdgain $FWHEELS(red,$rfilter,emgain)"
+    set FWHEELS(red,exposure) $FWHEELS(red,$rfilter,exp)
+    if { $FWHEELS(red,$rfilter,exp) > $SCOPE(exposure) } {
+       set SCOPE(exposure) $FWHEELS(red,$rfilter,exp)
+    }
    }
    set autofilter [lrange $autofilter 1 end]
    set rautofilter [lrange $rautofilter 1 end]
@@ -439,7 +459,6 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
    redisUpdateTelemetry mode observing
    redisUpdateTelemetry exposure $SCOPE(exptype)
    while { $iseqnum < $SCOPE(numseq) } {
-    after 1000
     .lowlevel.p configure -value 0
     set ifrmnum 0
     incr iseqnum 1
@@ -471,12 +490,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         commandAndor red "imagename forROI 1"
         commandAndor blue "imagename forROI 1"
      } else {
-       commandAndor red "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
-       commandAndor blue "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
-       if { $LASTACQ == "fullframe" && $SCOPE(numframes) > 1 } {
-         commandAndor red "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
-         commandAndor blue "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
-       }
+       commandAndor red "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+       commandAndor blue "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
      }
      incr SCOPE(seqnum) 1
      updateTemps
@@ -506,12 +521,10 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
            after 1000
      }
      set now [clock seconds]
-     set FRAME 0
      andorSetControl 0 frame 0
      while { $i < $SCOPE(numframes) } {
-        set FRAME $i
         set elapsedtime [expr [clock seconds] - $now]
-        if { $elapsedtime > [expr 2*$totaltime] } { set STATUS(abort) 1 ; set i $SCOPE(numframes) }
+        if { $elapsedtime > $totaltime } { set STATUS(abort) 1 ; set i $SCOPE(numframes) }
         if { $DEBUG} {debuglog "$iseqnum  / $SCOPE(numseq) : $SCOPE(exptype) frame $i"}
         after 20
         if { $LASTACQ == "fullframe" } {
@@ -544,8 +557,6 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  after 500
  abortsequence
  if { $SCOPE(autoclrcmt) && $save == "keep" } {.main.comment delete 0.0 end }
- .lowlevel.p configure -value 0
- .lowlevel.seqp configure -value 0
 }
 
 

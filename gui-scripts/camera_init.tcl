@@ -80,7 +80,6 @@ set SCOPE(longitude) 07:26:27.97
 set SCOPE(camera) "Andor iXon Ultra"
 set SCOPE(observer) ""
 set SCOPE(target) test
-set SCOPE(imagetype) OBJECT
 set SCOPE(exposure) 1.0
 set SCOPE(ra) 00:00:00.00
 set SCOPE(dec) +00:00:00.00

@@ -22,7 +22,7 @@
 #		SPECKLE_DIR - Directory path to speckle code\n
 #
 proc createMimicDiagram { baseimg } {
-global MOFF XO YO SPECKLE_DIR SCOPE
+global MOFF XO YO SPECKLE_DIR env
 global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut
   catch {destroy .mimicSpeckle}
   set XO [lindex $MOFF($baseimg) 0]
@@ -57,7 +57,7 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
   label .mimicSpeckle.zaberA -text "Zaber A @ ???? : ????"
   label .mimicSpeckle.zaberB -text "Zaber B @ ???? : ????"
   label .mimicSpeckle.zaberInput -text "Zaber Input @ ???? : ????"
-  if { $SCOPE(telescope) == "GEMINI" } {
+  if { $env(TELESCOPE) == "GEMINI" } {
     label .mimicSpeckle.zaberFocus -text "Zaber Focus @ ???? : ????"
     label .mimicSpeckle.zaberPickoff -text "Zaber Pickoff @ ???? : ????"
     place .mimicSpeckle.zaberFocus -x 640 -y 590
