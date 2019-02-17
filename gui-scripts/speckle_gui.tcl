@@ -961,112 +961,101 @@ if { $SCOPE(telescope) == "WIYN" } {
 
 } else {
 
-proc redisUpdate { } {
-  updateGeminiTelemetry
-}
+  proc redisUpdate { } {
+    updateGeminiTelemetry
+  }
 
-set SPECKLE(engineeringGui) 936x1100
-wm geometry . 936x1100
-.lowlevel configure -height 700 -width 936
+  set SPECKLE(engineeringGui) 936x1100
+  wm geometry . 936x1100
+  .lowlevel configure -height 700 -width 936
 
-label .lowlevel.pickoff -text "PICK-OFF" -bg white
-place .lowlevel.pickoff -x 735 -y 276
-button .lowlevel.zpgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos pickoff"
-entry .lowlevel.vzpgoto -bg white -textvariable ZABERS(pickoff,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.zpgoto -x 670 -y 305
-place .lowlevel.vzpgoto -x 780 -y 307
-button .lowlevel.zpin -bg gray -text "Set EXTEND to current" -width 20 -command "zaberConfigurePos pickoff extend"
-place .lowlevel.zpin -x 670 -y 350
-button .lowlevel.zpout -bg gray -text "Set STOW to current" -width 20 -command "zaberConfigurePos pickoff stow"
-place .lowlevel.zpout -x 670 -y 392
-button .lowlevel.pksave -text Save -bg gray70 -width 6 -command "specklesave pickoff"
-button .lowlevel.pkload -text Load -bg gray70 -width 6 -command "speckleload pickoff"
-place .lowlevel.pksave -x 668  -y 430
-place .lowlevel.pkload -x 768 -y 430
+  label .lowlevel.pickoff -text "PICK-OFF" -bg white
+  place .lowlevel.pickoff -x 735 -y 276
+  button .lowlevel.zpgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos pickoff"
+  entry .lowlevel.vzpgoto -bg white -textvariable ZABERS(pickoff,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+  place .lowlevel.zpgoto -x 670 -y 305
+  place .lowlevel.vzpgoto -x 780 -y 307
+  button .lowlevel.zpin -bg gray -text "Set EXTEND to current" -width 20 -command "zaberConfigurePos pickoff extend"
+  place .lowlevel.zpin -x 670 -y 350
+  button .lowlevel.zpout -bg gray -text "Set STOW to current" -width 20 -command "zaberConfigurePos pickoff stow"
+  place .lowlevel.zpout -x 670 -y 392
+  button .lowlevel.pksave -text Save -bg gray70 -width 6 -command "specklesave pickoff"
+  button .lowlevel.pkload -text Load -bg gray70 -width 6 -command "speckleload pickoff"
+  place .lowlevel.pksave -x 668  -y 430
+  place .lowlevel.pkload -x 768 -y 430
 
+  label .lowlevel.focus -text "FOCUS" -bg white
+  place .lowlevel.focus -x 735 -y 506
+  button .lowlevel.zfgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos focus"
+  entry .lowlevel.vzfgoto -bg white -textvariable ZABERS(focus,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
+  place .lowlevel.zfgoto -x 670 -y 535
+  place .lowlevel.vzfgoto -x 780 -y 537
+  button .lowlevel.zfin -bg gray -text "Set EXTEND to current" -width 20 -command "zaberConfigurePos focus extend "
+  place .lowlevel.zfin -x 670 -y 580
+  button .lowlevel.zfout -bg gray -text "Set STOW to current" -width 20 -command "zaberConfigurePos focus stow"
+  place .lowlevel.zfout -x 670 -y 622
+  button .lowlevel.fksave -text Save -bg gray70 -width 6 -command "specklesave focus"
+  button .lowlevel.fkload -text Load -bg gray70 -width 6 -command "speckleload focus"
+  place .lowlevel.fksave -x 668  -y 660
+  place .lowlevel.fkload -x 768 -y 660
 
-label .lowlevel.focus -text "FOCUS" -bg white
-place .lowlevel.focus -x 735 -y 506
-button .lowlevel.zfgoto -bg gray -text "Move to" -width 8 -command "zaberEngpos focus"
-entry .lowlevel.vzfgoto -bg white -textvariable ZABERS(focus,target) -width 10  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.zfgoto -x 670 -y 535
-place .lowlevel.vzfgoto -x 780 -y 537
-button .lowlevel.zfin -bg gray -text "Set EXTEND to current" -width 20 -command "zaberConfigurePos focus extend "
-place .lowlevel.zfin -x 670 -y 580
-button .lowlevel.zfout -bg gray -text "Set STOW to current" -width 20 -command "zaberConfigurePos focus stow"
-place .lowlevel.zfout -x 670 -y 622
-button .lowlevel.fksave -text Save -bg gray70 -width 6 -command "specklesave focus"
-button .lowlevel.fkload -text Load -bg gray70 -width 6 -command "speckleload focus"
-place .lowlevel.fksave -x 668  -y 660
-place .lowlevel.fkload -x 768 -y 660
+  label .lowlevel.rpico -text "Pico position" -bg gray
+  place .lowlevel.rpico -x 20 -y 565
+  button .lowlevel.rpicomm -width 3 -text "<<" -command "jogPico X --" -bg gray
+  button .lowlevel.rpicom  -width 3 -text "<" -command "jogPico X -" -bg gray
+  button .lowlevel.rpicop  -width 3 -text ">" -command "jogPico X +" -bg gray
+  button .lowlevel.rpicopp  -width 3 -text ">>" -command "jogPico X ++" -bg gray
+  place .lowlevel.rpicomm -x 120 -y 565
+  place .lowlevel.rpicom -x 200 -y 565
+  place .lowlevel.rpicop -x 350 -y 565
+  place .lowlevel.rpicopp -x 430 -y 565
 
+  button .lowlevel.rvpicomm -width 3 -text "--" -command "jogPico Y --" -bg gray
+  button .lowlevel.rvpicom  -width 3 -text "-" -command "jogPico Y -" -bg gray
+  button .lowlevel.rvpicop  -width 3 -text "+" -command "jogPico Y +" -bg gray
+  button .lowlevel.rvpicopp  -width 3 -text "++" -command "jogPico Y ++" -bg gray
+  place .lowlevel.rvpicomm -x 278 -y 625
+  place .lowlevel.rvpicom -x 278 -y 585
+  place .lowlevel.rvpicop -x 278 -y 545
+  place .lowlevel.rvpicopp -x 278 -y 505
 
-label .lowlevel.rpico -text "Pico position" -bg gray
-place .lowlevel.rpico -x 20 -y 565
-button .lowlevel.rpicomm -width 3 -text "<<" -command "jogPico X --" -bg gray
-button .lowlevel.rpicom  -width 3 -text "<" -command "jogPico X -" -bg gray
-button .lowlevel.rpicop  -width 3 -text ">" -command "jogPico X +" -bg gray
-button .lowlevel.rpicopp  -width 3 -text ">>" -command "jogPico X ++" -bg gray
-place .lowlevel.rpicomm -x 120 -y 565
-place .lowlevel.rpicom -x 200 -y 565
-place .lowlevel.rpicop -x 350 -y 565
-place .lowlevel.rpicopp -x 430 -y 565
+  button .lowlevel.psave -text Save -bg gray70 -width 12 -command "savePicosConfig"
+  button .lowlevel.pload -text Load -bg gray70 -width 12 -command "loadPicosConfig"
+  place .lowlevel.psave -x 420  -y 660
+  place .lowlevel.pload -x 60 -y 660
 
-button .lowlevel.rvpicomm -width 3 -text "--" -command "jogPico Y --" -bg gray
-button .lowlevel.rvpicom  -width 3 -text "-" -command "jogPico Y -" -bg gray
-button .lowlevel.rvpicop  -width 3 -text "+" -command "jogPico Y +" -bg gray
-button .lowlevel.rvpicopp  -width 3 -text "++" -command "jogPico Y ++" -bg gray
-place .lowlevel.rvpicomm -x 278 -y 625
-place .lowlevel.rvpicom -x 278 -y 585
-place .lowlevel.rvpicop -x 278 -y 545
-place .lowlevel.rvpicopp -x 278 -y 505
+  entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)  -justify right
+  place .lowlevel.vxpico -x 510 -y 570
+  entry .lowlevel.vypico -width 8 -bg white -textvariable PICOS(Y,current)  -justify right
+  place .lowlevel.vypico -x 272 -y 665
 
-button .lowlevel.psave -text Save -bg gray70 -width 12 -command "savePicosConfig"
-button .lowlevel.pload -text Load -bg gray70 -width 12 -command "loadPicosConfig"
-place .lowlevel.psave -x 420  -y 660
-place .lowlevel.pload -x 60 -y 660
+  showstatus "Initializing PICOs"
+  source $SPECKLE_DIR/picomotor/picomotor.tcl
 
-entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.vxpico -x 510 -y 570
-entry .lowlevel.vypico -width 8 -bg white -textvariable PICOS(Y,current)  -justify right -validate all -vcmd {validInteger %W %V %P %s 0 999999}
-place .lowlevel.vypico -x 272 -y 665
-
-showstatus "Initializing PICOs"
-source $SPECKLE_DIR/picomotor/picomotor.tcl
-
-if { $SCOPE(telescope) == "GEMINI" } {
- showstatus "Connecting to Gemini Telemetry service"
- source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
- source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
- set SPKTELEM(sim) 0
- if { [info exists env(SPECKLE_SIM)] } {
-   set simdev [split $env(SPECKLE_SIM) ,]
-   if { [lsearch $simdev telemetry] > -1 } {
+  showstatus "Connecting to Gemini Telemetry service"
+  source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
+  source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
+  set SPKTELEM(sim) 0
+  if { [info exists env(SPECKLE_SIM)] } {
+     set simdev [split $env(SPECKLE_SIM) ,]
+     if { [lsearch $simdev telemetry] > -1 } {
        set SPKTELEM(sim) 1
        debuglog "Gemini telemetry in SIMULATION mode"
        simGeminiTelemetry
+     }
   }
- }
-}
 
-if { $SPKTELEM(sim) == 0 } {
-  geminiConnect north
-  after 3000 updateGeminiTelemetry
-}
+
+  if { $SPKTELEM(sim) == 0 } {
+    geminiConnect north
+    after 3000 updateGeminiTelemetry
+  }
 
 
 }
 
 if { [file exists $env(HOME)/.specklegui] } {
    source $env(HOME)/.specklegui
-}
-
-
-set SCOPE(imagename) "N[exec date +%Y%m%d]"
-catch {
-    set all [lsort [glob $SCOPE(datadir)/N*.fits]]
-    set last [split [lindex $all end] _]
-    set SCOPE(seqnum) [expr [string trimleft [lindex $last 2] 0] +1]
 }
 
 

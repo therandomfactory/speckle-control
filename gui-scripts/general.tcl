@@ -47,6 +47,11 @@ global CALS CATALOGS SCOPE env
        commandAndor red "datadir $cfg"
        commandAndor blue "datadir $cfg"
        set SCOPE(datadir) $cfg
+       catch {
+         set all [lsort [glob $SCOPE(datadir)/[set SCOPE(preamble)]*.fits]]
+         set last [split [lindex $all end] _]
+         set SCOPE(seqnum) [expr [string trimleft [string range [file tail $last] 10 13] 0] + 1]
+       }
      }
    } else {
      set cfg [tk_chooseDirectory -initialdir $CALS(home)/$name]

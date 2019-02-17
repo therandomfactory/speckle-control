@@ -490,8 +490,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         commandAndor red "imagename forROI 1"
         commandAndor blue "imagename forROI 1"
      } else {
-       commandAndor red "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
-       commandAndor blue "imagename $SCOPE(imagename)[format %6.6d $SCOPE(seqnum)] $SCOPE(overwrite)"
+       commandAndor red "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
+       commandAndor blue "imagename $SCOPE(imagename)[format %4.4d $SCOPE(seqnum)] $SCOPE(overwrite)"
      }
      incr SCOPE(seqnum) 1
      updateTemps
