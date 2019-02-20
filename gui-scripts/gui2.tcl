@@ -266,6 +266,22 @@ global ANDOR_CFG
    commandAndor blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
 }
 
+
+## Documented proc \c exposureType .
+# 
+# Set exposure type
+#
+#
+# Globals :\n
+#		SCOPE - Array of GUI parameters\n
+#
+proc exposureType { etype } {
+global SCOPE
+   set SCOPE(exptype) $etype
+   .main.exptype configure -text $etype
+}
+
+
 # \endcode
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
@@ -458,7 +474,14 @@ place .main.exposure -x 100 -y 20
 SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 30000}
 place .main.numexp -x 100 -y 50
 set opts "Object Focus Acquire Flat SkyFlat Dark Zero PSFstandard CalBinary"
-ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype) -justify right
+###ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype) -justify right
+menubutton .main.exptype -width 10 -text "Object" -relief raised -fg black -bg gray80 -menu .main.exptype.m
+menu .main.exptype.m
+foreach etype "Object Focus Acquire Flat SkyFlat Dark Zero PSFstandard CalBinary Test"  {
+  .main.exptype.m add command -label "$etype" -command "exposureType $etype"
+}
+set SCOPE(exptype) "Object"
+
 SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 1000}
 place .main.numseq -x 100 -y 109
 label .main.laccum -text "Accum." -bg gray
@@ -484,7 +507,7 @@ SpinBox .main.binning -width 4 -values "1 2 4 8 16" -textvariable ANDOR_CFG(binn
 place .main.lbin -x 220 -y 23
 place .main.binning -x 280 -y 20
 
-set SCOPE(exptype) Object
+exposureType Object
 set SCOPE(numaccum) 1
 set SCOPE(numseq) 1
 
@@ -722,7 +745,7 @@ set SCOPE(imagename) "N[exec date -u +%Y%m%d]N"
 set SCOPE(preamble) N
 
 if { $SCOPE(site) != "WIYN" } {
-   set SCOPE(preamble) A
+   set SCOPE(preamble) N
    set SCOPE(imagename) "N[exec date -u +%Y%m%d]A"
    set SCOPE(instrument) "Alopeke"
    proc redisUpdateTelemetry { {mode ""} {obs "" } } { }

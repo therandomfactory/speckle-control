@@ -2558,11 +2558,12 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   SharedMem2->iabort=0;
   printf("Start at : %ld\n",tm1.tv_sec);
   status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
-  maxt = (int) (numexp * tkinetics * 5);
+  maxt = (int) (numexp * tkinetics +1);
+  status = SetNumberKinetics(numexp+10);
   StartAcquisition();
   GetStatus(&status);
   while (count < numexp) {
-		while(status==DRV_ACQUIRING) {
+		while(status==DRV_ACQUIRING && count < numexp) {
                     GetTotalNumberImagesAcquired(&num);
                     if ( num > ngot ) {
                       if (num ==1 ) {
@@ -2609,15 +2610,16 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
 /*                         SharedMem2->iabort = 0; */
                     }
 		}
-                if (count < numexp ) {
+                if (deltat > maxt || SharedMem2->iabort > 0) {
                    AbortAcquisition();
                    printf("Cancelled at : %ld\n",tm2.tv_sec);
                    count = numexp;
                 }
-                usleep(5000);
+                usleep(100);
                 GetStatus(&status);
   }
 
+  AbortAcquisition();
   printf("\nAcq End at : %ld\n",tm2.tv_sec);
   printf("%ld milliseconds per frame\n",(tm2.tv_sec-tm1.tv_sec)*1000/numexp);
 
@@ -2668,7 +2670,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
   ngot=0;
   count=0;
   status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
-  maxt = (int) (numexp * tkinetics +1);
+  maxt = (int) (numexp * tkinetics +3);
   SharedMem2->iabort=0;
   clock_gettime(CLOCK_REALTIME,&tm1);
   printf("Start at : %ld\n",tm1.tv_sec);

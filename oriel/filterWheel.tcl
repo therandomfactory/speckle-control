@@ -282,6 +282,8 @@ global FWHEELS
 proc filterEmccdGain { arm n em } {
 global FWHEELS
    set FWHEELS($arm,$n,emgain) $em
+   if { $arm == "red" } { .filters.remgain$n configure -text "EM=$em" }
+   if { $arm == "blue" } { .filters.bemgain$n configure -text "EM=$em" }
 }
 
 
@@ -333,7 +335,7 @@ while { $i < $MAXFILTERS } {
    entry  .filters.expred$i -textvariable FWHEELS(red,$i,exp) -bg LightBlue -fg black -width 8
    place  .filters.auto$i -x 580 -y $iy
    place  .filters.fred$i -x 620 -y $iy
-   menubutton .filters.remgain$i -width 4  -bg gray50  -menu .filters.remgain$i.m -relief raised -text "EM=0"
+   menubutton .filters.remgain$i -width 7  -bg gray50  -menu .filters.remgain$i.m -relief raised -text "EM=0"
    menu .filters.remgain$i.m
    foreach ev "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" {
      .filters.remgain$i.m add command -label $ev -command "filterEmccdGain red $i $ev"
@@ -353,7 +355,7 @@ while { $i < $MAXFILTERS } {
    place  .filters.nameblue$i -x 160 -y $iy
    place  .filters.focusblue$i -x 335 -y $iy
    place  .filters.expblue$i -x 485 -y $iy
-   menubutton .filters.bemgain$i -width 4  -bg gray50  -menu .filters.bemgain$i.m -relief raised -text "EM=0"
+   menubutton .filters.bemgain$i -width 7  -bg gray50  -menu .filters.bemgain$i.m -relief raised -text "EM=0"
    menu .filters.bemgain$i.m
    foreach ev "0 2 5 10 20 30 40 50 60 70 80 90 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000" {
      .filters.bemgain$i.m add command -label $ev -command "filterEmccdGain blue $i $ev"

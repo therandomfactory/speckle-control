@@ -68,7 +68,8 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
       catch { set ok [puts $GEMINICFG(handle) "get $t\n"] } res
       if { $ok == "none" } { 
         debuglog "Gemini telemetry lost - reconnecting"
-        geminiConnect $GEMINICFG(site)
+        return
+###        geminiConnect $GEMINICFG(site)
       }
    }
    after 500

@@ -32,7 +32,7 @@ global STATUS
 }
 
  
-## Documented proc \c abortsequence .
+## Documented proc \c observe .
 #  \param[in] op - Operation specifier
 #  \param[in] id - Camera id (for multi-camera use) (optional, default is 0)
 # 
@@ -318,6 +318,7 @@ proc prepsequence { } {
 global SCOPE DATAQUAL INSTRUMENT
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  redisUpdate
+ catch {updateGeminiTelemetry}
  zaberCheck
  specklesynctelem red
  specklesynctelem blue
@@ -330,8 +331,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
     setfitsbits USHORT_IMG
  }
  if { $ANDOR_CFG(kineticMode) } {
-    commandAndor red  "acquisitionmode 3"
-    commandAndor blue "acquisitionmode 3"
+    commandAndor red  "acquisitionmode 5"
+    commandAndor blue "acquisitionmode 5"
  } else {
     if { $SCOPE(numaccum) > 1 } {
       commandAndor red  "acquisitionmode 1"
@@ -430,6 +431,14 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
   set x [andorSetControl 0 frame 0]
   set x [andorSetControl 1 frame 0]
  }
+ if { $SCOPE(exptype) == "Test" } {
+    exec rm -f $SCOPE(datadir)/TESTr.fits
+    exec rm -f $SCOPE(datadir)/TESTb.fits
+    commandAndor red "imagename TEST 1"
+    commandAndor blue "imagename TEST 1"
+    acquireTest
+    return
+ }
  set autofilter [checkAutoFilter blue]
  set rautofilter [checkAutoFilter red]
  set FWHEELS(red,exposure) $SCOPE(exposure)
@@ -480,8 +489,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
        speckleshutter red close
        speckleshutter blue close
       } else {
-       speckleshutter red auto
-       speckleshutter blue auto
+       speckleshutter red during
+       speckleshutter blue during
      }
      after 200
      if { $save == "ignore" } {
@@ -507,12 +516,13 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      } else {
         set TELEMETRY(speckle.andor.mode) "roi"
      }
+     set doneset 0
      if { $ANDOR_CFG(kineticMode) && $SCOPE(numframes) > 1 } {
            checkDatarate
            acquireCubes
            set ifrmnum $SCOPE(numframes)
            set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
-           set totaltime [expr $perframe * $SCOPE(numframes) +1]
+           set totaltime [expr $perframe * $SCOPE(numframes) +5]
      } else {
            .lowlevel.datarate configure -text ""
            set perframe $SCOPE(exposure)
@@ -524,7 +534,6 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      andorSetControl 0 frame 0
      while { $i < $SCOPE(numframes) } {
         set elapsedtime [expr [clock seconds] - $now]
-        if { $elapsedtime > $totaltime } { set STATUS(abort) 1 ; set i $SCOPE(numframes) }
         if { $DEBUG} {debuglog "$iseqnum  / $SCOPE(numseq) : $SCOPE(exptype) frame $i"}
         after 20
         if { $LASTACQ == "fullframe" } {
@@ -532,11 +541,14 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
            after [expr int($SCOPE(exposure)*1000)]
         } else {
            set i [andorGetControl 0 frame]
+           after [expr int($SCOPE(exposure)*1010)]
         }
         .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
         .lowlevel.progress configure -text "Observation status : Frame $i   Exposure $dfrmnum   Sequence $iseqnum / $SCOPE(numseq)"
+        if { $elapsedtime > $totaltime } { set i $SCOPE(numframes) ; set doneset 1}
         update
      }
+     debuglog "Exited frames loop"
      set SCOPE(exposureEnd) [expr [clock milliseconds]/1000.0]
      .main.observe configure -text "Observe" -bg green -relief raised
      .main.abort configure -bg gray -relief sunken -fg LightGray
@@ -544,7 +556,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
 #     speckleshutter blue close
      .lowlevel.p configure -value 0
      .lowlevel.progress configure -text "Observation status : Idle"
-     if { $STATUS(abort) && $autofilter == ""} {
+     if { $STATUS(abort) && $autofilter == "" } {
         redisUpdateTelemetry mode idle
         .lowlevel.p configure -value 0
         .lowlevel.seqp configure -value 0

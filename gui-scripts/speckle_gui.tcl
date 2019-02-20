@@ -272,12 +272,12 @@ proc specklesynctelem { arm } {
 global DATAQUAL ZABERS FWHEELS
    zaberCheck
    set pinputzaber $ZABERS(input,readpos)
-   if  { $arm == "red" } {
+   if  { $arm == "blue" } {
      set pfieldzaber $ZABERS(A,readpos)
-     set pfilter $FWHEELS(red,$FWHEELS(red,position))
+     set pfilter $FWHEELS(blue,$FWHEELS(blue,position))
    } else {
      set pfieldzaber $ZABERS(B,readpos)
-     set pfilter $FWHEELS(blue,$FWHEELS(blue,position))
+     set pfilter $FWHEELS(red,$FWHEELS(red,position))
    }
    commandAndor $arm "positiontelem $pinputzaber $pfieldzaber $pfilter"
    commandAndor $arm "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
@@ -1019,10 +1019,6 @@ if { $SCOPE(telescope) == "WIYN" } {
   place .lowlevel.rvpicop -x 278 -y 545
   place .lowlevel.rvpicopp -x 278 -y 505
 
-  button .lowlevel.psave -text Save -bg gray70 -width 12 -command "savePicosConfig"
-  button .lowlevel.pload -text Load -bg gray70 -width 12 -command "loadPicosConfig"
-  place .lowlevel.psave -x 420  -y 660
-  place .lowlevel.pload -x 60 -y 660
 
   entry .lowlevel.vxpico -width 8 -bg white -textvariable PICOS(X,current)  -justify right
   place .lowlevel.vxpico -x 510 -y 570

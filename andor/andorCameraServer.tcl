@@ -398,7 +398,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$dimen,ydim=$dimen,bitpix=32\\\]
     cAndorSetProperty $CAM ExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
-      set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(red)]
+      set mpeak [andorGetData $ANDOR_CFG(red)]
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
@@ -406,9 +406,13 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       exec xpaset -p $DS9 frame 2
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
+      set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
+      set ANDOR_CFG(red,peak) [andorGetControl $ANDOR_CFG(red) peak]
+      set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(red,peak) 
+      set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(red,min) 
     }
     if { $ANDOR_CFG(blue) > -1 } {
-      set TELEMETRY(speckle.andor.peak_estimate) [andorGetData $ANDOR_CFG(blue)]
+      set mpeak [andorGetData $ANDOR_CFG(blue)]
       andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
@@ -416,13 +420,17 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       exec xpaset -p $DS9 frame 2
       exec xpaset -p $DS9 cmap $ANDOR_CFG(cmap)
       exec xpaset -p $DS9 file $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
+      set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
+      set ANDOR_CFG(blue,peak) [andorGetControl $ANDOR_CFG(blue) peak]
+      set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(blue,peak) 
+      set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(blue,min) 
     }
     if { $ANDOR_CFG(fitds9) } {
        exec xpaset -p $DS9 zoom to fit
     } else {
        exec xpaset -p $DS9 zoom 1
     }
-    puts stdout "$TELEMETRY(speckle.andor.peak_estimate)"
+    puts stdout "$mpeak"
     updateds9wcs $TELEMETRY(tcs.telescope.ra) $TELEMETRY(tcs.telescope.dec)
     updateDatabase
 }
@@ -586,6 +594,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
     set ANDOR_CFG(red,min) [andorGetControl $ANDOR_CFG(red) min]
     set ANDOR_CFG(red,peak) [andorGetControl $ANDOR_CFG(red) peak]
     set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(red,peak) 
+    set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(red,min) 
   }
   if { $ANDOR_CFG(blue) > -1} {
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
@@ -597,6 +606,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
     set ANDOR_CFG(blue,min) [andorGetControl $ANDOR_CFG(blue) min]
     set ANDOR_CFG(blue,peak) [andorGetControl $ANDOR_CFG(blue) peak]
     set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(blue,peak) 
+    set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(blue,min) 
   }
   updateDatabase
   debuglog "Finished acquisition"
@@ -710,7 +720,7 @@ proc updateDatabase { } {
 global ANDOR_ARM ANDOR_CFG TELEMETRY SCOPE CAM
    set finsert [open /tmp/insert_$ANDOR_ARM.sql w]
    set amp "CCD Amplifier"
-   if { $ANDOR_CFG($ANDOR_ARM,OutputAmplifier) == 0 } { set amp "ECMMD Amplifier" }
+   if { $ANDOR_CFG($ANDOR_ARM,OutputAmplifier) == 0 } { set amp "EMCCD Amplifier" }
    puts $finsert "INSERT INTO Speckle_Observations VALUES (NOW(6),'$SCOPE(ProgID)','$TELEMETRY(tcs.target.name)','$ANDOR_CFG(imagename)','$TELEMETRY(speckle.scope.datatype)',$TELEMETRY(speckle.andor.preamp_gain),$TELEMETRY(speckle.andor.em_gain),$TELEMETRY(speckle.andor.bias_estimate),$TELEMETRY(speckle.andor.peak_estimate),$TELEMETRY(speckle.andor.int_time),$TELEMETRY(speckle.andor.exposureStart),$TELEMETRY(speckle.andor.exposureEnd),'$SCOPE(filter)','$amp',$TELEMETRY(speckle.andor.numexp),$TELEMETRY(speckle.andor.numaccum),'$TELEMETRY(speckle.andor.roi)',$ANDOR_CFG($CAM,hbin),$ANDOR_CFG($CAM,vbin),'$TELEMETRY(tcs.telescope.ra)','$TELEMETRY(tcs.telescope.dec)',$TELEMETRY(tcs.weather.rawiq),$TELEMETRY(tcs.weather.rawcc),$TELEMETRY(tcs.weather.rawwv),$TELEMETRY(tcs.weather.rawbg));"
    close $finsert
    catch {exec mysql speckle --user=root < /tmp/insert_$ANDOR_ARM.sql >& /tmp/insert_$ANDOR_ARM.log &}

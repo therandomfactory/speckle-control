@@ -33,8 +33,8 @@ proc errordialog { msg } {puts stdout $msg}
 #		SPECKLE_DIR - Directory path of speckle code
 #
 proc loadZaberConfig { {fname zabersConfiguration} } {
-global SPECKLE_DIR ZABERS SCOPE
-   if { $SCOPE(telescope) == "GEMINI" } {  
+global SPECKLE_DIR ZABERS env
+   if { $env(TELESCOPE) == "GEMINI" } {  
       set fname "[set fname].gemini"
    }
    if { [file exists $SPECKLE_DIR/$fname] == 0 } {
@@ -58,7 +58,7 @@ global SPECKLE_DIR ZABERS SCOPE
 proc saveZaberConfig { fname } {
 global SPECKLE_DIR ZABERS
    set fcfg [open $SPECKLE_DIR/$fname w]
-   puts $fcfg  "#!/usr/bin/tclsh
+   puts $fcfg  "#!/usr/bin/tclsh"
    echoZaberConfig $fcfg
    close $fcfg
    debuglog "Saved Zaber configuration in $SPECKLE_DIR/$fname"
@@ -89,7 +89,7 @@ global FLOG
 #		SCOPE - Array of telescope parameters
 #
 proc echoZaberConfig { {fcfg stdout} } {
-global ZABERS SCOPE
+global ZABERS env
    puts $fcfg  "# Zaber stage configuration parameters
 set ZABERS(port) $ZABERS(port)
 "
@@ -102,7 +102,7 @@ set ZABERS(port) $ZABERS(port)
    foreach p "device speckle wide" {  
      puts $fcfg "set ZABERS(input,$p) \"$ZABERS(input,$p)\""
    }
-   if { $SCOPE(telescope) == "GEMINI" } {
+   if { $env(TELESCOPE) == "GEMINI" } {
      foreach p "device extend stow" {  
        puts $fcfg "set ZABERS(pickoff,$p) \"$ZABERS(pickoff,$p)\""
      }
@@ -125,14 +125,14 @@ set ZABERS(port) $ZABERS(port)
 #		SCOPE - Array of telescope parameters
 #
 proc zaberPrintProperties { {fd stdout} } {
-global ZABERS ZPROPERTIES SCOPE
-   if { $SCOPE(telescope) == "WIYN" } {
+global ZABERS ZPROPERTIES env
+   if { $env(TELESCOPE) == "WIYN" } {
     puts $fd "Property		A	B	input"
     foreach p [split $ZPROPERTIES \n] {
        puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)"
      }
    }
-   if { $SCOPE(telescope) == "GEMINI" } {
+   if { $env(TELESCOPE) == "GEMINI" } {
      puts $fd "Property		A	B	input	pickoff		focus"
      foreach p [split $ZPROPERTIES \n] {
        puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)	$ZABERS(pickoff,$p)	$ZABERS(focus,$p)"
@@ -199,13 +199,13 @@ global ZABERS
 # Globals :
 #		SCOPE - Array of telescope configuration
 proc homeZabers { } {
-global SCOPE
+global env
    zaberCommand A home
    zaberCommand B home
    zaberCommand input home
-   if { $SCOPE(telescope) == "GEMINI" } {
+   if { $env(TELESCOPE) == "GEMINI" } {
       zaberCommand focus home
-      zaberCommand pickof home
+      zaberCommand pickoff home
    }
    after 5000 zaberCheck
 }
@@ -251,7 +251,7 @@ global ZABERS ZPROP ZNAME ZSIMPROP
 #		ZABERS - Array of Zaber device configuration and state
 #
 proc zaberCheck { } {
-global ZABERS SCOPE
+global ZABERS env
  if { $ZABERS(sim) == 0 } {
   foreach s "A B input" {
     zaberCommand $s "get pos"
@@ -264,7 +264,7 @@ global ZABERS SCOPE
   .mimicSpeckle.zaberA configure -text "Zaber A : $ZABERS(A,pos) : $ZABERS(A,readpos)"
   .mimicSpeckle.zaberB configure -text "Zaber B : $ZABERS(B,pos) : $ZABERS(B,readpos)"
   .mimicSpeckle.zaberInput configure -text "Zaber Input : $ZABERS(input,pos) : $ZABERS(input,readpos)"
-  if { $SCOPE(telescope) == "GEMINI" } { 
+  if { $env(TELESCOPE) == "GEMINI" } { 
     zaberCommand focus "get pos"
     after 200
     zaberReader $ZABERS(handle)
@@ -362,15 +362,18 @@ global ZABERS
 proc zaberJogger  { op } {
 global ZABERS
     switch $op {
-        red   { set ZABERS(jogtarget) A ; .lowlevel.jogz configure -text "Zaber = A"
+        red   { 
+                set ZABERS(jogtarget) $ZABERS(red) ; .lowlevel.jogz configure -text "Zaber = $ZABERS(red)"
                 .lowlevel.vzab configure -text $ZABERS($ZABERS(jogtarget),pos)
               }
-        blue  { set ZABERS(jogtarget) B ; .lowlevel.jogz configure -text "Zaber = B"
+        blue  { 
+                set ZABERS(jogtarget) $ZABERS(blue) ; .lowlevel.jogz configure -text "Zaber = $ZABERS(blue)"
                 .lowlevel.vzab configure -text $ZABERS($ZABERS(jogtarget),pos)
               }
         focus -
         pickoff -
-        input { set ZABERS(jogtarget) $op ; .lowlevel.jogz configure -text "Zaber = $op"
+        input { 
+                set ZABERS(jogtarget) $op ; .lowlevel.jogz configure -text "Zaber = $op"
                 .lowlevel.vzab configure -text $ZABERS($ZABERS(jogtarget),pos)
               }
         plus  { 
@@ -386,6 +389,10 @@ global ZABERS
                 .lowlevel.vzab configure -text $newpos
                 after 500 zaberCheck
                 set ZABERS($ZABERS(jogtarget),pos) $newpos
+              }
+        home  { 
+                zaberCommand  $ZABERS(jogtarget) home
+                after 500 zaberCheck
               }
    }
 }
@@ -608,13 +615,16 @@ resolution"
 set SPECKLE_DIR $env(SPECKLE_DIR)
 loadZaberConfig
 echoZaberConfig
+set ZABERS($ZABERS(A,arm)) A
+set ZABERS($ZABERS(B,arm)) B
+
 zaberConnect
 set ZSIMPROP ""
 if { $ZABERS(sim) == 0 } {
   zaberGetProperties A
   zaberGetProperties B
   zaberGetProperties input
-  if { $SCOPE(telescope) == "GEMINI" } { zaberGetProperties pickoff ; zaberGetProperties focus }
+  if { $env(TELESCOPE) == "GEMINI" } { zaberGetProperties pickoff ; zaberGetProperties focus }
   zaberPrintProperties
   zaberCommand A home
   zaberCommand B home
@@ -623,7 +633,7 @@ if { $ZABERS(sim) == 0 } {
   zaberGoto A wide
   zaberGoto B wide
   zaberGoto input wide
-  if { $SCOPE(telescope) == "GEMINI" } {
+  if { $env(TELESCOPE) == "GEMINI" } {
        set ZABERS(focus,readpos) 999999
        set ZABERS(pickoff,readpos) 999999
        zaberCommand focus home

@@ -368,6 +368,7 @@ global ANDOR_CCD ANDOR_EMCCD
      set perrun [expr int(100 * ($CAMSTATUS(blue,TKinetics) / $SCOPE(exposure)))]
      if { $perrun > 100 } {set perrun 100}
      if { $perrun < 20 } {set perrun 20}
+     if { $SCOPE(exposure) > 1.0 } {set perrun 2}
      commandAndor red  "setexposure $SCOPE(exposure)"
      commandAndor blue  "setexposure $SCOPE(exposure)"
      commandAndor red "numberkinetics $perrun"
@@ -547,6 +548,24 @@ global INSTRUMENT SCOPE LASTACQ FWHEELS
    }
 }
    
+## Documented proc \c acquireTest .
+#
+#  Setup and start a data acqusition run of an individual frame#
+#
+# Globals :\n
+#		INSTRUMENT - Array of instrument settings\n
+#		SCOPE - Array of telescope settings\n
+#		STATUS - Array of exposure statuses
+#
+proc acquireTest { } {
+global INSTRUMENT SCOPE LASTACQ FWHEELS
+   if { $INSTRUMENT(red) } {
+      commandAndor red "grabframe $SCOPE(exposure)"
+   }
+   if { $INSTRUMENT(blue) } {
+      commandAndor blue "grabframe $SCOPE(exposure)"
+   }
+}
 ## Documented proc \c resetAndors .
 #
 #  Shutdown any existing Andor camera servers, and restart them - DEPRECATED
