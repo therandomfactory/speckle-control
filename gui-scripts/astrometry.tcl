@@ -38,10 +38,10 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM env TELEMETRY
   set fac 1.0
   if { $ANDOR_ARM == "blue" } {set fac -1.0}
   if { $env(TELESCOPE) == "GEMINI" } {
-    set fac11 [expr -1.0*sin($TELEMETRY(tcs.telescope.instrpa)]
-    set fac12 [expr cos($TELEMETRY(tcs.telescope.instrpa)]
-    set fac21 [expr cos($TELEMETRY(tcs.telescope.instrpa)]
-    set fac22 [expr sin($TELEMETRY(tcs.telescope.instrpa)]
+    set fac11 [expr -1.0*sin($TELEMETRY(tcs.telescope.instrpa)*180./$PI)]
+    set fac12 [expr cos($TELEMETRY(tcs.telescope.instrpa)*180./$PI)]
+    set fac21 [expr cos($TELEMETRY(tcs.telescope.instrpa)*180./$PI)]
+    set fac22 [expr sin($TELEMETRY(tcs.telescope.instrpa)*180./$PI)]
     puts $fout "CD1_1 [expr $fac11*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"        
     puts $fout "CD1_2 [expr $fac12*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"
     puts $fout "CD2_1 [expr $fac21*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"
@@ -103,10 +103,10 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM env TELEMETRY
     set r [fitshdrrecord  CD2_2	 double  [expr $PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]
     $fid put keyword $r
   } else {
-    set fac11 [expr -1.0*sin($TELEMETRY(tcs.telescope.instrpa)]
-    set fac12 [expr cos($TELEMETRY(tcs.telescope.instrpa)]
-    set fac21 [expr cos($TELEMETRY(tcs.telescope.instrpa)]
-    set fac22 [expr sin($TELEMETRY(tcs.telescope.instrpa)]
+    set fac11 [expr -1.0*sin($TELEMETRY(tcs.telescope.instrpa)*180./$PI)]
+    set fac12 [expr cos($TELEMETRY(tcs.telescope.instrpa)*180./$PI)]
+    set fac21 [expr cos($TELEMETRY(tcs.telescope.instrpa)*180./$PI)]
+    set fac22 [expr sin($TELEMETRY(tcs.telescope.instrpa)*180./$PI)]
     set r [fitshdrrecord  CD1_1	 double [expr $fac11*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]           
     $fid put keyword $r
     set r [fitshdrrecord  CD1_2	 double  [expr $fac12*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]
@@ -165,7 +165,7 @@ global PI
 
 # \endcode
 
-set PI 3.141592653589
+set PI $PI2653589
 set PSCALES(Gemini-North,fullframe) 	2.0138889E-05
 set PSCALES(Gemini-North,speckle)	2.6666666E-06
 set PSCALES(Gemini-South,fullframe) 	2.0138889E-05
