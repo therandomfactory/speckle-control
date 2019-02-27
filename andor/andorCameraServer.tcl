@@ -81,6 +81,8 @@ wm withdraw .
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
 set SCOPE(telescope) $env(TELESCOPE)
+set SCOPE(instrument) "NESSI"
+set TELEMETRY(speckle.scope.instrument) "NESSI"
 load $SPECKLE_DIR/lib/andorTclInit.so
 load $SPECKLE_DIR/lib/libfitstcl.so
 load $SPECKLE_DIR/lib/libccd.so
@@ -91,10 +93,9 @@ source $SPECKLE_DIR/andorsConfiguration.[set ckey]
 source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl 
 source $SPECKLE_DIR/gui-scripts/camera_init.tcl 
 if { $env(TELESCOPE) == "GEMINI" } {
-  proc redisUpdate { } { }
-  proc updateRedisTelemetry  { item value } { }
   set SCOPE(telescope) "GEMINI"
   set SCOPE(instrument) "Alopeke"
+  set TELEMETRY(speckle.scope.instrument) "Alopeke"
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl 
   set GEMINITLM(sim) 0
   if { [info exists env(SPECKLE_SIM)] } {
@@ -401,6 +402,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       set mpeak [andorGetData $ANDOR_CFG(red)]
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
+      updateAndorTelemetry red
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
       after 400
       exec xpaset -p $DS9 frame 2
@@ -415,6 +417,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       set mpeak [andorGetData $ANDOR_CFG(blue)]
       andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $dimen $dimen 1 1
       set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
+      updateAndorTelemetry blue
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
       after 400
       exec xpaset -p $DS9 frame 2
@@ -464,6 +467,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $n $n 1 1
+      updateAndorTelemetry red
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
       after 400
       exec xpaset -p $DS9 frame 1
@@ -474,6 +478,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
       andorSetROI $ANDOR_CFG(blue) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(blue)
       andorSaveData $ANDOR_CFG(blue) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $n $n 1 1
+      updateAndorTelemetry blue
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
       after 400
       exec xpaset -p $DS9 frame 1
@@ -585,6 +590,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
   update idletasks
   set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
   if { $ANDOR_CFG(red) > -1} {
+    updateAndorTelemetry red
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
     if { $dofft } {
       andorDisplaySingleFFT $ANDOR_CFG(red) $npix $npix $n
@@ -597,6 +603,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
     set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(red,min) 
   }
   if { $ANDOR_CFG(blue) > -1} {
+    updateAndorTelemetry blue
     appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits
     if { $dofft } {
       andorDisplaySingleFFT $ANDOR_CFG(blue) $npix $npix $n

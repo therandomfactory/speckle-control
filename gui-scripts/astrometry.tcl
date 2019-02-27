@@ -27,7 +27,7 @@
 #		DS9 - Name of a ds9 executable , ds9red or ds9blue
 #
 proc updateds9wcs { ra dec } {
-global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
+global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM env TELEMETRY
   set radeg [expr [hms_to_radians $ra]*180/$PI]
   set decdeg [expr [dms_to_radians $dec]*180/$PI]
   set fout [open /tmp/[set ANDOR_ARM]wcs.wcs w]
@@ -37,12 +37,21 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
   puts $fout "CRPIX2 [expr $ACQREGION(geom)/$ANDOR_CFG(binning)/2]"
   set fac 1.0
   if { $ANDOR_ARM == "blue" } {set fac -1.0}
-  if { $SCOPE(telescope) == "GEMINI" } {set fac [expr -1.0 * $fac]}
-  puts $fout "CD1_1 [expr $fac*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"              
-     
-  puts $fout "CD1_2 0.0"
-  puts $fout "CD2_1 0.0"
-  puts $fout "CD2_2 [expr -1.0*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"
+  if { $env(TELESCOPE) == "GEMINI" } {
+    set fac11 [expr -1.0*sin($TELEMETRY(tcs.telescope.instrpa)]
+    set fac12 [expr cos($TELEMETRY(tcs.telescope.instrpa)]
+    set fac21 [expr cos($TELEMETRY(tcs.telescope.instrpa)]
+    set fac22 [expr sin($TELEMETRY(tcs.telescope.instrpa)]
+    puts $fout "CD1_1 [expr $fac11*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"        
+    puts $fout "CD1_2 [expr $fac12*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"
+    puts $fout "CD2_1 [expr $fac21*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"
+    puts $fout "CD2_2 [expr $fac22*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"
+  } else {
+    puts $fout "CD1_1 [expr $fac*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"                   
+    puts $fout "CD1_2 0.0"
+    puts $fout "CD2_1 0.0"
+    puts $fout "CD2_2 [expr -1.0*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]"
+  }
   puts $fout "CTYPE1 'DEC--TAN'"
   puts $fout "CTYPE2 'RA--TAN'" 
   puts $fout "WCSNAME 'FK5'"
@@ -71,7 +80,7 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM
 #		DS9 - Name of a ds9 executable , ds9red or ds9blue
 #
 proc headerAstrometry { fid ra dec } {
-global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM
+global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM env TELEMETRY
   set radeg [expr [hms_to_radians $ra]*180/$PI]
   set decdeg [expr [dms_to_radians $dec]*180/$PI]
   set r [fitshdrrecord  CRVAL1	 string "$decdeg"	"Declination of reference pixel \[deg\]"]
@@ -84,15 +93,29 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM
   $fid put keyword $r
   set fac 1.0
   if { $ANDOR_ARM == "blue" } {set fac -1.0}
-  if { $SCOPE(telescope) == "GEMINI" } {set fac [expr -1.0 * $fac]}
-  set r [fitshdrrecord  CD1_1	 double [expr $fac*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]  "Coordinate scale matrix \[degrees / pixel\]"]           
-  $fid put keyword $r
-  set r [fitshdrrecord  CD1_2	 double  0.0	"Coordinate scale matrix \[degrees / pixel\]"]
-  $fid put keyword $r
-  set r [fitshdrrecord  CD2_1	 double  0.0	"Coordinate scale matrix \[degrees / pixel\]"]
-  $fid put keyword $r
-  set r [fitshdrrecord  CD2_2	 double  [expr $PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)]	"Coordinate scale matrix \[degrees / pixel\]"]
-  $fid put keyword $r
+  if { $env(TELESCOPE) == "WIYN" } {
+    set r [fitshdrrecord  CD1_1	 double [expr $fac*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]           
+    $fid put keyword $r
+    set r [fitshdrrecord  CD1_2	 double  0.0	"Coordinate scale matrix \[degrees / pixel\]"]
+    $fid put keyword $r
+    set r [fitshdrrecord  CD2_1	 double  0.0	"Coordinate scale matrix \[degrees / pixel\]"]
+    $fid put keyword $r
+    set r [fitshdrrecord  CD2_2	 double  [expr $PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]
+    $fid put keyword $r
+  } else {
+    set fac11 [expr -1.0*sin($TELEMETRY(tcs.telescope.instrpa)]
+    set fac12 [expr cos($TELEMETRY(tcs.telescope.instrpa)]
+    set fac21 [expr cos($TELEMETRY(tcs.telescope.instrpa)]
+    set fac22 [expr sin($TELEMETRY(tcs.telescope.instrpa)]
+    set r [fitshdrrecord  CD1_1	 double [expr $fac11*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]           
+    $fid put keyword $r
+    set r [fitshdrrecord  CD1_2	 double  [expr $fac12*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]
+    $fid put keyword $r
+    set r [fitshdrrecord  CD2_1	 double  [expr $fac21*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]
+    $fid put keyword $r
+    set r [fitshdrrecord  CD2_2	 double  [expr $fac22*$PSCALES($SCOPE(telescope),$ANDOR_CFG(frame))*$ANDOR_CFG(binning)] "Coordinate scale matrix \[degrees / pixel\]"]
+    $fid put keyword $r
+  }
   set r [fitshdrrecord  CTYPE1	 string "DEC--TAN"	"Coordinate type"]
   $fid put keyword $r
   set r [fitshdrrecord  CTYPE2	 string  "RA--TAN"	"Coordinate type"]
@@ -143,10 +166,10 @@ global PI
 # \endcode
 
 set PI 3.141592653589
-set PSCALES(Gemini-North,fullframe) 	[expr 0.0725/3600./180.*$PI]
-set PSCALES(Gemini-North,speckle)	[expr 0.0096/3600./180.*$PI]
-set PSCALES(Gemini-South,fullframe) 	[expr 0.0725/3600./180.*$PI]
-set PSCALES(Gemini-South,speckle)	[expr 0.0096/3600./180.*$PI]
+set PSCALES(Gemini-North,fullframe) 	2.0138889E-05
+set PSCALES(Gemini-North,speckle)	2.6666666E-06
+set PSCALES(Gemini-South,fullframe) 	2.0138889E-05
+set PSCALES(Gemini-South,speckle)	2.6666666E-06
 set PSCALES(WIYN,fullframe) 	[expr 0.0813/3600./180.*$PI]
 set PSCALES(WIYN,speckle) 	[expr 0.0182/3600./180.*$PI]
 set PSCALES(GEMINI,fullframe) 	[expr 0.0725/3600./180.*$PI]

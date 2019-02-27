@@ -145,6 +145,7 @@ global GEMINI TELEMETRY CACHETELEMETRY
    set TELEMETRY($GEMINI(targetdec)) 0.00000000
    set TELEMETRY($GEMINI(targetepoch)) 2000.0
    set TELEMETRY($GEMINI(targetframe)) FK5
+   set TELEMETRY($GEMINI(targetequinox)) 2000.0
    set TELEMETRY($GEMINI(targetname)) Gemini-North
    set TELEMETRY($GEMINI(targetra)) 0.00000000
    set TELEMETRY($GEMINI(teldec)) +19:47:50.66
@@ -209,6 +210,13 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
   set TELEMETRY(speckle.andor.ccdtemp) $ANDOR_CFG(ccdtemp)
 }
 
+
+proc redisUpdate { } { 
+   updateGeminiTelemetry
+}
+
+proc updateRedisTelemetry  { item value } { }
+
 # \encdode
 
 set ANDOR_CFG(verticalspeeds) "0 0 0 0"
@@ -264,6 +272,7 @@ set GEMINI(targetname) 	speckle.scope.target
 set GEMINI(targetra) 	tcs.target.az
 set GEMINI(targetdec) 	tcs.target.alt
 set GEMINI(targetepoch) tcs.target.epoch
+set GEMINI(targetequinox) tcs.target.equinox
 set GEMINI(targetframe) tcs.target.state
 set GEMINI(telescope) 	speckle.scope.name
 set GEMINI(telra) 	tcs.telescope.ra
