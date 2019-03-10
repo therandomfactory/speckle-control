@@ -82,7 +82,16 @@ wm withdraw .
 set SPECKLE_DIR $env(SPECKLE_DIR)
 set SCOPE(telescope) $env(TELESCOPE)
 set SCOPE(instrument) "NESSI"
+set SCOPE(comments) ""
+set SCOPE(ProgID) ""
+set SCOPE(filter) ""
+
+set TELEMETRY(speckle.scope.imagetype) ""
 set TELEMETRY(speckle.scope.instrument) "NESSI"
+set TELEMETRY(speckle.andor.inputzaber) ""
+set TELEMETRY(speckle.andor.fieldzaber) ""
+set TELEMETRY(speckle.andor.filter) ""
+
 load $SPECKLE_DIR/lib/andorTclInit.so
 load $SPECKLE_DIR/lib/libfitstcl.so
 load $SPECKLE_DIR/lib/libccd.so
