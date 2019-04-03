@@ -1,0 +1,15 @@
+#!/bin/sh
+
+export TELESCOPE=GEMINI
+export SPECKLE_DIR=$HOME/speckle-control
+export PKG_CONFIG_PATH=$SPECKLE_DIR/pkgconfig
+export PATH=${SPECKLE_DIR}/bin:${PATH}
+export LD_LIBRARY_PATH=${SPECKLE_DIR}/lib:${LD_LIBRARY_PATH}
+export SPECKLE_DATADIR=$HOME/data
+export XPA_METHOD=local
+pkill -9 wish
+xpans &
+ds9red -geometry +1200+0 &
+ds9blue -geometry +0+0 &
+$SPECKLE_DIR/gui-scripts/gui2.tcl
+
