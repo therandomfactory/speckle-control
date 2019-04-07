@@ -121,7 +121,7 @@ global GEMINI TELEMETRY
 #		CACHETELEMETRY - Cached Global telemetry
 #
 proc simGeminiTelemetry { } {
-global GEMINI TELEMETRY CACHETELEMETRY
+global GEMINI TELEMETRY CACHETELEMETRY env
    set TELEMETRY($GEMINI(airmass)) 1.000
    set TELEMETRY($GEMINI(azerror)) +00:00:00.00
    set TELEMETRY($GEMINI(azimuth)) +90:00:00.00
@@ -146,10 +146,10 @@ global GEMINI TELEMETRY CACHETELEMETRY
    set TELEMETRY($GEMINI(targetepoch)) 2000.0
    set TELEMETRY($GEMINI(targetframe)) FK5
    set TELEMETRY($GEMINI(targetequinox)) 2000.0
-   set TELEMETRY($GEMINI(targetname)) Gemini-North
    set TELEMETRY($GEMINI(targetra)) 0.00000000
    set TELEMETRY($GEMINI(teldec)) +19:47:50.66
-   set TELEMETRY($GEMINI(telescope)) Gemini-North
+   set TELEMETRY($GEMINI(targetname)) Gemini-$env(GEMINISITE)
+   set TELEMETRY($GEMINI(telescope)) Gemini-$env(GEMINISITE)
    set TELEMETRY($GEMINI(telra)) 16:01:21.495
    set TELEMETRY($GEMINI(userfocus)) 0.000
    set TELEMETRY($GEMINI(utc)) 00:06:10.7
@@ -247,6 +247,10 @@ set ANDOR_CFG(filter) "NA"
 
 set GEMINICFG(north,ip) 10.2.44.60
 set GEMINICFG(north,port) 7283
+
+set GEMINICFG(south,ip) 10.2.44.60
+set GEMINICFG(south,port) 7283
+
 
 set GEMINI(airmass)	tcs.telescope.airmass
 set GEMINI(azimuth)	tcs.azimuth.mapper

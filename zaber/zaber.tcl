@@ -36,6 +36,11 @@ proc loadZaberConfig { {fname zabersConfiguration} } {
 global SPECKLE_DIR ZABERS env
    if { $env(TELESCOPE) == "GEMINI" } {  
       set fname "[set fname].gemini"
+      if { $env(GEMINISITE) == "south" } {
+        set fname "[set fname].geminiS"
+      }
+   } else {
+      set fname "[set fname].wiyn"
    }
    if { [file exists $SPECKLE_DIR/$fname] == 0 } {
      errordialog "Zaber configuration file $SPECKLE_DIR/$fname\n does not exist"
@@ -56,7 +61,15 @@ global SPECKLE_DIR ZABERS env
 #		SPECKLE_DIR - Directory path of speckle code
 #
 proc saveZaberConfig { fname } {
-global SPECKLE_DIR ZABERS
+global SPECKLE_DIR ZABERS env
+   if { $env(TELESCOPE) == "GEMINI" } {  
+      set fname "[set fname].gemini"
+      if { $env(GEMINISITE) == "south" } {
+        set fname "[set fname].geminiS"
+      }
+   } else {
+      set fname "[set fname].wiyn"
+   }
    set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh"
    echoZaberConfig $fcfg

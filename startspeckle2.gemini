@@ -1,6 +1,7 @@
 #!/bin/sh
 
 export TELESCOPE=GEMINI
+export GEMINISITE=north
 export SPECKLE_DIR=$HOME/speckle-control
 export PKG_CONFIG_PATH=$SPECKLE_DIR/pkgconfig
 export PATH=${SPECKLE_DIR}/bin:${PATH}

@@ -22,8 +22,11 @@
 #		SCOPE - Array of telescope configuration
 #
 proc loadFiltersConfig { fname } {
-global SPECKLE_DIR FWHEELS SCOPE
+global SPECKLE_DIR FWHEELS SCOPE env
    set fname "[set fname].[string tolower $SCOPE(telescope)]"
+   if { $env(GEMINISITE) == "south" } { 
+      set fname "[set fname].geminiS"
+   }
    if { [file exists $SPECKLE_DIR/$fname] == 0 } {
      errordialog "Filters configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
@@ -42,8 +45,11 @@ global SPECKLE_DIR FWHEELS SCOPE
 #		SCOPE - Array of telescope configuration
 #
 proc saveFiltersConfig { fname } {
-global SPECKLE_DIR FWHEELS SCOPE
+global SPECKLE_DIR FWHEELS SCOPE env
    set fname "[set fname].[string tolower $SCOPE(telescope)]"
+   if { $env(GEMINISITE) == "south" } { 
+      set fname "[set fname].geminiS"
+   }
    set fcfg [open $SPECKLE_DIR/$fname w]
    puts $fcfg  "#!/usr/bin/tclsh
    echoFiltersConfig $fcfg

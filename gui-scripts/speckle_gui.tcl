@@ -1043,7 +1043,7 @@ if { $SCOPE(telescope) == "WIYN" } {
 
 
   if { $SPKTELEM(sim) == 0 } {
-    geminiConnect north
+    geminiConnect $env(GEMINISITE)
     after 3000 updateGeminiTelemetry
   }
 

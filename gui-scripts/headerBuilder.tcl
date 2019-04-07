@@ -526,6 +526,9 @@ if { $env(TELESCOPE) == "WIYN" } {
   set TOMPG wiyn
 } else {
   set SCOPE(instrument) "Alopeke"
+  if { $env(GEMINISITE_ == "south" } {
+     set SCOPE(instrument) "Zorro"
+  }
   proc redisquery { } { }
 }
 
@@ -535,11 +538,12 @@ source $SPECKLE_DIR/gui-scripts/astrometry.tcl
 source $SPECKLE_DIR/gui-scripts/andorTelemetry.tcl
 
 loadstreamdefs $SPECKLE_DIR/gui-scripts/telem-[string tolower $env(TELESCOPE)].conf
-loadhdrdefs $SPECKLE_DIR/gui-scripts/headers.conf
 if { $env(TELESCOPE) == "WIYN" } {
+  loadhdrdefs $SPECKLE_DIR/gui-scripts/headers.conf.wiyn
   source $SPECKLE_DIR/gui-scripts/simwiyntlm.tcl
   initWIYNTelemetry mpg
 } else {
+  loadhdrdefs $SPECKLE_DIR/gui-scripts/headers.conf.gemini
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
   geminiConnect north
 }

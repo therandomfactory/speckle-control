@@ -20,7 +20,11 @@
 #		PICOS - Array of pico configuration data
 #
 proc loadPicosConfig { {fname picomotorConfiguration} } {
-global SPECKLE_DIR PICOS
+global SPECKLE_DIR PICOS SCOPE env
+   set fname "[set fname].[string tolower $SCOPE(telescope)]"
+   if { $env(GEMINISITE) == "south" } { 
+      set fname "[set fname].geminiS"
+   }
    if { [file exists $SPECKLE_DIR/$fname] == 0 } {
      errordialog "Picos configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {

@@ -93,6 +93,9 @@ if { $env(TELESCOPE) == "GEMINI" } {
   proc redisUpdate { } { }
   set SCOPE(telescope) "GEMINI"
   set SCOPE(instrument) "Alopeke"
+  if { $env(GEMINISITE) == "south" } {
+     set SCOPE(instrument) "Zorro"
+  }
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl 
   set GEMINITLM(sim) 0
   if { [info exists env(SPECKLE_SIM)] } {
@@ -103,7 +106,7 @@ if { $env(TELESCOPE) == "GEMINI" } {
        simGeminiTelemetry
    }
   } else {
-    geminiConnect north
+    geminiConnect $env(GEMINISITE)
   }
 } else {
   set SCOPE(telescope) WIYN

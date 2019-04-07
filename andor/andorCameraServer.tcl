@@ -97,6 +97,9 @@ load $SPECKLE_DIR/lib/libfitstcl.so
 load $SPECKLE_DIR/lib/libccd.so
 load $SPECKLE_DIR/lib/libguider.so
 set ckey [string tolower $env(TELESCOPE)]
+if { $env(GEMINISITE) =="south" } {
+   set ckey "geminiS"
+}
 source $SPECKLE_DIR/andor/andor.tcl
 source $SPECKLE_DIR/andorsConfiguration.[set ckey]
 source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl 
@@ -105,6 +108,9 @@ if { $env(TELESCOPE) == "GEMINI" } {
   set SCOPE(telescope) "GEMINI"
   set SCOPE(instrument) "Alopeke"
   set TELEMETRY(speckle.scope.instrument) "Alopeke"
+  if { $env(GEMINISITE) == "south" } {
+     set SCOPE(instrument) "Zorro"
+  }
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl 
   set GEMINITLM(sim) 0
   if { [info exists env(SPECKLE_SIM)] } {
@@ -115,7 +121,7 @@ if { $env(TELESCOPE) == "GEMINI" } {
        simGeminiTelemetry
    }
   } else {
-    geminiConnect north
+    geminiConnect $env(GEMINISITE)
   }
 } else {
   set SCOPE(telescope) WIYN
