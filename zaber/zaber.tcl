@@ -37,7 +37,7 @@ global SPECKLE_DIR ZABERS env
    if { $env(TELESCOPE) == "GEMINI" } {  
       set fname "[set fname].gemini"
       if { $env(GEMINISITE) == "south" } {
-        set fname "[set fname].geminiS"
+        set fname "[set fname]S"
       }
    } else {
       set fname "[set fname].wiyn"
@@ -65,7 +65,7 @@ global SPECKLE_DIR ZABERS env
    if { $env(TELESCOPE) == "GEMINI" } {  
       set fname "[set fname].gemini"
       if { $env(GEMINISITE) == "south" } {
-        set fname "[set fname].geminiS"
+        set fname "[set fname]S"
       }
    } else {
       set fname "[set fname].wiyn"

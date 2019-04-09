@@ -46,6 +46,9 @@ global SPECKLE_DIR PICOS SCOPE env
 proc savePicosConfig { fname } {
 global SPECKLE_DIR PICOS
    set fcfg [open $SPECKLE_DIR/$fname w]
+   if { $env(GEMINISITE) == "south" } { 
+      set fname "[set fname].geminiS"
+   }
    puts $fcfg  "#!/usr/bin/tclsh
    echoPicosConfig $fcfg
    close $fcfg
