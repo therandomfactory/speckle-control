@@ -165,7 +165,7 @@ global PI
 
 # \endcode
 
-set PI $PI2653589
+set PI 3.141592653589
 set PSCALES(Gemini-North,fullframe) 	2.0138889E-05
 set PSCALES(Gemini-North,speckle)	2.6666666E-06
 set PSCALES(Gemini-South,fullframe) 	2.0138889E-05
