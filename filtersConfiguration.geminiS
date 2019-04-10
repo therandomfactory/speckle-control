@@ -8,13 +8,13 @@ set FWHEELS(red,2)		"Red-z"
 set FWHEELS(red,3)		"Red-716"
 set FWHEELS(red,4)		"Red-832"
 set FWHEELS(red,5)		"clear"
-set FWHEELS(red,6)		"clear"
+set FWHEELS(red,6)		"slit+832"
 
 set FWHEELS(blue,1)		"Blue-u"
 set FWHEELS(blue,2)		"Blue-g"
 set FWHEELS(blue,3)		"Blue-r"
 set FWHEELS(blue,4)		"Blue-466"
 set FWHEELS(blue,5)		"Blue-562"
-set FWHEELS(blue,6)		"clear"
+set FWHEELS(blue,6)		"slit+562"
 
 
