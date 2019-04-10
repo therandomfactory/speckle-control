@@ -526,7 +526,7 @@ if { $env(TELESCOPE) == "WIYN" } {
   set TOMPG wiyn
 } else {
   set SCOPE(instrument) "Alopeke"
-  if { $env(GEMINISITE_ == "south" } {
+  if { $env(GEMINISITE) == "south" } {
      set SCOPE(instrument) "Zorro"
   }
   proc redisquery { } { }
