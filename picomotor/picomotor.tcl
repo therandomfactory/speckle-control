@@ -29,8 +29,8 @@ global SPECKLE_DIR PICOS SCOPE env
      errordialog "Picos configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
      source $SPECKLE_DIR/$fname
+     logPicosConfig
    }
-   logPicosConfig
    debuglog "Loaded PICO configuration"
 }
 
