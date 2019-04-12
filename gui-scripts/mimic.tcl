@@ -42,9 +42,9 @@ global oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut obluesh
   set oinpspck   [.mimicSpeckle.myCanvas create oval 50 50 80 100 -fill yellow]
   set oredshut   [.mimicSpeckle.myCanvas create oval 50 50 40 80 -fill white]
   set oblueshut  [.mimicSpeckle.myCanvas create oval 50 50 80 40 -fill white]
-  label .mimicSpeckle.myCanvas.redfilt -width 10  -text "clear" 
+  label .mimicSpeckle.myCanvas.redfilt -width 10  -text "????" 
   place .mimicSpeckle.myCanvas.redfilt -x [expr $XO+410] -y  [expr $YO+80]
-  label .mimicSpeckle.myCanvas.bluefilt  -width 10  -text "clear" 
+  label .mimicSpeckle.myCanvas.bluefilt  -width 10  -text "????" 
   place .mimicSpeckle.myCanvas.bluefilt -x [expr $XO+306] -y  [expr $YO+220]
   label .mimicSpeckle.myCanvas.redroi  -width 10  -text "1024x1024" 
   place .mimicSpeckle.myCanvas.redroi -x [expr $XO+716] -y  [expr $YO+120]

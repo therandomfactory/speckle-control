@@ -122,7 +122,7 @@ set ANDOR_CFG(red,fitsbits) 32
 set ANDOR_CFG(blue,fitsbits) 32
 set ANDOR_CFG(ccdtemp) 0.0
 
-set SCOPE(filter) "clear"
+set SCOPE(filter) "????"
 set SCOPE(ProgID) "test"
 set SCOPE(telescope) $env(TELESCOPE)
 set TELEMETRY(speckle.andor.head) "Andor iXon Emccd"

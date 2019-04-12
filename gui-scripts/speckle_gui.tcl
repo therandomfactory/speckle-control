@@ -163,7 +163,7 @@ proc initFilter { arm } {
 global SPECKLE_FILTER FWHEELS
    debuglog "Initializing filter wheels ..."
    resetFilterWheel $FWHEELS($arm,handle)
-   selectfilter $arm $FWHEELS($arm,clear)
+   selectfilter $arm $FWHEELS($arm,init)
    debuglog "Initialized filter wheels"
 }
 
@@ -662,17 +662,17 @@ place .main.rmode -x 20 -y 258
 .main.rmode.m add command -label "Speckle" -command "specklemode speckle"
 
 
-menubutton .lowlevel.rfilter -text "Filter = clear"  -width 29 -bg gray80 -menu .lowlevel.rfilter.m -relief raised
+menubutton .lowlevel.rfilter -text "Filter = ????"  -width 29 -bg gray80 -menu .lowlevel.rfilter.m -relief raised
 menu .lowlevel.rfilter.m
 place .lowlevel.rfilter -x 418 -y 66
 
-menubutton .lowlevel.bfilter -text "Filter = clear"  -width 29 -bg gray80 -menu .lowlevel.bfilter.m -relief raised
+menubutton .lowlevel.bfilter -text "Filter = ????"  -width 29 -bg gray80 -menu .lowlevel.bfilter.m -relief raised
 menu .lowlevel.bfilter.m
 place .lowlevel.bfilter -x 18 -y 66
 
 
-set SPECKLE_FILTER(red,current) clear
-set SPECKLE_FILTER(blue,current) clear
+set SPECKLE_FILTER(red,current) "????"
+set SPECKLE_FILTER(blue,current) "????"
 set SPECKLE_FILTER(red,wheel) 1
 set SPECKLE_FILTER(blue,wheel) 2
 
