@@ -13,12 +13,12 @@ set ZABERS(pickoff,extend) -7366
 set ZABERS(pickoff,stow)  270000
 
 set ZABERS(A,device)           3
-set ZABERS(A,speckle)	  906667
+set ZABERS(A,speckle)	    869336
 set ZABERS(A,wide)        152831
 
 set ZABERS(B,device)           4
-set ZABERS(B,speckle)	  270000
-set ZABERS(B,wide)        940060
+set ZABERS(B,speckle)	    213000
+set ZABERS(B,wide)        889060
 
 set ZABERS(input,device)        2
 set ZABERS(input,speckle) 1066667
