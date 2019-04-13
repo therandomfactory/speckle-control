@@ -113,8 +113,12 @@ global FILTERWHEEL FWHEELS MAXFILTERS
      .lowlevel.bfilter configure -bg yellow -activebackground yellow
   }
   update
-  set result [setOrielFilter $FWHEELS($id,handle) $n]
-  set msg [split $result \n]
+  if { $FWHEELS(sim) } {
+     set msg $n
+  } else {
+     set result [setOrielFilter $FWHEELS($id,handle) $n]
+     set msg [split $result \n]
+  }
   if { [string range [lindex $msg 3] 0 9] == "USB error:" } {
     set it [ tk_dialog .d "SPECKLE Filter Wheel $id" "$result" {} -1 OK]
   } else {

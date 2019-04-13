@@ -659,6 +659,9 @@ if { $ZABERS(sim) == 0 } {
   set ZABERS(input,readpos) 999999
   set ZABERS(A,readpos) 999999
   set ZABERS(B,readpos) 999999
+  set ZABERS(input,pos) 999999
+  set ZABERS(A,pos) 999999
+  set ZABERS(B,pos) 999999
 }
 
 set ZABERS(delta) 10
