@@ -545,7 +545,7 @@ if { $env(TELESCOPE) == "WIYN" } {
 } else {
   loadhdrdefs $SPECKLE_DIR/gui-scripts/headers.conf.gemini
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
-  geminiConnect north
+  if { $SPKTELEM(sim) == 0 } {geminiConnect north}
 }
 
 proc redisUpdate { } { }

@@ -1028,8 +1028,6 @@ if { $SCOPE(telescope) == "WIYN" } {
   showstatus "Initializing PICOs"
   source $SPECKLE_DIR/picomotor/picomotor.tcl
 
-  showstatus "Connecting to Gemini Telemetry service"
-  source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
   set SPKTELEM(sim) 0
   if { [info exists env(SPECKLE_SIM)] } {
@@ -1040,6 +1038,7 @@ if { $SCOPE(telescope) == "WIYN" } {
        simGeminiTelemetry
      }
   }
+  showstatus "Connecting to Gemini Telemetry service"
 
 
   if { $SPKTELEM(sim) == 0 } {
