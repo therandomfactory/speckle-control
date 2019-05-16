@@ -14,7 +14,7 @@ set ZABERS(pickoff,stow)  270000
 
 set ZABERS(A,device)           3
 set ZABERS(A,speckle)	    869336
-set ZABERS(A,wide)        152831
+set ZABERS(A,wide)        126831
 
 set ZABERS(B,device)           4
 set ZABERS(B,speckle)	    213000
