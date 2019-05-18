@@ -54,6 +54,7 @@ global SCOPE ANDOR_CFG
       multiple {continuousmode $SCOPE(exposure) 999999 $id}
       fullframe {setfullframe}
     }
+    if { $op == "regionall" } {set op "fullframe"}
     .main.rois configure -text "Set ROI's ($op)"
   }
 }

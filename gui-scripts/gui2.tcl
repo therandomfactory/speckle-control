@@ -768,6 +768,8 @@ catch {
 
 zaberJogger input
 speckleGuiMode observingGui
+.main.exptype configure -text $SCOPE(imagetype)
+
 debuglog "****************************************************************"
 debuglog "************                                       *************"
 debuglog "************  Speckle GUI initialization complete  *************"
