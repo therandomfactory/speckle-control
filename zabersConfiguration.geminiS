@@ -9,7 +9,7 @@ set ZABERS(focus,stow)        0
 set ZABERS(focus,extend) 1049869
 
 set ZABERS(pickoff,device)     5
-set ZABERS(pickoff,extend) -7366
+set ZABERS(pickoff,extend)     0
 set ZABERS(pickoff,stow)  270000
 
 set ZABERS(A,device)           3
