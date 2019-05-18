@@ -1,5 +1,5 @@
 
-set ANDORS(red,serialnum)  X-11807
+set ANDORS(red,serialnum) X-11807
 set ANDORS(blue,serialnum) X-11828
 set ANDORS(X-10330) red
 set ANDORS(X-10244) red

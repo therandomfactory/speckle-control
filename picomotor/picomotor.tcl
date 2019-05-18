@@ -22,9 +22,6 @@
 proc loadPicosConfig { {fname picomotorConfiguration} } {
 global SPECKLE_DIR PICOS SCOPE env
    set fname "[set fname].[string tolower $SCOPE(telescope)]"
-   if { $env(GEMINISITE) == "south" } { 
-      set fname "[set fname]S"
-   }
    if { [file exists $SPECKLE_DIR/$fname] == 0 } {
      errordialog "Picos configuration file $SPECKLE_DIR/$fname\n does not exist"
    } else {
@@ -318,5 +315,14 @@ if { [info exists env(SPECKLE_SIM)] } {
    }
 }
 
+set PICOS(X,jog-) -1
+set PICOS(X,jog--) -10
+set PICOS(X,jog+) 1
+set PICOS(X,jog++) +10
+
+set PICOS(Y,jog-) -1
+set PICOS(Y,jog--) -10
+set PICOS(Y,jog+) 1
+set PICOS(Y,jog++) +10
 
 

@@ -120,8 +120,8 @@ if { $env(TELESCOPE) == "GEMINI" } {
        debuglog "Gemini telemetry in SIMULATION mode"
        simGeminiTelemetry
    }
-  } else {
-    geminiConnect $env(GEMINISITE)
+#  } else {
+#    geminiConnect $env(GEMINISITE)
   }
 } else {
   set SCOPE(telescope) WIYN
@@ -411,6 +411,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
     set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     set TELEMETRY(speckle.andor.numexp) 1
     set TELEMETRY(speckle.andor.numberkinetics) 0
+    debuglog "FITSBITS = $ANDOR_CFG(fitsbits)"
     exec xpaset -p $DS9 shm array shmid $ANDOR_CFG(shmem) \\\[xdim=$dimen,ydim=$dimen,bitpix=32\\\]
     cAndorSetProperty $CAM ExposureTime $exp
     if { $ANDOR_CFG(red) > -1} {
@@ -477,6 +478,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
     set t [clock seconds]
     cAndorSetProperty $CAM ExposureTime $exp
     set ACQREGION(geom) $n
+    debuglog "FITSBITS = $ANDOR_CFG(fitsbits)"
     set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     if { $ANDOR_CFG(red) > -1} {
       andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1

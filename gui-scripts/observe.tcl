@@ -54,6 +54,7 @@ global SCOPE ANDOR_CFG
       multiple {continuousmode $SCOPE(exposure) 999999 $id}
       fullframe {setfullframe}
     }
+    .main.rois configure -text "Set ROI's ($op)"
   }
 }
 
@@ -543,7 +544,11 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
            set i [andorGetControl 0 frame]
            after [expr int($SCOPE(exposure)*1010)]
         }
-        .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
+        if { $SCOPE(numframes) == 1 } {
+          .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
+        } else {
+          .lowlevel.p configure -value [expr $elapsedtime*100/$totaltime]
+        }
         .lowlevel.progress configure -text "Observation status : Frame $i   Exposure $dfrmnum   Sequence $iseqnum / $SCOPE(numseq)"
         if { $elapsedtime > $totaltime } { set i $SCOPE(numframes) ; set doneset 1}
         update

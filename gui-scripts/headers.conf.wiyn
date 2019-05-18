@@ -1,0 +1,81 @@
+#
+# The file associates groups of parameters from various
+# streams together into logical groups. 
+#
+#
+header wiyn-speckle
+   tcs.time.UT1
+   tcs.time.UTC
+   tcs.time.LAST
+   tcs.time.TAI
+   tcs.target.tracking
+   tcs.target.epoch
+   tcs.target.az
+   tcs.target.alt
+   tcs.target.equinox
+   tcs.target.name
+   tcs.telescope.zenithdist
+   tcs.telescope.airmass
+   tcs.telescope.hourangle
+   tcs.telescope.paraangle
+   tcs.mnir.mnirbeta
+   tcs.mnir.track
+   tcs.geometry.alt
+   tcs.geometry.latitude
+   tcs.geometry.longitude
+   oss.secondary.focus
+   speckle.scope.site
+   speckle.scope.program
+   speckle.scope.instrument
+   speckle.scope.obsdate
+   speckle.scope.obstime
+   speckle.scope.imagetype
+   speckle.scope.recid
+   speckle.andor.int_time
+   speckle.andor.exptime
+   speckle.andor.imagename
+   speckle.andor.exposureStart
+   speckle.andor.exposureEnd
+   speckle.andor.head
+   speckle.andor.acquisition_mode
+   speckle.andor.kinetic_time
+   speckle.andor.kinetic_mode
+   speckle.andor.numexp
+   speckle.andor.read_mode
+   speckle.andor.fullframe
+   speckle.andor.emccdmode
+   speckle.andor.frametransfer
+   speckle.andor.biasclamp
+   speckle.andor.hbin
+   speckle.andor.vbin
+   speckle.andor.roi
+   speckle.andor.exposure_total
+   speckle.andor.em_gain
+   speckle.andor.vertical_speed
+   speckle.andor.horizontal_speed
+   speckle.andor.amplifier
+   speckle.andor.preamp_gain
+   speckle.andor.serial_number
+   speckle.andor.target_temperature
+   speckle.andor.numaccum
+   speckle.andor.numberkinetics
+   speckle.andor.accumulationcycle
+   speckle.andor.filter
+   speckle.andor.fieldzaber
+   speckle.andor.inputzaber
+   speckle.andor.ccdtemp
+   tcs.weather.rawiq
+   tcs.weather.rawcc
+   tcs.weather.rawwv
+   tcs.weather.rawbg
+   tcs.weather.pressure
+   tcs.weather.relhumdome
+   tcs.weather.relhumout
+   tcs.weather.windspeed
+   tcs.weather.winddir
+   tcs.weather.refa
+   tcs.weather.refb
+   tcs.weather.dometemp
+   tcs.weather.outsidetemp
+
+

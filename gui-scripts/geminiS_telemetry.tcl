@@ -236,9 +236,6 @@ set ANDOR_CFG(ccdtemp) 0.0
 set ANDOR_CFG(filter) "NA"
 
 
-set GEMINICFG(south,ip) 172.17.44.50
-set GEMINICFG(south,port) 7283
-
 set GEMINICFG(north,ip) 10.2.44.60
 set GEMINICFG(north,port) 7283
 
@@ -262,7 +259,7 @@ set GEMINI(offsetdec) 	tcs.telescope.decoffset
 set GEMINI(offsetra) 	tcs.telescope.raoffset
 set GEMINI(programid) 	speckle.scope.obsid
 set GEMINI(rotator) 	tcs.nir.position
-set GEMINI(targetname) 	tcs.target.name
+set GEMINI(targetname) 	speckle.scope.name
 set GEMINI(targetra) 	tcs.target.az
 set GEMINI(targetdec) 	tcs.target.alt
 set GEMINI(targetepoch) tcs.target.epoch

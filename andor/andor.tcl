@@ -328,6 +328,7 @@ global STATUS ANDOR_CFG
    set STATUS(abort) 0
    set ANDOR_CFG(waskinetic) $ANDOR_CFG(kineticMode)
    set ANDOR_CFG(kineticMode) 1
+   catch {updateGeminiTelemetry}
    setKineticMode
    .lowlevel.datarate configure -text ""
 #   andorset vspeed red VSSpeed 0

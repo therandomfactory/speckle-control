@@ -649,11 +649,6 @@ if { $ZABERS(sim) == 0 } {
   if { $env(TELESCOPE) == "GEMINI" } {
        set ZABERS(focus,readpos) 999999
        set ZABERS(pickoff,readpos) 999999
-       zaberCommand focus home
-       zaberCommand pickoff home
-       after 2000
-       zaberGoto pickoff stow
-       zaberGoto focus stow 
   }
 } else {
   set ZABERS(input,readpos) 999999

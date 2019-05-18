@@ -295,6 +295,9 @@ set SCOPE(telescope) GEMINI
 set SCOPE(site) GEMINI_N
 set SCOPE(latitude) 19:49:00
 set SCOPE(longitude) 155:28:00
+if { $env(GEMINISITE) == "south" } {
+  set SCOPE(site) GEMINI_S
+}
 
 
 if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
@@ -557,6 +560,9 @@ if { $SCOPE(telescope) == "GEMINI" } {
   checkbutton .main.simpico -bg gray  -text "Picos" -variable PICOS(sim) -highlightthickness 0
   place .main.simpico -x 845 -y 227
   set SCOPE(instrument) "Alopeke"
+  if { $env(GEMINISITE) == "south" } {
+    set SCOPE(instrument) "Zorro"
+  }
 } else {
   set SCOPE(instrument) "NESSI"
 }
@@ -732,15 +738,6 @@ wm protocol .camerastatus WM_DELETE_WINDOW {wm iconify .status}
 wm protocol .filters WM_DELETE_WINDOW {wm iconify .status}
 
 set d [string tolower [exec date -u +%B]]
-
-if { [file exists $SCOPE(datadir)] } {
- catch {
-  set all [glob $SCOPE(datadir)/N*.fits]
-  set last [split [lindex $all end] "_."]
-  set SCOPE(seqnum) [string trimleft [lindex $last 1] 0]
- }
-}
-
 set SCOPE(imagename) "N[exec date -u +%Y%m%d]N"
 set SCOPE(preamble) N
 
@@ -748,11 +745,14 @@ if { $SCOPE(site) != "WIYN" } {
    set SCOPE(preamble) N
    set SCOPE(imagename) "N[exec date -u +%Y%m%d]A"
    set SCOPE(instrument) "Alopeke"
+   if { $env(GEMINISITE) == "south" } {
+     set SCOPE(instrument) "Zorro"
+   }
    proc redisUpdateTelemetry { {mode ""} {obs "" } } { }
 }
 
-if { $SCOPE(site) == "GEMINI-S" } {
-   set SCOPE(preamble) Z
+if { $env(GEMINISITE) == "south" } {
+   set SCOPE(preamble) S
    set SCOPE(imagename) "S[exec date -u +%Y%m%d]Z"
    set SCOPE(instrument) "Zorro"
 }
@@ -761,7 +761,7 @@ if { $SCOPE(site) == "GEMINI-S" } {
 
 catch {
     set all [lsort [glob $SCOPE(datadir)/[set SCOPE(preamble)]*.fits]]
-    set last [split [lindex $all end] _]
+    set last [file rootname [split [lindex $all end] _]]
     set SCOPE(seqnum) [expr [string trimleft [string range [file tail $last] 10 13] 0] + 1]
 }
 

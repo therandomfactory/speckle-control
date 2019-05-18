@@ -52,15 +52,15 @@ typedef struct shmControlRegisters {
 shmControl *SharedMem2;
 
 int getPeak(int cameraId , int npix);
-int imageDataA[1024*1024];
-int imageDataB[1024*1024];
-int outputData[1024*1024];
-int outputAvgA[1024*1024];
+unsigned int imageDataA[1024*1024];
+unsigned int imageDataB[1024*1024];
+unsigned int outputData[1024*1024];
+unsigned int outputAvgA[1024*1024];
 int outputAvgB[1024*1024];
 unsigned short imageDataAI2[1024*1024];
 unsigned short imageDataBI2[1024*1024];
-int getLucky0[1024*1024];
-int getLucky1[1024*1024];
+unsigned int getLucky0[1024*1024];
+unsigned int getLucky1[1024*1024];
 float imageFrame[1024*1024];
 float fitsROI[1024*1024];
 unsigned long fitsROI_ulong[1024*1024];
@@ -68,9 +68,9 @@ float fitsROI_float[1024*1024];
 unsigned short fitsROI_ushort[1024*1024];
 double fitsTimings[3000000];
 unsigned int imageFrameI4[1024*1024];
-unsigned int fitsROI4[512*512];
+unsigned int fitsROI4[1024*1024];
 unsigned short imageFrameI2[1024*1024];
-unsigned short fitsROI2[512*512];
+unsigned short fitsROI2[1024*1024];
 char *result=NULL;
 static at_32 cameraA;
 static at_32 cameraB;
@@ -1368,7 +1368,7 @@ int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, c
      if (width < 1024) {
        for (iw=0;iw<width;iw++) {
        for (ih=0;ih<height;ih++) {
-         fitsROI4[iw+ih*width] = (unsigned int)imageDataA[iw+ih*width];
+         fitsROI_ulong[iw+ih*width] = (unsigned long)imageDataA[iw+ih*width];
        }
        }
      }
@@ -1378,7 +1378,7 @@ int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, c
      if (width < 1024) {
        for (iw=0;iw<width;iw++) {
        for (ih=0;ih<height;ih++) {
-         fitsROI4[iw+ih*width] = (unsigned int)imageDataB[iw+ih*width];
+         fitsROI_ulong[iw+ih*width] = (unsigned long)imageDataB[iw+ih*width];
        }
        }
      }
@@ -1405,19 +1405,19 @@ int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, c
     }
    
     if (width < 1024) {
-      fits_write_img(fptr, TULONG, fpixel, nelements, &fitsROI, &status);
+      fits_write_img(fptr, TULONG, fpixel, nelements, &fitsROI_ulong, &status);
     } else {
       if ( cameraId == 0 ) {
         for (ipix=0;ipix<1024*1024;ipix++) {
-            imageFrameI4[ipix] = (unsigned int)imageDataA[ipix];
+            fitsROI_ulong[ipix] = (unsigned long)imageDataA[ipix];
         }
       }
       if ( cameraId == 1 ) {
         for (ipix=0;ipix<1024*1024;ipix++) {
-            imageFrameI4[ipix] = (unsigned int)imageDataB[ipix];
+            fitsROI_ulong[ipix] = (unsigned long)imageDataB[ipix];
         }
       }
-      fits_write_img(fptr, TULONG, fpixel, nelements, &imageFrameI4, &status);
+      fits_write_img(fptr, TULONG, fpixel, nelements, &fitsROI_ulong, &status);
     }
 
     if (status != 0) {
@@ -1455,7 +1455,7 @@ int tcl_andorStoreFrameI4(ClientData clientData, Tcl_Interp *interp, int argc, c
      }
      fpixel=width*height*(iexp-1)+1;
      nelements = naxes3[0] * naxes3[1];          /* number of pixels to write */
-     fits_write_img(fptr, TULONG, fpixel, nelements, &fitsROI4, &status);
+     fits_write_img(fptr, TULONG, fpixel, nelements, &fitsROI_ulong, &status);
      if (status != 0) {
          sprintf(result,"fits write img error %d",status);
          Tcl_SetResult(interp,result,TCL_STATIC);
