@@ -122,11 +122,11 @@ global PICOS
    if { $PICOS(sim) } {
      set rec "SIM $axis $cmd"
      set ctype [lindex $cmd 0]
-     if { $ctype == "POS" } {
+     if { $ctype == "PA" } {
         set PICOS($axis,position) [lindex [split $cmd "= "] 2]
      }
-     if { $ctype == "REL" } {
-        set delta [lindex [split $cmd "= "] 2]
+     if { $ctype == "PR" } {
+        set delta [lindex $cmd 1]
         set PICOS($axis,position) [expr $PICOS($axis,position) + $delta]
      }
      set PICOS($axis,current) $PICOS($axis,position)
