@@ -43,7 +43,7 @@ proc shutdown { {id 0} } {
 global SCOPE
    set it [tk_dialog .d "Exit" "Confirm Shutdown" {} -1 "Cancel" "Shutdown"]
    if { $it } {
-     if { $SCOPE(telescope) == "GEMINI" } {
+     if { $SCOPE(telescope) != "WIYN" } {
         debuglog "Moving Gemini mechanisms to stowed positions"
         catch {picosOutPosition}
         zaberGoto focus stow

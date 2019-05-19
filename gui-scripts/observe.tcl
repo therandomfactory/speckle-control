@@ -540,16 +540,20 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         after 20
         if { $LASTACQ == "fullframe" } {
            set i $SCOPE(numframes)
-           after [expr int($SCOPE(exposure)*1000)]
+           if { $SCOPE(exposure) > 1 } {
+              longExpProgress $SCOPE(exposure)
+           } else {
+              after [expr int($SCOPE(exposure)*1000)]
+           }
         } else {
            set i [andorGetControl 0 frame]
-           after [expr int($SCOPE(exposure)*1010)]
+           if { $SCOPE(exposure) > 1 } {
+              longExpProgress $SCOPE(exposure)
+           } else {
+              after [expr int($SCOPE(exposure)*1010)]
+           }
         }
-        if { $SCOPE(numframes) == 1 } {
-          .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
-        } else {
-          .lowlevel.p configure -value [expr $elapsedtime*100/$totaltime]
-        }
+        .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
         .lowlevel.progress configure -text "Observation status : Frame $i   Exposure $dfrmnum   Sequence $iseqnum / $SCOPE(numseq)"
         if { $elapsedtime > $totaltime } { set i $SCOPE(numframes) ; set doneset 1}
         update
@@ -576,6 +580,19 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  abortsequence
  if { $SCOPE(autoclrcmt) && $save == "keep" } {.main.comment delete 0.0 end }
 }
+
+proc longExpProgress { exp } {
+   set t 0
+   while { $t <= $exp } {
+      .lowlevel.p configure -value [expr $t*100/$exp]
+       incr t 1
+       after 1000
+       update
+   }
+   after 300
+   .lowlevel.p configure -value 0
+}
+
 
 
 # \endcode
