@@ -1,4 +1,4 @@
-# nessi-control
+# speckle-control
 Controller components and GUI for Speckle (NN-EXPLORE Exoplanet &amp; Stellar Speckle Imager)
 
 This project is to provide controller software (server and GUI) for the instrument described below.
