@@ -172,10 +172,15 @@ global MIMIC
 
 # \endcode
 
+set SPECKLE_DIR $env(SPECKLE_DIR)
 set MOFF(mimic-picoin) "-29 7"
 set MOFF(mimic) 	"0 0"
 set MOFF(mimic-picoout) "-46 19"
-createMimicDiagram mimic
+if { $env(TELESCOPE) == "GEMINI" } {
+  createMimicDiagram mimic-picoin
+} else {
+  createMimicDiagram mimic
+}
 
 
 mimicMode red wide

@@ -120,8 +120,6 @@ if { $env(TELESCOPE) == "GEMINI" } {
        debuglog "Gemini telemetry in SIMULATION mode"
        simGeminiTelemetry
    }
-#  } else {
-#    geminiConnect $env(GEMINISITE)
   }
 } else {
   set SCOPE(telescope) WIYN
