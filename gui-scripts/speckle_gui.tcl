@@ -233,8 +233,8 @@ global ANDOR_MODE LASTACQ
 #
 proc speckleshutter { arm name } {
 global ANDOR_MODE ANDOR_SHUTTER
-    .lowlevel.rshut configure -text "Shutter=$name"
-    .lowlevel.bshut configure -text "Shutter=$name"
+    if { $arm == "red" }  { .lowlevel.rshut configure -text "Shutter=$name" }
+    if { $arm == "blue" } { .lowlevel.bshut configure -text "Shutter=$name" }
     mimicMode $arm $name
     if { $name == "during" } { 
        mimicMode $arm close
