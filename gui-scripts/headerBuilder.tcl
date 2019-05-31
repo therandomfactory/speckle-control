@@ -526,9 +526,6 @@ if { $env(TELESCOPE) == "WIYN" } {
   set TOMPG wiyn
 } else {
   set SCOPE(instrument) "Alopeke"
-  if { $env(GEMINISITE) == "south" } {
-    set SCOPE(instrument) "Zorro"
-  }
   proc redisquery { } { }
 }
 
@@ -544,7 +541,7 @@ if { $env(TELESCOPE) == "WIYN" } {
   initWIYNTelemetry mpg
 } else {
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
-  geminiConnect south
+  geminiConnect north
 }
 
 proc redisUpdate { } { }
