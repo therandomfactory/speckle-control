@@ -201,12 +201,13 @@ global ANDOR_SOCKET INSTRUMENT
 #		SCOPE - Array of telescope settings
 #
 proc commandAndor { arm cmd {echk 1} } {
-global ANDOR_SOCKET SCOPE
+global ANDOR_SOCKET SCOPE INSTRUMENT
    if { $ANDOR_SOCKET($arm) == 0 } {
      debuglog "WARNING : $arm arm camera not connected : $arm $cmd $echk"
      return 0
    } else {
-     if { [string range $cmd 0 3] == "grab" } {
+     if { $INSTRUMENT($arm) } {
+      if { [string range $cmd 0 3] == "grab" } {
         if { $echk } {
            set nrchk "$SCOPE(datadir)/$SCOPE(imagename)[format %4.4d $SCOPE(seqnum)]r.fits"
            if { [file exists $nrchk] } {
@@ -221,10 +222,14 @@ global ANDOR_SOCKET SCOPE
               return 0
             }
         }
+      }
+      debuglog "Commanding Andor $arm : $cmd"
+      puts $ANDOR_SOCKET($arm) $cmd
+      gets $ANDOR_SOCKET($arm) result
+     } else {
+        debuglog "Commanding Andor $arm : $cmd - DISABLED"
+        set result "0 0 0 0"
      }
-     debuglog "Commanding Andor $arm : $cmd"
-     puts $ANDOR_SOCKET($arm) $cmd
-     gets $ANDOR_SOCKET($arm) result
    }
    return $result
 } 
