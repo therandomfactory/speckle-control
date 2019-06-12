@@ -295,9 +295,6 @@ set SCOPE(telescope) GEMINI
 set SCOPE(site) GEMINI_N
 set SCOPE(latitude) 19:49:00
 set SCOPE(longitude) 155:28:00
-if { $env(GEMINISITE) == "south" } {
-  set SCOPE(site) GEMINI_S
-}
 
 
 if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
@@ -305,6 +302,8 @@ if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
   set SCOPE(longitude) 07:26:27.97
   set SCOPE(telescope) WIYN
   set SCOPE(site) KPNO
+  set SCOPE(instrument) NESSI
+  set env(GEMINISITE) NA
 }
 set now [clock seconds]
 set FLOG [open /tmp/speckleLog_[set now].log w]
@@ -741,7 +740,7 @@ set d [string tolower [exec date -u +%B]]
 set SCOPE(imagename) "N[exec date -u +%Y%m%d]N"
 set SCOPE(preamble) N
 
-if { $SCOPE(site) != "WIYN" } {
+if { $SCOPE(site) != "KPNO" } {
    set SCOPE(preamble) N
    set SCOPE(imagename) "N[exec date -u +%Y%m%d]A"
    set SCOPE(instrument) "Alopeke"
@@ -749,14 +748,12 @@ if { $SCOPE(site) != "WIYN" } {
      set SCOPE(instrument) "Zorro"
    }
    proc redisUpdateTelemetry { {mode ""} {obs "" } } { }
-}
-
-if { $env(GEMINISITE) == "south" } {
+   if { $env(GEMINISITE) == "south" } {
    set SCOPE(preamble) S
    set SCOPE(imagename) "S[exec date -u +%Y%m%d]Z"
    set SCOPE(instrument) "Zorro"
+   }
 }
-
 
 
 catch {

@@ -950,7 +950,7 @@ wm geometry .mimicSpeckle +660+30
 #         legacy MPG router
 #
 
-if { $SCOPE(telescope) == "WIYN" } {
+if { $env(TELESCOPE) == "WIYN" } {
    .lowlevel configure -height 550 -width 936
    wm geometry . 936x900
    set SPECKLE(engineeringGui) 936x900

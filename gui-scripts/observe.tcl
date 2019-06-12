@@ -115,7 +115,7 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF ANDOR_CFG
 proc  acquisitionmode { rdim } {
 global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   puts stdout "rdim == $rdim"
-  redisUpdateTelemetry mode acquiring
+  updateRedisTelemetry mode acquiring
   if { $rdim != "manual"} {
         set ANDOR_CFG(binning) 1
         commandAndor red  "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
@@ -467,8 +467,8 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
    set autofilter [lrange $autofilter 1 end]
    set rautofilter [lrange $rautofilter 1 end]
    set iseqnum 0
-   redisUpdateTelemetry mode observing
-   redisUpdateTelemetry exposure $SCOPE(exptype)
+   updateRedisTelemetry mode observing
+   updateRedisTelemetry exposure $SCOPE(exptype)
    while { $iseqnum < $SCOPE(numseq) } {
     .lowlevel.p configure -value 0
     set ifrmnum 0
@@ -567,7 +567,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      .lowlevel.p configure -value 0
      .lowlevel.progress configure -text "Observation status : Idle"
      if { $STATUS(abort) && $autofilter == "" } {
-        redisUpdateTelemetry mode idle
+        updateRedisTelemetry mode idle
         .lowlevel.p configure -value 0
         .lowlevel.seqp configure -value 0
         return
@@ -575,7 +575,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
     }
    }
  }
- redisUpdateTelemetry mode idle
+ updateRedisTelemetry mode idle
  after 500
  abortsequence
  if { $SCOPE(autoclrcmt) && $save == "keep" } {.main.comment delete 0.0 end }
