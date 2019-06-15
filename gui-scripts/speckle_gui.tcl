@@ -1050,11 +1050,5 @@ if { $env(TELESCOPE) == "WIYN" } {
 
 }
 
-if { [file exists $env(HOME)/.specklegui] } {
-   source $env(HOME)/.specklegui
-}
-
-
-
 
 

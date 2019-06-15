@@ -284,6 +284,11 @@ global SCOPE
 
 # \endcode
 
+if { [file exists $env(HOME)/.specklegui] } {
+   source $env(HOME)/.specklegui
+}
+
+
 set SPECKLE_DIR $env(SPECKLE_DIR)
 set DEBUG 1
 set RAWTEMP 0
