@@ -300,7 +300,7 @@ set SCOPE(telescope) GEMINI
 set SCOPE(site) GEMINI_N
 set SCOPE(latitude) 19:49:00
 set SCOPE(longitude) 155:28:00
-
+exposureType Object
 
 if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
   set SCOPE(latitude) 31:57:11.78
