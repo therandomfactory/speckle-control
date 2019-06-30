@@ -88,9 +88,9 @@ proc headerAstrometry { fid ra dec } {
 global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM env TELEMETRY
   set radeg [expr [hms_to_radians $ra]*180/$PI]
   set decdeg [expr [dms_to_radians $dec]*180/$PI]
-  set r [fitshdrrecord  CRVAL1	 string "$decdeg"	"Declination of reference pixel \[deg\]"]
+  set r [fitshdrrecord  CRVAL1	 double "$decdeg"	"Declination of reference pixel \[deg\]"]
   $fid put keyword $r
-  set r [fitshdrrecord  CRVAL2	 string "$radeg"	"RA of reference pixel \[deg\]"]
+  set r [fitshdrrecord  CRVAL2	 double "$radeg"	"RA of reference pixel \[deg\]"]
   $fid put keyword $r
   set r [fitshdrrecord  CRPIX1	 integer [expr $ACQREGION(geom)/$ANDOR_CFG(binning)/2]	"Coordinate reference pixel in X"]
   $fid put keyword $r

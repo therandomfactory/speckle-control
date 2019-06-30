@@ -625,16 +625,16 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ env
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
    set geom1 "+20+800" ; set geom2 "+1100+800"
-   if { $env(TELESCOPE) == "WIYN"} {
-     set geom2 "+20+800" ; set geom1 "+1100+800"
-   }
+#   if { $env(TELESCOPE) == "WIYN"} {
+#     set geom2 "+20+800" ; set geom1 "+1100+800"
+#   }
    if { $mode == "fullframe" } {
-     exec xterm -geometry $geom1 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
-     exec xterm -geometry $geom2 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
+     exec xterm -geometry $geom1 -title "Blue arm" -fg blue -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
+     exec xterm -geometry $geom2 -title "Red arm" -fg red -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
      set LASTACQ fullframe
    } else {
-     exec xterm -geometry $geom1 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
-     exec xterm -geometry $geom2 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry $geom1  -title "Blue arm" -fg blue -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry $geom2 -title "Red arm" -fg red  -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }

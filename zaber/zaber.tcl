@@ -220,7 +220,7 @@ global env
       zaberCommand focus home
       zaberCommand pickoff home
    }
-   after 5000 zaberCheck
+   after 7000 zaberCheck
 }
 
 ## Documented proc \c zaberCommand .
@@ -457,7 +457,7 @@ global ZABERS
   } else {
     catch {mimicMode $ZABERS($name,arm) $pos}
   }
-  after 5000 zaberCheck
+  after 7000 zaberCheck
 }
 
 ## Documented proc \c zaberConfigurePos .
@@ -535,7 +535,7 @@ proc positionZabers { station } {
       zaberGoto B speckle
       zaberGoto input speckle
    }
-   after 5000 zaberCheck
+   after 7000 zaberCheck
 }
 
 ## Documented proc \c positionSpeckle .
@@ -559,7 +559,7 @@ global ZABERS
       if { $ZABERS(B,arm) == $arm } {zaberGoto B speckle} 
       zaberGoto input speckle
    }
-   after 5000 zaberCheck
+   after 7000 zaberCheck
 }
 
 

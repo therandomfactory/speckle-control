@@ -186,7 +186,7 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
   }
   set TELEMETRY(speckle.andor.head) "iXon"
   set TELEMETRY(speckle.andor.acquisition_mode) $ANDOR_CFG(acquisition)
-  set TELEMETRY(speckle.andor.kinetic_time) $ANDOR_CFG(kineticcycletime)
+  set TELEMETRY(speckle.andor.kinetic_time) $ANDOR_CFG(KineticCycleTime)
   set TELEMETRY(speckle.andor.num_exposures) $ANDOR_CFG(numseq)
   set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG(numseq)*$ANDOR_CFG(setexposure)]
   set TELEMETRY(speckle.andor.read_mode) $ANDOR_CFG(readmode)
@@ -213,7 +213,7 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
 set ANDOR_CFG(verticalspeeds) "0 0 0 0"
 set CAM 0
 set ANDOR_CFG(acquisition) 0
-set ANDOR_CFG(kineticcycletime) 0.0
+set ANDOR_CFG(KineticCycleTime) 0.0
 set ANDOR_CFG(numseq) 1
 set ANDOR_CFG(setexposure) 0.0
 set ANDOR_CFG(readmode) 0

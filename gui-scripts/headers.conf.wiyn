@@ -28,7 +28,7 @@ header wiyn-speckle
    speckle.scope.program
    speckle.scope.instrument
    speckle.scope.obsdate
-   speckle.scope.obstime
+   speckle.scope.timeobs
    speckle.scope.imagetype
    speckle.scope.recid
    speckle.andor.int_time

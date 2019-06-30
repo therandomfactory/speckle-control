@@ -382,15 +382,10 @@ place .filters.exit -x 700 -y [expr $iy+30]
 loadFiltersConfig filtersConfiguration
 #### in gui.tcl now load $env(SPECKLE_DIR)/lib/liboriel.so
 
+set FWHEELS(red,init) 4
+set FWHEELS(blue,init) 5
+
 foreach p "1 2 3 4 5 6" {
-  set FWHEELS(red,init) 1
-  set FWHEELS(blue,init) 1
-  if { $FWHEELS(red,$p) == "clear" } {
-     set FWHEELS(red,init) $p
-  }
-  if { $FWHEELS(blue,$p) == "clear" } {
-     set FWHEELS(blue,init) $p
-  }
   set FWHEELS(red,$p,emgain) 0
   set FWHEELS(blue,$p,emgain) 0
   set FWHEELS(red,$p,exp) 0.06
@@ -425,11 +420,7 @@ if { $FWHEELS(sim) == 0 } {
   resetFilterWheel 2
   debuglog "Moving filter wheels to initial positions"
   selectfilter red $FWHEELS(red,init)
-  if { $env(GEMINISITE) == "south" } {
-    selectfilter blue 1
-  } else {
-    selectfilter blue $FWHEELS(blue,init)
-  }
+  selectfilter blue $FWHEELS(blue,init)
 }  else {
   set FWHEELS(red,0) "simulate"
   set FWHEELS(blue,0) "simulate"

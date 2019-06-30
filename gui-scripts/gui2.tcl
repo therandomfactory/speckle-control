@@ -300,7 +300,6 @@ set SCOPE(telescope) GEMINI
 set SCOPE(site) GEMINI_N
 set SCOPE(latitude) 19:49:00
 set SCOPE(longitude) 155:28:00
-exposureType Object
 
 if { $gw == "140.252.61.1" || $env(TELESCOPE) == "WIYN" } {
   set SCOPE(latitude) 31:57:11.78
@@ -525,10 +524,10 @@ place .main.lname -x 16 -y 135
 entry .main.imagename -width 18 -bg white -fg black -textvariable SCOPE(imagename) -justify right
 place .main.imagename -x 100 -y 135
 
-label .main.rcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
-place .main.rcamtemp -x 353 -y 2
 label .main.bcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
-place .main.bcamtemp -x 453 -y 2
+place .main.bcamtemp -x 353 -y 2
+label .main.rcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
+place .main.rcamtemp -x 453 -y 2
 
 menubutton .main.rois -width 40 -text "Set ROI's" -relief raised -fg black -bg gray80 -menu .main.rois.m
 place .main.rois -x 20 -y 230
@@ -745,18 +744,19 @@ set d [string tolower [exec date -u +%B]]
 set SCOPE(imagename) "N[exec date -u +%Y%m%d]N"
 set SCOPE(preamble) N
 
-if { $SCOPE(site) != "KPNO" } {
+if { $env(TELESCOPE) != "WIYN" } {
    set SCOPE(preamble) N
    set SCOPE(imagename) "N[exec date -u +%Y%m%d]A"
    set SCOPE(instrument) "Alopeke"
-   if { $env(GEMINISITE) == "south" } {
-     set SCOPE(instrument) "Zorro"
-   }
    proc redisUpdateTelemetry { {mode ""} {obs "" } } { }
    if { $env(GEMINISITE) == "south" } {
-   set SCOPE(preamble) S
-   set SCOPE(imagename) "S[exec date -u +%Y%m%d]Z"
-   set SCOPE(instrument) "Zorro"
+     set SCOPE(instrument) "Zorro"
+     set SCOPE(preamble) S
+     set SCOPE(imagename) "S[exec date -u +%Y%m%d]Z"
+     set hnow [lindex [split [exec date -u] " :"] 3]
+     if { $hnow > 21 || $hnow < 8} {
+        set SCOPE(imagename) "S[clock format [expr  [clock seconds] - 24*3600] -format %Y%m%d -gmt 1]Z"
+     }
    }
 }
 
@@ -765,9 +765,13 @@ catch {
     set all [lsort [glob $SCOPE(datadir)/[set SCOPE(preamble)]*.fits]]
     set last [file rootname [split [lindex $all end] _]]
     set SCOPE(seqnum) [expr [string trimleft [string range [file tail $last] 10 13] 0] + 1]
+    if { $SCOPE(seqnum) == "fits" } {
+       set SCOPE(seqnum) 1
+    }
 }
 
 
+exposureType Object
 zaberJogger input
 speckleGuiMode observingGui
 .main.exptype configure -text $SCOPE(imagetype)

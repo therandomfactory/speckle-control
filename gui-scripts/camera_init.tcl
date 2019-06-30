@@ -91,7 +91,7 @@ set SCOPE(shutter) 1
 set now [split [exec  date -u +%Y-%m-%d,%T] ,]
 set SCOPE(readout-delay) 999
 set SCOPE(obsdate) [exec date -u +%Y-%m-%dT%H:%M:%S.0]
-set SCOPE(obstime) [lindex $now 1]
+set SCOPE(timeobs) [lindex $now 1]
 
 source $SPECKLE_DIR/andor/andor.tcl
 
