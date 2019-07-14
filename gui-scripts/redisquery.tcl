@@ -89,7 +89,8 @@ global TELEMETRY
 proc updateRedisTelemetry { item value } {
 global REDIS
    catch {
-     puts $REDIS(handle) "hset wiyn:speckle.status $item \"$value\""   
+     debuglog "Updated REDIS wiyn:speckle speckle.status.$item to $value"
+     puts $REDIS(handle) "hset wiyn:speckle speckle.status.$item \"$value\""
    }
 }
 
@@ -98,7 +99,7 @@ global REDIS
 
 # Redis commands : 
 #   keys *  - list all the key sets
-#   hset wiyn:speckle.test key "value"
+#   hset wiyn:speckle key "value"
 #
 
 set TLMKEYS "

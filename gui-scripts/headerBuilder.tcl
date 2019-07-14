@@ -105,8 +105,9 @@ global FROMSTARTEXP CACHETELEMETRY ANDOR_ARM
   set fhead ""
   speckleTelemetryUpdate
   updateAndorTelemetry $ANDOR_ARM
-  set type gemini-speckle
+  set type unknown
   if { $SCOPE(telescope) == "GEMINI" } {set type gemini-speckle}
+  if { $SCOPE(telescope) == "WIYN" }   {set type wiyn-speckle}
   showTelemetry
   set fhead "[fitshdrrecord HDR_REV string {3.00 18-Feb-2008} Header-Rev ]\n" 
   foreach i $HEADERS($type) {
@@ -526,6 +527,9 @@ if { $env(TELESCOPE) == "WIYN" } {
   set TOMPG wiyn
 } else {
   set SCOPE(instrument) "Alopeke"
+  if { $env(GEMINISITE) == "south" } {
+    set SCOPE(instrument) "Zorro"
+  }
   proc redisquery { } { }
 }
 
@@ -541,7 +545,11 @@ if { $env(TELESCOPE) == "WIYN" } {
   initWIYNTelemetry mpg
 } else {
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
-  geminiConnect north
+  if { $env(GEMINISITE) == "south" } {
+     geminiConnect south
+  } else {
+     geminiConnect north
+  }
 }
 
 proc redisUpdate { } { }

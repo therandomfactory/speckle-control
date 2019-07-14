@@ -524,7 +524,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
            acquireCubes
            set ifrmnum $SCOPE(numframes)
            set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
-           set totaltime [expr $perframe * $SCOPE(numframes) +5]
+           set totaltime [expr $perframe * 1.1 * $SCOPE(numframes) +5]
      } else {
            .lowlevel.datarate configure -text ""
            set perframe $SCOPE(exposure)

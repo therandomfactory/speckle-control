@@ -748,7 +748,7 @@ if { $env(TELESCOPE) != "WIYN" } {
    set SCOPE(preamble) N
    set SCOPE(imagename) "N[exec date -u +%Y%m%d]A"
    set SCOPE(instrument) "Alopeke"
-   proc redisUpdateTelemetry { {mode ""} {obs "" } } { }
+   proc updateRedisTelemetry { {mode ""} {obs "" } } { }
    if { $env(GEMINISITE) == "south" } {
      set SCOPE(instrument) "Zorro"
      set SCOPE(preamble) S
