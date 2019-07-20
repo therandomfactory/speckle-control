@@ -462,6 +462,21 @@ proc closestgain  { target } {
  return $best
 }
 
+## Documented proc \c nessistate .
+#
+#  Set NESSI state to active or not
+#
+proc nessistate { state } {
+   if { $state == "active" } {
+       .main.nessiactive configure -relief sunken -bg green
+       .main.nessiinactive configure -relief raised -bg gray
+       updateRedisTelemetry active True
+   } else {
+       .main.nessiactive configure -relief raised -bg gray
+       .main.nessiinactive configure -relief sunken -bg red
+       updateRedisTelemetry active False
+   }
+}
 
 
 
@@ -958,6 +973,11 @@ if { $env(TELESCOPE) == "WIYN" } {
    redisConnect
    proc redisUpdate { } { }
    source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
+   button .main.nessiactive -width 10 -height 2 -text "NESSI active" -bg gray -fg black -relief raised -command "nessistate active"
+   button .main.nessiinactive -width 10 -height 2 -text "NOT in use" -bg red -fg black -relief raised -command "nessistate inactive"
+   place .main.nessiactive -x 820 -y 200
+   place .main.nessiinactive -x 820 -y 270
+   nessistate inactive
 
 } else {
 
