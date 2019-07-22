@@ -48,6 +48,8 @@ global SCOPE
         catch {picosOutPosition}
         zaberGoto focus stow
         zaberGoto pickoff stow
+     } else {
+        nessistate inactive
      }
      zaberGoto A wide
      zaberGoto B wide
