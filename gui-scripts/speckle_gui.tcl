@@ -955,6 +955,7 @@ if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus stow" -command "zaberGoto focus stow"
   .mbar.tools.m add command -label "zaber pickoff extend" -command "zaberGoto pickoff extend"
   .mbar.tools.m add command -label "zaber pickoff stow" -command "zaberGoto pickoff stow"
+  .mbar.tools.m add command -label "Reconnect Telemetry service" -command "geminiConnect $env(GEMINISITE)"
 }
 
 
@@ -1063,7 +1064,7 @@ if { $env(TELESCOPE) == "WIYN" } {
      }
   }
 
-
+  set SCOPE(exposure) 0.06
   if { $SPKTELEM(sim) == 0 } {
     geminiConnect $env(GEMINISITE)
     after 3000 updateGeminiTelemetry

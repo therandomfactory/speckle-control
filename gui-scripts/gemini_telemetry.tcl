@@ -21,17 +21,20 @@
 proc geminiConnect { scope } {
 global GEMINICFG
    set handle -1
-   set handle [socket $GEMINICFG($scope,ip) $GEMINICFG($scope,port)]
-   fconfigure $handle -buffering line -blocking 0
+   catch {
+     set handle [socket $GEMINICFG($scope,ip) $GEMINICFG($scope,port)]
+     fconfigure $handle -buffering line -blocking 0
+   }
    if { $handle < 0 } {
+     set GEMINICFG(handle) -1
      errordialog "Failed to connect to Gemini service at $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) "
    } else {
      debuglog "Connected to Gemini $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) - OK"
      set GEMINICFG(handle) $handle
+     puts $GEMINICFG(handle) "get airmass"
+     gets $GEMINICFG(handle) rec
    }
    set GEMINICFG(site) $scope
-   puts $GEMINICFG(handle) "get airmass"
-   gets $GEMINICFG(handle) rec
    return $handle
 }
 
@@ -67,18 +70,20 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
       set ok "none"
       catch { set ok [puts $GEMINICFG(handle) "get $t\n"] } res
       if { $ok == "none" } { 
-        debuglog "Gemini telemetry lost - reconnecting"
-        geminiConnect $GEMINICFG(site)
+        debuglog "Gemini telemetry lost"
+###        geminiConnect $GEMINICFG(site)
       }
    }
    after 500
-   while { [gets $GEMINICFG(handle) rec] > -1 } {
+   if { $GEMINICFG(handle) > 0 } {
+    while { [gets $GEMINICFG(handle) rec] > -1 } {
       if { [info exists GEMINI([lindex $rec 1])] } {
         set TELEMETRY($GEMINI([lindex $rec 1])) [lrange $rec 2 end]
         debuglog "Got $rec"
       } else {
         debuglog "Got unknown $rec"
       }
+    }
    }
    echoGeminiTelemetry
    set TELEMETRY(speckle.scope.instrument) $SCOPE(instrument)

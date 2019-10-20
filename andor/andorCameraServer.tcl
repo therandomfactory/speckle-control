@@ -196,7 +196,7 @@ set SCOPE(telescope) $env(TELESCOPE)
 
 set ANDOR_CFG(shmem) [lindex $shmid 0]
 exec xpaset -p $DS9 single
-exec xpaset -p $DS9 zoom to fit
+###exec xpaset -p $DS9 zoom to fit
 exec xpaset -p $DS9 scale zscale
 if { $ANDOR_ARM == "red" } {
    exec xpaset -p $DS9 cmap Heat

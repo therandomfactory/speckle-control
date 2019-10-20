@@ -209,7 +209,7 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
 }
 
 
-## Documented proc \c acquisitionmode .
+## Documented proc \c checkgain .
 #  \param[in] table Table of EM gain thresholds
 # 
 #  This procedure reconfigures the cameras for fullframe or ROI operation
@@ -332,6 +332,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  } else {
     setfitsbits USHORT_IMG
  }
+ setBinning
  if { $ANDOR_CFG(kineticMode) } {
     commandAndor red  "acquisitionmode 5"
     commandAndor blue "acquisitionmode 5"
@@ -370,7 +371,6 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  commandAndor blue "programid $SCOPE(ProgID)"
  commandAndor red  "autofitds9 $INSTRUMENT(red,fitds9)"
  commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
- setBinning
  set chk [checkgain]
  if { $INSTRUMENT(red,emccd) } {
    commandAndor red "outputamp $ANDOR_EMCCD"

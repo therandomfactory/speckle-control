@@ -1,0 +1,64 @@
+#!/usr/bin/tclsh
+
+set all "andor/andorCameraServer.tcl
+andor/andorCodeGen.tcl
+andor/andor.tcl
+andor/andor_tcl.c
+andor/andorWrapper.tcl
+andor/ds9idle.tcl
+andor/ds9refresher.tcl
+andor/testandorWrap.tcl
+andor/usbpermit.tcl
+gui-scripts/andorTelemetry.tcl
+gui-scripts/astrometry.tcl
+gui-scripts/camera_init.tcl
+gui-scripts/checkusb.tcl
+gui-scripts/cleanup.tcl
+gui-scripts/colorprint.tcl
+gui-scripts/display.tcl
+gui-scripts/execengine_plugins.tcl
+gui-scripts/filechecks.tcl
+gui-scripts/geminiS_telemetry.tcl
+gui-scripts/gemini_telemetry.tcl
+gui-scripts/general.tcl
+gui-scripts/gui2.tcl
+gui-scripts/headerBuilder.tcl
+gui-scripts/headerSpecials.tcl
+gui-scripts/mimic.tcl
+gui-scripts/observe.tcl
+gui-scripts/postproc.tcl
+gui-scripts/scaling.tcl
+gui-scripts/simwiyntlm.tcl
+gui-scripts/speckle_gui.tcl
+gui-scripts/temperature.tcl
+gui-scripts/testgui.tcl
+gui-scripts/withds9.tcl
+gui-scripts/headers.conf
+gui-scripts/telem-gemini.conf
+gui-scripts/telem-wiyn.conf
+oriel/filterWheel.tcl
+oriel/usb_constants.tcl
+oriel/usbpermit.tcl
+picomotor/picomotor.tcl
+zaber/usbpermit.tcl
+zaber/zaber.tcl"
+
+set source /home/rfactory/speckle-control
+set target ../gemini-n
+
+set target $argv
+
+foreach i [split $all \n] {
+   set diff "yes"
+   catch { set diff [exec diff $source/$i $target/speckle-control/$i] } res
+   if { $diff == "yes" } { 
+     puts stdout "$target $i differs"
+     puts stdout "=============== $target $i ==============================="
+     puts stdout "$res"
+     puts stdout ""
+   }
+}
+
+
+
+

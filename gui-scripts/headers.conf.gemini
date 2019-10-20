@@ -19,8 +19,9 @@ header gemini-speckle
    tcs.telescope.airmass
    tcs.telescope.userfocus
    tcs.target.name
-   tcs.telescope.pa
    tcs.telescope.instrpa
+   tcs.telescope.instraa
+   tcs.telescope.rotator
    speckle.scope.site
    speckle.scope.program
    speckle.scope.instrument

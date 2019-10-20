@@ -1308,9 +1308,6 @@ int cAndorStoreROI(int cameraId, char *filename, int bitpix, int iexp,int numexp
      if ( bitpix == ULONG_IMG )  { fits_write_img(fptr, TULONG,  fpixel, nelements, &fitsROI_ulong, &status);}
      if ( bitpix == USHORT_IMG ) { fits_write_img(fptr, TUSHORT, fpixel, nelements, &fitsROI_ushort, &status);}
 
-     if (status != 0) {
-         return status;
-     }
      if (iexp == numexp) {
         create_fits_header(fptr);
         append_fitsTimings(numexp);
@@ -2558,8 +2555,8 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   SharedMem2->iabort=0;
   printf("Start at : %ld\n",tm1.tv_sec);
   status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
-  maxt = (int) (numexp * tkinetics +1);
-  status = SetNumberKinetics(numexp+10);
+  maxt = (int) (numexp * tkinetics * 4.0 +1);
+  status = SetNumberKinetics(numexp+50);
   StartAcquisition();
   GetStatus(&status);
   while (count < numexp) {
@@ -2670,7 +2667,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
   ngot=0;
   count=0;
   status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
-  maxt = (int) (numexp * tkinetics +3);
+  maxt = (int) (numexp * tkinetics * 4.0 +3);
   SharedMem2->iabort=0;
   clock_gettime(CLOCK_REALTIME,&tm1);
   printf("Start at : %ld\n",tm1.tv_sec);
