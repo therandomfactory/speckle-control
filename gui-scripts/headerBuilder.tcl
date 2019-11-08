@@ -425,6 +425,7 @@ global TELEMETRY SPECKLE_DIR SPKTELEM env
        source $SPECKLE_DIR/gui-scripts/redisquery.tcl
        redisConnect
        redisUpdate
+       after 5000 redisPrint
        puts stdout "Connected to REDIS server"
    }
    if { $method == "mpg" } {
@@ -531,6 +532,7 @@ if { $env(TELESCOPE) == "WIYN" } {
     set SCOPE(instrument) "Zorro"
   }
   proc redisquery { } { }
+  proc redisUpdate { } { }
 }
 
 
@@ -542,7 +544,7 @@ loadstreamdefs $SPECKLE_DIR/gui-scripts/telem-[string tolower $env(TELESCOPE)].c
 loadhdrdefs $SPECKLE_DIR/gui-scripts/headers.conf
 if { $env(TELESCOPE) == "WIYN" } {
   source $SPECKLE_DIR/gui-scripts/simwiyntlm.tcl
-  initWIYNTelemetry mpg
+  initWIYNTelemetry redis
 } else {
   source $SPECKLE_DIR/gui-scripts/gemini_telemetry.tcl
   if { $env(GEMINISITE) == "south" } {
@@ -551,8 +553,6 @@ if { $env(TELESCOPE) == "WIYN" } {
      geminiConnect north
   }
 }
-
-proc redisUpdate { } { }
 
 after 5000 cachetelemetry
 

@@ -63,7 +63,7 @@ proc redisConnect { } {
 #
 proc redisUpdate { } {
 global REDIS
-   foreach key "tcs-geometry tcs-time tcs-telescop tcs-weather oss-secondary dcs-elevation dcs-azimuth" {
+   foreach key "tcs-geometry tcs-mnir tcs-target tcs-time tcs-telescop tcs-weather oss-secondary dcs-elevation dcs-azimuth" {
      puts $REDIS(handle) "hgetall wiyn:$key"
    }
    after 100
@@ -103,7 +103,8 @@ global REDIS
 #
 
 set TLMKEYS "
-wiyn:tcs-nir
+wiyn:tcs-mnir
+tcs.mnir.position
 
 wiyn:tcs-weather
 timestamp
@@ -171,7 +172,6 @@ wiyn:bsa-main
 wiyn:oss-thermocouple
 wiyn:tcs-elevation
 wiyn:dcs-mnir
-wiyn:tcs-mnir
 wiyn:oss-flatfield
 wiyn:ias-wfscam
 wiyn:oss-tertiary

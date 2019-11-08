@@ -7,7 +7,7 @@ header wiyn-speckle
    tcs.time.UT1
    tcs.time.UTC
    tcs.time.LAST
-   tcs.time.TAI
+   tcs.time.tai
    tcs.target.tracking
    tcs.target.epoch
    tcs.target.az

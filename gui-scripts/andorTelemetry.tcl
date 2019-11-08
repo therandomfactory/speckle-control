@@ -78,6 +78,8 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.read_mode) "Image"
    set TELEMETRY(speckle.scope.site) $SCOPE(telescope)
    set TELEMETRY(speckle.scope.ProgID) $SCOPE(ProgID)
+   set now [split [exec  date -u +%Y-%m-%d,%T] ,]
+   set TELEMETRY(speckle.scope.timeobs) [lindex $now 1]
 }
 
 ## Documented proc \c showTelemetry .
