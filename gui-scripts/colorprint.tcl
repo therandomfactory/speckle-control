@@ -51,10 +51,14 @@ global color
 }
 
 
-set color(white) "[exec tput sgr0]"
-set color(red)   "[exec tput setaf 1]"
-set color(green) "[exec tput setaf 2]"
-set color(blue)  "[exec tput setaf 4]"
+set color(white)   "[exec tput sgr0]"
+set color(red)     "[exec tput setaf 1]"
+set color(green)   "[exec tput setaf 2]"
+set color(yellow)  "[exec tput setaf 3]"
+set color(blue)    "[exec tput setaf 4]"
+set color(magenta) "[exec tput setaf 5]"
+set color(cyan)    "[exec tput setaf 6]"
+set color(white)   "[exec tput setaf 7]"
 
 
 
