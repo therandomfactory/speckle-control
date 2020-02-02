@@ -40,10 +40,23 @@ proc getColour {colour {background False}} {
 }
 
 proc colorTest { } {
-   puts stdout [colorPrint "test a red line" red]
-   puts stdout [colorPrint "test a blue line" blue]
-   puts stdout [colorPrint "test a green line" green]
+   colorText red "test a red line"
+   colorText blue "test a blue line"
+   colorText green "test a green line"
 }
+ 
+proc colorText { c m } {
+global color
+   puts stdout "$color($c)$m$color(white)"
+}
+
+
+set color(white) "[exec tput sgr0]"
+set color(red)   "[exec tput setaf 1]"
+set color(green) "[exec tput setaf 2]"
+set color(blue)  "[exec tput setaf 4]"
+
+
 
 
 
