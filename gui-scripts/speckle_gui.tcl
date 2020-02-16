@@ -272,7 +272,6 @@ global ANDOR_CFG
 #
 proc specklesynctelem { arm } {
 global DATAQUAL ZABERS FWHEELS
-   zaberCheck
    set pinputzaber $ZABERS(input,readpos)
    if  { $arm == "blue" } {
      set pfieldzaber $ZABERS(A,readpos)
@@ -480,6 +479,65 @@ proc nessistate { state } {
    }
 }
 
+## Documented proc \c accumulateOption .
+#
+#  Control accumulate option visibility
+#
+proc accumulateOption  { state } {
+   if { $state == "show" } {
+      place .main.laccum -x 204 -y 108
+      place .main.numaccum -x 254 -y 108
+   } else {
+      place .main.laccum -x 2000 -y 106
+      place .main.numaccum -x 2500 -y 106
+   }
+}
+
+## Documented proc \c audioNote .
+#
+#  Control audio end-of-sequence output
+#
+proc audioNote  { {state beep} } {
+global env STATUS
+   if { $state == "on" } {set STATUS(audio) 1}
+   if { $state == "off" } {set STATUS(audio) 0}
+   if { $STATUS(audio) } {
+      exec xterm -e $env(SPECKLE_DIR)/gui-scripts/noise.tcl &
+      after 500
+      exec xterm -e $env(SPECKLE_DIR)/gui-scripts/noise.tcl &
+   }
+}
+
+## Documented proc \c launchscript .
+#
+#  Run user script from data directory
+#
+proc launchscript  { ucommand } {
+global SCOPE
+   cd $SCOPE(datadir)
+   exec xterm -ls -e $ucommand &
+}
+
+## Documented proc \c exposureMode .
+#
+#  Control exposure time options
+#
+proc exposureMode  { mode } {
+global env STATUS SCOPE FWHEELS
+   if { $mode == "clone" } {
+      set STATUS(exposureMode) clone
+      set SCOPE(exposureRed) $SCOPE(exposure)
+      foreach i "1 2 3 4 5 6" { set FWHEELS(red,$i,exp) $SCOPE(exposure) }
+      place .main.exposureRed -x 5000 -y 20
+   }
+   if { $mode == "seperate" } {
+      set STATUS(exposureMode) seperate
+      set SCOPE(exposureRed) $SCOPE(exposure)
+      foreach i "1 2 3 4 5 6" { set FWHEELS(red,$i,exp) $SCOPE(exposure) }
+      place .main.exposureRed -x 530 -y 20
+   }
+}
+
 
 
 # \endcode
@@ -525,6 +583,7 @@ set now [split [exec  date -u +%Y-%m-%d,%T] ,]
 set SCOPE(readout-delay) 999
 set SCOPE(obsdate) [exec date -u +%Y-%m-%dT%H:%M:%S.0]
 set SCOPE(timeobs) [lindex $now 1]
+set STATUS(exposureMode) clone
 
 source $SPECKLE_DIR/andor/andor.tcl
 
@@ -632,8 +691,8 @@ place .lowlevel.bfxfer -x 220 -y 3
 set ANDOR_CFG(red,frametransfer) 1
 set ANDOR_CFG(blue,frametransfer) 1
 
-set INSTRUMENT(red,fitds9) 0
-set INSTRUMENT(blue,fitds9) 0
+set INSTRUMENT(red,fitds9) 1
+set INSTRUMENT(blue,fitds9) 1
 set ZABERS(A,target) 0
 set ZABERS(B,target) 0
 set ZABERS(input,target) 0
@@ -718,7 +777,8 @@ button .camerastatus.refresh -text "Refresh" -fg black -bg grey -width 45 -comma
 place .camerastatus.refresh -x 20 -y 500
 button .camerastatus.done -text "Close" -fg black -bg orange -width 45 -command "wm withdraw .camerastatus"
 place .camerastatus.done -x 20 -y 530
-wm geometry .camerastatus 430x580+20+20
+wm geometry .camerastatus 430x580+754+31
+
 foreach p "Shutter FrameTransferMode OutputAmplifier EMAdvanced EMCCDGain HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime TExposure TAccumulate TKinetics" {
    set CAMSTATUS(red,$p) "???"
    set CAMSTATUS(blue,$p) "???"
@@ -860,8 +920,8 @@ text .main.comment -height 8 -width 45
 label .main.lcomment -text "Comments :" -bg gray
 checkbutton .main.clrcomment -bg gray -variable SCOPE(autoclrcmt) -text "Auto-clear"  -highlightthickness 0
 place .main.comment -x 605 -y 50
-place .main.lcomment -x 605 -y 23
-place .main.clrcomment -x 690 -y 23
+place .main.lcomment -x 645 -y 23
+place .main.clrcomment -x 730 -y 23
 
 ttk::progressbar .lowlevel.p -orient horizontal -length 900  -mode determinate
 ttk::progressbar .lowlevel.seqp -orient horizontal -length 900  -mode determinate
@@ -885,6 +945,7 @@ catch {
   mimicMode blue close
 }
 
+source $SPECKLE_DIR/gui-scripts/inventory.tcl 
 showstatus "Initializing Zabers"
 source $SPECKLE_DIR/zaber/zaber.tcl 
 specklemode wide
@@ -907,6 +968,15 @@ source $SPECKLE_DIR/oriel/filterWheel.tcl
 .lowlevel.rfilter.m add command -label "$FWHEELS(red,5)" -command "specklefilter red $FWHEELS(red,5)"
 .lowlevel.rfilter.m add command -label "$FWHEELS(red,6)" -command "specklefilter red $FWHEELS(red,6)"
   
+
+set STATUS(audio) 0
+
+.mbar.tools.m add command -label "Audio notification on" -command "audioNote on"
+.mbar.tools.m add command -label "Audio notification off" -command "audioNote off"
+
+.mbar.tools.m add command -label "Allow seperate exposures" -command "exposureMode seperate"
+.mbar.tools.m add command -label "Identical exposures" -command "exposureMode clone"
+
 .mbar.tools.m add command -label "Mimic diagram" -command "wm deiconify .mimicSpeckle"
 .mbar.tools.m add command -label "HOME all stages" -command homeZabers
 .mbar.tools.m add command -label "zabers to wide mode" -command "positionZabers fullframe"
@@ -945,10 +1015,16 @@ if { $SCOPE(telescope) == "GEMINI" } {
 place .lowlevel.jogz -x 756 -y 195
 entry .lowlevel.vdelta -width 5 -bg white -textvariable ZABERS(delta)
 place .lowlevel.vdelta -x 782 -y 222
-button .main.mzupd -text "Check Zaber positions" -command "zaberCheck" -bg gray -width 20
-place .main.mzupd -x 600 -y 284
+button .main.mzupd -text "Check Zaber positions" -command "zaberCheck" -bg gray -width 15
+place .main.mzupd -x 560 -y 286
 button .lowlevel.hzupd -text "HOME" -command "zaberJogger home" -bg gray -width 3
 place .lowlevel.hzupd -x 870 -y 193
+button .main.mzwide -text "wide"    -command "positionZabers fullframe" -bg gray -width 4
+button .main.mzspek -text "speckle" -command "positionZabers roi" -bg gray -width 4
+button .main.mzhome -text "home"    -command "homeZabers" -bg gray -width 4
+place .main.mzwide -x 706 -y 286
+place .main.mzspek -x 756 -y 286
+place .main.mzhome -x 840 -y 256
 
 if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus extend" -command "zaberGoto focus extend"
@@ -956,7 +1032,20 @@ if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber pickoff extend" -command "zaberGoto pickoff extend"
   .mbar.tools.m add command -label "zaber pickoff stow" -command "zaberGoto pickoff stow"
   .mbar.tools.m add command -label "Reconnect Telemetry service" -command "geminiConnect $env(GEMINISITE)"
+  button .main.mzstow -text "stow"    -command "positionZabers stow" -bg gray -width 4
+  button .main.mzextd -text "extend"  -command "positionZabers extend" -bg gray -width 4
+  place .main.mzstow -x 816 -y 286
+  place .main.mzextd -x 870 -y 286
 }
+
+.mbar.tools.m add command -label "Show Accumulate option" -command "accumulateOption show"
+.mbar.tools.m add command -label "Hide Accumulate option" -command "accumulateOption hide"
+.mbar.tools.m add command -label "Reset Device Permissions" -command "exec xterm -e $env(SPECKLE_DIR)/setDevicePermissions &"
+.mbar.tools.m add command -label "Reconnect Filter Wheels" -command "reconnectFilters"
+.mbar.tools.m add command -label "Reconnect Cameras" -command "resetSingleAndors fullframe"
+.mbar.tools.m add command -label "Reconnect Zabers" -command "reconnectZabers"
+.mbar.tools.m add command -label "Watch log" -command "exec xterm -e watch dfits N*.fits | fitsort -d UTC OBSID OBJECT RA DEC EXPTIME FILTER EMGAIN | tail -n 20 &"
+.mbar.tools.m add command -label "View database" -command "exec xterm -e mysql speckle &"
 
 
 set SPECKLE(observingGui) 936x550

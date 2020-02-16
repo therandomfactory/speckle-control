@@ -43,11 +43,11 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.acquisition_mode) "Single scan"
    if { $TELEMETRY(speckle.andor.numberkinetics) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics mode" }
    set TELEMETRY(speckle.andor.int_time) $ANDOR_CFG($arm,ExposureTime)
-   set TELEMETRY(speckle.andor.kinetic_time) $ANDOR_CFG($arm,KineticCycleTime)
-   set TELEMETRY(speckle.andor.exptime) $ANDOR_CFG($arm,ExposureTime)
+   set TELEMETRY(speckle.andor.kinetic_time) $ANDOR_CFG($CAM,TKinetics)
+   set TELEMETRY(speckle.andor.exptime) $ANDOR_CFG($CAM,TExposure)
    set TELEMETRY(speckle.andor.numaccum) $ANDOR_CFG($arm,NumberAccumulations)
    if { $TELEMETRY(speckle.andor.numaccum) > 1}  { set TELEMETRY(speckle.andor.acquisition_mode) "Kinetics + Accumulate mode" }
-   set TELEMETRY(speckle.andor.accumulationcycle) $ANDOR_CFG($arm,AccumulationCycleTime)
+   set TELEMETRY(speckle.andor.accumulationcycle) $ANDOR_CFG($CAM,TAccumulate)
    set TELEMETRY(speckle.andor.read_mode) "Frame transfer"
    set TELEMETRY(speckle.andor.fullframe) "1,1024,1,1024"
    set TELEMETRY(speckle.andor.frametransfer) $state($ANDOR_CFG($arm,FrameTransferMode))
@@ -58,7 +58,7 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.datatype) $ANDOR_CFG($arm,fitsbits)
    set dll [string range [file tail [glob $SPECKLE_DIR/lib/libUSBI2C.so.*.0]] 13 end]
    set TELEMETRY(speckle.andor.sw_version) $dll
-   set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG($arm,NumberKinetics) * $ANDOR_CFG($arm,ExposureTime) * $ANDOR_CFG($arm,NumberAccumulations)]
+   set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG($arm,NumberKinetics) * $ANDOR_CFG($CAM,TExposure) * $ANDOR_CFG($arm,NumberAccumulations)]
    set TELEMETRY(speckle.andor.em_gain) $ANDOR_CFG($arm,EMCCDGain)
    set TELEMETRY(speckle.andor.preamp_gain) [expr $ANDOR_CFG($arm,PreAmpGain) +1]
    set TELEMETRY(speckle.andor.serial_number) $ANDOR_CFG($CAM,SerialNumber) 
@@ -78,9 +78,12 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.read_mode) "Image"
    set TELEMETRY(speckle.scope.site) $SCOPE(telescope)
    set TELEMETRY(speckle.scope.ProgID) $SCOPE(ProgID)
-   set now [split [exec  date -u +%Y-%m-%d,%T] ,]
-   set TELEMETRY(speckle.scope.timeobs) [lindex $now 1]
 }
+
+proc getPropDate { n } {
+  return "[clock format [expr [clock seconds] + 24*3600*31*$n] -format %Y-%m-%d -gmt 1]"
+}
+
 
 ## Documented proc \c showTelemetry .
 #

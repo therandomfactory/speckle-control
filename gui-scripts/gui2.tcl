@@ -106,21 +106,6 @@ global DATAQUAL DATAQUALT TELEMETRY
 proc speckleGuiMode { mode } {
 global SPECKLE
   wm geometry . $SPECKLE($mode)
-  if { $mode == "engineeringGui" } {
-    place .main.lsim -x 580 -y 227
-    place .main.simandor -x 650 -y 227
-    place .main.simzaber -x 750 -y 227
-    place .main.simfilter -x 750 -y 252
-    place .main.simtlm -x 650 -y 252
-    catch {place .main.simpico -x 845 -y 227}
-  } else {
-    place .main.lsim -x 20 -y 2227
-    place .main.simandor -x 150 -y 2227
-    place .main.simzaber -x 250 -y 2227
-    place .main.simfilter -x 250 -y 2252
-    place .main.simtlm -x 150 -y 2252
-    catch {place .main.simpico -x 85 -y 2227}
-  }
 }
 
 ## Documented proc \c validInteger .
@@ -477,7 +462,14 @@ set bwkey text
 set bwfont font
 SpinBox .main.exposure -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposure) -justify right -validate all -vcmd {validFloat %W %V %P %s}
 place .main.exposure -x 100 -y 20
-SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 30000}
+
+SpinBox .main.exposureRed -width 10  -range "0.0 1048.75 1" -textvariable SCOPE(exposureRed) -justify right -validate all -vcmd {validFloat %W %V %P %s}
+place .main.exposureRed -x 5000 -y 20
+set STATUS(exposureMode) clone
+
+
+SpinBox .main.numexp -width 10   -range "1 1000 1" -textvariable SCOPE(numframes) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 262000}
+
 place .main.numexp -x 100 -y 50
 set opts "Object Focus Acquire Flat SkyFlat Dark Zero PSFstandard CalBinary"
 ###ComboBox .main.exptype -width 10  -values "$opts" -textvariable SCOPE(exptype) -justify right
@@ -488,23 +480,21 @@ foreach etype "Object Focus Acquire Flat SkyFlat Dark Zero PSFstandard CalBinary
 }
 set SCOPE(exptype) "Object"
 
-SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 1000}
+SpinBox .main.numseq -width 10   -range "1 100 1" -textvariable SCOPE(numseq) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 20}
 place .main.numseq -x 100 -y 109
 label .main.laccum -text "Accum." -bg gray
 SpinBox .main.numaccum -width 7   -range "1 10000 1" -textvariable SCOPE(numaccum) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 1000}
 place .main.exptype -x 100 -y 80
-place .main.numaccum -x 255 -y 106
+place .main.numaccum -x 2000 -y 106
 label .main.lexp -text Exposure -bg gray
 label .main.lnum -text "Num. Frames" -bg gray
 label .main.lseq -text "Num. Seq." -bg gray
 label .main.ltyp -text "Exp. Type" -bg gray
-place .main.laccum -x 205 -y 108
+place .main.laccum -x 2000 -y 108
 place .main.lexp -x 16 -y 23
 place .main.lnum -x 16 -y 53
 place .main.ltyp -x 16 -y 83
 place .main.lseq -x 16 -y 109
-checkbutton .main.kinetic -bg gray  -text "Kinetic mode" -variable ANDOR_CFG(kineticMode) -command setKineticMode -highlightthickness 0
-place .main.kinetic -x 210 -y 52
 checkbutton .main.showfft -bg gray  -text "Display FFT" -variable ANDOR_CFG(showfft) -command setDisplayMode -highlightthickness 0
 place .main.showfft -x 210 -y 82
 
@@ -532,9 +522,11 @@ place .main.rcamtemp -x 453 -y 2
 menubutton .main.rois -width 40 -text "Set ROI's" -relief raised -fg black -bg gray80 -menu .main.rois.m
 place .main.rois -x 20 -y 230
 menu .main.rois.m
+.main.rois.m add command -label "Acq-roi-64" -command "observe region64"
 .main.rois.m add command -label "Acq-roi-128" -command "observe region128"
 .main.rois.m add command -label "Acq-roi-256" -command "observe region256"
 .main.rois.m add command -label "Acq-roi-512" -command "observe region512"
+.main.rois.m add command -label "Acq-roi-768" -command "observe region768"
 .main.rois.m add command -label "Acq-full" -command "observe regionall"
 .main.rois.m add command -label "Adjust ROI" -command "observe manual"
 
@@ -547,29 +539,6 @@ button .main.abort -width 5 -height 2 -text "Abort" -relief sunken -bg gray -com
 place .main.observe -x 20  -y 167
 place .main.abort   -x 120 -y 167
 
-label .main.lsim -text "Simulate :" -bg gray
-checkbutton .main.simandor -bg gray  -text "Andors" -variable ANDORS(sim) -highlightthickness 0
-checkbutton .main.simzaber -bg gray  -text "Zabers" -variable ZABERS(sim) -highlightthickness 0
-checkbutton .main.simfilter -bg gray  -text "Filters" -variable FWHEELS(sim) -highlightthickness 0
-checkbutton .main.simtlm -bg gray  -text "Telemetry" -variable SPKTELEM(sim) -highlightthickness 0
-place .main.lsim -x 580 -y 227
-place .main.simandor -x 650 -y 227
-place .main.simzaber -x 750 -y 227
-place .main.simfilter -x 750 -y 252
-place .main.simtlm -x 650 -y 252
-
-
-if { $SCOPE(telescope) == "GEMINI" } {
-  checkbutton .main.simpico -bg gray  -text "Picos" -variable PICOS(sim) -highlightthickness 0
-  place .main.simpico -x 845 -y 227
-  set SCOPE(instrument) "Alopeke"
-  if { $env(GEMINISITE) == "south" } {
-    set SCOPE(instrument) "Zorro"
-  }
-} else {
-  set SCOPE(instrument) "NESSI"
-}
-   
 menubutton .main.rawiq -text "DQ - image" -width 21 -fg black -bg gray80 -menu .main.rawiq.m -relief raised
 menu .main.rawiq.m
 .main.rawiq.m add command -label "RAWIQ 20%" -command "dataquality rawiq 20"
@@ -658,8 +627,46 @@ wm withdraw .tplot
 #
 #  Do the actual setup of the GUI, to sync it with the camera status
 #
+label .main.zaberA  -bg gray -text "Zaber A @ ???? : ????"
+label .main.zaberB  -bg gray -text "Zaber B @ ???? : ????"
+label .main.zaberInput  -bg gray -text "Zaber Input @ ???? : ????"
+if { $env(TELESCOPE) == "GEMINI" } {
+  label .main.zaberFocus  -bg gray -text "Zaber Focus @ ???? : ????"
+  label .main.zaberPickoff  -bg gray -text "Zaber Pickoff @ ???? : ????"
+  place .main.zaberFocus -x 720 -y 200
+  place .main.zaberPickoff -x 720 -y 230
+}
+place .main.zaberA -x 560 -y 200
+place .main.zaberB -x 560 -y 230
+place .main.zaberInput -x 560 -y 260
+
+
 
 source $SPECKLE_DIR/gui-scripts/speckle_gui.tcl
+
+label .lowlevel.lsim -text "Simulate :" -bg gray
+checkbutton .lowlevel.simandor -bg gray  -text "Andors" -variable ANDORS(sim) -highlightthickness 0
+checkbutton .lowlevel.simzaber -bg gray  -text "Zabers" -variable ZABERS(sim) -highlightthickness 0
+checkbutton .lowlevel.simfilter -bg gray  -text "Filters" -variable FWHEELS(sim) -highlightthickness 0
+checkbutton .lowlevel.simtlm -bg gray  -text "Telemetry" -variable SPKTELEM(sim) -highlightthickness 0
+place .lowlevel.lsim -x 10 -y 620
+place .lowlevel.simandor -x 80 -y 620
+place .lowlevel.simzaber -x 150 -y 620
+place .lowlevel.simfilter -x 80 -y 640
+place .lowlevel.simtlm -x 150 -y 640
+
+
+if { $SCOPE(telescope) == "GEMINI" } {
+  checkbutton .lowlevel.simpico -bg gray  -text "Picos" -variable PICOS(sim) -highlightthickness 0
+  place .lowlevel.simpico -x 80 -y 660
+  set SCOPE(instrument) "Alopeke"
+  if { $env(GEMINISITE) == "south" } {
+    set SCOPE(instrument) "Zorro"
+  }
+} else {
+  set SCOPE(instrument) "NESSI"
+}
+   
 
 #
 #
@@ -772,6 +779,7 @@ catch {
 
 
 exposureType Object
+exposureMode clone
 zaberJogger input
 speckleGuiMode observingGui
 .main.exptype configure -text $SCOPE(imagetype)
@@ -782,6 +790,12 @@ debuglog "************  Speckle GUI initialization complete  *************"
 debuglog "************                                       *************"
 debuglog "****************************************************************"
 
+source $env(SPECKLE_DIR)/gui-scripts/inventory.tcl
+puts stdout  "****************************************************************"
+puts stdout  "************                                       *************"
+puts stdout  "************  Speckle GUI initialization complete  *************"
+puts stdout  "************                                       *************"
+puts stdout  "****************************************************************"
 
 
 

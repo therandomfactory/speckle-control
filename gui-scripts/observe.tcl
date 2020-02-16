@@ -46,9 +46,11 @@ proc observe { op {id 0} } {
 global SCOPE ANDOR_CFG
   if { $ANDOR_CFG(videomode) == 0 } {
     switch $op {
+      region64  {acquisitionmode 64}
       region128 {acquisitionmode 128}
       region256 {acquisitionmode 256}
       region512 {acquisitionmode 512}
+      region768 {acquisitionmode 768}
       regionall {acquisitionmode 1024}
       manual    {acquisitionmode manual}
       multiple {continuousmode $SCOPE(exposure) 999999 $id}
@@ -317,11 +319,10 @@ proc updateTemps { } {
 #		INSTRUMENT - Array of instrument configuration data
 #
 proc prepsequence { } {
-global SCOPE DATAQUAL INSTRUMENT
+global SCOPE DATAQUAL INSTRUMENT TELEMETRY STATUS
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  redisUpdate
  catch {updateGeminiTelemetry}
- zaberCheck
  specklesynctelem red
  specklesynctelem blue
  set SCOPE(exposureStart) [expr [clock milliseconds]/1000.0]
@@ -333,23 +334,18 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
     setfitsbits USHORT_IMG
  }
  setBinning
- if { $ANDOR_CFG(kineticMode) } {
-    commandAndor red  "acquisitionmode 5"
-    commandAndor blue "acquisitionmode 5"
- } else {
-    if { $SCOPE(numaccum) > 1 } {
-      commandAndor red  "acquisitionmode 1"
-      commandAndor blue "acquisitionmode 1"
-    } else {
-      commandAndor red  "acquisitionmode 2"
-      commandAndor blue "acquisitionmode 2"
-    }
- }
  commandAndor red  "readmode 4"
  commandAndor blue "readmode 4"
  speckleshutter red auto
  speckleshutter blue auto
- commandAndor red  "setexposure $SCOPE(exposure)"
+ if { $STATUS(exposureMode) == "clone" } {
+   commandAndor red  "setexposure $SCOPE(exposure)"
+ } else {
+   if { [checkAutoFilter] == 0 } {
+      foreach i "1 2 3 4 5 6" { set FWHEELS(red,$i,exp) $SCOPE(exposureRed) }
+   }
+   commandAndor red  "setexposure $SCOPE(exposureRed)"
+ }
  commandAndor blue "setexposure $SCOPE(exposure)"
  commandAndor red  "imagetype $SCOPE(exptype)"
  commandAndor blue "imagetype $SCOPE(exptype)"
@@ -369,6 +365,11 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  set tblue [commandAndor blue "gettimings"]
  commandAndor red  "programid $SCOPE(ProgID)"
  commandAndor blue "programid $SCOPE(ProgID)"
+ if { [lsearch [split $SCOPE(ProgID) "-"] "FT"] > -1 } {
+   set TELEMETRY(speckle.scope.release) [getPropDate 6]
+ } else {
+   set TELEMETRY(speckle.scope.release) [getPropDate 12]
+ }
  commandAndor red  "autofitds9 $INSTRUMENT(red,fitds9)"
  commandAndor blue "autofitds9 $INSTRUMENT(blue,fitds9)"
  set chk [checkgain]
@@ -392,9 +393,23 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  }
  commandAndor red  "vsspeed $ANDOR_CFG(red,VSSpeed)"
  commandAndor blue "vsspeed $ANDOR_CFG(blue,VSSpeed)"
+ if { $ANDOR_CFG(kineticMode) } {
+    commandAndor red  "acquisitionmode 5"
+    commandAndor blue "acquisitionmode 5"
+ } else {
+    if { $SCOPE(numaccum) > 1 } {
+      commandAndor red  "acquisitionmode 2"
+      commandAndor blue "acquisitionmode 2"
+    } else {
+      commandAndor red  "acquisitionmode 1"
+      commandAndor blue "acquisitionmode 1"
+    }
+ }
  debuglog "Red camera timings are $tred,  Blue camera timings are $tblue"
  commandAndor red  "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
  commandAndor blue "dqtelemetry $DATAQUAL(rawiq) $DATAQUAL(rawcc) $DATAQUAL(rawwv) $DATAQUAL(rawbg)"
+ commandAndor red   "extraheaders $TELEMETRY(speckle.scope.release) $TELEMETRY(tcs.telescope.guider)"
+ commandAndor blue  "extraheaders $TELEMETRY(speckle.scope.release) $TELEMETRY(tcs.telescope.guider)"
  commandAndor red "datadir $SCOPE(datadir)"
  commandAndor blue "datadir $SCOPE(datadir)"
 }
@@ -429,6 +444,7 @@ global SCOPE OBSPARS FWHEELS STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL S
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  set iseqnum 0
  prepsequence
+ cameraStatuses
  catch {
   set x [andorSetControl 0 frame 0]
   set x [andorSetControl 1 frame 0]
@@ -445,6 +461,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  set rautofilter [checkAutoFilter red]
  set FWHEELS(red,exposure) $SCOPE(exposure)
  set FWHEELS(blue,exposure) $SCOPE(exposure)
+ set SCOPE(maxExposure) $SCOPE(exposure)
  while { $autofilter != "" } {
    set bfilter [lindex $autofilter 0]
    if { $bfilter > 0 } {
@@ -453,6 +470,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
     commandAndor blue "emccdgain $FWHEELS(blue,$bfilter,emgain)"
     set FWHEELS(blue,exposure) $FWHEELS(blue,$bfilter,exp)
     set SCOPE(exposure) $FWHEELS(blue,$bfilter,exp)
+    commandAndor blue  "setexposure $SCOPE(exposure)"
    }
    set rfilter [lindex $rautofilter 0]
    if { $rfilter > 0 } {
@@ -460,8 +478,10 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
     commandAndor red  "filter $SPECKLE_FILTER(red,current)"
     commandAndor red "emccdgain $FWHEELS(red,$rfilter,emgain)"
     set FWHEELS(red,exposure) $FWHEELS(red,$rfilter,exp)
-    if { $FWHEELS(red,$rfilter,exp) > $SCOPE(exposure) } {
-       set SCOPE(exposure) $FWHEELS(red,$rfilter,exp)
+    set SCOPE(exposureRed) $FWHEELS(red,$rfilter,exp)
+    commandAndor red "setexposure $SCOPE(exposureRed)"
+    if { $SCOPE(exposureRed) > $  } {
+        set SCOPE(maxExposure) $SCOPE(exposureRed)
     }
    }
    set autofilter [lrange $autofilter 1 end]
@@ -469,11 +489,13 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
    set iseqnum 0
    updateRedisTelemetry mode observing
    updateRedisTelemetry exposure $SCOPE(exptype)
-   while { $iseqnum < $SCOPE(numseq) } {
+   set STATUS(abort) 0
+   while { $iseqnum < $SCOPE(numseq) && $STATUS(abort) == 0  } {
     .lowlevel.p configure -value 0
     set ifrmnum 0
     incr iseqnum 1
     .lowlevel.seqp configure -value [expr $iseqnum*100/$SCOPE(numseq)]
+    .main.abort configure -bg orange -relief raised -fg black -command abortsequence
     while { $ifrmnum < $SCOPE(numframes) } {
      set clncmt [join [split [.main.comment get 0.0 end] "\`\"\'\[\]\{\}\&\%\$\\"] _]
      set cmt [join [split [string trim $clncmt] \n] "|"]
@@ -484,7 +506,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      set OBSPARS($SCOPE(exptype)) "$SCOPE(exposure) $SCOPE(numframes) $SCOPE(shutter)"
      set STATUS(abort) 0
      .main.observe configure -text "working" -bg yellow -relief sunken
-     .main.abort configure -bg orange -relief raised -fg black
+     .main.abort configure -bg orange -relief raised -fg black -command abortsequence
      wm geometry .countdown
      set i 1
      if { $SCOPE(exptype) == "Zero" || $SCOPE(exptype) == "Dark" } {
@@ -506,51 +528,53 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
      }
      incr SCOPE(seqnum) 1
      updateTemps
-     set tpredict [expr [lindex [commandAndor red status] 15] - 0.001]
-     if { $tpredict > $SCOPE(exposure) } {
-        set SCOPE(exposure) $tpredict
-        .main.exposure configure -entryfg red
-     } else {
-        .main.exposure configure -entryfg black
-     } 
+     if { $STATUS(exposureMode) == "clone" } {
+       set tpredict [expr [lindex [commandAndor red status] 15] - 0.001]
+       if { $tpredict > $SCOPE(exposure) } {
+          set SCOPE(exposure) $tpredict
+          .main.exposure configure -entryfg red
+       } else {
+          .main.exposure configure -entryfg black
+       }
+     }
      if { $LASTACQ == "fullframe" } {
         set TELEMETRY(speckle.andor.mode) "fullframe"
      } else {
         set TELEMETRY(speckle.andor.mode) "roi"
      }
      set doneset 0
-     if { $ANDOR_CFG(kineticMode) && $SCOPE(numframes) > 1 } {
+     if { $SCOPE(numframes) > 1 } {
            checkDatarate
            acquireCubes
            set ifrmnum $SCOPE(numframes)
-           set perframe [expr $SCOPE(exposure)*$SCOPE(numaccum)]
-           set totaltime [expr $perframe * 1.1 * $SCOPE(numframes) +5]
+           set perframe [expr $SCOPE(maxExposure)*$SCOPE(numaccum)]
+           set totaltime [expr $perframe * 2.0 * $SCOPE(numframes) +5]
      } else {
            .lowlevel.datarate configure -text ""
-           set perframe $SCOPE(exposure)
+           set perframe $SCOPE(maxExposure)
            set totaltime [expr $perframe * $SCOPE(numframes) +1]
            acquireFrames
            after 1000
      }
      set now [clock seconds]
      andorSetControl 0 frame 0
-     while { $i < $SCOPE(numframes) } {
+     while { $i < $SCOPE(numframes)  && $STATUS(abort) == 0} {
         set elapsedtime [expr [clock seconds] - $now]
         if { $DEBUG} {debuglog "$iseqnum  / $SCOPE(numseq) : $SCOPE(exptype) frame $i"}
         after 20
         if { $LASTACQ == "fullframe" } {
            set i $SCOPE(numframes)
            if { $SCOPE(exposure) > 1 } {
-              longExpProgress $SCOPE(exposure)
+              longExpProgress $SCOPE(maxExposure)
            } else {
-              after [expr int($SCOPE(exposure)*1000)]
+              after [expr int($SCOPE(maxExposure)*1000)]
            }
         } else {
            set i [andorGetControl 0 frame]
            if { $SCOPE(exposure) > 1 } {
-              longExpProgress $SCOPE(exposure)
+              longExpProgress $SCOPE(maxExposure)
            } else {
-              after [expr int($SCOPE(exposure)*1010)]
+              after [expr int($SCOPE(maxExposure)*1010)]
            }
         }
         .lowlevel.p configure -value [expr $i*100/$SCOPE(numframes)]
@@ -570,6 +594,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         updateRedisTelemetry mode idle
         .lowlevel.p configure -value 0
         .lowlevel.seqp configure -value 0
+        audioNote
         return
      }
     }
@@ -578,6 +603,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  updateRedisTelemetry mode idle
  after 500
  abortsequence
+ audioNote
  if { $SCOPE(autoclrcmt) && $save == "keep" } {.main.comment delete 0.0 end }
 }
 

@@ -139,6 +139,7 @@ set ZABERS(port) $ZABERS(port)
 #
 proc zaberPrintProperties { {fd stdout} } {
 global ZABERS ZPROPERTIES env
+  if { [info exists ZABERS(A,system.serial) ] } {
    if { $env(TELESCOPE) == "WIYN" } {
     puts $fd "Property		A	B	input"
     foreach p [split $ZPROPERTIES \n] {
@@ -151,6 +152,9 @@ global ZABERS ZPROPERTIES env
        puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)	$ZABERS(pickoff,$p)	$ZABERS(focus,$p)"
      }
    }
+ } else {
+   set ZABERS(sim) 1
+ }
 }
 
 
@@ -189,6 +193,22 @@ global ZABERS
    }
    return $handle
 }
+
+## Documented proc \c reconnectZabers .
+#
+#  ReConnect to zabers devices usb serial port
+#
+#
+# Globals :
+#		ZABERS - Array of Zaber device configuration and state
+#
+proc reconnectZabers { } {
+global ZABERS
+  catch { close $ZABERS(handle) }
+  zaberConnect
+}
+
+
 
 ## Documented proc \c zaberDisconnect .
 #
@@ -277,6 +297,9 @@ global ZABERS env
   .mimicSpeckle.zaberA configure -text "Zaber A : $ZABERS(A,pos) : $ZABERS(A,readpos)"
   .mimicSpeckle.zaberB configure -text "Zaber B : $ZABERS(B,pos) : $ZABERS(B,readpos)"
   .mimicSpeckle.zaberInput configure -text "Zaber Input : $ZABERS(input,pos) : $ZABERS(input,readpos)"
+  .main.zaberA configure -text "Zaber A : $ZABERS(A,pos) : $ZABERS(A,readpos)"
+  .main.zaberB configure -text "Zaber B : $ZABERS(B,pos) : $ZABERS(B,readpos)"
+  .main.zaberInput configure -text "Zaber Input : $ZABERS(input,pos) : $ZABERS(input,readpos)"
   if { $env(TELESCOPE) == "GEMINI" } { 
     zaberCommand focus "get pos"
     after 200
@@ -292,6 +315,8 @@ global ZABERS env
     if { [expr abs($ZABERS(pickoff,pos) - $ZABERS(pickoff,stow))] < 5 } {set ZABERS(pickoff,readpos) "stow"}
     .mimicSpeckle.zaberFocus configure -text "Zaber Focus : $ZABERS(focus,pos) : $ZABERS(focus,readpos)"
     .mimicSpeckle.zaberPickoff configure -text "Zaber Pickoff : $ZABERS(pickoff,pos) : $ZABERS(pickoff,readpos)"
+    .main.zaberFocus configure -text "Zaber Focus : $ZABERS(focus,pos) : $ZABERS(focus,readpos)"
+    .main.zaberPickoff configure -text "Zaber Pickoff : $ZABERS(pickoff,pos) : $ZABERS(pickoff,readpos)"
   }
  }
 }
@@ -457,7 +482,7 @@ global ZABERS
   } else {
     catch {mimicMode $ZABERS($name,arm) $pos}
   }
-  after 7000 zaberCheck
+  after 10000 zaberCheck
 }
 
 ## Documented proc \c zaberConfigurePos .
@@ -534,6 +559,14 @@ proc positionZabers { station } {
       zaberGoto A speckle  
       zaberGoto B speckle
       zaberGoto input speckle
+   }
+   if { $station == "stow" } {
+      zaberGoto focus stow
+      zaberGoto pickoff stow
+   }
+   if { $station == "extend" } {
+      zaberGoto focus extend
+      zaberGoto pickoff extend
    }
    after 7000 zaberCheck
 }
@@ -638,7 +671,9 @@ if { $ZABERS(sim) == 0 } {
   zaberGetProperties B
   zaberGetProperties input
   if { $env(TELESCOPE) == "GEMINI" } { zaberGetProperties pickoff ; zaberGetProperties focus }
-  zaberPrintProperties
+}
+zaberPrintProperties
+if { $ZABERS(sim) == 0 } {
   zaberCommand A home
   zaberCommand B home
   zaberCommand input home

@@ -63,6 +63,8 @@ global WIYNTLM TELEMETRY CACHETELEMETRY
 # \endcode
 
 
+set TELEMETRY(speckle.scope.release) "Not used"
+set TELEMETRY(tcs.telescope.guiding) "Off"
 
 set WIYNTLM(airmass) 	tcs.telescope.airmass
 set WIYNTLM(azimuth) 	tcs.azimuth.mapper

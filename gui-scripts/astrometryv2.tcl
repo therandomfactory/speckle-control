@@ -29,8 +29,8 @@
 proc updateds9wcs { ra dec } {
 global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM env TELEMETRY WCSPARS
   readWCSpars $ANDOR_ARM $TELEMETRY(speckle.andor.inputzaber)
-  set radeg [expr [hms_to_radians $ra]*180/$PI]
-  set decdeg [expr [dms_to_radians $dec]*180/$PI]
+  set radeg [expr ([hms_to_radians $ra]+[hms_to_radians 00:00:$WCSPAR(DELTARA)/15.])*180/$PI]
+  set decdeg [expr ([dms_to_radians $dec]+[dms_to_radians 00:00:$WCSPAR(DELTADEC)])*180/$PI]
   set fout [open /tmp/[set ANDOR_ARM]wcs.wcs w]
   if { $WCSPARS(CRVAL1) == "RA" } {
     puts $fout "CRVAL1 $radeg"
@@ -78,10 +78,10 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM env TELEMETRY WCSPARS
 #		DS9 - Name of a ds9 executable , ds9red or ds9blue
 #
 proc headerAstrometry { fid ra dec } {
-global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM env TELEMETRY
+global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM env TELEMETRY WCSPARS
   readWCSpars $ANDOR_ARM $TELEMETRY(speckle.andor.inputzaber)
-  set radeg [expr [hms_to_radians $ra]*180/$PI]
-  set decdeg [expr [dms_to_radians $dec]*180/$PI]
+  set radeg [expr ([hms_to_radians $ra]+[hms_to_radians 00:00:$WCSPAR(DELTARA)/15.])*180/$PI]
+  set decdeg [expr ([dms_to_radians $dec]+[dms_to_radians 00:00:$WCSPAR(DELTADEC)])*180/$PI]
   if { $WCSPARS(CRVAL1) == "RA" } {
     set r [fitshdrrecord  CRVAL2	 double "$decdeg"	"Declination of reference pixel \[deg\]"]
     $fid put keyword $r
@@ -91,7 +91,7 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM env TELEMETRY
     $fid put keyword $r
     set r [fitshdrrecord  CTYPE1	 string  "RA--TAN"	"Coordinate type"]
     $fid put keyword $r
-  } else 
+  } else {
     set r [fitshdrrecord  CRVAL1	 double "$decdeg"	"Declination of reference pixel \[deg\]"]
     $fid put keyword $r
     set r [fitshdrrecord  CRVAL2	 double "$radeg"	"RA of reference pixel \[deg\]"]
@@ -186,8 +186,8 @@ global env WCSPARS
       GEMINI_north_speckle   { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.speckle.geminiN }
       GEMINI_south_speckle   { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.speckle.geminiS }
       WIYN_NA_speckle        { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.speckle.wiyn }
-      GEMINI_north_fullframe { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.geminiN }
-      GEMINI_south_fullframe { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.geminiS }
+      GEMINI_north_wide      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.geminiN }
+      GEMINI_south_wide      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.geminiS }
       WIYN_NA_fullframe      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.wiyn }
   }
   set fin [open $wcspars r]
@@ -204,14 +204,6 @@ global env WCSPARS
 # \endcode
 
 set PI 3.141592653589
-set PSCALES(Gemini-North,fullframe) 	2.0138889E-05
-set PSCALES(Gemini-North,speckle)	2.6666666E-06
-set PSCALES(Gemini-South,fullframe) 	2.0138889E-05
-set PSCALES(Gemini-South,speckle)	2.6666666E-06
-set PSCALES(WIYN,fullframe) 	[expr 0.0813/3600./180.*$PI]
-set PSCALES(WIYN,speckle) 	[expr 0.0182/3600./180.*$PI]
-set PSCALES(GEMINI,fullframe) 	[expr 0.0725/3600./180.*$PI]
-set PSCALES(GEMINI,speckle)	[expr 0.0096/3600./180.*$PI]
 set ACQREGION(geom) 1024
 set ANDOR_CFG(binning) 1
 set ANDOR_CFG(frame) fullframe

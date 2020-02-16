@@ -281,6 +281,29 @@ global FWHEELS
    return $aseq
 }
 
+
+## Documented proc \c reconnectFilters .
+#
+#  Reconnect to the filter wheels
+#
+proc reconnectFilters { } {
+global FWHEELS FWSERIAL
+  set f1 [oriel_connect 1]
+  set sn1 $FWSERIAL([lindex $f1 1])
+  if { $sn1 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 1}
+  if { $sn1 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 1}
+
+  set f2 [oriel_connect 2]
+  set sn2 $FWSERIAL([lindex $f2 1])
+  if { $sn2 == $FWHEELS(red,serialnum) } {set FWHEELS(red,handle) 2}
+  if { $sn2 == $FWHEELS(blue,serialnum) } {set FWHEELS(blue,handle) 2}
+  showstatus "Initializing filter wheel 1"
+  resetFilterWheel 1
+  showstatus "Initializing filter wheel 2"
+  resetFilterWheel 2
+}
+
+
 ## Documented proc \c filterEmccdGain .
 #
 #  Returns sequence for automatic filter cycling
@@ -381,11 +404,16 @@ place .filters.exit -x 700 -y [expr $iy+30]
 
 loadFiltersConfig filtersConfiguration
 #### in gui.tcl now load $env(SPECKLE_DIR)/lib/liboriel.so
-
-set FWHEELS(red,init) 4
-set FWHEELS(blue,init) 5
+set FWHEELS(red,init) 1
+set FWHEELS(blue,init) 1
 
 foreach p "1 2 3 4 5 6" {
+  if { $FWHEELS(red,$p) == "Red-832" } {
+     set FWHEELS(red,init) $p
+  }
+  if { $FWHEELS(blue,$p) == "Blue-562" } {
+     set FWHEELS(blue,init) $p
+  }
   set FWHEELS(red,$p,emgain) 0
   set FWHEELS(blue,$p,emgain) 0
   set FWHEELS(red,$p,exp) 0.06
@@ -393,7 +421,6 @@ foreach p "1 2 3 4 5 6" {
 }
 
 
-set FWHEELS(sim) 0
 if { [info exists env(SPECKLE_SIM)] } {
    set simdev [split $env(SPECKLE_SIM) ,]
    if { [lsearch $simdev filter] > -1 } {

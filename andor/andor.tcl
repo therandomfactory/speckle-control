@@ -298,7 +298,7 @@ global LASTACQ STATUS SCOPE ACQREGION INSTRUMENT ANDOR_CFG
    .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
    .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
    if { $LASTACQ == "fullframe" } {
-      commandAndor red "grabframe $SCOPE(exposure)"
+      commandAndor red "grabframe $SCOPE(exposureRed)"
       commandAndor blue "grabframe $SCOPE(exposure)"
    } else {
       commandAndor red "grabroi $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom)"
@@ -334,6 +334,8 @@ global STATUS ANDOR_CFG
    set ANDOR_CFG(waskinetic) $ANDOR_CFG(kineticMode)
    set ANDOR_CFG(kineticMode) 1
    catch {updateGeminiTelemetry}
+   specklesynctelem red
+   specklesynctelem blue
    setKineticMode
    .lowlevel.datarate configure -text ""
 #   andorset vspeed red VSSpeed 0
@@ -359,7 +361,7 @@ global STATUS ANDOR_CFG
 #
 proc fastvideomode { } {
 global STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG INSTRUMENT
-global ANDOR_CCD ANDOR_EMCCD
+global ANDOR_CCD ANDOR_EMCCD LASTACQ
 #   commandAndor red "imagename videomode 1" 0
 #   commandAndor blue "imagename videomode 1" 0
 #   exec rm -f $SCOPE(datadir)/videomode_red.fits
@@ -375,7 +377,9 @@ global ANDOR_CCD ANDOR_EMCCD
      if { $perrun > 100 } {set perrun 100}
      if { $perrun < 20 } {set perrun 20}
      if { $SCOPE(exposure) > 1.0 } {set perrun 2}
-     commandAndor red  "setexposure $SCOPE(exposure)"
+     commandAndor red "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+     commandAndor blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+     commandAndor red  "setexposure $SCOPE(exposureRed)"
      commandAndor blue  "setexposure $SCOPE(exposure)"
      commandAndor red "numberkinetics $perrun"
      commandAndor blue "numberkinetics $perrun"
@@ -403,6 +407,10 @@ global ANDOR_CCD ANDOR_EMCCD
        commandAndor blue "outputamp $ANDOR_CCD"
 #       commandAndor blue "hsspeed 1 $ANDOR_CFG(blue,HSSpeed)"
      }
+     commandAndor red setframe video
+     commandAndor blue setframe video
+     commandAndor red "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
+     commandAndor blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
      commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $perrun"
      commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]  $perrun"
       if { $SCOPE(exposure) > 0.0 } {
@@ -536,7 +544,7 @@ global INSTRUMENT SCOPE LASTACQ ACQREGION ANDOR_CFG FWHEELS
 #
 # Globals :\n
 #		INSTRUMENT - Array of instrument settings\n
-#		LASTACQ - Type of last acquisition fulframe/roi\n
+#		LASTACQ - Type of last acquisition fullframe/roi\n
 #		SCOPE - Array of telescope settings\n
 #		STATUS - Array of exposure statuses
 #
@@ -566,7 +574,7 @@ global INSTRUMENT SCOPE LASTACQ FWHEELS
 proc acquireTest { } {
 global INSTRUMENT SCOPE LASTACQ FWHEELS
    if { $INSTRUMENT(red) } {
-      commandAndor red "grabframe $SCOPE(exposure)"
+      commandAndor red "grabframe $SCOPE(exposureRed)"
    }
    if { $INSTRUMENT(blue) } {
       commandAndor blue "grabframe $SCOPE(exposure)"
@@ -624,17 +632,17 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ env
    debuglog "Resetting Andors for $mode" 
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
-   set geom1 "+20+800" ; set geom2 "+1100+800"
+   set geom2 "+20+800" ; set geom1 "+1100+800"
 #   if { $env(TELESCOPE) == "WIYN"} {
 #     set geom2 "+20+800" ; set geom1 "+1100+800"
 #   }
    if { $mode == "fullframe" } {
-     exec xterm -geometry $geom1 -title "Blue arm" -fg blue -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
-     exec xterm -geometry $geom2 -title "Red arm" -fg red -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
+     exec xterm -geometry $geom1 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 1 1024 1 1024" &
+     exec xterm -geometry $geom2 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 1 1024 1 1024" &
      set LASTACQ fullframe
    } else {
-     exec xterm -geometry $geom1  -title "Blue arm" -fg blue -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
-     exec xterm -geometry $geom2 -title "Red arm" -fg red  -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry $geom1 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 1 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
+     exec xterm -geometry $geom2 -e "$SPECKLE_DIR/andor/andorCameraServer.tcl 2 $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)" &
      set LASTACQ roi
      set SCOPE(numframes) 1000
    }

@@ -20,22 +20,26 @@
 #
 proc geminiConnect { scope } {
 global GEMINICFG
-   set handle -1
-   catch {
+   set GEMINICFG(site) $scope
+   set ok [ catch { set res [exec ping  $GEMINICFG($scope,ip) -c 1] } ]
+   if { $ok == 0 } {
+    catch {
      set handle [socket $GEMINICFG($scope,ip) $GEMINICFG($scope,port)]
      fconfigure $handle -buffering line -blocking 0
-   }
-   if { $handle < 0 } {
+    }
+    if { $handle < 0 } {
      set GEMINICFG(handle) -1
-     errordialog "Failed to connect to Gemini service at $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) "
-   } else {
+      debuglog "Failed to connect to Gemini service at $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) "
+    } else {
      debuglog "Connected to Gemini $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) - OK"
      set GEMINICFG(handle) $handle
      puts $GEMINICFG(handle) "get airmass"
      gets $GEMINICFG(handle) rec
+    }
+    return $handle
+   } else {
+     return -1
    }
-   set GEMINICFG(site) $scope
-   return $handle
 }
 
 ## Documented proc \c flushGemini .
@@ -71,7 +75,12 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
       catch { set ok [puts $GEMINICFG(handle) "get $t\n"] } res
       if { $ok == "none" } { 
         debuglog "Gemini telemetry lost"
-###        geminiConnect $GEMINICFG(site)
+        geminiConnect $GEMINICFG(site)
+        simGeminiTelemetry
+        debuglog "****************** NO TELEMETRY AVAILABLE ***********************"
+        debuglog "****************** PLEASE CHECK THE VII IS RUNNING  *************"
+        debuglog "****************** AND MAX CONNECTIONS IS >5 ********************"
+        return
       }
    }
    after 500
@@ -231,8 +240,8 @@ set ANDOR_CFG(preampgain) 1
 set ANDOR_CFG(0,SerialNumber) 12345
 set ANDOR_CFG(1,SerialNumber) 54321
 set ANDOR_CFG(temperature) 0.0
-set ANDOR_CFG(inputzaber) "NA"
-set ANDOR_CFG(fieldzaber) "NA"
+set ANDOR_CFG(inputzaber) "fullframe"
+set ANDOR_CFG(fieldzaber) "fullframe"
 set ANDOR_CFG(numberaccumulations) 0
 set ANDOR_CFG(frametransfer) 1
 set ANDOR_CFG(numberkinetics) 0
@@ -266,7 +275,7 @@ set GEMINI(mjd) 	tcs.time.MJD
 set GEMINI(offsetdec) 	tcs.telescope.decoffset
 set GEMINI(offsetra) 	tcs.telescope.raoffset
 set GEMINI(programid) 	speckle.scope.obsid
-set GEMINI(rotator) 	tcs.nir.position
+set GEMINI(rotator) 	tcs.telescope.rotator
 set GEMINI(targetname) 	tcs.target.name
 set GEMINI(targetra) 	tcs.target.az
 set GEMINI(targetdec) 	tcs.target.alt
@@ -279,5 +288,9 @@ set GEMINI(userfocus) 	tcs.telescope.userfocus
 set GEMINI(utc) 	tcs.time.UT1
 set GEMINI(utcdate) 	tcs.time.date
 set GEMINI(zd) 		tcs.telescope.zenithdist
+set GEMINI(guiding)     tcs.telescope.guiding
+
+set TELEMETRY(tcs.telescope.guider) Off
+
 
 

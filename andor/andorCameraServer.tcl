@@ -234,7 +234,7 @@ set ANDOR_CFG($ANDOR_ARM,peak) 1000
 #after 1000
 #andorAbortAcq
 #cAndorSetProperty $CAM AcquisitionMode 1
-#andorSetSpool 1 4 ramimage 10
+#set spl [andorSetSpool 1 4 ramimage 10]
 
 
 ## Documented proc \c connectads9 .
@@ -302,12 +302,14 @@ global CAM ANDOR_CFG
      set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,[string range $i 3 end])"
   }
-  foreach i "Shutter FrameTransferMode OutputAmplifier EMHSSpeed HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime EMCCDGain EMAdvanced" {
+  set t [andorGetProperty $CAM timings]
+  set ANDOR_CFG($CAM,TExposure) [lindex $t 0]
+  set ANDOR_CFG($CAM,TAccumulate) [lindex $t 1]
+  set ANDOR_CFG($CAM,TKinetics) [lindex $t 2]
+  foreach i "Shutter FrameTransferMode OutputAmplifier EMHSSpeed HSSpeed VSSpeed PreAmpGain ReadMode AcquisitionMode KineticCycleTime NumberAccumulations NumberKinetics AccumulationCycleTime EMCCDGain EMAdvanced TExposure TAccumulate TKinetics" {
      debuglog "$CAM : $i = $ANDOR_CFG($CAM,$i)"
      lappend s $ANDOR_CFG($CAM,$i)
   }
-  set t [andorGetProperty $CAM timings]
-  foreach x $t { lappend s $x }
   return $s
 } 
 
@@ -351,12 +353,12 @@ global CAM ANDOR_CFG
 #
 proc configureFrame { mode } {
 global CAM ANDOR_ROI ANDOR_CFG SCOPE TELEMETRY
+   
    if { $mode == "fullframe" } {
      debuglog "Configure camera $CAM for fullframe"
      andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin) 1 1024 1 1024 $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
      cAndorSetProperty $CAM AcquisitionMode 1
      set TELEMETRY(speckle.andor.kinetic_mode) 0
-     cAndorSetProperty $CAM OutputAmplifier 0
      set SCOPE(numframes) 1
    }
    if { $mode == "roi" } {
@@ -368,7 +370,6 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE TELEMETRY
      } else {
        cAndorSetProperty $CAM AcquisitionMode 3
     }
-     cAndorSetProperty $CAM OutputAmplifier 0
    }
    if { $mode == "fullkinetic" } {
      debuglog "Configure camera $CAM for fullframe"
@@ -379,8 +380,12 @@ global CAM ANDOR_ROI ANDOR_CFG SCOPE TELEMETRY
      } else {
         cAndorSetProperty $CAM AcquisitionMode 3
      }
-     cAndorSetProperty $CAM OutputAmplifier 0
    }
+   if { $mode == "video" } {
+     debuglog "Configure camera $CAM for video"
+     andorConfigure $CAM $ANDOR_CFG($CAM,hbin) $ANDOR_CFG($CAM,vbin)  $ANDOR_ROI(xs) $ANDOR_ROI(xe) $ANDOR_ROI(ys) $ANDOR_ROI(ye) $ANDOR_CFG($CAM,PreAmpGain) $ANDOR_CFG($CAM,VSSpeed) $ANDOR_CFG($CAM,HSSpeed) $ANDOR_CFG($CAM,EMHSSpeed)
+   }
+   cAndorSetProperty $CAM OutputAmplifier $ANDOR_CFG($CAM,OutputAmplifier)
 }
 
 ## Documented proc \c acquireDataFrame .
@@ -597,10 +602,10 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
   debuglog "FITSBITS = $ANDOR_CFG(fitsbits)"
   if { $npix < 1024 } {set dofft [andorGetControl 0 showfft]}
   if { $ANDOR_CFG(red) > -1} {
-      andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $ANDOR_CFG(fitsbits) $dofft
+      andorGetSingleCube $ANDOR_CFG(red) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $ANDOR_CFG(fitsbits) $dofft $ANDOR_CFG($CAM,NumberAccumulations)
   }
   if { $ANDOR_CFG(blue) > -1 } {
-      andorGetSingleCube $ANDOR_CFG(blue) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $ANDOR_CFG(fitsbits) $dofft
+      andorGetSingleCube $ANDOR_CFG(blue) $n $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]b.fits $ANDOR_CFG(fitsbits) $dofft $ANDOR_CFG($CAM,NumberAccumulations)
   }
   update idletasks
   set TELEMETRY(speckle.andor.exposureEnd) [expr [clock microseconds]/1000000.]
@@ -684,10 +689,10 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY CAM
   set TELEMETRY(speckle.andor.numberkinetics) $n
   cAndorSetProperty $CAM ExposureTime $exp
   if { $ANDOR_CFG(red) > -1} {
-     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] $ANDOR_CFG($CAM,hbin)
   }
   if { $ANDOR_CFG(blue) > -1} {
-     andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+     andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] $ANDOR_CFG($CAM,hbin)
   }
   set count 0
   set dofft 0
@@ -1053,6 +1058,10 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
                            set TELEMETRY(tcs.weather.rawbg) [lindex $msg 4]
                            puts $sock "OK"
                          }
+         extraheaders    { set TELEMETRY(speckle.scope.release) [lindex $msg 1]
+                           set TELEMETRY(tcs.telescope.guiding) [lindex $msg 2]
+                           puts $sock "OK"
+                         }
          programid       { set SCOPE(ProgID) [lindex $msg 1] ; puts $sock "OK" }
          filter          { set SCOPE(filter) [lindex $msg 1] ; puts $sock "OK" }
          readoutcfg      { set res [configReadout [lindex $msg 1] [lindex $msg 2] [lindex $msg 3] [lindex $msg 4] [lindex $msg 5] [lindex $msg 6] [lindex $msg 7]] ; puts $sock $res}
@@ -1086,7 +1095,7 @@ global SCOPE CAM ANDOR_ARM ANDOR_CFG TELEMETRY SPECKLE_DATADIR FITSBITS
     flush $sock
 }
 
-
+showstatus
 wm withdraw .
 
 ## Documented proc \c svcHandler .

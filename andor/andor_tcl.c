@@ -52,6 +52,8 @@ typedef struct shmControlRegisters {
 shmControl *SharedMem2;
 
 int getPeak(int cameraId , int npix);
+unsigned short tempbuf16[1024*1024*48];
+unsigned int tempbuf32[1024*1024*48];
 unsigned int imageDataA[1024*1024];
 unsigned int imageDataB[1024*1024];
 unsigned int outputData[1024*1024];
@@ -1326,7 +1328,7 @@ int append_fitsTimings(int numexp)
 {
    int status=0;
    int hdutype;
-   char extname[] = "Frame timings";           /* extension name */
+   char extname[] = "End of Frame UTC";           /* extension name */
    char *ttype[] = { "Time" };
    char *tform[] = { "1D" };
    char *tunit[] = { "seconds" };
@@ -1649,7 +1651,7 @@ int tcl_andorSetSpool(ClientData clientData, Tcl_Interp *interp, int argc, char 
    sscanf (argv[2],"%d", &imode);
    sscanf (argv[4],"%d", &nbframes);
    status = SetSpool(iactive,imode,argv[3],nbframes);     
-   if (status != 0) {
+   if (status != 20002) {
        return status;
    }
  
@@ -1785,8 +1787,8 @@ int cAndorDisplaySingle(int cameraId, int ifft)
   width = andorSetup[cameraId].width / andorSetup[cameraId].image.hbin;
   height = andorSetup[cameraId].height / andorSetup[cameraId].image.vbin;
  
-  if ( width != 512 && width != 256 && width != 128) { ifft = 0; }
-  if ( height != 512 && height != 256 && height != 128) { ifft = 0; }
+  if ( width != 512 && width != 256 && width != 128  && width != 64) { ifft = 0; }
+  if ( height != 512 && height != 256 && height != 128 && width != 64) { ifft = 0; }
 
   if ( cameraId == 0 ) {
     if ( ifft == 1 ) {
@@ -1929,8 +1931,8 @@ int tcl_andorDisplaySingleFFT(ClientData clientData, Tcl_Interp *interp, int arg
   sscanf(argv[2],"%d",&width);
   sscanf(argv[3],"%d",&height);
   sscanf(argv[4],"%d",&numexp);
-  if ( width != 1024 && width != 512 && width != 256 && width != 128) { ifft = 0; }
-  if ( height != 1024 && height != 512 && height != 256 && height != 128) { ifft = 0; }
+  if ( width != 1024 && width != 512 && width != 256 && width != 128 && width != 64) { ifft = 0; }
+  if ( height != 1024 && height != 512 && height != 256 && height != 128 && width != 64) { ifft = 0; }
 
   if ( ifft ) {
     if ( cameraId == 0 ) {
@@ -2517,18 +2519,27 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   int numpix=0;
   int bitpix;
   int ifft=0;
+  int inewfirst, inewlast;
   int count;
   int ipeak;
   int ipix;
+  int ixfer;
+  int iframecnt;
+  int validfirst,validlast;
   int maxt;
   long deltat;
   float texposure, taccumulate, tkinetics;
+  float frameStart;
+  int naccum;
+  time_t ltime;
   struct timespec tm1,tm2;
+  struct tm starttime;
+  SYSTEMTIME andorTime;
   char filename[1024];
 
   /* Check number of arguments provided and return an error if necessary */
-  if (argc < 4) {
-     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," cameraId numexp filename bitpix ifft\"", (char *)NULL);
+  if (argc < 5) {
+     Tcl_AppendResult(interp, "wrong # args: should be \"",argv[0]," cameraId numexp filename bitpix ifft naccum\"", (char *)NULL);
      return TCL_ERROR;
   }
 
@@ -2537,6 +2548,7 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   sscanf(argv[3],"%s",&filename);
   sscanf(argv[4],"%d",&bitpix);
   sscanf(argv[5],"%d",&ifft);
+  sscanf(argv[6],"%d",&naccum);
 
   if ( cameraId == 0 ) {
      status = SetCurrentCamera(cameraA);
@@ -2555,70 +2567,112 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   SharedMem2->iabort=0;
   printf("Start at : %ld\n",tm1.tv_sec);
   status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
-  maxt = (int) (numexp * tkinetics * 4.0 +1);
-  status = SetNumberKinetics(numexp+50);
+  maxt = (int) ( (float)numexp * tkinetics * 2 +1);
+  GetStatus(&status);
+  status = SetNumberKinetics(numexp);
+  status = SetMetaData(1);
+  if (naccum < 2) {status = SetAcquisitionMode(5);}
+  numpix = andorSetup[cameraId].npix;
   StartAcquisition();
   GetStatus(&status);
-  while (count < numexp) {
-		while(status==DRV_ACQUIRING && count < numexp) {
-                    GetTotalNumberImagesAcquired(&num);
-                    if ( num > ngot ) {
-                      if (num ==1 ) {
-                        clock_gettime(CLOCK_REALTIME,&tm1);
-                        printf("Acq Start at : %ld\n",tm1.tv_sec);
-                      }
-                      ngot = num;
+                  clock_gettime(CLOCK_REALTIME,&tm1);
+                  printf("Acq Start at : %ld\n",tm1.tv_sec);
+                  ltime=time(&ltime);
+                  localtime_r(&ltime, &starttime);
+                  andorTime.wYear=(unsigned short)starttime.tm_year;
+                  andorTime.wMonth=(unsigned short)starttime.tm_mon;
+                  andorTime.wDayOfWeek=(unsigned short)starttime.tm_wday;
+                  andorTime.wDay=(unsigned short)starttime.tm_mday;
+                  andorTime.wHour=(unsigned short)starttime.tm_hour;
+                  andorTime.wMinute=(unsigned short)starttime.tm_min;
+                  andorTime.wSecond=(unsigned short)starttime.tm_sec;
+                  andorTime.wMilliseconds=(unsigned short)(tm1.tv_nsec/1000000);
+  while ( status==DRV_ACQUIRING && count < numexp ) {
+               GetTotalNumberImagesAcquired(&num);
+               GetNumberNewImages(&inewfirst,&inewlast);
+               if ( inewfirst > ngot ) {
+          
+                  printf("New images : first=%d , last=%d\n",inewfirst,inewlast);
+                  iframecnt = inewlast-inewfirst+1;
+                  if  (bitpix == USHORT_IMG) {
+                    status = GetImages16(inewfirst,inewlast,&tempbuf16,numpix*iframecnt,&validfirst,&validlast);
+                  } else {
+                    status = GetImages(inewfirst,inewlast,&tempbuf32,numpix*iframecnt,&validfirst,&validlast);
+                  }
+                  printf("GetImages from %d to %d status = %d\n",inewfirst,inewlast,status);
+
+                  for (ixfer=inewfirst;ixfer<=inewlast;ixfer++) {
+                      ngot = ixfer;
  		      if ( cameraId == 0 ) {
                           if (bitpix == USHORT_IMG) {
-  		            status = GetOldestImage16(imageDataAI2, andorSetup[cameraId].npix);
                             for (ipix=0;ipix<andorSetup[cameraId].npix; ipix++) {
-                               imageDataA[ipix] = (int)imageDataAI2[ipix];
+                               imageDataA[ipix] = (unsigned int)tempbuf16[(ixfer-inewfirst)*numpix+ipix];
+                               imageDataAI2[ipix] = (unsigned short)tempbuf16[(ixfer-inewfirst)*numpix+ipix];
                             }
                           } else {
-  		            status = GetOldestImage(imageDataA, andorSetup[cameraId].npix);
+                            for (ipix=0;ipix<andorSetup[cameraId].npix; ipix++) {
+                               imageDataA[ipix] = (unsigned int)tempbuf32[(ixfer-inewfirst)*numpix+ipix];
+                            }
                           }
   		      } else {
                           if (bitpix == USHORT_IMG) {
-			    status = GetOldestImage16(imageDataBI2, andorSetup[cameraId].npix);
                             for (ipix=0;ipix<andorSetup[cameraId].npix; ipix++) {
-                               imageDataB[ipix] = (int)imageDataBI2[ipix];
+                               imageDataB[ipix] = (unsigned int)tempbuf16[(ixfer-inewfirst)*numpix+ipix];
+                               imageDataBI2[ipix] = (unsigned short)tempbuf16[(ixfer-inewfirst)*numpix+ipix];
                             }
                           } else {
-			    status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
+                            for (ipix=0;ipix<andorSetup[cameraId].npix; ipix++) {
+                               imageDataB[ipix] = (unsigned int)tempbuf32[(ixfer-inewfirst)*numpix+ipix];
+                            }
                           }
 		      }
-                      fitsTimings[count] = (double)(tm2.tv_sec) + (double)tm2.tv_nsec/1000000000.;
-                      printf("frame %d , peak = %d , t = %16.4lf status=%d\n",count,ipeak,fitsTimings[count],status);
+//                      status = GetMetaDataInfo(&andorTime,&frameStart,ixfer);
+//                      fitsTimings[count] = (double)(tm1.tv_sec)+(double)(frameStart/1000.);
+//                      printf("Frame start for %d is %f fitsTimings is %19.4lf\n",ixfer,frameStart,fitsTimings[count]);
+                      clock_gettime(CLOCK_REALTIME,&tm2);
+                      deltat = tm2.tv_sec - tm1.tv_sec;
                       count  = count+1;
                       SharedMem2->iFrame[cameraId] = count;
-                      ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
                       fflush(NULL);
                       cAndorStoreROI(cameraId, filename, bitpix, count ,numexp);
                       cAndorDisplaySingle(cameraId, ifft);
-                    }
-                    usleep(100);
-                    GetStatus(&status);
-                    clock_gettime(CLOCK_REALTIME,&tm2);
-                    deltat = tm2.tv_sec - tm1.tv_sec;
-                    if (deltat > maxt || SharedMem2->iabort > 0) {
-                         count=numexp;
-                         AbortAcquisition();
-                         status=0;
+                      fitsTimings[count-1] = (double)(tm2.tv_sec) + (double)tm2.tv_nsec/1000000000.;
+                      ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
+                      if ( ipeak < 15000 ) {
+                         printf("\033[0;34m frame %d / %d , peak = %d , t = %19.4lf status=%d \033[0m \n",count,num,ipeak,fitsTimings[count-1],status);
+                      }
+                      if ( ipeak >= 15000 && ipeak < 30000 ) {
+                         printf("\033[0;32m frame %d / %d , peak = %d , t = %19.4lf status=%d \033[0m \n",count,num,ipeak,fitsTimings[count-1],status);
+                      }
+                      if ( ipeak >= 30000 && ipeak < 50000 ) {
+                         printf("\033[0;33m frame %d / %d , peak = %d , t = %19.4lf status=%d \033[0m \n",count,num,ipeak,fitsTimings[count-1],status);
+                      }
+                      if ( ipeak > 50000 ) {
+                         printf("\033[0;31m frame %d / %d , peak = %d , t = %19.4lf status=%d \033[0m \n",count,num,ipeak,fitsTimings[count-1],status);
+                      }
+                  }
+                  usleep(10);
+                  GetStatus(&status);
+                  clock_gettime(CLOCK_REALTIME,&tm2);
+                  deltat = tm2.tv_sec - tm1.tv_sec;
+                  if (deltat > maxt || SharedMem2->iabort > 0) {
+                       printf("Inner loop Cancelled at : %ld : maxt=%d deltat=%ld status = %d\n",tm2.tv_sec,maxt,deltat, status);
+                       count=numexp;
+                       AbortAcquisition();
 /*                         SharedMem2->iabort = 0; */
-                    }
-		}
-                if (deltat > maxt || SharedMem2->iabort > 0) {
-                   AbortAcquisition();
-                   printf("Cancelled at : %ld\n",tm2.tv_sec);
-                   count = numexp;
-                }
-                usleep(100);
-                GetStatus(&status);
+                  }
+              }
   }
-
+  GetStatus(&status);
+  if (deltat > maxt || SharedMem2->iabort > 0) {
+    AbortAcquisition();
+    printf("Cancelled at : %ld: status = %d\n",tm2.tv_sec, status);
+    count = numexp;
+  }
+  usleep(10);
   AbortAcquisition();
   printf("\nAcq End at : %ld\n",tm2.tv_sec);
-  printf("%ld milliseconds per frame\n",(tm2.tv_sec-tm1.tv_sec)*1000/numexp);
+  printf("%ld       milliseconds per frame\n",(tm2.tv_sec-tm1.tv_sec)*1000/numexp);
 
   return TCL_OK;
 }
@@ -2667,7 +2721,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
   ngot=0;
   count=0;
   status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
-  maxt = (int) (numexp * tkinetics * 4.0 +3);
+  maxt = (int) (numexp * tkinetics * 20.0 +3);
   SharedMem2->iabort=0;
   clock_gettime(CLOCK_REALTIME,&tm1);
   printf("Start at : %ld\n",tm1.tv_sec);
@@ -2683,14 +2737,25 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
                       }
                       ngot = num;
  		      if ( cameraId == 0 ) {
-		          status = GetOldestImage(imageDataA, andorSetup[cameraId].npix);
+		          status = GetMostRecentImage(imageDataA, andorSetup[cameraId].npix);
 		      } else {
-			  status = GetOldestImage(imageDataB, andorSetup[cameraId].npix);
+			  status = GetMostRecentImage(imageDataB, andorSetup[cameraId].npix);
 		      }
                       count  = count+1;
                       SharedMem2->iFrame[cameraId] = count;
                       ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
-                      printf("frame %d, peak = %d , status=%d\n",ngot,ipeak,status);
+                      if ( ipeak < 15000 ) {
+                         printf("\033[0;34m frame %d , peak = %d , t = %16.4lf status=%d \033[0m \n",count,ipeak,fitsTimings[count],status);
+                      }
+                      if ( ipeak >= 15000 && ipeak < 30000 ) {
+                         printf("\033[0;32m frame %d , peak = %d , t = %16.4lf status=%d \033[0m \n",count,ipeak,fitsTimings[count],status);
+                      }
+                      if ( ipeak >= 30000 && ipeak  <50000 ) {
+                         printf("\033[0;33m frame %d , peak = %d , t = %16.4lf status=%d \033[0m \n",count,ipeak,fitsTimings[count],status);
+                      }
+                      if ( ipeak > 50000 ) {
+                         printf("\033[0;31m frame %d , peak = %d , t = %16.4lf status=%d \033[0m \n",count,ipeak,fitsTimings[count],status);
+                      }
                       fflush(NULL);
                       cAndorDisplaySingle(cameraId, ifft);
                     }
@@ -2722,11 +2787,15 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
 
 
 int getPeak ( int cameraId , int npix ) {
-   int ipeak;
-   int ipix;
+   int ipeak=0;
+   int ixpix,iypix,ipix;
    int imin=100000;
+   int nx = andorSetup[cameraId].width / andorSetup[cameraId].image.hbin;
+   int ny = andorSetup[cameraId].height / andorSetup[cameraId].image.vbin;
 
-   for (ipix=0;ipix<npix;ipix++) {
+   for (ixpix=nx*1/3;ixpix<nx*2/3;ixpix++) {
+   for (iypix=ny*1/3;iypix<ny*2/3;iypix++) {
+      ipix = iypix * nx + ixpix;
       if (cameraId == 0) {
         if (imageDataA[ipix] > ipeak) {
            ipeak = imageDataA[ipix];
@@ -2743,6 +2812,7 @@ int getPeak ( int cameraId , int npix ) {
            imin = imageDataA[ipix];
         } 
       }
+   }
    }
    SharedMem2->iPeak[cameraId] = ipeak;
    SharedMem2->iMin[cameraId] = imin;
@@ -3493,7 +3563,7 @@ void create_fits_header(fitsfile *fptr)
     time_t t;
 
     status = 0;
-    fits_write_key(fptr, TSTRING, "CREATOR", "Linux ANDOR CCD control", "Speckle Data-taking program", &status);
+    fits_write_key(fptr, TSTRING, "CREATOR", "Linux ANDOR CCD control V2", "Speckle Data-taking program", &status);
     t = time(NULL);
     gmt = gmtime(&t);
     utcday = (double)(gmt->tm_mday) + ((double)(gmt->tm_hour) + (double)(gmt->tm_min)/60.0
