@@ -339,6 +339,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  speckleshutter red auto
  speckleshutter blue auto
  if { $STATUS(exposureMode) == "clone" } {
+   set SCOPE(exposureRed) $SCOPE(exposure)
    commandAndor red  "setexposure $SCOPE(exposure)"
  } else {
    if { [checkAutoFilter] == 0 } {

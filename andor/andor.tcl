@@ -377,6 +377,9 @@ global ANDOR_CCD ANDOR_EMCCD LASTACQ
      if { $perrun > 100 } {set perrun 100}
      if { $perrun < 20 } {set perrun 20}
      if { $SCOPE(exposure) > 1.0 } {set perrun 2}
+     if { $STATUS(exposureMode) == "clone" } {
+        set SCOPE(exposureRed) $SCOPE(exposure)
+     }
      commandAndor red "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
      commandAndor blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
      commandAndor red  "setexposure $SCOPE(exposureRed)"
