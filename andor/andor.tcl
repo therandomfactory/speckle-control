@@ -366,7 +366,7 @@ global ANDOR_CCD ANDOR_EMCCD LASTACQ
 #   commandAndor blue "imagename videomode 1" 0
 #   exec rm -f $SCOPE(datadir)/videomode_red.fits
 #   exec rm -f $SCOPE(datadir)/videomode_blue.fits
-   if { $STATUS(abort) == 0 } {
+   if { $STATUS(abort) == 0 && $STATUS(observing) == 0 } {
      set redtemp  [lindex [commandAndor red gettemp] 0]
      set bluetemp  [lindex [commandAndor blue gettemp] 0]
      mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
@@ -414,8 +414,8 @@ global ANDOR_CCD ANDOR_EMCCD LASTACQ
      commandAndor blue setframe video
      commandAndor red "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
      commandAndor blue "setbinning $ANDOR_CFG(binning) $ANDOR_CFG(binning)"
-     commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)] $perrun"
-     commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) [expr $ACQREGION(geom)/$ANDOR_CFG(binning)]  $perrun"
+     commandAndor red "fastVideo $SCOPE(exposure) $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(geom) $perrun"
+     commandAndor blue "fastVideo $SCOPE(exposure) $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(geom) $perrun"
       if { $SCOPE(exposure) > 0.0 } {
           mimicMode red open
           mimicMode blue open

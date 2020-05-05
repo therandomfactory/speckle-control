@@ -22,6 +22,7 @@
 proc abortsequence { } {
 global STATUS
   set STATUS(abort) 1
+  set STATUS(observing) 0
   andorSetControl 0 abort 0
   .main.observe configure -text "Observe" -bg green -relief raised -command startsequence
   .main.abort configure -bg gray -relief sunken -fg LightGray
@@ -444,6 +445,7 @@ proc startsequence { {save keep} } {
 global SCOPE OBSPARS FWHEELS STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  set iseqnum 0
+ set STATUS(observing) 1
  prepsequence
  cameraStatuses
  catch {
@@ -456,6 +458,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
     commandAndor red "imagename TEST 1"
     commandAndor blue "imagename TEST 1"
     acquireTest
+    set STATUS(observing) 0
     return
  }
  set autofilter [checkAutoFilter blue]
@@ -596,6 +599,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
         .lowlevel.p configure -value 0
         .lowlevel.seqp configure -value 0
         audioNote
+        set STATUS(observing) 0
         return
      }
     }
@@ -629,6 +633,7 @@ set SCOPE(red,bias) 0
 set SCOPE(blue,bias) 0
 set SCOPE(red,peak) 0
 set SCOPE(blue,peak) 0
+set STATUS(observing) 0
 
 set ACQREGION(geom) 256
 set SCOPE(red,bias) 0

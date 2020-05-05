@@ -21,6 +21,7 @@
 proc geminiConnect { scope } {
 global GEMINICFG
    set GEMINICFG(site) $scope
+   set handle -1
    set ok [ catch { set res [exec ping  $GEMINICFG($scope,ip) -c 1] } ]
    if { $ok == 0 } {
     catch {
@@ -38,6 +39,8 @@ global GEMINICFG
     }
     return $handle
    } else {
+     set GEMINICFG(handle) -1
+     debuglog "Failed to connect to Gemini service at $GEMINICFG($scope,ip) port $GEMINICFG($scope,port) "
      return -1
    }
 }
@@ -70,7 +73,8 @@ global GEMINICFG
 proc updateGeminiTelemetry { } {
 global GEMINI GEMINICFG TELEMETRY SCOPE
    set all [lsort [array names GEMINI]]
-   foreach t $all {
+   if { $GEMINICFG(handle) > 0 } {
+    foreach t $all {
       set ok "none"
       catch { set ok [puts $GEMINICFG(handle) "get $t\n"] } res
       if { $ok == "none" } { 
@@ -82,6 +86,14 @@ global GEMINI GEMINICFG TELEMETRY SCOPE
         debuglog "****************** AND MAX CONNECTIONS IS >5 ********************"
         return
       }
+    }
+   } else {
+     debuglog "Gemini telemetry lost"
+     simGeminiTelemetry
+     debuglog "****************** NO TELEMETRY AVAILABLE ***********************"
+     debuglog "****************** PLEASE CHECK THE VII IS RUNNING  *************"
+     debuglog "****************** AND MAX CONNECTIONS IS >5 ********************"
+     return
    }
    after 500
    if { $GEMINICFG(handle) > 0 } {
@@ -291,6 +303,7 @@ set GEMINI(zd) 		tcs.telescope.zenithdist
 set GEMINI(guiding)     tcs.telescope.guiding
 
 set TELEMETRY(tcs.telescope.guider) Off
+puts stdout "Done gemini_telemetry.tcl"
 
 
 

@@ -54,10 +54,10 @@ global SCOPE
      zaberGoto A wide
      zaberGoto B wide
      zaberGoto input wide
-     savespecklegui
      catch { commandAndor red shutdown }
      catch { commandAndor blue shutdown }
-     catch { exec xpaset -p ds9 exit }
+     catch { exec xpaset -p ds9red exit }
+     catch { exec xpaset -p ds9blue exit }
      after 5000
      catch { exec pkill -9 tail }
      exit
@@ -538,6 +538,16 @@ global env STATUS SCOPE FWHEELS
    }
 }
 
+## Documented proc \c reconnectTelemetry .
+#
+#  Reconnect to Gemini telemetry server
+#
+proc reconnectTelemetry  { site } {
+global SCOPE
+   connectGemini $site
+   commandAndor red "reconnecttlm $site"
+   commandAndor blue "reconnecttlm $site"
+}
 
 
 # \endcode
@@ -681,8 +691,8 @@ place .lowlevel.bshut -x 20 -y 30
 
 checkbutton .lowlevel.rautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(red,fitds9) -highlightthickness 0
 checkbutton .lowlevel.bautofit  -bg gray -text "Autofit ds9" -variable INSTRUMENT(blue,fitds9) -highlightthickness 0
-place .lowlevel.rautofit -x 680 -y 33
-place .lowlevel.bautofit -x 280 -y 33
+place .lowlevel.rautofit -x 280 -y 33
+place .lowlevel.bautofit -x 680 -y 33
 
 checkbutton .lowlevel.rfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(red,frametransfer) -command "checkframetransfer red" -highlightthickness 0
 checkbutton .lowlevel.bfxfer  -bg gray -text "Frame Transfer" -variable ANDOR_CFG(blue,frametransfer) -command "checkframetransfer blue" -highlightthickness 0

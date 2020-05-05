@@ -269,10 +269,6 @@ global SCOPE
 
 # \endcode
 
-if { [file exists $env(HOME)/.specklegui] } {
-   source $env(HOME)/.specklegui
-}
-
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
 set DEBUG 1
@@ -761,8 +757,8 @@ if { $env(TELESCOPE) != "WIYN" } {
      set SCOPE(preamble) S
      set SCOPE(imagename) "S[exec date -u +%Y%m%d]Z"
      set hnow [lindex [split [exec date -u] " :"] 3]
-     if { $hnow > 21 || $hnow < 8} {
-        set SCOPE(imagename) "S[clock format [expr  [clock seconds] - 24*3600] -format %Y%m%d -gmt 1]Z"
+     if { $hnow > 20 || $hnow < 8} {
+        set SCOPE(imagename) "S[clock format [expr  [clock seconds] + 24*3600] -format %Y%m%d -gmt 1]Z"
      }
    }
 }

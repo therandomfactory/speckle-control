@@ -224,6 +224,7 @@ global FWHEEL
 #  Reset filter wheel
 #
 proc resetFilterWheel { id } {
+  catch {
    oriel_write_cmd $id RST
    after 7000
    set res [oriel_read_result $id]
@@ -231,6 +232,7 @@ proc resetFilterWheel { id } {
    after 200
    set res [oriel_read_result $id]
    return $res
+  }
 }
 
 ## Documented proc \c setOrielFilter .
@@ -240,6 +242,8 @@ proc resetFilterWheel { id } {
 #  Call low level code to move filter to selected position
 #
 proc setOrielFilter { id n } {
+ set res -1
+ catch {
    oriel_write_cmd $id FILT?
    after 200
    set res [oriel_read_result $id]
@@ -260,11 +264,12 @@ proc setOrielFilter { id n } {
    oriel_write_cmd $id FILT?
    after 200
    set res [oriel_read_result $id]
-   set cpos [string range $res 4 4]
-   if { $cpos == $n } {
+  }
+  set cpos [string range $res 4 4]
+  if { $cpos == $n } {
       return $n
-   }
-   return -1
+  }
+  return -1
 }
 
 ## Documented proc \c checkAutoFilter .

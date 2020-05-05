@@ -29,8 +29,8 @@
 proc updateds9wcs { ra dec } {
 global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM env TELEMETRY WCSPARS
   readWCSpars $ANDOR_ARM $TELEMETRY(speckle.andor.inputzaber)
-  set radeg [expr ([hms_to_radians $ra]+[hms_to_radians 00:00:$WCSPAR(DELTARA)/15.])*180/$PI]
-  set decdeg [expr ([dms_to_radians $dec]+[dms_to_radians 00:00:$WCSPAR(DELTADEC)])*180/$PI]
+  set radeg [expr ([hms_to_radians $ra]+[hms_to_radians 00:00:$WCSPARS(DELTARA)/15.])*180/$PI]
+  set decdeg [expr ([dms_to_radians $dec]+[dms_to_radians 00:00:$WCSPARS(DELTADEC)])*180/$PI]
   set fout [open /tmp/[set ANDOR_ARM]wcs.wcs w]
   if { $WCSPARS(CRVAL1) == "RA" } {
     puts $fout "CRVAL1 $radeg"
@@ -80,8 +80,8 @@ global SCOPE ACQREGION PSCALES ANDOR_CFG PI DS9 ANDOR_ARM env TELEMETRY WCSPARS
 proc headerAstrometry { fid ra dec } {
 global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM env TELEMETRY WCSPARS
   readWCSpars $ANDOR_ARM $TELEMETRY(speckle.andor.inputzaber)
-  set radeg [expr ([hms_to_radians $ra]+[hms_to_radians 00:00:$WCSPAR(DELTARA)/15.])*180/$PI]
-  set decdeg [expr ([dms_to_radians $dec]+[dms_to_radians 00:00:$WCSPAR(DELTADEC)])*180/$PI]
+  set radeg [expr ([hms_to_radians $ra]+[hms_to_radians 00:00:$WCSPARS(DELTARA)/15.])*180/$PI]
+  set decdeg [expr ([dms_to_radians $dec]+[dms_to_radians 00:00:$WCSPARS(DELTADEC)])*180/$PI]
   if { $WCSPARS(CRVAL1) == "RA" } {
     set r [fitshdrrecord  CRVAL2	 double "$decdeg"	"Declination of reference pixel \[deg\]"]
     $fid put keyword $r
@@ -207,6 +207,7 @@ set PI 3.141592653589
 set ACQREGION(geom) 1024
 set ANDOR_CFG(binning) 1
 set ANDOR_CFG(frame) fullframe
+set TELEMETRY(speckle.andor.inputzaber) wide
 
 
 
