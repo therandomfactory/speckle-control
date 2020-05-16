@@ -262,10 +262,10 @@ set ANDOR_CFG(ccdtemp) 0.0
 set ANDOR_CFG(filter) "NA"
 
 
-set GEMINICFG(south,ip) 172.17.44.50
+set GEMINICFG(south,ip) vii.cl.gemini.edu
 set GEMINICFG(south,port) 7283
 
-set GEMINICFG(north,ip) 10.2.44.60
+set GEMINICFG(north,ip) vii.hi.gemini.edu
 set GEMINICFG(north,port) 7283
 
 set GEMINI(airmass)	tcs.telescope.airmass

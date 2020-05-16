@@ -2538,6 +2538,10 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   struct tm starttime;
   SYSTEMTIME andorTime;
   char filename[1024];
+  double startTime;
+  double deltaTime;
+  double stampTime;
+  at_u64 timeFromStart[100];
 
   /* Check number of arguments provided and return an error if necessary */
   if (argc < 5) {
@@ -2565,16 +2569,17 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   num=0;
   ngot=0;
   count=0;
-  clock_gettime(CLOCK_REALTIME,&tm1);
   SharedMem2->iabort=0;
   printf("Start at : %ld\n",tm1.tv_sec);
   status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
   maxt = (int) ( (float)numexp * tkinetics * 2 +1);
   GetStatus(&status);
   status = SetNumberKinetics(numexp);
-  status = SetMetaData(1);
+//  status = SetMetaData(1);
   if (naccum < 2) {status = SetAcquisitionMode(5);}
   numpix = andorSetup[cameraId].npix;
+  clock_gettime(CLOCK_REALTIME,&tm1);
+  startTime = (double)tm1.tv_sec + (double)(tm1.tv_nsec)/1000000000.;
   StartAcquisition();
   GetStatus(&status);
                   clock_gettime(CLOCK_REALTIME,&tm1);
@@ -2592,6 +2597,8 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
   while ( status==DRV_ACQUIRING && count < numexp ) {
                GetTotalNumberImagesAcquired(&num);
                GetNumberNewImages(&inewfirst,&inewlast);
+               long numFrames = inewlast - inewfirst + 1;
+               GetRelativeImageTimes(inewfirst, inewlast, timeFromStart, numFrames);
                if ( inewfirst > ngot ) {
           
                   printf("New images : first=%d , last=%d\n",inewfirst,inewlast);
@@ -2628,17 +2635,15 @@ int tcl_andorGetSingleCube(ClientData clientData, Tcl_Interp *interp, int argc, 
                             }
                           }
 		      }
-//                      status = GetMetaDataInfo(&andorTime,&frameStart,ixfer);
-//                      fitsTimings[count] = (double)(tm1.tv_sec)+(double)(frameStart/1000.);
-//                      printf("Frame start for %d is %f fitsTimings is %19.4lf\n",ixfer,frameStart,fitsTimings[count]);
-                      clock_gettime(CLOCK_REALTIME,&tm2);
-                      deltat = tm2.tv_sec - tm1.tv_sec;
+                      deltaTime = (double)(timeFromStart[ixfer-inewfirst])/1000000000.;
+                      stampTime = startTime + deltaTime;
+                      fitsTimings[count] = stampTime;
+                      printf("Frame start for %d is %19.4lf fitsTimings is %19.4lf\n",ixfer,startTime,fitsTimings[count]);
                       count  = count+1;
                       SharedMem2->iFrame[cameraId] = count;
                       fflush(NULL);
                       cAndorStoreROI(cameraId, filename, bitpix, count ,numexp);
                       cAndorDisplaySingle(cameraId, ifft);
-                      fitsTimings[count-1] = (double)(tm2.tv_sec) + (double)tm2.tv_nsec/1000000000.;
                       ipeak = getPeak(cameraId,andorSetup[cameraId].npix);
                       if ( ipeak < 15000 ) {
                          printf("\033[0;34m frame %d / %d , peak = %d , t = %19.4lf status=%d \033[0m \n",count,num,ipeak,fitsTimings[count-1],status);
