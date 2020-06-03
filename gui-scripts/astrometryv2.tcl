@@ -109,7 +109,7 @@ global ACQREGION SCOPE PSCALES ANDOR_CFG PI ANDOR_ARM env TELEMETRY WCSPARS
   $fid put keyword $r
   set r [fitshdrrecord  CDELT2	 	double  $WCSPARS(CDELT2)	"Coordinate pixel scale in Y"]
   $fid put keyword $r
-  set r [fitshdrrecord  CDELT1	 	double  $WCSPARS(CROTA2)	"Rotation angle"]
+  set r [fitshdrrecord  CROTA2	 	double  $WCSPARS(CROTA2)	"Rotation angle"]
   $fid put keyword $r
   set r [fitshdrrecord  CD1_1 		double 	[expr $WCSPARS(CDELT1) * [cosd $WCSPARS(CROTA2)]] ""]
   $fid put keyword $r
