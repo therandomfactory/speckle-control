@@ -322,6 +322,7 @@ proc updateTemps { } {
 proc prepsequence { } {
 global SCOPE DATAQUAL INSTRUMENT TELEMETRY STATUS
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
+if { $ANDOR_CFG(videomode) == 0 } {
  redisUpdate
  catch {updateGeminiTelemetry}
  specklesynctelem red
@@ -414,6 +415,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
  commandAndor blue  "extraheaders $TELEMETRY(speckle.scope.release) $TELEMETRY(tcs.telescope.guider)"
  commandAndor red "datadir $SCOPE(datadir)"
  commandAndor blue "datadir $SCOPE(datadir)"
+ }
 }
 
 
@@ -444,6 +446,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
 proc startsequence { {save keep} } {
 global SCOPE OBSPARS FWHEELS STATUS DEBUG REMAINING LASTACQ TELEMETRY DATAQUAL SPECKLE_FILTER INSTRUMENT
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
+if { $ANDOR_CFG(videomode) == 0 } {
  set iseqnum 0
  set STATUS(observing) 1
  prepsequence
@@ -610,6 +613,7 @@ global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG ANDOR_SHUTTER
  abortsequence
  audioNote
  if { $SCOPE(autoclrcmt) && $save == "keep" } {.main.comment delete 0.0 end }
+}
 }
 
 proc longExpProgress { exp } {

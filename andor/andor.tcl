@@ -282,7 +282,7 @@ global INSTRUMENT
 #		STATUS - Array of exposure statuses\n
 #		ACQREGION - ROI properties xs,xe,ys,ye
 #
-proc videomode { } {
+proc oldvideomode { } {
 global LASTACQ STATUS SCOPE ACQREGION INSTRUMENT ANDOR_CFG
    set ANDOR_CFG(videomode) 1
    commandAndor red "imagename videomode 1"
@@ -330,9 +330,11 @@ global LASTACQ STATUS SCOPE ACQREGION INSTRUMENT ANDOR_CFG
 #
 proc startfastvideo { } {
 global STATUS ANDOR_CFG
+ if { $STATUS(observing) == 0 } {
    set STATUS(abort) 0
    set ANDOR_CFG(waskinetic) $ANDOR_CFG(kineticMode)
    set ANDOR_CFG(kineticMode) 1
+   set ANDOR_CFG(videomode) 1
    catch {updateGeminiTelemetry}
    specklesynctelem red
    specklesynctelem blue
@@ -345,6 +347,7 @@ global STATUS ANDOR_CFG
    speckleshutter red open
    speckleshutter blue open
    fastvideomode
+ }
 }
 
 ## Documented proc \c fastvideomode .
@@ -366,13 +369,20 @@ global ANDOR_CCD ANDOR_EMCCD LASTACQ
 #   commandAndor blue "imagename videomode 1" 0
 #   exec rm -f $SCOPE(datadir)/videomode_red.fits
 #   exec rm -f $SCOPE(datadir)/videomode_blue.fits
-   if { $STATUS(abort) == 0 && $STATUS(observing) == 0 } {
+   if { $STATUS(abort) == 0 && $STATUS(observing) == 0} {
+     .main.video configure -relief sunken -fg yellow
+     .main.observe configure -fg LightGray -relief sunken -command ""
+     .main.abort configure -fg black -relief raised
      set redtemp  [lindex [commandAndor red gettemp] 0]
      set bluetemp  [lindex [commandAndor blue gettemp] 0]
-     mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
-     mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
-     .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
-     .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
+     if { $redtemp == "" || $bluetemp == "" } {
+       debuglog "******************Failed to get temp**********************"
+     } else {
+       mimicMode red temp "[format %5.1f [lindex $redtemp 0]] degC"
+       mimicMode blue temp "[format %5.1f [lindex $bluetemp 0]] degC"
+       .main.rcamtemp configure -text "[format %5.1f [lindex $redtemp 0]] degC"
+       .main.bcamtemp configure -text "[format %5.1f [lindex $bluetemp 0]] degC"
+     }
      set perrun [expr int(100 * ($CAMSTATUS(blue,TKinetics) / $SCOPE(exposure)))]
      if { $perrun > 100 } {set perrun 100}
      if { $perrun < 20 } {set perrun 20}
@@ -420,15 +430,11 @@ global ANDOR_CCD ANDOR_EMCCD LASTACQ
           mimicMode red open
           mimicMode blue open
       }
-      .main.video configure -relief sunken -fg yellow
-      .main.observe configure -fg LightGray -relief sunken -command ""
-      .main.abort configure -fg black -relief raised
-###      after [expr int($SCOPE(exposure)*1000)+1000] fastvideomode
       debuglog "Fast video start exp=$SCOPE(exposure) for $perrun frames"
-      after [expr int($SCOPE(exposure)*$perrun*1000)+1000] fastvideomode
+      after [expr int($CAMSTATUS(blue,TKinetics)*$perrun*1000)+1000] fastvideomode
    } else {
-       after 500
-       andorSetControl 0 abort 1
+      andorSetControl 0 abort 1
+      after 1000
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
       .main.abort configure -fg gray -relief sunken
@@ -438,7 +444,8 @@ global ANDOR_CCD ANDOR_EMCCD LASTACQ
       }
       speckleshutter red during
       speckleshutter blue during
-  }
+      set ANDOR_CFG(videomode) 0
+   }
 }
 
 
@@ -453,7 +460,7 @@ set CAMSTATUS(red,TKinetics)  .06
 #		SCOPE - Array of telescope settings\n
 #		STATUS - Array of exposure statuses
 #
-proc startvideomode { } {
+proc startoldvideomode { } {
 global STATUS SCOPE
    set STATUS(abort) 0
    speckleshutter red open
