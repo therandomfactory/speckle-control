@@ -1234,6 +1234,9 @@ int cAndorStoreROI(int cameraId, char *filename, int bitpix, int iexp,int numexp
   long fpixel=1;
   long nelements;
 
+   if (iexp > numexp) {
+     return TCL_OK;
+   }
 
    width = andorSetup[cameraId].width / andorSetup[cameraId].image.hbin;
    height = andorSetup[cameraId].height / andorSetup[cameraId].image.vbin;
