@@ -2740,7 +2740,7 @@ int tcl_andorFastVideo(ClientData clientData, Tcl_Interp *interp, int argc, char
   ngot=0;
   count=0;
   status = GetAcquisitionTimings(&texposure,&taccumulate,&tkinetics);
-  maxt = (int) (numexp * tkinetics * 20.0 +3);
+  maxt = (int) (numexp * tkinetics * 2.0 +1);
   SharedMem2->iabort=0;
   clock_gettime(CLOCK_REALTIME,&tm1);
   printf("Start at : %ld\n",tm1.tv_sec);
