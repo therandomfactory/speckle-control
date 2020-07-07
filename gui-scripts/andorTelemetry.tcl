@@ -66,10 +66,10 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.ccdtemp) $ANDOR_CFG(ccdtemp) 
    set TELEMETRY(speckle.andor.prescans) 0
    set TELEMETRY(speckle.andor.vertical_speed) $ANDOR_CFG(VSSpeed,$ANDOR_CFG($CAM,VSSpeed))
-   if { $TELEMETRY(speckle.andor.amplifier) == 0 } {
-      set TELEMETRY(speckle.andor.horizontal_speed) $ANDOR_CFG(EMHSSpeed,$ANDOR_CFG($CAM,EMHSSpeed))
+   if { $ANDOR_CFG($CAM,OutputAmplifier) == 0 } {
+      set TELEMETRY(speckle.andor.horizontal_speed) [lindex $ANDOR_CFG(emccdhorizontalspeeds) $ANDOR_CFG($CAM,EMHSSpeed)]
    } else {
-      set TELEMETRY(speckle.andor.horizontal_speed) $ANDOR_CFG(HSSpeed,$ANDOR_CFG($CAM,HSSpeed))
+      set TELEMETRY(speckle.andor.horizontal_speed) [lindex $ANDOR_CFG(ccdhorizontalspeeds) $ANDOR_CFG($CAM,HSSpeed)]
    }
    set TELEMETRY(speckle.andor.bias_estimate) $ANDOR_CFG(bias)
    set TELEMETRY(speckle.andor.peak_estimate) $ANDOR_CFG(peak)

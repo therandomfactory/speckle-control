@@ -236,7 +236,9 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
 
 # \encdode
 
-set ANDOR_CFG(verticalspeeds) "0 0 0 0"
+set ANDOR_CFG(verticalspeeds) "0.6 1.13 2.2 4.33"
+set ANDOR_CFG(ccdhorizontalspeeds) "1.0 0.1"
+set ANDOR_CFG(emccdhorizontalspeeds) "30.0 20.0 10.0 1.0"
 set CAM 0
 set ANDOR_CFG(acquisition) 0
 set ANDOR_CFG(KineticCycleTime) 0.0
