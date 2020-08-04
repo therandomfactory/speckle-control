@@ -147,8 +147,8 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
     set SCOPE(red,bias) [expr int([lindex $resr 2])]
     set SCOPE(red,peak) [expr int([lindex $resr 3])]
     set resb [commandAndor blue "setroi $rdim"]
-    set SCOPE(blue,bias) [expr int([lindex $resr 2])]
-    set SCOPE(blue,peak) [expr int([lindex $resr 3])]
+    set SCOPE(blue,bias) [expr int([lindex $resb 2])]
+    set SCOPE(blue,peak) [expr int([lindex $resb 3])]
   }
   mimicMode red roi [set rdim]x[set rdim]
   mimicMode blue roi [set rdim]x[set rdim]
@@ -174,7 +174,7 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
         set ACQREGION(bys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
         set ACQREGION(bxe) [expr $ACQREGION(bxs) + [lindex $r 2] -1]
         set ACQREGION(bye) [expr $ACQREGION(bys) + [lindex $r 3] -1]
-        puts stdout "selected red region $r"
+        puts stdout "selected blue region $r"
      }
     }
     set CONFIG(geometry.StartCol) [expr $ACQREGION(rxs)]
@@ -322,7 +322,6 @@ proc updateTemps { } {
 proc prepsequence { } {
 global SCOPE DATAQUAL INSTRUMENT TELEMETRY STATUS
 global ANDOR_CCD ANDOR_EMCCD ANDOR_CFG
-if { $ANDOR_CFG(videomode) == 0 } {
  redisUpdate
  catch {updateGeminiTelemetry}
  specklesynctelem red
@@ -415,7 +414,6 @@ if { $ANDOR_CFG(videomode) == 0 } {
  commandAndor blue  "extraheaders $TELEMETRY(speckle.scope.release) $TELEMETRY(tcs.telescope.guider)"
  commandAndor red "datadir $SCOPE(datadir)"
  commandAndor blue "datadir $SCOPE(datadir)"
- }
 }
 
 

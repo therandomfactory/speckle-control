@@ -182,21 +182,25 @@ global PI
 #
 proc readWCSpars { arm mode } {
 global env WCSPARS
-  switch $env(TELESCOPE)_$env(GEMINISITE)_$mode {
+  if { $mode != "wide" && $mode != "speckle" } {
+     debuglog "WARNING: input zaber position unknown, using previous WCSPARS"
+  } else {
+    switch $env(TELESCOPE)_$env(GEMINISITE)_$mode {
       GEMINI_north_speckle   { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.speckle.geminiN }
       GEMINI_south_speckle   { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.speckle.geminiS }
       WIYN_NA_speckle        { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.speckle.wiyn }
       GEMINI_north_wide      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.geminiN }
       GEMINI_south_wide      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.geminiS }
       WIYN_NA_fullframe      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.wiyn }
+    }
+    set fin [open $wcspars r]
+    while { [gets $fin rec] > -1 } {
+      set par [string trim [lindex [split $rec =] 0]]
+      set val [string trim [lindex [split $rec =] 1]]
+      set WCSPARS($par) $val
+    }
+    close $fin
   }
-  set fin [open $wcspars r]
-  while { [gets $fin rec] > -1 } {
-     set par [string trim [lindex [split $rec =] 0]]
-     set val [string trim [lindex [split $rec =] 1]]
-     set WCSPARS($par) $val
-  }
-  close $fin
 }
 
 

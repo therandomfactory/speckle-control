@@ -364,12 +364,12 @@ global STATUS ANDOR_CFG
 #
 proc fastvideomode { } {
 global STATUS SCOPE ACQREGION CAMSTATUS ANDOR_CFG INSTRUMENT
-global ANDOR_CCD ANDOR_EMCCD LASTACQ
+global ANDOR_CCD ANDOR_EMCCD LASTACQ NEXTVIDEO
 #   commandAndor red "imagename videomode 1" 0
 #   commandAndor blue "imagename videomode 1" 0
 #   exec rm -f $SCOPE(datadir)/videomode_red.fits
 #   exec rm -f $SCOPE(datadir)/videomode_blue.fits
-   if { $STATUS(abort) == 0 && $STATUS(observing) == 0} {
+   if { $STATUS(abort) == 0 && $STATUS(observing) == 0 && $ANDOR_CFG(videomode) == 1} {
      .main.video configure -relief sunken -fg yellow
      .main.observe configure -fg LightGray -relief sunken -command ""
      .main.abort configure -fg black -relief raised
@@ -431,10 +431,11 @@ global ANDOR_CCD ANDOR_EMCCD LASTACQ
           mimicMode blue open
       }
       debuglog "Fast video start exp=$SCOPE(exposure) for $perrun frames"
-      after [expr int($CAMSTATUS(blue,TKinetics)*$perrun*1000)+1000] fastvideomode
+      set NEXTVIDEO [after [expr int($SCOPE(exposure)*$perrun*1000)+1000] fastvideomode]
    } else {
+      after cancel $NEXTVIDEO
       andorSetControl 0 abort 1
-      after 1000
+      after 500
       .main.video configure -relief raised -fg black
       .main.observe configure -fg black -relief raised -command startsequence
       .main.abort configure -fg gray -relief sunken
@@ -643,6 +644,9 @@ global SPECKLE_DIR ANDOR_SOCKET ACQREGION LASTACQ env
    catch {commandAndor red shutdown; close $ANDOR_SOCKET(red)}
    catch {commandAndor blue shutdown; close $ANDOR_SOCKET(blue)}
    set geom2 "+20+800" ; set geom1 "+1100+800"
+   if { $env(GEMINISITE) == "north" } {
+     set geom1 "+20+800" ; set geom2 "+1100+800"
+   }
 #   if { $env(TELESCOPE) == "WIYN"} {
 #     set geom2 "+20+800" ; set geom1 "+1100+800"
 #   }

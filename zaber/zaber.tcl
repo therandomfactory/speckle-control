@@ -291,8 +291,8 @@ global ZABERS env
     after 200
     zaberReader $ZABERS(handle)
     set ZABERS($s,readpos) $ZABERS($s,pos)
-    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,speckle))] < 5 } {set ZABERS($s,readpos) "speckle"}
-    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,wide))] < 5 } {set ZABERS($s,readpos) "wide"}
+    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,speckle))] < 10 } {set ZABERS($s,readpos) "speckle"}
+    if { [expr abs($ZABERS($s,pos) - $ZABERS($s,wide))] < 10 } {set ZABERS($s,readpos) "wide"}
   }
   .mimicSpeckle.zaberA configure -text "Zaber A : $ZABERS(A,pos) : $ZABERS(A,readpos)"
   .mimicSpeckle.zaberB configure -text "Zaber B : $ZABERS(B,pos) : $ZABERS(B,readpos)"
