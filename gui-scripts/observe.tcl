@@ -37,8 +37,7 @@ global STATUS
 #  \param[in] op - Operation specifier
 #  \param[in] id - Camera id (for multi-camera use) (optional, default is 0)
 # 
-#  This procedure aborts the current exposure or sequence of exposures.
-#  It simply sets the global abort flag and resets the GUI widgets 
+#  This procedure configures the frame size, full or ROI
 #
 #  Globals    :  
 #               SCOPE	- Telescope parameters, gui setup
