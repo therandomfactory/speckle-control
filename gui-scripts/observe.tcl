@@ -139,8 +139,6 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   if { $rdim == "manual" } {
     set rdim $ACQREGION(geom)
     set it [tk_dialog .d "Edit regions" "Move the regions in the\n image display tool then click OK" {} -1 "OK"]
-#    commandAndor red "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
-#   commandAndor blue "forceroi $ACQREGION(xs) $ACQREGION(xe) $ACQREGION(ys) $ACQREGION(ye)"
   } else {
     set resr [commandAndor red "setroi $rdim"]
     set SCOPE(red,bias) [expr int([lindex $resr 2])]
@@ -175,6 +173,10 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
         set ACQREGION(bye) [expr $ACQREGION(bys) + [lindex $r 3] -1]
         puts stdout "selected blue region $r"
      }
+    }
+    if { $rdim == "manual" } {
+      commandAndor red "forceroi $ACQREGION(rxs) $ACQREGION(rxe) $ACQREGION(rys) $ACQREGION(rye)"
+      commandAndor blue "forceroi $ACQREGION(bxs) $ACQREGION(bxe) $ACQREGION(bys) $ACQREGION(bye)"
     }
     set CONFIG(geometry.StartCol) [expr $ACQREGION(rxs)]
     set CONFIG(geometry.StartRow) [expr $ACQREGION(rys)]

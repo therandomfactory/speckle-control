@@ -18,6 +18,8 @@
 #  directory with names like /tmp/speckle_12345678.log
 #
 proc debuglog { msg } {
+   global DLOG
+   catch { puts $DLOG "[clock milliseconds] - $msg" }
    puts stdout $msg
 }
 
@@ -171,12 +173,14 @@ if { $ANDOR_CFG($CAM,SerialNumber) == $ANDORS(red,serialnum) }  {
   debuglog "ANDOR_CFG(red) = $ANDOR_CFG(red)"
   set ANDOR_ARM red
   set ANDOR_CFG(cmap) Heat
+  set DLOG [open /tmp/speckle_blue_[clock seconds].log w]
 }
 if { $ANDOR_CFG($CAM,SerialNumber) == $ANDORS(blue,serialnum) } {
   set ANDOR_CFG(blue) $CAM
   debuglog "ANDOR_CFG(blue) = $ANDOR_CFG(blue)"
   set ANDOR_ARM blue
   set ANDOR_CFG(cmap) Cool
+  set DLOG [open /tmp/speckle_blue_[clock seconds].log w]
 }
 foreach i "GetCameraSerialNumber GetEMAdvanced GetEMCCDGain GetFIFOUsage GetFilterMode GetImageRotate GetKeepCleanTime GetMaximumExposure GetMaximumNumberRingExposureTimes GetMinimumImageLength GetMinimumNumberInSeries GetNumberADChannels GetNumberAmp GetNumberDevices GetNumberFKVShiftSpeeds GetNumberHorizontalSpeeds GetNumberIO GetNumberPreAmpGains GetNumberRingExposureTimes GetNumberVSAmplitudes GetNumberVSSpeeds GetNumberVerticalSpeeds GetReadOutTime GetStartUpTime GetStatus GetTotalNumberImagesAcquired" {
      set ANDOR_CFG($CAM,[string range $i 3 end]) "[$i]"
@@ -690,7 +694,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY CAM
   set TELEMETRY(speckle.andor.numberkinetics) $n
   cAndorSetProperty $CAM ExposureTime $exp
   if { $ANDOR_CFG(red) > -1} {
-     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] $ANDOR_CFG($CAM,hbin)
+     andorSetROI $ANDOR_CFG(red)  $x [expr $x+$npix-1] $y [expr $y+$npix-1] $ANDOR_CFG($CAM,hbin)
   }
   if { $ANDOR_CFG(blue) > -1} {
      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] $ANDOR_CFG($CAM,hbin)

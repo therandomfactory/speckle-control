@@ -450,7 +450,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM DS9 TELEMETRY ACQREGION CAM
     set ACQREGION(geom) $n
     set TELEMETRY(speckle.andor.exposureStart) [expr [clock microseconds]/1000000.]
     if { $ANDOR_CFG(red) > -1} {
-      andorSetROI $ANDOR_CFG(red) $x [expr $x+$n-1] $y [expr $y+$n-1] 1
+      andorSetROI $ANDOR_CFG(red) [expr 1024-($x+$n-1)] [expr 1024-$x] $y [expr $y+$n-1] 1
       andorGetData $ANDOR_CFG(red)
       andorSaveData $ANDOR_CFG(red) $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits $n $n 1 1
       appendHeader $SPECKLE_DATADIR/[set ANDOR_CFG(imagename)]r.fits
@@ -556,7 +556,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY ACQ
   set TELEMETRY(speckle.andor.numberkinetics) $n
   cAndorSetProperty $CAM ExposureTime $exp
   if { $ANDOR_CFG(red) > -1} {
-     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+     andorSetROI $ANDOR_CFG(red) [expr 1024-($x+$n-1)] [expr 1024-$x] $y [expr $y+$npix-1] 1
   }
   if { $ANDOR_CFG(blue) > -1} {
      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
@@ -649,7 +649,7 @@ global ANDOR_CFG SPECKLE_DATADIR ANDOR_ARM ANDOR_ARM ANDOR_ROI DS9 TELEMETRY CAM
   set TELEMETRY(speckle.andor.numberkinetics) $n
   cAndorSetProperty $CAM ExposureTime $exp
   if { $ANDOR_CFG(red) > -1} {
-     andorSetROI $ANDOR_CFG(red) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1
+     andorSetROI $ANDOR_CFG(red) [expr 1024-($x+$n-1)] [expr 1024-$x] $y [expr $y+$npix-1] 1
   }
   if { $ANDOR_CFG(blue) > -1} {
      andorSetROI $ANDOR_CFG(blue) $x [expr $x+$npix-1] $y [expr $y+$npix-1] 1

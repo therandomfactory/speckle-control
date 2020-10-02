@@ -219,7 +219,6 @@ global SCOPE TELEMETRY FITSKEY IMGMETA ANDOR_CFG CAM
   set TELEMETRY(speckle.andor.fullframe) [lrange $ANDOR_CFG(configure) 2 5]
   set TELEMETRY(speckle.andor.hbin) [lindex $ANDOR_CFG(configure) 0]
   set TELEMETRY(speckle.andor.vbin) [lindex $ANDOR_CFG(configure) 1]
-  set TELEMETRY(speckle.andor.roi) [lrange $ANDOR_CFG(configure) 2 5]
   set TELEMETRY(speckle.andor.datatype) $ANDOR_CFG(fitsbits)
   set TELEMETRY(speckle.andor.em_gain) $ANDOR_CFG(emccdgain)
   set TELEMETRY(speckle.andor.vertical_speed) [lindex $ANDOR_CFG(verticalspeeds) $ANDOR_CFG(vsspeed)]
