@@ -137,7 +137,6 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
     after 2000
   }
   if { $rdim == "manual" } {
-    set rdim $ACQREGION(geom)
     set it [tk_dialog .d "Edit regions" "Move the regions in the\n image display tool then click OK" {} -1 "OK"]
   } else {
     set resr [commandAndor red "setroi $rdim"]
@@ -146,9 +145,9 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
     set resb [commandAndor blue "setroi $rdim"]
     set SCOPE(blue,bias) [expr int([lindex $resb 2])]
     set SCOPE(blue,peak) [expr int([lindex $resb 3])]
+    mimicMode red roi [set rdim]x[set rdim]
+    mimicMode blue roi [set rdim]x[set rdim]
   }
-  mimicMode red roi [set rdim]x[set rdim]
-  mimicMode blue roi [set rdim]x[set rdim]
   exec xpaset -p ds9red regions system physical
   exec xpaset -p ds9blue regions system physical
   if { $rdim != 1024 } {
