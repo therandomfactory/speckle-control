@@ -1,6 +1,8 @@
 # ignore these files
 *.log
 *.o
+*.so
+lib*
 *.a
 *.tgz
 
