@@ -179,9 +179,11 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
     }
     set CONFIG(geometry.StartCol) [expr $ACQREGION(rxs)]
     set CONFIG(geometry.StartRow) [expr $ACQREGION(rys)]
-    set CONFIG(geometry.NumCols) $rdim
-    set CONFIG(geometry.NumRows) $rdim
-    set ACQREGION(geom) $CONFIG(geometry.NumCols)
+    if { $rdim != "manual" } {
+      set CONFIG(geometry.NumCols) $rdim
+      set CONFIG(geometry.NumRows) $rdim
+      set ACQREGION(geom) $CONFIG(geometry.NumCols)
+    }
     debuglog "ROI's are red  = $ACQREGION(rxs) $ACQREGION(rys) $ACQREGION(rxe) $ACQREGION(rye)" 
     debuglog "ROI's are blue = $ACQREGION(bxs) $ACQREGION(bys) $ACQREGION(bxe) $ACQREGION(bye)"
     commandAndor red "setframe roi"
