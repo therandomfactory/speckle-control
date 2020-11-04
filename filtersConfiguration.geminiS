@@ -1,7 +1,7 @@
 #!/usr/bin/tclsh
 
 set FWHEELS(red,serialnum)  F80202021F141074 
-set FWHEELS(blue,serialnum) F802020220161074
+set FWHEELS(blue,serialnum) F802020222101074
 
 set FWHEELS(red,1)		"Red-i"
 set FWHEELS(red,2)		"Red-z"
