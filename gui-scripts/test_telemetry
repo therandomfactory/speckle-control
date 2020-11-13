@@ -1,0 +1,16 @@
+#!/usr/bin/tclsh
+proc debuglog { m } {puts stdout $m}
+
+
+set ipa [exec ip route get 1]
+set ip [lindex $ipa 6]
+set site south
+if { $ip == "10.2.110.12" } { set site north } 
+source $env(HOME)/speckle-control/gui-scripts/gemini_telemetry.tcl
+geminiConnect $site
+while { 1 } {
+  updateGeminiTelemetry
+  after 5000
+}
+
+
