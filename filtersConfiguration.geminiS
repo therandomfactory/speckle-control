@@ -15,6 +15,6 @@ set FWHEELS(blue,2)		"Blue-g"
 set FWHEELS(blue,3)		"Blue-r"
 set FWHEELS(blue,4)		"Blue-466"
 set FWHEELS(blue,5)		"Blue-562"
-set FWHEELS(blue,6)		"slit+562"
+set FWHEELS(blue,6)		"Halpha"
 
 
