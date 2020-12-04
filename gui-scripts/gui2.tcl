@@ -545,10 +545,10 @@ place .main.rawiq -x 362 -y 200
 
 menubutton .main.rawcc -text "DQ - cloud" -width 21 -fg black -bg gray80 -menu .main.rawcc.m -relief raised
 menu .main.rawcc.m
-.main.rawcc.m add command -label "RAWCC 50%" -command "dataquality rawcc 50"
-.main.rawcc.m add command -label "RAWCC 50%" -command "dataquality rawcc 70"
-.main.rawcc.m add command -label "RAWCC 80%" -command "dataquality rawcc 80"
-.main.rawcc.m add command -label "RAWCC ANY" -command "dataquality rawcc 0"
+.main.rawcc.m add command -label "RAWCC 50%" -command "dataquality rawcc 50-percentile"
+.main.rawcc.m add command -label "RAWCC 70%" -command "dataquality rawcc 70-percentile"
+.main.rawcc.m add command -label "RAWCC 80%" -command "dataquality rawcc 80-percentile"
+.main.rawcc.m add command -label "RAWCC ANY" -command "dataquality rawcc Any"
 place .main.rawcc -x 362 -y 230
 
 menubutton .main.rawwv -text "DQ - water" -width 21 -fg black -bg gray80 -menu .main.rawwv.m -relief raised
