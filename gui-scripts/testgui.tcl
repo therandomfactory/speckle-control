@@ -294,7 +294,7 @@ place .main.iqimg -x 440 -y 160
 menubutton .main.ccimg -text "DQ - cloud" -fg black -bg gray -menu .main.ccimg.m -relief raised
 menu .main.ccimg.m
 .main.ccimg.m add command -label "RAWCC 50%" -command "dataquality rawcc 50"
-.main.ccimg.m add command -label "RAWCC 50%" -command "dataquality rawcc 70"
+.main.ccimg.m add command -label "RAWCC 70%" -command "dataquality rawcc 70"
 .main.ccimg.m add command -label "RAWCC 80%" -command "dataquality rawcc 80"
 .main.ccimg.m add command -label "RAWCC ANY" -command "dataquality rawcc ANY"
 place .main.ccimg -x 440 -y 190
