@@ -108,9 +108,9 @@ global FILTERWHEEL FWHEELS MAXFILTERS
   }
   .filters.f$id$n configure -bg yellow -activebackground yellow
   if { $id == "red" } {
-     .lowlevel.rfilter configure -bg yellow -activebackground yellow
+     catch {.lowlevel.rfilter configure -bg yellow -activebackground yellow}
   } else {
-     .lowlevel.bfilter configure -bg yellow -activebackground yellow
+     catch {.lowlevel.bfilter configure -bg yellow -activebackground yellow}
   }
   update
   set result [setOrielFilter $FWHEELS($id,handle) $n]
@@ -120,16 +120,16 @@ global FILTERWHEEL FWHEELS MAXFILTERS
   } else {
     .filters.f$id$n configure -bg green -relief sunken -activebackground green
      if { $id == "red" } {
-        .lowlevel.rfilter configure -bg green -activebackground green
+        catch {.lowlevel.rfilter configure -bg green -activebackground green}
      } else {
-        .lowlevel.bfilter configure -bg green -activebackground green
+        catch {.lowlevel.bfilter configure -bg green -activebackground green}
     }
     mimicMode $id filter $FWHEELS($id,$n)
     if { $id == "red" } {
-      .lowlevel.rfilter configure -text "Filter = $FWHEELS(red,$n)"
+      catch {.lowlevel.rfilter configure -text "Filter = $FWHEELS(red,$n)"}
     }
     if { $id == "blue" } {
-      .lowlevel.bfilter configure -text "Filter = $FWHEELS(blue,$n)"
+      catch {.lowlevel.bfilter configure -text "Filter = $FWHEELS(blue,$n)"}
     }
     set FWHEELS($id,position) $n
     if { [info proc adjustTeleFocus] != "" } {
@@ -229,7 +229,7 @@ proc resetFilterWheel { id } {
    after 7000
    set res [oriel_read_result $id]
    oriel_write_cmd $id FILT?
-   after 200
+   after 500
    set res [oriel_read_result $id]
    return $res
   }
@@ -245,7 +245,7 @@ proc setOrielFilter { id n } {
  set res -1
  catch {
    oriel_write_cmd $id FILT?
-   after 200
+   after 500
    set res [oriel_read_result $id]
    set cpos [string range $res 4 4]
    set npos [expr $n - $cpos]
@@ -262,7 +262,7 @@ proc setOrielFilter { id n } {
       set res [oriel_read_result $id]
    }
    oriel_write_cmd $id FILT?
-   after 200
+   after 500
    set res [oriel_read_result $id]
   }
   set cpos [string range $res 4 4]
@@ -331,6 +331,19 @@ foreach a "red blue" {
 }
 set FWHEELS(focusoffset) 0
 set SPECKLE_DIR $env(SPECKLE_DIR)
+
+if { [info exists SCOPE(telescope)] == 0 } {
+   proc mimicMode { a b c } {}
+   proc showStatus { m } { puts stdout $m }
+   proc debuglog { m } { puts stdout $m }
+   proc setOrielFilter { id n } { return $n }
+   set SCOPE(telescope) GEMINI
+   set FWHEELS(sim) 1
+   set FWHEELS(red,handle) 1
+   set FWHEELS(blue,handle) 2
+   load $env(SPECKLE_DIR)/lib/liboriel.so
+   after 2000 wm deiconify .filters
+}
 
 set MAXFILTERS 6
 destroy .filters
