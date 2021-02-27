@@ -17,6 +17,8 @@ header gemini-speckle
    tcs.telescope.decoffset
    tcs.telescope.zenithdist
    tcs.telescope.airmass
+   tcs.telescope.azimuth
+   tcs.telescope.elevation
    tcs.telescope.userfocus
    tcs.target.name
    tcs.telescope.instrpa

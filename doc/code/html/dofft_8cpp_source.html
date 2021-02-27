@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: dofft.cpp Source File</title>
+<title>Speckle: temp/dofft.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -133,52 +133,54 @@ $(document).ready(function(){initNavTree('dofft_8cpp_source.html','');});
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;vips/vips.h&quot;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="dofft_8cpp.html#a3abecc959cde5e513f242d720e899099">   39</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="andor__tcl_8c.html#a3abecc959cde5e513f242d720e899099">dofft</a>(<span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height, <span class="keywordtype">int</span> *imageData, <span class="keywordtype">int</span>* <a class="code" href="andor__tcl_8c.html#a193b702a3ccbb038fcc474055e118e6d">outputData</a>) </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keywordtype">int</span> i,j;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">int</span> *inpixels;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordtype">double</span> *outpixels;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">int</span> memsize = 4*width*height;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">int</span> fftData[memsize];</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordtype">float</span> scale=0.0;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        VipsImage *vipsin = vips_image_new_from_memory_copy(imageData,memsize,width,height,1,VIPS_FORMAT_UINT);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">if</span> (vipsin == NULL) vips_error_exit(NULL);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        VipsImage *vipsout = vips_image_new_from_memory_copy(&amp;fftData,memsize*4,width,height,1,VIPS_FORMAT_COMPLEX);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">if</span> (vipsout == NULL) vips_error_exit(NULL);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        vips_image_inplace(vipsin);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        vips_image_inplace(vipsout);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        im_fwfft(vipsin,vipsout);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">for</span> (i=0;i&lt;width;i++) {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;           scale = scale + (float)imageData[i*width+i];</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        } </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        scale = scale / width;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">for</span> (i=0;i&lt;width;i++) {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;             <span class="keywordflow">for</span> (j=0;j&lt;height;j++) {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                 outpixels = (<span class="keywordtype">double</span> *)VIPS_IMAGE_ADDR(vipsout,i,j);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                 outputData[i*256+j] = (int)(outpixels[0]*1000.+scale);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;             }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        g_object_unref(vipsin);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        g_object_unref(vipsout);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keywordtype">int</span> <a class="code" href="dofft_8cpp.html#a070eb98cb814d09e8d3fc56d672e53d9">im_fwfft</a>( VipsImage *in, VipsImage *out );</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="dofft_8cpp.html#a3abecc959cde5e513f242d720e899099">   40</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="andor__tcl_8c.html#a3abecc959cde5e513f242d720e899099">dofft</a>(<span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height, <span class="keywordtype">int</span> *imageData, <span class="keywordtype">int</span>* <a class="code" href="andor__tcl_8c.html#afc8f49222f5e696fd6309367d7b31e18">outputData</a>) </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="keywordtype">int</span> i,j;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordtype">int</span> *inpixels;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">double</span> *outpixels;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordtype">int</span> memsize = 4*width*height;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">int</span> fftData[memsize];</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">float</span> scale=0.0;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        VipsImage *vipsin = vips_image_new_from_memory_copy(imageData,memsize,width,height,1,VIPS_FORMAT_UINT);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">if</span> (vipsin == NULL) vips_error_exit(NULL);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        VipsImage *vipsout = vips_image_new_from_memory_copy(&amp;fftData,memsize*4,width,height,1,VIPS_FORMAT_COMPLEX);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">if</span> (vipsout == NULL) vips_error_exit(NULL);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        vips_image_inplace(vipsin);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        vips_image_inplace(vipsout);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="dofft_8cpp.html#a070eb98cb814d09e8d3fc56d672e53d9">im_fwfft</a>(vipsin,vipsout);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">for</span> (i=0;i&lt;width;i++) {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;           scale = scale + (float)imageData[i*width+i];</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        } </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        scale = scale / width;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordflow">for</span> (i=0;i&lt;width;i++) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;             <span class="keywordflow">for</span> (j=0;j&lt;height;j++) {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                 outpixels = (<span class="keywordtype">double</span> *)VIPS_IMAGE_ADDR(vipsout,i,j);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                 outputData[i*width+j] = (int)(outpixels[0]*1000.+scale);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;             }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        g_object_unref(vipsin);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        g_object_unref(vipsout);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="ttc" id="andor__tcl_8c_html_a193b702a3ccbb038fcc474055e118e6d"><div class="ttname"><a href="andor__tcl_8c.html#a193b702a3ccbb038fcc474055e118e6d">outputData</a></div><div class="ttdeci">int outputData[1024 *1024]</div><div class="ttdef"><b>Definition:</b> <a href="andor__tcl_8c_source.html#l00057">andor_tcl.c:57</a></div></div>
-<div class="ttc" id="andor__tcl_8c_html_a3abecc959cde5e513f242d720e899099"><div class="ttname"><a href="andor__tcl_8c.html#a3abecc959cde5e513f242d720e899099">dofft</a></div><div class="ttdeci">void dofft(int width, int height, int *imageData, int *outputData)</div><div class="ttdoc">Calculate FFT of the image data. </div><div class="ttdef"><b>Definition:</b> <a href="dofft_8cpp_source.html#l00039">dofft.cpp:39</a></div></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="ttc" id="dofft_8cpp_html_a070eb98cb814d09e8d3fc56d672e53d9"><div class="ttname"><a href="dofft_8cpp.html#a070eb98cb814d09e8d3fc56d672e53d9">im_fwfft</a></div><div class="ttdeci">int im_fwfft(VipsImage *in, VipsImage *out)</div></div>
+<div class="ttc" id="andor__tcl_8c_html_afc8f49222f5e696fd6309367d7b31e18"><div class="ttname"><a href="andor__tcl_8c.html#afc8f49222f5e696fd6309367d7b31e18">outputData</a></div><div class="ttdeci">unsigned int outputData[1024 *1024]</div><div class="ttdef"><b>Definition:</b> <a href="andor__tcl_8c_source.html#l00059">andor_tcl.c:59</a></div></div>
+<div class="ttc" id="andor__tcl_8c_html_a3abecc959cde5e513f242d720e899099"><div class="ttname"><a href="andor__tcl_8c.html#a3abecc959cde5e513f242d720e899099">dofft</a></div><div class="ttdeci">void dofft(int width, int height, int *imageData, int *outputData)</div><div class="ttdoc">Calculate FFT of the image data. </div><div class="ttdef"><b>Definition:</b> <a href="dofft_8cpp_source.html#l00040">dofft.cpp:40</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dofft_8cpp.html">dofft.cpp</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:15 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="dofft_8cpp.html">dofft.cpp</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:17 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

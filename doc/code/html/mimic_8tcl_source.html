@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: mimic.tcl Source File</title>
+<title>Speckle: temp/mimic.tcl Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -132,7 +132,7 @@ $(document).ready(function(){initNavTree('mimic_8tcl_source.html','');});
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"></span><span class="comment">#      SPECKLE_DIR - Directory path to speckle code\n</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment"></span><span class="comment">#</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"></span><span class="keyword">proc</span> createMimicDiagram { baseimg } {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">global</span> MOFF XO YO SPECKLE_DIR SCOPE<span class="comment"></span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">global</span> MOFF XO YO SPECKLE_DIR env<span class="comment"></span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment"></span><span class="keyword">global</span> oredwide obluewide  oredspck obluespck oinpwide oinpspck oredshut oblueshut<span class="comment"></span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment"></span>  <span class="keyword">catch</span> {destroy .mimicSpeckle}<span class="comment"></span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> XO [<span class="keyword">lindex</span> $MOFF($baseimg) 0]<span class="comment"></span></div>
@@ -152,9 +152,9 @@ $(document).ready(function(){initNavTree('mimic_8tcl_source.html','');});
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> oinpspck   [.mimicSpeckle.myCanvas create oval 50 50 80 100 -fill yellow]<span class="comment"></span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> oredshut   [.mimicSpeckle.myCanvas create oval 50 50 40 80 -fill white]<span class="comment"></span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> oblueshut  [.mimicSpeckle.myCanvas create oval 50 50 80 40 -fill white]<span class="comment"></span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment"></span>  <span class="keyword">label</span> .mimicSpeckle.myCanvas.redfilt -width 10  -text &quot;clear&quot;<span class="comment"> </span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment"></span>  <span class="keyword">label</span> .mimicSpeckle.myCanvas.redfilt -width 10  -text &quot;????&quot;<span class="comment"> </span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment"></span>  <span class="keyword">place</span> .mimicSpeckle.myCanvas.redfilt -x [<span class="keyword">expr</span> $XO+410] -y  [<span class="keyword">expr</span> $YO+80]<span class="comment"></span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment"></span>  <span class="keyword">label</span> .mimicSpeckle.myCanvas.bluefilt  -width 10  -text &quot;clear&quot;<span class="comment"> </span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment"></span>  <span class="keyword">label</span> .mimicSpeckle.myCanvas.bluefilt  -width 10  -text &quot;????&quot;<span class="comment"> </span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment"></span>  <span class="keyword">place</span> .mimicSpeckle.myCanvas.bluefilt -x [<span class="keyword">expr</span> $XO+306] -y  [<span class="keyword">expr</span> $YO+220]<span class="comment"></span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment"></span>  <span class="keyword">label</span> .mimicSpeckle.myCanvas.redroi  -width 10  -text &quot;1024x1024&quot;<span class="comment"> </span></div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment"></span>  <span class="keyword">place</span> .mimicSpeckle.myCanvas.redroi -x [<span class="keyword">expr</span> $XO+716] -y  [<span class="keyword">expr</span> $YO+120]<span class="comment"></span></div>
@@ -167,7 +167,7 @@ $(document).ready(function(){initNavTree('mimic_8tcl_source.html','');});
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment"></span>  <span class="keyword">label</span> .mimicSpeckle.zaberA -text &quot;Zaber A @ ???? : ????&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment"></span>  <span class="keyword">label</span> .mimicSpeckle.zaberB -text &quot;Zaber B @ ???? : ????&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment"></span>  <span class="keyword">label</span> .mimicSpeckle.zaberInput -text &quot;Zaber Input @ ???? : ????&quot;<span class="comment"></span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment"></span>  <span class="keyword">if</span> { $SCOPE(telescope) == &quot;GEMINI&quot;} {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment"></span>  <span class="keyword">if</span> { $env(TELESCOPE) == &quot;GEMINI&quot;} {</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">label</span> .mimicSpeckle.zaberFocus -text &quot;Zaber Focus @ ???? : ????&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment"></span>    <span class="keyword">label</span> .mimicSpeckle.zaberPickoff -text &quot;Zaber Pickoff @ ???? : ????&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment"></span>    <span class="keyword">place</span> .mimicSpeckle.zaberFocus -x 640 -y 590<span class="comment"></span></div>
@@ -282,26 +282,31 @@ $(document).ready(function(){initNavTree('mimic_8tcl_source.html','');});
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="comment"># \endcode</span></div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="keyword">set</span> MOFF(mimic-picoin) &quot;-29 7&quot;<span class="comment"></span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="comment"></span><span class="keyword">set</span> MOFF(mimic)    &quot;0 0&quot;<span class="comment"></span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="comment"></span><span class="keyword">set</span> MOFF(mimic-picoout) &quot;-46 19&quot;<span class="comment"></span></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a6d46e5010ab065717c347c55e908f84d" title="createMimicDiagram">createMimicDiagram</a> mimic<span class="comment"></span></div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> red wide<span class="comment"></span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> blue wide<span class="comment"></span></div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> input wide<span class="comment"></span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> red open<span class="comment"></span></div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> blue open<span class="comment"></span></div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="keyword">set</span> SPECKLE_DIR $env(SPECKLE_DIR)<span class="comment"></span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="comment"></span><span class="keyword">set</span> MOFF(mimic-picoin) &quot;-29 7&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="comment"></span><span class="keyword">set</span> MOFF(mimic)    &quot;0 0&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="comment"></span><span class="keyword">set</span> MOFF(mimic-picoout) &quot;-46 19&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="comment"></span><span class="keyword">if</span> { $env(TELESCOPE) == &quot;GEMINI&quot;} {</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  <a class="code" href="mimic_8tcl.html#a6d46e5010ab065717c347c55e908f84d" title="createMimicDiagram">createMimicDiagram</a> mimic-picoin<span class="comment"></span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="comment"></span>} <span class="keyword">else</span> {</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  <a class="code" href="mimic_8tcl.html#a6d46e5010ab065717c347c55e908f84d" title="createMimicDiagram">createMimicDiagram</a> mimic<span class="comment"></span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="comment"></span>}<span class="comment"></span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> red wide<span class="comment"></span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> blue wide<span class="comment"></span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> input wide<span class="comment"></span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> red open<span class="comment"></span></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="comment"></span><a class="code" href="mimic_8tcl.html#a1b956a88bc4bef43857bf2aec18c999d" title="mimicMode">mimicMode</a> blue open<span class="comment"></span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="mimic_8tcl.html">mimic.tcl</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:15 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="mimic_8tcl.html">mimic.tcl</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:17 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

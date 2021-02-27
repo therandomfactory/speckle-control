@@ -12,18 +12,18 @@
 # - Modified by jacob berkman <jacob@ximian.com> to install
 #   Makefile.in.in and po2tbl.sed.in for use with glib-gettextize
 
-GETTEXT_PACKAGE = vips8.5
+GETTEXT_PACKAGE = vips8.8
 PACKAGE = vips
-VERSION = 8.5.9
+VERSION = 8.8.2
 
-SHELL = /bin/sh
+SHELL = /bin/bash
 
 
 srcdir = .
 top_srcdir = ..
 
 
-prefix = /home/nessi/nessi-control
+prefix = /home/rfactory/speckle-control
 exec_prefix = ${prefix}
 datarootdir = ${prefix}/share
 datadir = ${datarootdir}
@@ -37,16 +37,16 @@ INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 MKINSTALLDIRS = mkdir -p
 
-CC = gcc -std=gnu99
+CC = gcc
 GENCAT = @GENCAT@
-GMSGFMT = /usr/bin/msgfmt
-MSGFMT = /usr/bin/msgfmt
-MSGFMT_OPTS = -c
-XGETTEXT = /usr/bin/xgettext
+GMSGFMT = 
+MSGFMT = no
+MSGFMT_OPTS = 
+XGETTEXT = :
 MSGMERGE = msgmerge
 
 DEFS = -DHAVE_CONFIG_H
-CFLAGS = -g -O2
+CFLAGS = -I/usr/lib/x86_64-linux-gnu/glib-2.0/include
 CPPFLAGS = 
 
 INCLUDES = -I.. -I$(top_srcdir)/intl
@@ -56,14 +56,14 @@ COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 SOURCES = 
 POFILES =  en_GB.po de.po
 GMOFILES =  en_GB.gmo de.gmo
-DISTFILES = LINGUAS ChangeLog Makefile.in.in POTFILES.in $(GETTEXT_PACKAGE).pot \
+DISTFILES = LINGUAS Makefile.in.in POTFILES.in $(GETTEXT_PACKAGE).pot \
 $(POFILES) $(GMOFILES) $(SOURCES)
 
 POTFILES = \
 
-CATALOGS =  en_GB.gmo de.gmo
-CATOBJEXT = .gmo
-INSTOBJEXT = .mo
+CATALOGS = 
+CATOBJEXT = NONE
+INSTOBJEXT = 
 
 .SUFFIXES:
 .SUFFIXES: .c .o .po .pox .gmo .mo .msg .cat

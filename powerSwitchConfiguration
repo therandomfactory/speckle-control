@@ -1,0 +1,14 @@
+#
+# Configuration of WTI power strip addresses and ports
+#
+
+set POWER(alopeke,ip) 10.2.110.15
+
+set POWER(wiyn,ip) 0.0.0.0
+
+set POWER(zorro,ip) 172.17.114.15
+
+set POWER(filterWheels) 1
+set POWER(blueCamera) 2
+set POWER(redCamera) 3
+

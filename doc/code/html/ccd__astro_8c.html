@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: ccd_astro.c File Reference</title>
+<title>Speckle: temp/ccd_astro.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -111,9 +111,6 @@ $(document).ready(function(){initNavTree('ccd__astro_8c.html','');});
 <div class="title">ccd_astro.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Astrometric routines.  
-<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;math.h&gt;</code><br/>
 </div>
 <p><a href="ccd__astro_8c_source.html">Go to the source code of this file.</a></p>
@@ -156,12 +153,10 @@ Macros</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aae1165f6e4eb1d6d3292e28b1f8640f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ccd__astro_8c.html#aae1165f6e4eb1d6d3292e28b1f8640f6">precess</a> (double <a class="el" href="ccd__astro_8c.html#afd09200b4253bfff7b9a890591e09292">J2000</a>, double jd, double *ra, double *dec)</td></tr>
-<tr class="memdesc:aae1165f6e4eb1d6d3292e28b1f8640f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Precess coordinates.  <a href="#aae1165f6e4eb1d6d3292e28b1f8640f6">More...</a><br/></td></tr>
 <tr class="separator:aae1165f6e4eb1d6d3292e28b1f8640f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95f97bc2c6a39966a664c3b924d5eacb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ccd__astro_8c.html#a95f97bc2c6a39966a664c3b924d5eacb">range</a> (double *v, double r)</td></tr>
 <tr class="separator:a95f97bc2c6a39966a664c3b924d5eacb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa6f866f9e7bebfc1001ec63efdb44a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ccd__astro_8c.html#afa6f866f9e7bebfc1001ec63efdb44a7">mjd_year</a> (double mjd, double *yr)</td></tr>
-<tr class="memdesc:afa6f866f9e7bebfc1001ec63efdb44a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate MJD year.  <a href="#afa6f866f9e7bebfc1001ec63efdb44a7">More...</a><br/></td></tr>
 <tr class="separator:afa6f866f9e7bebfc1001ec63efdb44a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade7d4965d4cd932c046ad5416b2a75d3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ccd__astro_8c.html#ade7d4965d4cd932c046ad5416b2a75d3">to_uppercase</a> (char *keyword, int nchar)</td></tr>
 <tr class="separator:ade7d4965d4cd932c046ad5416b2a75d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,12 +169,7 @@ Functions</h2></td></tr>
 <tr class="memitem:ac63bb3146f5155f9ab55477883d6e7fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ccd__astro_8c.html#ac63bb3146f5155f9ab55477883d6e7fd">year_mjd</a> (double y, double *mjd)</td></tr>
 <tr class="separator:ac63bb3146f5155f9ab55477883d6e7fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Astrometric routines. </p>
-<p>Written May 29, 1999 by Ken Sills </p>
-
-<p>Definition in file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
-</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<h2 class="groupheader">Macro Definition Documentation</h2>
 <a class="anchor" id="a0d7f1d879501873bf3477409898f2c77"></a>
 <div class="memitem">
 <div class="memproto">
@@ -194,7 +184,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00040">40</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00021">21</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -222,7 +212,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00041">41</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00022">22</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -240,7 +230,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00038">38</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00019">19</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -258,7 +248,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00032">32</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00013">13</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -276,7 +266,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00029">29</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00010">10</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -294,7 +284,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00039">39</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00020">20</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -312,7 +302,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00031">31</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00012">12</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -330,7 +320,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00033">33</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00014">14</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -344,7 +334,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00046">46</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00027">27</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -358,7 +348,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00045">45</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00026">26</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -372,7 +362,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00047">47</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00028">28</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -386,7 +376,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00048">48</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00029">29</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -404,7 +394,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00030">30</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00011">11</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -422,7 +412,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00034">34</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00015">15</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -436,7 +426,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00052">52</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00033">33</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -450,7 +440,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00053">53</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00034">34</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -491,7 +481,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00149">149</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00130">130</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -525,7 +515,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00093">93</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00074">74</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -565,7 +555,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00341">341</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00322">322</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -593,16 +583,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Calculate MJD year. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mjd</td><td>Mean Julian Data </td></tr>
-    <tr><td class="paramname">yr</td><td>Year </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00408">408</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00389">389</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -642,18 +623,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Precess coordinates. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">J2000</td><td>epoch </td></tr>
-    <tr><td class="paramname">jd</td><td>Julian date </td></tr>
-    <tr><td class="paramname">ra</td><td>RA </td></tr>
-    <tr><td class="paramname">dec</td><td>DEC </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00224">224</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00205">205</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -681,7 +651,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00325">325</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00306">306</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -709,7 +679,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00055">55</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00036">36</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -737,7 +707,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00440">440</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
+<p>Definition at line <a class="el" href="ccd__astro_8c_source.html#l00421">421</a> of file <a class="el" href="ccd__astro_8c_source.html">ccd_astro.c</a>.</p>
 
 </div>
 </div>
@@ -746,8 +716,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="ccd__astro_8c.html">ccd_astro.c</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:16 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="ccd__astro_8c.html">ccd_astro.c</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

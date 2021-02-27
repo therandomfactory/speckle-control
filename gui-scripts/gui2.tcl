@@ -336,7 +336,13 @@ load $libs/liboriel.so
 #
 
 showstatus "Loading FitsTcl"
-load $libs/libfitstcl.so
+if { [file exists $libs/libfitstcl.so] } {
+  load $libs/libfitstcl.so
+} else {
+  package require fitsTcl
+}
+
+fits version
 
 # Prepare for Ccd image buffering package
 package ifneeded ccd 1.0       [load $libs/libccd.so]
@@ -494,6 +500,7 @@ place .main.lseq -x 16 -y 109
 checkbutton .main.showfft -bg gray  -text "Display FFT" -variable ANDOR_CFG(showfft) -command setDisplayMode -highlightthickness 0
 place .main.showfft -x 210 -y 82
 
+
 label .main.lbin -text Binning  -bg gray
 SpinBox .main.binning -width 4 -values "1 2 4 8 16" -textvariable ANDOR_CFG(binning) -justify right 
 place .main.lbin -x 220 -y 23
@@ -515,17 +522,19 @@ place .main.bcamtemp -x 353 -y 2
 label .main.rcamtemp -bg gray -fg blue -text "???.?? degC" -bg gray
 place .main.rcamtemp -x 453 -y 2
 
-menubutton .main.rois -width 40 -text "Set ROI's" -relief raised -fg black -bg gray80 -menu .main.rois.m
+menubutton .main.rois -width 20 -text "Set ROI's" -relief raised -fg black -bg gray80 -menu .main.rois.m
 place .main.rois -x 20 -y 230
 menu .main.rois.m
-.main.rois.m add command -label "Acq-roi-64" -command "observe region64"
+.main.rois.m add command -label "Acq-roi-64"  -command "observe region64"
 .main.rois.m add command -label "Acq-roi-128" -command "observe region128"
 .main.rois.m add command -label "Acq-roi-256" -command "observe region256"
 .main.rois.m add command -label "Acq-roi-512" -command "observe region512"
 .main.rois.m add command -label "Acq-roi-768" -command "observe region768"
-.main.rois.m add command -label "Acq-full" -command "observe regionall"
-.main.rois.m add command -label "Adjust ROI" -command "observe manual"
+.main.rois.m add command -label "Acq-full"    -command "observe regionall"
+.main.rois.m add command -label "Adjust ROI"  -command "observe manual"
 
+checkbutton .main.defcenter -bg gray  -text "Default ROI Centers" -variable ACQREGION(useDefaultCenters) -highlightthickness 0
+place .main.defcenter -x 200 -y 230
 
 entry .main.seqnum -width 6 -bg white -fg black -textvariable SCOPE(seqnum) -justify right -validate all -vcmd {validInteger %W %V %P %s 1 999999}
 place .main.seqnum -x 275 -y 135
@@ -763,6 +772,11 @@ if { $env(TELESCOPE) != "WIYN" } {
    }
 }
 
+set ckey [string tolower $env(TELESCOPE)]
+if { $env(GEMINISITE) =="south" } {
+   set ckey "geminiS"
+}
+source $SPECKLE_DIR/andorsConfiguration.[set ckey]
 
 catch {
     set all [lsort [glob $SCOPE(datadir)/[set SCOPE(preamble)]*.fits]]

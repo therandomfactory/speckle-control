@@ -7,7 +7,7 @@
 # writes output images ic_im1.v and ic_im2.v 
 
 # default prefix
-VIPSHOME=${VIPSHOME-/home/nessi/nessi-control}
+VIPSHOME=${VIPSHOME-/home/rfactory/speckle-control}
 
 # get name we were run as
 name=$0

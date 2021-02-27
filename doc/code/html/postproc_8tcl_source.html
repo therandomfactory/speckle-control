@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: postproc.tcl Source File</title>
+<title>Speckle: temp/postproc.tcl Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -139,7 +139,7 @@ $(document).ready(function(){initNavTree('postproc_8tcl_source.html','');});
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="keyword">if</span> { [file exists $fname]} {</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;     <span class="keyword">if</span> { [file exists /bits/bin/postproc]} {</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">if</span> { [file executable /bits/bin/postproc]} {</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <a class="code" href="test_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd" title="debuglog">debuglog</a> &quot;Queueing $fname for archiving&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <a class="code" href="testgui_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd" title="debuglog">debuglog</a> &quot;Queueing $fname for archiving&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment"></span>            <span class="keyword">catch</span> {exec /bits/bin/postproc $fname} result<span class="comment"></span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment"></span>        } <span class="keyword">else</span> {</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="keyword">set</span> result &quot;ERROR /bits/bin/postproc not executable&quot;<span class="comment"></span></div>
@@ -150,7 +150,7 @@ $(document).ready(function(){initNavTree('postproc_8tcl_source.html','');});
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment"></span>  } <span class="keyword">else</span> {</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;     <span class="keyword">set</span> result &quot;ERROR Image not found : $fname&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment"></span>  }<span class="comment"></span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment"></span>  <a class="code" href="test_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd" title="debuglog">debuglog</a> &quot;postProcess: $result&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment"></span>  <a class="code" href="testgui_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd" title="debuglog">debuglog</a> &quot;postProcess: $result&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"></span>  <span class="keyword">return</span> $result<span class="comment"></span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment"></span>}<span class="comment"></span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment"></span></div>
@@ -162,8 +162,8 @@ $(document).ready(function(){initNavTree('postproc_8tcl_source.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="postproc_8tcl.html">postproc.tcl</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:15 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="postproc_8tcl.html">postproc.tcl</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

@@ -9,7 +9,7 @@
 # writes output images crop_image1, crop_image2
 
 # default prefix
-VIPSHOME=${VIPSHOME-/home/nessi/nessi-control}
+VIPSHOME=${VIPSHOME-/home/rfactory/speckle-control}
 
 name=`basename $0`
 

@@ -156,7 +156,7 @@ proc catchhms { value } {
 # Process generic dms header item
 #
 proc catchdms { value } {
-   set value [expr $value*180./3.14159]
+#   set value [expr $value*180./3.14159]
    set sign ""
    if { $value < 0.0 } {set sign "-"}
    set value [expr abs($value)]

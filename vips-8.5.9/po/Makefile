@@ -12,18 +12,18 @@
 # - Modified by jacob berkman <jacob@ximian.com> to install
 #   Makefile.in.in and po2tbl.sed.in for use with glib-gettextize
 
-GETTEXT_PACKAGE = vips8.5
+GETTEXT_PACKAGE = vips8.8
 PACKAGE = vips
-VERSION = 8.5.9
+VERSION = 8.8.2
 
-SHELL = /bin/sh
+SHELL = /bin/bash
 
 
 srcdir = .
 top_srcdir = ..
 
 
-prefix = /home/nessi/nessi-control
+prefix = /home/rfactory/speckle-control
 exec_prefix = ${prefix}
 datarootdir = ${prefix}/share
 datadir = ${datarootdir}
@@ -37,16 +37,16 @@ INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 MKINSTALLDIRS = mkdir -p
 
-CC = gcc -std=gnu99
+CC = gcc
 GENCAT = @GENCAT@
-GMSGFMT = /usr/bin/msgfmt
-MSGFMT = /usr/bin/msgfmt
-MSGFMT_OPTS = -c
-XGETTEXT = /usr/bin/xgettext
+GMSGFMT = 
+MSGFMT = no
+MSGFMT_OPTS = 
+XGETTEXT = :
 MSGMERGE = msgmerge
 
 DEFS = -DHAVE_CONFIG_H
-CFLAGS = -g -O2
+CFLAGS = -I/usr/lib/x86_64-linux-gnu/glib-2.0/include
 CPPFLAGS = 
 
 INCLUDES = -I.. -I$(top_srcdir)/intl
@@ -56,7 +56,7 @@ COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 SOURCES = 
 POFILES =  en_GB.po de.po
 GMOFILES =  en_GB.gmo de.gmo
-DISTFILES = LINGUAS ChangeLog Makefile.in.in POTFILES.in $(GETTEXT_PACKAGE).pot \
+DISTFILES = LINGUAS Makefile.in.in POTFILES.in $(GETTEXT_PACKAGE).pot \
 $(POFILES) $(GMOFILES) $(SOURCES)
 
 POTFILES = \
@@ -79,6 +79,7 @@ POTFILES = \
 	../libvips/arithmetic/hough_circle.c \
 	../libvips/arithmetic/measure.c \
 	../libvips/arithmetic/hist_find.c \
+	../libvips/arithmetic/find_trim.c \
 	../libvips/arithmetic/getpoint.c \
 	../libvips/arithmetic/add.c \
 	../libvips/arithmetic/divide.c \
@@ -130,6 +131,7 @@ POTFILES = \
 	../libvips/conversion/conversion.c \
 	../libvips/conversion/embed.c \
 	../libvips/conversion/zoom.c \
+	../libvips/conversion/transpose3d.c \
 	../libvips/conversion/replicate.c \
 	../libvips/conversion/bandfold.c \
 	../libvips/conversion/wrap.c \
@@ -146,6 +148,7 @@ POTFILES = \
 	../libvips/conversion/bandunfold.c \
 	../libvips/conversion/tilecache.c \
 	../libvips/conversion/sequential.c \
+	../libvips/conversion/smartcrop.c \
 	../libvips/conversion/premultiply.c \
 	../libvips/conversion/bandmean.c \
 	../libvips/conversion/falsecolour.c \
@@ -167,6 +170,8 @@ POTFILES = \
 	../libvips/convolution/spcor.c \
 	../libvips/convolution/conva.c \
 	../libvips/convolution/fastcor.c \
+	../libvips/convolution/sobel.c \
+	../libvips/convolution/canny.c \
 	../libvips/convolution/convi.c \
 	../libvips/convolution/compass.c \
 	../libvips/convolution/convolution.c \
@@ -216,6 +221,7 @@ POTFILES = \
 	../libvips/draw/draw_circle.c \
 	../libvips/draw/draw_flood.c \
 	../libvips/draw/draw_rect.c \
+	../libvips/dummy.c \
 	../libvips/foreign/foreign.c \
 	../libvips/foreign/ppm.c \
 	../libvips/foreign/csvsave.c \
@@ -224,6 +230,7 @@ POTFILES = \
 	../libvips/foreign/matlab.c \
 	../libvips/foreign/webpload.c \
 	../libvips/foreign/pngsave.c \
+	../libvips/foreign/magicksave.c \
 	../libvips/foreign/tiff2vips.c \
 	../libvips/foreign/fitsload.c \
 	../libvips/foreign/matrixsave.c \
@@ -241,6 +248,7 @@ POTFILES = \
 	../libvips/foreign/magick7load.c \
 	../libvips/foreign/openslide2vips.c \
 	../libvips/foreign/exif.c \
+	../libvips/foreign/pdfiumload.c \
 	../libvips/foreign/fitssave.c \
 	../libvips/foreign/pdfload.c \
 	../libvips/foreign/magick2vips.c \
@@ -263,6 +271,7 @@ POTFILES = \
 	../libvips/foreign/analyze2vips.c \
 	../libvips/foreign/matrixload.c \
 	../libvips/foreign/jpegload.c \
+	../libvips/foreign/magick.c \
 	../libvips/foreign/analyzeload.c \
 	../libvips/foreign/vips2tiff.c \
 	../libvips/foreign/matload.c \
@@ -274,6 +283,7 @@ POTFILES = \
 	../libvips/freqfilt/freqmult.c \
 	../libvips/freqfilt/freqfilt.c \
 	../libvips/freqfilt/invfft.c \
+	../libvips/fuzz/fuzz_new_from_buffer.c \
 	../libvips/histogram/hist_match.c \
 	../libvips/histogram/hist_cum.c \
 	../libvips/histogram/hist_equal.c \
@@ -302,6 +312,7 @@ POTFILES = \
 	../libvips/iofuncs/operation.c \
 	../libvips/iofuncs/sinkmemory.c \
 	../libvips/iofuncs/generate.c \
+	../libvips/iofuncs/dbuf.c \
 	../libvips/iofuncs/window.c \
 	../libvips/iofuncs/system.c \
 	../libvips/iofuncs/header.c \
@@ -318,10 +329,10 @@ POTFILES = \
 	../libvips/iofuncs/object.c \
 	../libvips/iofuncs/buf.c \
 	../libvips/iofuncs/vipsmarshal.c \
-	../libvips/iofuncs/base64.c \
 	../libvips/morphology/morph.c \
 	../libvips/morphology/rank.c \
 	../libvips/morphology/countlines.c \
+	../libvips/morphology/nearest.c \
 	../libvips/morphology/labelregions.c \
 	../libvips/morphology/morphology.c \
 	../libvips/morphology/hitmiss.c \
@@ -356,17 +367,10 @@ POTFILES = \
 	../libvips/resample/shrink.c \
 	../libvips/resample/similarity.c \
 	../libvips/resample/interpolate.c \
-	../libvips/video/im_video_test.c \
-	../libvips/video/video_dispatch.c \
 	../tools/vips.c \
 	../tools/vipsedit.c \
 	../tools/vipsheader.c \
 	../tools/vipsthumbnail.c \
-	../libvipsCC/VDisplay.cc \
-	../libvipsCC/VError.cc \
-	../libvipsCC/VImage.cc \
-	../libvipsCC/vipsc++.cc \
-	../libvipsCC/VMask.cc \
 	../cplusplus/include/vips/VImage8.h \
 	../cplusplus/include/vips/VInterpolate8.h \
 	../cplusplus/include/vips/VError8.h \
@@ -378,12 +382,6 @@ POTFILES = \
 	../libvips/arithmetic/parithmetic.h \
 	../libvips/arithmetic/statistic.h \
 	../libvips/arithmetic/hough.h \
-	../libvipsCC/include/vips/VMask.h \
-	../libvipsCC/include/vips/VImage.h \
-	../libvipsCC/include/vips/VError.h \
-	../libvipsCC/include/vips/vipscpp.h \
-	../libvipsCC/include/vips/vipsc++.h \
-	../libvipsCC/include/vips/VDisplay.h \
 	../libvips/colour/pcolour.h \
 	../libvips/conversion/pconversion.h \
 	../libvips/conversion/bandary.h \
@@ -396,6 +394,7 @@ POTFILES = \
 	../libvips/draw/pdraw.h \
 	../libvips/foreign/dbh.h \
 	../libvips/foreign/pforeign.h \
+	../libvips/foreign/magick.h \
 	../libvips/foreign/tiff.h \
 	../libvips/foreign/jpeg.h \
 	../libvips/freqfilt/pfreqfilt.h \
@@ -433,6 +432,7 @@ POTFILES = \
 	../libvips/include/vips/type.h \
 	../libvips/include/vips/semaphore.h \
 	../libvips/include/vips/image.h \
+	../libvips/include/vips/dbuf.h \
 	../libvips/include/vips/vector.h \
 	../libvips/include/vips/intl.h \
 	../libvips/include/vips/gate.h \
@@ -451,17 +451,25 @@ POTFILES = \
 	../libvips/include/vips/transform.h \
 	../libvips/include/vips/memory.h \
 	../libvips/iofuncs/sink.h \
-	../libvips/iofuncs/base64.h \
 	../libvips/iofuncs/vipsmarshal.h \
 	../libvips/morphology/pmorphology.h \
 	../libvips/mosaicing/pmosaicing.h \
 	../libvips/mosaicing/global_balance.h \
 	../libvips/resample/templates.h \
 	../libvips/resample/presample.h \
+	../cplusplus/examples/avg.cpp \
+	../cplusplus/examples/invert.cpp \
+	../cplusplus/examples/profile.cpp \
+	../cplusplus/examples/test_overloads.cpp \
+	../cplusplus/examples/buffer.cpp \
+	../cplusplus/examples/test.cpp \
+	../cplusplus/examples/embed.cpp \
+	../cplusplus/examples/resize.cpp \
 	../cplusplus/VError.cpp \
 	../cplusplus/VImage.cpp \
 	../cplusplus/VInterpolate.cpp \
 	../cplusplus/vips-operators.cpp \
+	../libvips/conversion/composite.cpp \
 	../libvips/resample/reduceh.cpp \
 	../libvips/resample/bicubic.cpp \
 	../libvips/resample/vsqbs.cpp \
@@ -469,9 +477,9 @@ POTFILES = \
 	../libvips/resample/lbb.cpp \
 	../libvips/resample/reducev.cpp
 
-CATALOGS =  en_GB.gmo de.gmo
-CATOBJEXT = .gmo
-INSTOBJEXT = .mo
+CATALOGS = 
+CATOBJEXT = NONE
+INSTOBJEXT = 
 
 .SUFFIXES:
 .SUFFIXES: .c .o .po .pox .gmo .mo .msg .cat

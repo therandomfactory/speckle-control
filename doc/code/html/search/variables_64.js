@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['d',['d',['../union_b_l_k_h_e_a_d.html#a90d446fcb7589c410b299775d247ec88',1,'BLKHEAD']]],
   ['dark_5fframe',['dark_frame',['../andor__tcl_8h.html#a59bd00713754b6c889ed9a3a0b461f21',1,'andor_tcl.h']]],
   ['dark_5fframe_5fmean',['dark_frame_mean',['../andor__tcl_8h.html#a6980fe14b0ab954d1aa95941f452d220',1,'andor_tcl.h']]],
   ['dark_5fframe_5fnum',['dark_frame_num',['../andor__tcl_8h.html#a3be53a15c00bc864925ff96655b1eb8a',1,'andor_tcl.h']]],
@@ -8,20 +7,14 @@ var searchData=
   ['data',['data',['../struct_s_w_i_g_c_d_a_t_a.html#ae6b964006ee95fdcceea1cc535c2ba42',1,'SWIGCDATA']]],
   ['data_5fframe',['data_frame',['../andor__tcl_8h.html#aa866f2834c654c050a458185a79b298e',1,'andor_tcl.h']]],
   ['data_5fthreshold',['data_threshold',['../andor__tcl_8h.html#ab77f50662375bbb4d3c7c77e0027337a',1,'andor_tcl.h']]],
-  ['datastart',['datastart',['../struct_f_i_t_sfile.html#ae6705eec92ff7ebf29e82710ed982962',1,'FITSfile']]],
-  ['datatype',['datatype',['../structiterator_col.html#ad6b270828036002e0a907f254fee41bd',1,'iteratorCol']]],
   ['dcast',['dcast',['../structswig__type__info.html#a07df4bedf85be77b23756b531b60e0dd',1,'swig_type_info']]],
   ['defaultangle',['defaultAngle',['../structrot_stats.html#a8aa82fbc12efd3880767ac378f1cb073',1,'rotStats']]],
   ['destroy',['destroy',['../structswig__instance.html#a3bdcd16ae587f72dd6e29e52745e279a',1,'swig_instance']]],
   ['destructor',['destructor',['../structswig__class.html#a88b0230e1b69998178a3840dcf5eac47',1,'swig_class']]],
-  ['dimlen',['dimlen',['../structwtbarr.html#a52de7766607c1260f13a90029edf7e73',1,'wtbarr']]],
-  ['dirty',['dirty',['../struct_f_i_t_sfile.html#a829a09a6082d811dd549d3a6b115fb60',1,'FITSfile']]],
   ['displayfft',['displayFFT',['../structshm_control_registers.html#af2d9fd69c7589ba544d6836adb622358',1,'shmControlRegisters']]],
   ['displaylucky',['displayLucky',['../structshm_control_registers.html#a6717b8ba0d8ca032a36070374a57e19b',1,'shmControlRegisters']]],
   ['dispx',['dispx',['../struct_b_o_x.html#abdbe63db13631286456a05290df537af',1,'BOX']]],
   ['dispy',['dispy',['../struct_b_o_x.html#a7efdd63ed7d3ad4c4ccbfdab8a1c9e7d',1,'BOX']]],
-  ['dither_5foffset',['dither_offset',['../struct_f_i_t_sfile.html#a826eee0849b0d215f3ad3d23a5496b29',1,'FITSfile']]],
   ['dlog',['dlog',['../derotate_8c.html#a9c3ea6bd4f7ce6af53e81c22ed631675',1,'derotate.c']]],
-  ['driver',['driver',['../struct_f_i_t_sfile.html#ace586a820048811afa9dffcbaeaa4a97',1,'FITSfile']]],
   ['dvalue',['dvalue',['../structswig__const__info.html#a74e477f1dbf515bcb7e2ef07a1d34c35',1,'swig_const_info']]]
 ];

@@ -13,5 +13,6 @@ set ANDORS(emgainSaturation,3)	35000
 set ANDORS(emgainSaturation,4)	45000
 set ANDORS(emgainSaturation,5)	60000
 set ANDORS(emgainSaturation,6)	65000
-
+set ANDORS(red,defaultROICenter)  "644 552"
+set ANDORS(blue,defaultROICenter) "324 520"
 

@@ -3601,8 +3601,8 @@ void create_fits_header(fitsfile *fptr)
     cal_mjd(utcmon, utcday, utcyear, &mjdobs);
     jdobs = mjdobs + 2415020.0;
     mjdobs = jdobs - 2400000.5;
-    fits_write_key_fixdbl( fptr, "MJD-OBS", mjdobs, 6, "MJD at start of obs", &status);
-    fits_write_key_fixdbl( fptr, "JD", jdobs, 5, "Julian Date at start of obs", &status);
+    fits_write_key_fixdbl( fptr, "MJD-OBS", mjdobs, 12, "MJD at start of obs", &status);
+    fits_write_key_fixdbl( fptr, "JD", jdobs, 12, "Julian Date at start of obs", &status);
 
 }
 

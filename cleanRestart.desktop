@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=cleanRestart
+Comment=Do a complete reset of the Speckle hardware and software
+Exec=/home/speckle/speckle-control/cleanRestart
+Icon=/home/speckle/speckle-control/gui-scripts/speckle-icon.gif
+Path=
+Terminal=true
+StartupNotify=false

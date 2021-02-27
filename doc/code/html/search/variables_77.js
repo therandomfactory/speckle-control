@@ -10,7 +10,6 @@ var searchData=
   ['wmonth',['wMonth',['../struct_s_y_s_t_e_m_t_i_m_e.html#afbd1082f6856b29498c6ce59b25d9ed7',1,'SYSTEMTIME']]],
   ['workingangle',['workingAngle',['../structrot_stats.html#ae7982a550052359c56272fa8e1d4127c',1,'rotStats']]],
   ['wrapper',['wrapper',['../structswig__command__info.html#a9f7fa32bd41103e183f8286e33352dc7',1,'swig_command_info']]],
-  ['writemode',['writemode',['../struct_f_i_t_sfile.html#ac322ab882868135e0555f5180e8ccfb9',1,'FITSfile']]],
   ['wsecond',['wSecond',['../struct_s_y_s_t_e_m_t_i_m_e.html#a9a824f2fe25a97dff93e8243f68b5af9',1,'SYSTEMTIME']]],
   ['wyear',['wYear',['../struct_s_y_s_t_e_m_t_i_m_e.html#a1ea1d626122b2ed5161527ae4cc90652',1,'SYSTEMTIME']]]
 ];

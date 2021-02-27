@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: simwiyntlm.tcl Source File</title>
+<title>Speckle: temp/simwiyntlm.tcl Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -173,47 +173,49 @@ $(document).ready(function(){initNavTree('simwiyntlm_8tcl_source.html','');});
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment"># \endcode</span></div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">set</span> WIYNTLM(airmass)   tcs.telescope.airmass<span class="comment"></span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(azimuth)   tcs.azimuth.mapper<span class="comment"></span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(azerror)   tcs.azimuth.error<span class="comment"></span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(elevation)     tcs.elevation.mapper<span class="comment"></span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(elerror)   tcs.elevation.error<span class="comment"></span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(focus)     tcs.telescope.focus<span class="comment"></span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(framepa)   tcs.telescope.pa<span class="comment"></span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(guiding)   tcs.telescope.guiding<span class="comment"></span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(ha)    tcs.telescope.ha<span class="comment"></span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(humidity)  tcs.weather.humidity<span class="comment"></span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(instraa)   tcs.telescope.instraa<span class="comment"></span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(instrpa)   tcs.telescope.instrpa<span class="comment"></span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(localtime)     tcs.time.local<span class="comment"></span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(lst)   tcs.time.LAST<span class="comment"></span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(mjd)   tcs.time.MJD<span class="comment"></span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(offsetdec)     tcs.telescope.decoffset<span class="comment"></span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(offsetra)  tcs.telescope.raoffset<span class="comment"></span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(programid)     speckle.scope.obsid<span class="comment"></span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(rotator)   tcs.nir.position<span class="comment"></span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetname) speckle.scope.name<span class="comment"></span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetra)  tcs.target.az<span class="comment"></span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetdec)     tcs.target.alt<span class="comment"></span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetepoch) tcs.target.epoch<span class="comment"></span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetframe) tcs.target.state<span class="comment"></span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(telescope)     speckle.scope.name<span class="comment"></span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(telra)     tcs.telescope.ra<span class="comment"></span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(teldec)    tcs.telescope.dec<span class="comment"></span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(userfocus)     tcs.telescope.userfocus<span class="comment"></span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(utc)   tcs.time.UT1<span class="comment"></span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(utcdate)   tcs.time.date<span class="comment"></span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(zd)    tcs.telescope.zenithdist<span class="comment"></span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">set</span> TELEMETRY(speckle.scope.release) &quot;Not used&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment"></span><span class="keyword">set</span> TELEMETRY(tcs.telescope.guiding) &quot;Off&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">set</span> WIYNTLM(airmass)   tcs.telescope.airmass<span class="comment"></span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(azimuth)   tcs.azimuth.mapper<span class="comment"></span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(azerror)   tcs.azimuth.error<span class="comment"></span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(elevation)     tcs.elevation.mapper<span class="comment"></span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(elerror)   tcs.elevation.error<span class="comment"></span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(focus)     tcs.telescope.focus<span class="comment"></span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(framepa)   tcs.telescope.pa<span class="comment"></span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(guiding)   tcs.telescope.guiding<span class="comment"></span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(ha)    tcs.telescope.ha<span class="comment"></span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(humidity)  tcs.weather.humidity<span class="comment"></span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(instraa)   tcs.telescope.instraa<span class="comment"></span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(instrpa)   tcs.telescope.instrpa<span class="comment"></span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(localtime)     tcs.time.local<span class="comment"></span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(lst)   tcs.time.LAST<span class="comment"></span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(mjd)   tcs.time.MJD<span class="comment"></span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(offsetdec)     tcs.telescope.decoffset<span class="comment"></span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(offsetra)  tcs.telescope.raoffset<span class="comment"></span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(programid)     speckle.scope.obsid<span class="comment"></span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(rotator)   tcs.nir.position<span class="comment"></span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetname) speckle.scope.name<span class="comment"></span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetra)  tcs.target.az<span class="comment"></span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetdec)     tcs.target.alt<span class="comment"></span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetepoch) tcs.target.epoch<span class="comment"></span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(targetframe) tcs.target.state<span class="comment"></span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(telescope)     speckle.scope.name<span class="comment"></span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(telra)     tcs.telescope.ra<span class="comment"></span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(teldec)    tcs.telescope.dec<span class="comment"></span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(userfocus)     tcs.telescope.userfocus<span class="comment"></span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(utc)   tcs.time.UT1<span class="comment"></span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(utcdate)   tcs.time.date<span class="comment"></span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment"></span><span class="keyword">set</span> WIYNTLM(zd)    tcs.telescope.zenithdist<span class="comment"></span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="simwiyntlm_8tcl.html">simwiyntlm.tcl</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:15 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="simwiyntlm_8tcl.html">simwiyntlm.tcl</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: andor_tcl.c File Reference</title>
+<title>Speckle: temp/andor_tcl.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -132,7 +132,7 @@ $(document).ready(function(){initNavTree('andor__tcl_8c.html','');});
 <code>#include &lt;stdint.h&gt;</code><br/>
 <code>#include &quot;<a class="el" href="andor__tcl_8h_source.html">andor_tcl.h</a>&quot;</code><br/>
 <code>#include &quot;vips/vips.h&quot;</code><br/>
-<code>#include &quot;<a class="el" href="fitsio_8h_source.html">fitsio.h</a>&quot;</code><br/>
+<code>#include &quot;fitsio.h&quot;</code><br/>
 </div>
 <p><a href="andor__tcl_8c_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -162,7 +162,7 @@ Functions</h2></td></tr>
 <tr class="memitem:ab5a3bc4c83a5919d5200ea59e1ec79f9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ab5a3bc4c83a5919d5200ea59e1ec79f9">append_fitsTimings</a> (int numexp)</td></tr>
 <tr class="memdesc:ab5a3bc4c83a5919d5200ea59e1ec79f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an array of timing data as a FITS Binary Extension to the data file.  <a href="#ab5a3bc4c83a5919d5200ea59e1ec79f9">More...</a><br/></td></tr>
 <tr class="separator:ab5a3bc4c83a5919d5200ea59e1ec79f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3abecc959cde5e513f242d720e899099"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a3abecc959cde5e513f242d720e899099">dofft</a> (int width, int height, int *imageData, int *<a class="el" href="andor__tcl_8c.html#a193b702a3ccbb038fcc474055e118e6d">outputData</a>)</td></tr>
+<tr class="memitem:a3abecc959cde5e513f242d720e899099"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a3abecc959cde5e513f242d720e899099">dofft</a> (int width, int height, int *imageData, int *<a class="el" href="andor__tcl_8c.html#afc8f49222f5e696fd6309367d7b31e18">outputData</a>)</td></tr>
 <tr class="memdesc:a3abecc959cde5e513f242d720e899099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate FFT of the image data.  <a href="#a3abecc959cde5e513f242d720e899099">More...</a><br/></td></tr>
 <tr class="separator:a3abecc959cde5e513f242d720e899099"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7d8818364e7c5a371033da22b03283b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ab7d8818364e7c5a371033da22b03283b">calcavg</a> (<a class="el" href="atmcd_l_xd_8h.html#a0c8363ae6d3c6af8c834e402f95ce85b">at_32</a> *avg, int n, int numexp)</td></tr>
@@ -174,7 +174,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a2a16498ec2c35865c9cccbb975d97047"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a2a16498ec2c35865c9cccbb975d97047">copyline</a> (int *tobuf, int *frombuf, int count, int offset)</td></tr>
 <tr class="memdesc:a2a16498ec2c35865c9cccbb975d97047"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy line pixels from image.  <a href="#a2a16498ec2c35865c9cccbb975d97047">More...</a><br/></td></tr>
 <tr class="separator:a2a16498ec2c35865c9cccbb975d97047"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24d7344389ec1c0013cf84910361e936"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a24d7344389ec1c0013cf84910361e936">create_fits_header</a> (<a class="el" href="structfitsfile.html">fitsfile</a> *<a class="el" href="andor__tcl_8c.html#a10481c220409ad9e7363e3c22c101e8c">fptr</a>)</td></tr>
+<tr class="memitem:a24d7344389ec1c0013cf84910361e936"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a24d7344389ec1c0013cf84910361e936">create_fits_header</a> (fitsfile *<a class="el" href="andor__tcl_8c.html#a10481c220409ad9e7363e3c22c101e8c">fptr</a>)</td></tr>
 <tr class="memdesc:a24d7344389ec1c0013cf84910361e936"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create minimal FITS header, the rest is populated from the tcl side.  <a href="#a24d7344389ec1c0013cf84910361e936">More...</a><br/></td></tr>
 <tr class="separator:a24d7344389ec1c0013cf84910361e936"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f372d037700a1b22b0e197af864e2ba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a8f372d037700a1b22b0e197af864e2ba">cAndorStoreFrame</a> (int cameraId, char *filename, int iexp, int numexp)</td></tr>
@@ -209,6 +209,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae03039353cce879468d5bf938231addf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a134a351fe68d17222091d06d962bf9dd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a134a351fe68d17222091d06d962bf9dd">tcl_andorSelectCamera</a> (ClientData clientData, Tcl_Interp *interp, int argc, char **argv)</td></tr>
 <tr class="separator:a134a351fe68d17222091d06d962bf9dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1574800d12441967234e846447440b86"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a1574800d12441967234e846447440b86">tcl_andorPrepareAcquisition</a> (ClientData clientData, Tcl_Interp *interp, int argc, char **argv)</td></tr>
+<tr class="separator:a1574800d12441967234e846447440b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45c3b5384ed46fc1d9ee625992a34d3f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a45c3b5384ed46fc1d9ee625992a34d3f">tcl_andorAbortAcquisition</a> (ClientData clientData, Tcl_Interp *interp, int argc, char **argv)</td></tr>
 <tr class="separator:a45c3b5384ed46fc1d9ee625992a34d3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af03f92b7fde3f84d50dcb8ba04d680ee"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#af03f92b7fde3f84d50dcb8ba04d680ee">tcl_andorClearLucky</a> (ClientData clientData, Tcl_Interp *interp, int argc, char **argv)</td></tr>
@@ -221,6 +223,8 @@ Functions</h2></td></tr>
 <tr class="separator:ab0344da778f9283fc977ff25457d4938"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac854ede30ed004beba9820d38ae53329"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ac854ede30ed004beba9820d38ae53329">tcl_andorDisplayFrame</a> (ClientData clientData, Tcl_Interp *interp, int argc, char **argv)</td></tr>
 <tr class="separator:ac854ede30ed004beba9820d38ae53329"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad93e97898b9953503283d8175ec94f92"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ad93e97898b9953503283d8175ec94f92">tcl_andorSetSpool</a> (ClientData clientData, Tcl_Interp *interp, int argc, char **argv)</td></tr>
+<tr class="separator:ad93e97898b9953503283d8175ec94f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af755ba17d2933c6a840c7d8266b51e07"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#af755ba17d2933c6a840c7d8266b51e07">tcl_andorFakeData</a> (ClientData clientData, Tcl_Interp *interp, int argc, char **argv)</td></tr>
 <tr class="separator:af755ba17d2933c6a840c7d8266b51e07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac8c88e5b4db74f88373582433d5daf0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#aac8c88e5b4db74f88373582433d5daf0">tcl_andorDisplaySingleFFT</a> (ClientData clientData, Tcl_Interp *interp, int argc, char **argv)</td></tr>
@@ -290,24 +294,28 @@ Variables</h2></td></tr>
 <tr class="separator:a513792812ee69100fb7bd289c9dcd72d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ca1046d1ec039976d5ef14e940785a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="andor__tcl_8c.html#ab1af2cb3c7c14b98daea6e09ff454f80">shmControl</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a8ca1046d1ec039976d5ef14e940785a4">SharedMem2</a></td></tr>
 <tr class="separator:a8ca1046d1ec039976d5ef14e940785a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac78bbdfe41e4a8d3eb076713e02459d5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ac78bbdfe41e4a8d3eb076713e02459d5">imageDataA</a> [1024 *1024]</td></tr>
-<tr class="separator:ac78bbdfe41e4a8d3eb076713e02459d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d5a24be0c6e934e26615fd377297003"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a5d5a24be0c6e934e26615fd377297003">imageDataB</a> [1024 *1024]</td></tr>
-<tr class="separator:a5d5a24be0c6e934e26615fd377297003"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a193b702a3ccbb038fcc474055e118e6d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a193b702a3ccbb038fcc474055e118e6d">outputData</a> [1024 *1024]</td></tr>
-<tr class="separator:a193b702a3ccbb038fcc474055e118e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a824d21b34ac386b195bccf7e1bba2806"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a824d21b34ac386b195bccf7e1bba2806">outputAvgA</a> [1024 *1024]</td></tr>
-<tr class="separator:a824d21b34ac386b195bccf7e1bba2806"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10ec2b6ec08086e455fbb28fad95b352"><td class="memItemLeft" align="right" valign="top">unsigned short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a10ec2b6ec08086e455fbb28fad95b352">tempbuf16</a> [1024 *1024 *48]</td></tr>
+<tr class="separator:a10ec2b6ec08086e455fbb28fad95b352"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd1baf501ef224630f86f233070cce7f"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#afd1baf501ef224630f86f233070cce7f">tempbuf32</a> [1024 *1024 *48]</td></tr>
+<tr class="separator:afd1baf501ef224630f86f233070cce7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49c75dc0a29d1dee24bc805050dd5b9e"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a49c75dc0a29d1dee24bc805050dd5b9e">imageDataA</a> [1024 *1024]</td></tr>
+<tr class="separator:a49c75dc0a29d1dee24bc805050dd5b9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc225e0e224bc1be8ad582574d45ed94"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#adc225e0e224bc1be8ad582574d45ed94">imageDataB</a> [1024 *1024]</td></tr>
+<tr class="separator:adc225e0e224bc1be8ad582574d45ed94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc8f49222f5e696fd6309367d7b31e18"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#afc8f49222f5e696fd6309367d7b31e18">outputData</a> [1024 *1024]</td></tr>
+<tr class="separator:afc8f49222f5e696fd6309367d7b31e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8872596ee3619d692fc1bcf1eb4efc02"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a8872596ee3619d692fc1bcf1eb4efc02">outputAvgA</a> [1024 *1024]</td></tr>
+<tr class="separator:a8872596ee3619d692fc1bcf1eb4efc02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80304b28ffb2ddd3f48c3195b73916f0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a80304b28ffb2ddd3f48c3195b73916f0">outputAvgB</a> [1024 *1024]</td></tr>
 <tr class="separator:a80304b28ffb2ddd3f48c3195b73916f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ec95474179268386f81466c8be6f0b9"><td class="memItemLeft" align="right" valign="top">unsigned short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a0ec95474179268386f81466c8be6f0b9">imageDataAI2</a> [1024 *1024]</td></tr>
 <tr class="separator:a0ec95474179268386f81466c8be6f0b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d96cadc7be39ab02a32d735b63485ae"><td class="memItemLeft" align="right" valign="top">unsigned short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a7d96cadc7be39ab02a32d735b63485ae">imageDataBI2</a> [1024 *1024]</td></tr>
 <tr class="separator:a7d96cadc7be39ab02a32d735b63485ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a021605f64ab4b7b75bbf661cc1a260ad"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a021605f64ab4b7b75bbf661cc1a260ad">getLucky0</a> [1024 *1024]</td></tr>
-<tr class="separator:a021605f64ab4b7b75bbf661cc1a260ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39a93f1702565df28baceaaf9606363e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a39a93f1702565df28baceaaf9606363e">getLucky1</a> [1024 *1024]</td></tr>
-<tr class="separator:a39a93f1702565df28baceaaf9606363e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ada93dbd988b3bc88551974cb261c9d"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a7ada93dbd988b3bc88551974cb261c9d">getLucky0</a> [1024 *1024]</td></tr>
+<tr class="separator:a7ada93dbd988b3bc88551974cb261c9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a883881b0628f1f7dbf0119d7eb293189"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a883881b0628f1f7dbf0119d7eb293189">getLucky1</a> [1024 *1024]</td></tr>
+<tr class="separator:a883881b0628f1f7dbf0119d7eb293189"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5d0563bd3b96dbd6f5b46e9b897e5e0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ae5d0563bd3b96dbd6f5b46e9b897e5e0">imageFrame</a> [1024 *1024]</td></tr>
 <tr class="separator:ae5d0563bd3b96dbd6f5b46e9b897e5e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4885e15e6a2f13b854e973265e5a406"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ad4885e15e6a2f13b854e973265e5a406">fitsROI</a> [1024 *1024]</td></tr>
@@ -322,19 +330,19 @@ Variables</h2></td></tr>
 <tr class="separator:adc9f7dd221a22179d63156a405a2d547"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a550d298ce11db0815271f7146e58d338"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a550d298ce11db0815271f7146e58d338">imageFrameI4</a> [1024 *1024]</td></tr>
 <tr class="separator:a550d298ce11db0815271f7146e58d338"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8bdaa3472018b4db7a2e1914b668113"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ad8bdaa3472018b4db7a2e1914b668113">fitsROI4</a> [512 *512]</td></tr>
-<tr class="separator:ad8bdaa3472018b4db7a2e1914b668113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c213bb5306d16d81c1cf01145f1b900"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a8c213bb5306d16d81c1cf01145f1b900">fitsROI4</a> [1024 *1024]</td></tr>
+<tr class="separator:a8c213bb5306d16d81c1cf01145f1b900"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bd34957d572268abb45e870faa9673b"><td class="memItemLeft" align="right" valign="top">unsigned short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a7bd34957d572268abb45e870faa9673b">imageFrameI2</a> [1024 *1024]</td></tr>
 <tr class="separator:a7bd34957d572268abb45e870faa9673b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43eed2de313fa2ecf2a63ddc34a01489"><td class="memItemLeft" align="right" valign="top">unsigned short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a43eed2de313fa2ecf2a63ddc34a01489">fitsROI2</a> [512 *512]</td></tr>
-<tr class="separator:a43eed2de313fa2ecf2a63ddc34a01489"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c3afd5832bf027acb6a7622705bb621"><td class="memItemLeft" align="right" valign="top">unsigned short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a5c3afd5832bf027acb6a7622705bb621">fitsROI2</a> [1024 *1024]</td></tr>
+<tr class="separator:a5c3afd5832bf027acb6a7622705bb621"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a179b70ad0fead86555368dc8edf9469e"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a179b70ad0fead86555368dc8edf9469e">result</a> =NULL</td></tr>
 <tr class="separator:a179b70ad0fead86555368dc8edf9469e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac1343413566ee4a2c336dcc5f32e7cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structandor__setup.html">andor_setup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#aac1343413566ee4a2c336dcc5f32e7cd">andorSetup</a> [2]</td></tr>
 <tr class="separator:aac1343413566ee4a2c336dcc5f32e7cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10481c220409ad9e7363e3c22c101e8c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfitsfile.html">fitsfile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a10481c220409ad9e7363e3c22c101e8c">fptr</a></td></tr>
+<tr class="memitem:a10481c220409ad9e7363e3c22c101e8c"><td class="memItemLeft" align="right" valign="top">fitsfile *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a10481c220409ad9e7363e3c22c101e8c">fptr</a></td></tr>
 <tr class="separator:a10481c220409ad9e7363e3c22c101e8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0490a0f0456cb3fdec62a1633d948d0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfitsfile.html">fitsfile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a0490a0f0456cb3fdec62a1633d948d0b">fptrin</a></td></tr>
+<tr class="memitem:a0490a0f0456cb3fdec62a1633d948d0b"><td class="memItemLeft" align="right" valign="top">fitsfile *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#a0490a0f0456cb3fdec62a1633d948d0b">fptrin</a></td></tr>
 <tr class="separator:a0490a0f0456cb3fdec62a1633d948d0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad561a8342f7e48ce376f78000c039ac9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="andor__tcl_8c.html#ad561a8342f7e48ce376f78000c039ac9">Shmem_id</a> = 0</td></tr>
 <tr class="separator:ad561a8342f7e48ce376f78000c039ac9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -441,7 +449,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03318">3318</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03474">3474</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -466,7 +474,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00593">593</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00611">611</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -492,7 +500,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01310">1310</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01331">1331</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -536,7 +544,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03326">3326</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03482">3482</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -573,7 +581,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01792">1792</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01837">1837</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -610,7 +618,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01741">1741</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01786">1786</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -661,7 +669,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01092">1092</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01113">1113</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -718,7 +726,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01205">1205</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01226">1226</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -769,7 +777,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01840">1840</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01885">1885</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -780,7 +788,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void create_fits_header </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structfitsfile.html">fitsfile</a> *&#160;</td>
+          <td class="paramtype">fitsfile *&#160;</td>
           <td class="paramname"><em>fptr</em></td><td>)</td>
           <td></td>
         </tr>
@@ -795,7 +803,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03425">3425</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03581">3581</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -846,7 +854,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="dofft_8cpp_source.html#l00039">39</a> of file <a class="el" href="dofft_8cpp_source.html">dofft.cpp</a>.</p>
+<p>Definition at line <a class="el" href="dofft_8cpp_source.html#l00040">40</a> of file <a class="el" href="dofft_8cpp_source.html">dofft.cpp</a>.</p>
 
 </div>
 </div>
@@ -874,7 +882,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02679">2679</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02817">2817</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -923,7 +931,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03080">3080</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03236">3236</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -972,7 +980,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02305">2305</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02350">2350</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1021,7 +1029,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02292">2292</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02337">2337</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1070,7 +1078,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02868">2868</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03011">3011</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1119,7 +1127,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00676">676</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00696">696</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1168,7 +1176,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00702">702</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00722">722</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1217,7 +1225,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00726">726</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00746">746</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1266,7 +1274,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00749">749</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00769">769</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1315,7 +1323,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01844">1844</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01889">1889</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1364,7 +1372,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01687">1687</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01732">1732</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1413,7 +1421,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01917">1917</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01962">1962</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1462,7 +1470,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01877">1877</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01922">1922</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1511,7 +1519,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01599">1599</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01621">1621</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1560,7 +1568,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02587">2587</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02699">2699</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1609,7 +1617,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03109">3109</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03265">3265</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1658,7 +1666,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03154">3154</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03310">3310</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1707,7 +1715,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00765">765</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00785">785</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1756,7 +1764,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02377">2377</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02422">2422</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1805,7 +1813,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03196">3196</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03352">3352</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1854,7 +1862,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02127">2127</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02172">2172</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1903,7 +1911,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02471">2471</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02516">2516</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -1952,7 +1960,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03013">3013</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03156">3156</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2001,7 +2009,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02709">2709</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02852">2852</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2050,7 +2058,56 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01623">1623</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01668">1668</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1574800d12441967234e846447440b86"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int tcl_andorPrepareAcquisition </td>
+          <td>(</td>
+          <td class="paramtype">ClientData&#160;</td>
+          <td class="paramname"><em>clientData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Tcl_Interp *&#160;</td>
+          <td class="paramname"><em>interp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char **&#160;</td>
+          <td class="paramname"><em>argv</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ClientData</td><td>Tcl handle </td></tr>
+    <tr><td class="paramname">Tcl_Interp</td><td>interpreter pointer </td></tr>
+    <tr><td class="paramname">argc</td><td>Argument count </td></tr>
+    <tr><td class="paramname">arcv</td><td>Arguments </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03223">3223</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2099,7 +2156,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02214">2214</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02259">2259</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2148,7 +2205,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02253">2253</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02298">2298</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2197,7 +2254,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00901">901</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00921">921</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2246,7 +2303,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02840">2840</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02983">2983</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2295,7 +2352,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00846">846</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00866">866</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2344,7 +2401,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03225">3225</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03381">3381</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2393,7 +2450,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01949">1949</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01994">1994</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2442,7 +2499,56 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02166">2166</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02211">2211</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad93e97898b9953503283d8175ec94f92"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int tcl_andorSetSpool </td>
+          <td>(</td>
+          <td class="paramtype">ClientData&#160;</td>
+          <td class="paramname"><em>clientData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Tcl_Interp *&#160;</td>
+          <td class="paramname"><em>interp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char **&#160;</td>
+          <td class="paramname"><em>argv</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ClientData</td><td>Tcl handle </td></tr>
+    <tr><td class="paramname">Tcl_Interp</td><td>interpreter pointer </td></tr>
+    <tr><td class="paramname">argc</td><td>Argument count </td></tr>
+    <tr><td class="paramname">arcv</td><td>Arguments </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01644">1644</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2491,7 +2597,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l02947">2947</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03090">3090</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2540,7 +2646,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00667">667</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00687">687</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2589,7 +2695,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03065">3065</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03208">3208</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2638,7 +2744,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00955">955</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00975">975</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2687,7 +2793,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01461">1461</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01482">1482</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2736,7 +2842,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01324">1324</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l01345">1345</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2785,7 +2891,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03267">3267</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03423">3423</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2834,7 +2940,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03294">3294</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l03450">3450</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2849,7 +2955,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00078">78</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00080">80</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2863,35 +2969,35 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00065">65</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00067">67</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a43eed2de313fa2ecf2a63ddc34a01489"></a>
+<a class="anchor" id="a5c3afd5832bf027acb6a7622705bb621"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned short fitsROI2[512 *512]</td>
+          <td class="memname">unsigned short fitsROI2[1024 *1024]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00075">75</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8c213bb5306d16d81c1cf01145f1b900"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int fitsROI4[1024 *1024]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00073">73</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ad8bdaa3472018b4db7a2e1914b668113"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned int fitsROI4[512 *512]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00071">71</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2905,7 +3011,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00067">67</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00069">69</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2919,7 +3025,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00066">66</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00068">68</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2933,7 +3039,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00068">68</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00070">70</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2947,7 +3053,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00069">69</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00071">71</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2956,12 +3062,12 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structfitsfile.html">fitsfile</a>* fptr</td>
+          <td class="memname">fitsfile* fptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00079">79</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00081">81</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -2970,54 +3076,54 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structfitsfile.html">fitsfile</a>* fptrin</td>
+          <td class="memname">fitsfile* fptrin</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00080">80</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00082">82</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a021605f64ab4b7b75bbf661cc1a260ad"></a>
+<a class="anchor" id="a7ada93dbd988b3bc88551974cb261c9d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int getLucky0[1024 *1024]</td>
+          <td class="memname">unsigned int getLucky0[1024 *1024]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00062">62</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00064">64</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a39a93f1702565df28baceaaf9606363e"></a>
+<a class="anchor" id="a883881b0628f1f7dbf0119d7eb293189"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int getLucky1[1024 *1024]</td>
+          <td class="memname">unsigned int getLucky1[1024 *1024]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00063">63</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00065">65</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac78bbdfe41e4a8d3eb076713e02459d5"></a>
+<a class="anchor" id="a49c75dc0a29d1dee24bc805050dd5b9e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int imageDataA[1024 *1024]</td>
+          <td class="memname">unsigned int imageDataA[1024 *1024]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00055">55</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00057">57</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3031,21 +3137,21 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00060">60</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00062">62</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a5d5a24be0c6e934e26615fd377297003"></a>
+<a class="anchor" id="adc225e0e224bc1be8ad582574d45ed94"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int imageDataB[1024 *1024]</td>
+          <td class="memname">unsigned int imageDataB[1024 *1024]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00056">56</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00058">58</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3059,7 +3165,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00061">61</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00063">63</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3073,7 +3179,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00064">64</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00066">66</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3087,7 +3193,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00072">72</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00074">74</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3101,21 +3207,21 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00070">70</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00072">72</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a824d21b34ac386b195bccf7e1bba2806"></a>
+<a class="anchor" id="a8872596ee3619d692fc1bcf1eb4efc02"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int outputAvgA[1024 *1024]</td>
+          <td class="memname">unsigned int outputAvgA[1024 *1024]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00058">58</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00060">60</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3129,21 +3235,21 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00059">59</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00061">61</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a193b702a3ccbb038fcc474055e118e6d"></a>
+<a class="anchor" id="afc8f49222f5e696fd6309367d7b31e18"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int outputData[1024 *1024]</td>
+          <td class="memname">unsigned int outputData[1024 *1024]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00057">57</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00059">59</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3157,7 +3263,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00074">74</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00076">76</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3283,7 +3389,35 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00087">87</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00089">89</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a10ec2b6ec08086e455fbb28fad95b352"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned short tempbuf16[1024 *1024 *48]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00055">55</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afd1baf501ef224630f86f233070cce7f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int tempbuf32[1024 *1024 *48]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="andor__tcl_8c_source.html#l00056">56</a> of file <a class="el" href="andor__tcl_8c_source.html">andor_tcl.c</a>.</p>
 
 </div>
 </div>
@@ -3292,8 +3426,8 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="andor__tcl_8c.html">andor_tcl.c</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:15 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="andor__tcl_8c.html">andor_tcl.c</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

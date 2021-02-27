@@ -923,7 +923,7 @@ global ANDOR_CFG
 ## Documented proc \c selectROI .
 # \param[in] idim Size of rfegion of interest (x and y)
 #
-#  Find the brightest object , and select an ROI of the requried size around it
+#  Find the brightest object , and select an ROI of the required size around it
 #  Show the region on ds9
 #
 #

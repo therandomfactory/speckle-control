@@ -1,0 +1,22 @@
+#!/bin/sh
+
+cd $HOME
+  echo "-----------------------------------------------------------"
+  echo ""
+  echo "     Backing up current installation"
+  echo ""
+  echo "-----------------------------------------------------------"
+tar czf ../speckle-control.backup.tgz speckle-control
+cd speckle-control
+status=`git pull`
+if [ "$status" == "Already up-to-date." ]; then
+  echo "-----------------------------------------------------------"
+  echo ""
+  echo "     Speckle software is already up to date"
+  echo ""
+  echo "-----------------------------------------------------------"
+else
+  ./install
+fi
+
+

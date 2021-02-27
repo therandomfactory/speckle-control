@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=setDevicePermissions
+Comment=
+Exec=/home/speckle/speckle-control/setDevicePermissions
+Icon=/home/speckle/speckle-control/gui-scripts/speckle-icon.gif
+Path=
+Terminal=true
+StartupNotify=false

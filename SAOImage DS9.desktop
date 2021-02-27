@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=SAOImage DS9
+Comment=Astronomical Data Visualization Application
+Exec=ds9 %F
+Icon=ds9
+Path=
+Terminal=false
+StartupNotify=false

@@ -1,22 +1,13 @@
 var searchData=
 [
-  ['val',['val',['../unionsemun.html#ac6121ecb6d04a024e07e12bd71b94031',1,'semun']]],
-  ['validcode',['validcode',['../struct_f_i_t_sfile.html#a715d05243e90a6a6ba8b3cca665e3fab',1,'FITSfile']]],
   ['validfloat',['validFloat',['../gui2_8tcl.html#af0a4939a5fce37b34ed6277747cdef45',1,'gui2.tcl']]],
   ['validinteger',['validInteger',['../gui2_8tcl.html#a28e7eb410935a4a25c289531d20709df',1,'gui2.tcl']]],
-  ['validstruc',['VALIDSTRUC',['../fitsio_8h.html#af729ac757bf8934cd501a22339c01d66',1,'fitsio.h']]],
-  ['value_5fundefined',['VALUE_UNDEFINED',['../fitsio_8h.html#a3ad516ecfe6ff7e0c3b3cc52d77aa931',1,'fitsio.h']]],
-  ['vaxvms',['VAXVMS',['../fitsio2_8h.html#a00dd7a68f17d9ee7c6bad8489e516bb5',1,'fitsio2.h']]],
   ['vbin',['vbin',['../structandor__image.html#ae22039924c7f325220b217c47debc510',1,'andor_image']]],
   ['vend',['vend',['../structandor__image.html#a49398a3608443243ee232fac78a21a7e',1,'andor_image']]],
   ['verbose',['verbose',['../andor__tcl_8h.html#ab3f078684998b83967d507d0f453f454',1,'andor_tcl.h']]],
-  ['version',['VERSION',['../config_8h.html#a1c6d5de492ac61ad29aec7aa9a436bbf',1,'config.h']]],
   ['vertical_5fspeed',['vertical_speed',['../structandor__setup.html#a61f2f5640565e0ed9d06837fc79ba80e',1,'andor_setup']]],
   ['vertical_5fspeed_5findex',['vertical_speed_index',['../structandor__setup.html#a03c921025b2fa25797e33971eea8f385',1,'andor_setup']]],
-  ['videomode',['videomode',['../andor_8tcl.html#a46d3a3045dc73ce0b7935f1c417f1d71',1,'andor.tcl']]],
-  ['vips_5ficc_5fdir',['VIPS_ICC_DIR',['../config_8h.html#ac41ee6447b890a8b041effd671d3e879',1,'config.h']]],
-  ['vips_5flibdir',['VIPS_LIBDIR',['../config_8h.html#a41d13a26534019b3417cf1487a10388f',1,'config.h']]],
-  ['vips_5fprefix',['VIPS_PREFIX',['../config_8h.html#a334b531acf9c90e8c4bafcaae6c35b2e',1,'config.h']]],
+  ['viewport',['viewPort',['../namespace_plotchart.html#a15eaf2b36894d09f27eabfb0e6f48f40',1,'Plotchart']]],
   ['vnc_5fdisplay',['VNC_Display',['../guider_8h.html#a18c0cbeece6bcb1c64d7463ce253ff50a68b6b6c4a10bcf906787b1ba44774efb',1,'guider.h']]],
   ['void',['VOID',['../gauss_8c.html#a7f319bfc2492a2136964194204e7a8cf',1,'VOID():&#160;gauss.c'],['../newstar_8c.html#a7f319bfc2492a2136964194204e7a8cf',1,'VOID():&#160;newstar.c']]],
   ['vstart',['vstart',['../structandor__image.html#a2d86a56375022e4c05a95ffd2aae4373',1,'andor_image']]]

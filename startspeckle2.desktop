@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=startspeckle2
+Comment=
+Exec=/home/speckle/speckle-control/startspeckle2.geminiS
+Icon=/home/speckle/speckle-control/gui-scripts/speckle-icon.gif
+Path=/home/speckle/speckle-control
+Terminal=true
+StartupNotify=false

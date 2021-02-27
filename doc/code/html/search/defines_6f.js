@@ -1,25 +1,5 @@
 var searchData=
 [
   ['obs_5fsize',['OBS_SIZE',['../andor__tcl_8c.html#ac35979190a202dc1a747b7aa2d6a31e7',1,'andor_tcl.c']]],
-  ['off_5ft',['OFF_T',['../fitsio_8h.html#ab8bd63e7a74ee69778f78c27ea229ffd',1,'fitsio.h']]],
-  ['ok',['OK',['../gauss_8c.html#aba51915c87d64af47fb1cc59348961c9',1,'OK():&#160;gauss.c'],['../newstar_8c.html#aba51915c87d64af47fb1cc59348961c9',1,'OK():&#160;newstar.c']]],
-  ['open_5fdisk_5ffile',['OPEN_DISK_FILE',['../fitsio_8h.html#a124f8b318c9817d4f1606cc929d727ba',1,'fitsio.h']]],
-  ['opt_5fcmt_5fmbr',['OPT_CMT_MBR',['../fitsio_8h.html#ac8c99428d2233133c3806a529d941eac',1,'fitsio.h']]],
-  ['opt_5fcmt_5fmbr_5fdel',['OPT_CMT_MBR_DEL',['../fitsio_8h.html#a40bfc7562e4edaa94caab5ca5f3a218b',1,'fitsio.h']]],
-  ['opt_5fgcp_5fall',['OPT_GCP_ALL',['../fitsio_8h.html#adb806541141ddf49e5013471097f16fa',1,'fitsio.h']]],
-  ['opt_5fgcp_5fgpt',['OPT_GCP_GPT',['../fitsio_8h.html#a4a75d3ff41bc3b41dc95437467e8ab6a',1,'fitsio.h']]],
-  ['opt_5fgcp_5fmbr',['OPT_GCP_MBR',['../fitsio_8h.html#af2d56380c906fa1fe09bf2f2a5e5eab8',1,'fitsio.h']]],
-  ['opt_5fmcp_5fadd',['OPT_MCP_ADD',['../fitsio_8h.html#a76e152845ccfdd67e8224a34c388e3ad',1,'fitsio.h']]],
-  ['opt_5fmcp_5fmov',['OPT_MCP_MOV',['../fitsio_8h.html#a3f3242641e36d623498acf6b2de097b1',1,'fitsio.h']]],
-  ['opt_5fmcp_5fnadd',['OPT_MCP_NADD',['../fitsio_8h.html#a639cbb67044c5f0b407eba8f28b84bb5',1,'fitsio.h']]],
-  ['opt_5fmcp_5frepl',['OPT_MCP_REPL',['../fitsio_8h.html#a94f6c1390542740d9965ff2416011293',1,'fitsio.h']]],
-  ['opt_5fmrg_5fcopy',['OPT_MRG_COPY',['../fitsio_8h.html#afe5b4c49a7fdacb17a474eb4fe8453f8',1,'fitsio.h']]],
-  ['opt_5fmrg_5fmov',['OPT_MRG_MOV',['../fitsio_8h.html#a51e163c89f8cd60b610b9c2e6fe14454',1,'fitsio.h']]],
-  ['opt_5frm_5fall',['OPT_RM_ALL',['../fitsio_8h.html#a9de6fe3d574d3f4d93b36713da8ca7c7',1,'fitsio.h']]],
-  ['opt_5frm_5fentry',['OPT_RM_ENTRY',['../fitsio_8h.html#ab1b451c76afd9dafaf5e0f011f3dd46e',1,'fitsio.h']]],
-  ['opt_5frm_5fgpt',['OPT_RM_GPT',['../fitsio_8h.html#a35704c77ffb23b363727ad022c990322',1,'fitsio.h']]],
-  ['opt_5frm_5fmbr',['OPT_RM_MBR',['../fitsio_8h.html#a094cc7595fb464a8c38dc64cf50a7124',1,'fitsio.h']]],
-  ['othertype',['OTHERTYPE',['../fitsio2_8h.html#a5a64c407836d9b8e38896405bd6e3834',1,'fitsio2.h']]],
-  ['outputcol',['OutputCol',['../fitsio_8h.html#a05b90d9490263a5bea723cc096245552',1,'fitsio.h']]],
-  ['overflow_5ferr',['OVERFLOW_ERR',['../fitsio_8h.html#a262f5320c5f9be846150f4d4d0b633f9',1,'fitsio.h']]]
+  ['ok',['OK',['../gauss_8c.html#aba51915c87d64af47fb1cc59348961c9',1,'OK():&#160;gauss.c'],['../newstar_8c.html#aba51915c87d64af47fb1cc59348961c9',1,'OK():&#160;newstar.c']]]
 ];

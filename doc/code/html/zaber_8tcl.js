@@ -7,6 +7,7 @@ var zaber_8tcl =
     [ "logZaberConfig", "zaber_8tcl.html#ab26f5a912a54812f0c293d4aefa83610", null ],
     [ "positionSpeckle", "zaber_8tcl.html#a8123d133ce7313f3e3cce66f6a9ee780", null ],
     [ "positionZabers", "zaber_8tcl.html#a495696cfffe04e9769bfc91c41b88427", null ],
+    [ "reconnectZabers", "zaber_8tcl.html#a9da22b11f23d115a2023963365aa07b8", null ],
     [ "saveZaberConfig", "zaber_8tcl.html#a73db5d7f95200ce2d94d3d492361068c", null ],
     [ "zaberCheck", "zaber_8tcl.html#a3a4ab999da035949fba513cbaa035c89", null ],
     [ "zaberCommand", "zaber_8tcl.html#a56b07f343789ded5ae44ac37da5f8159", null ],

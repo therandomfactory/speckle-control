@@ -9,7 +9,7 @@
 # writes output images image1.* and image2.* where * is the new file type.
 
 # default prefix
-VIPSHOME=${VIPSHOME-/home/nessi/nessi-control}
+VIPSHOME=${VIPSHOME-/home/rfactory/speckle-control}
 
 name=`basename $0`
 

@@ -29,6 +29,7 @@ var searchData=
   ['obsid',['obsid',['../header_builder_8tcl.html#a1e57e4199271c1397e5cd58df9fd7225',1,'headerBuilder.tcl']]],
   ['oimage_5fi2tof',['oimage_i2tof',['../ccd__tcl_8c.html#a701c846619dd779ee9a232ff60aa972b',1,'ccd_tcl.c']]],
   ['oldgaussfit',['oldgaussfit',['../gauss_8c.html#a40ea6504a52e0e1df59d95cc993ab15b',1,'gauss.c']]],
+  ['oldvideomode',['oldvideomode',['../andor_8tcl.html#a5f7a60748a3f2da18c9a8da5a734bec8',1,'andor.tcl']]],
   ['opendevicehandle',['OpenDeviceHandle',['../class_gen_one_linux_u_s_b.html#a8ad63ef80529da5885215e62d4bca020',1,'GenOneLinuxUSB']]],
   ['operator_3d',['operator=',['../class_gen_one_linux_u_s_b.html#a6e9ac32f95be242534e1da8fbaaabcc8',1,'GenOneLinuxUSB']]],
   ['oriel_5finit',['Oriel_Init',['../oriel_package_8cpp.html#a16af8ded8597bc633adc6e612a072f35',1,'orielPackage.cpp']]],

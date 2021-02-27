@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -164,14 +164,15 @@ $(document).ready(function(){initNavTree('globals_0x77.html','');});
 <li>waitforFocus()
 : <a class="el" href="execengine__plugins_8tcl.html#a86f6cb8c5aa2a5302120457dbd1c2850">execengine_plugins.tcl</a>
 </li>
+<li>waitfortemp()
+: <a class="el" href="temperature_8tcl.html#a1ecdab26daf54919b17c86290b744215">temperature.tcl</a>
+</li>
+<li>waitforwarmup()
+: <a class="el" href="temperature_8tcl.html#aa0bf70d5e2d9233f5f948b21360e002e">temperature.tcl</a>
+</li>
 <li>warmUpCamera()
-: <a class="el" href="andor_camera_server_8tcl.html#a1bc9dea471816c740384f1d14c94aec2">andorCameraServer.tcl</a>
-</li>
-<li>WCS_ERROR
-: <a class="el" href="fitsio_8h.html#a089ad43456a5dbd0f2634d39abdcc3cb">fitsio.h</a>
-</li>
-<li>WCSLIB_GETWCSTAB
-: <a class="el" href="fitsio_8h.html#a5a18882e8e86dfedec85c4572ec6b783">fitsio.h</a>
+: <a class="el" href="andor_camera_cli_8tcl.html#a1bc9dea471816c740384f1d14c94aec2">andorCameraCli.tcl</a>
+, <a class="el" href="andor_camera_server_8tcl.html#a1bc9dea471816c740384f1d14c94aec2">andorCameraServer.tcl</a>
 </li>
 <li>WFS_PERIODIC
 : <a class="el" href="andor__tcl_8h.html#ac18f4aa2b53e70fff5084a8e3a7ba9f6">andor_tcl.h</a>
@@ -186,8 +187,8 @@ $(document).ready(function(){initNavTree('globals_0x77.html','');});
 : <a class="el" href="execengine__plugins_8tcl.html#a59457a81db7400c66b0900b832ddd140">execengine_plugins.tcl</a>
 </li>
 <li>write_buffered_image()
-: <a class="el" href="ccd_8h.html#a974589def79099445e2abe0dc4c917fd">ccd.h</a>
-, <a class="el" href="ccd__tcl_8c.html#a08cfc720f7288855129aad3f5f5732a2">ccd_tcl.c</a>
+: <a class="el" href="ccd__tcl_8c.html#a08cfc720f7288855129aad3f5f5732a2">ccd_tcl.c</a>
+, <a class="el" href="ccd_8h.html#a974589def79099445e2abe0dc4c917fd">ccd.h</a>
 </li>
 <li>write_buffered_image16()
 : <a class="el" href="ccd__tcl_8c.html#aa2482d3af85b0ba4b7952de2cfa3e5bb">ccd_tcl.c</a>
@@ -204,15 +205,12 @@ $(document).ready(function(){initNavTree('globals_0x77.html','');});
 <li>write_buffered_mef16()
 : <a class="el" href="ccd__tcl_8c.html#a0e10eaed2216971db468deb158681b4e">ccd_tcl.c</a>
 </li>
-<li>WRITE_ERROR
-: <a class="el" href="fitsio_8h.html#a7f62d8d6f050391f0f3e6058867c4cfd">fitsio.h</a>
-</li>
 <li>write_mef()
 : <a class="el" href="ccd__tcl_8c.html#aec37643b44329f852cde93145a0ab58e">ccd_tcl.c</a>
 </li>
 <li>writeimage()
-: <a class="el" href="ccd__tcl_8c.html#ad7302d8b7aa173828b323e24879a24be">ccd_tcl.c</a>
-, <a class="el" href="ccd_8h.html#ad7302d8b7aa173828b323e24879a24be">ccd.h</a>
+: <a class="el" href="ccd_8h.html#ad7302d8b7aa173828b323e24879a24be">ccd.h</a>
+, <a class="el" href="ccd__tcl_8c.html#ad7302d8b7aa173828b323e24879a24be">ccd_tcl.c</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -220,7 +218,7 @@ $(document).ready(function(){initNavTree('globals_0x77.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:16 for Speckle by
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

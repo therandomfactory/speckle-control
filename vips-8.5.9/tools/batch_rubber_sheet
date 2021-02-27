@@ -10,7 +10,7 @@
 # writes output images rsc_image1.v, rsc_image2.v ..
 
 # default prefix
-VIPSHOME=${VIPSHOME-/home/nessi/nessi-control}
+VIPSHOME=${VIPSHOME-/home/rfactory/speckle-control}
 
 # get name we were run as
 name=`basename $0`

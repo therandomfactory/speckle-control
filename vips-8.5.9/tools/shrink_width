@@ -2,7 +2,7 @@
 # shrink to a target width
 
 # default prefix
-VIPSHOME=${VIPSHOME-/home/nessi/nessi-control}
+VIPSHOME=${VIPSHOME-/home/rfactory/speckle-control}
 
 name=$0
 bname=`basename $0`

@@ -1,0 +1,9 @@
+#!/usr/bin/sh
+#
+#  This script will do a complete shutdown and restart of the Speckle
+#  hardware and software
+#
+export INSTRUMENT zorro
+tclsh $HOME/speckle-control/gui-scripts/powerControl.tcl cleanRestart
+$HOME/speckle-control/setDevicePermissions
+$HOME/speckle-control/startspeckle2

@@ -9,6 +9,7 @@ var searchData=
   ['checkusb_2etcl',['checkusb.tcl',['../checkusb_8tcl.html',1,'']]],
   ['chisqlib_2ec',['chisqLib.c',['../chisq_lib_8c.html',1,'']]],
   ['chisqlib_2eh',['chisqLib.h',['../chisq_lib_8h.html',1,'']]],
-  ['config_2eh',['config.h',['../config_8h.html',1,'']]],
+  ['cleanup_2etcl',['cleanup.tcl',['../cleanup_8tcl.html',1,'']]],
+  ['colorprint_2etcl',['colorprint.tcl',['../colorprint_8tcl.html',1,'']]],
   ['convert_2etcl',['convert.tcl',['../convert_8tcl.html',1,'']]]
 ];

@@ -36,26 +36,18 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_gen_one_linux_u_s_b_8cpp.html",
-"andor_camera_server_8tcl.html#a0e8581c512b72e7d71aacd3b970506b8",
-"andor_gen_tcl_interfaces_8h.html#aebac4a669421ea63bc6dbb95ea9edd76",
-"atmcd_l_xd_8h.html#a591be15861f8a98c432b2fa604ab885b",
-"atmcd_l_xd_8h.html#ab20e23d055c1d7aebb3482fa3a82dcd8",
-"ccd_8h.html#abfcfa32d93d50d100dee3574dcc052b1",
-"config_8h.html#aca8570fb706c81df371b7f9bc454ae03",
-"fitsio2_8h.html#a1f23f982ef3383e18b98a2c6e661b567",
-"fitsio2_8h.html#ab2ce87b996b659fe575f04712e1d51f8",
-"fitsio_8h.html#a24fe208e24705273518f73fd7f5e8f54",
-"fitsio_8h.html#a6df135215f19f997772403d8c9cb24f3",
-"fitsio_8h.html#ab11dce310951c2540223e1e021e4257d",
-"fitsio_8h.html#afabab8fe7108acb9bb20f2670e1b4e22",
-"guider_8h.html#af9bdbf30cbe6aa9b8945701a11a88259",
-"longnam_8h.html#a3952465b137b7d2219a003eac515ac3f",
-"longnam_8h.html#ab6b30cbf5f8e875e2cbc6fea66996f4c",
-"simwiyntlm_8tcl_source.html",
-"struct_w_h_i_t_e_b_a_l_a_n_c_e_i_n_f_o.html#aad389e376d70a5775b8f83c24102737b",
-"tcl__andor_wrap_8cpp.html#a1c2c3194f24bfee3b085b99430632301",
-"tcl__andor_wrap_8cpp.html#a8180a5d9a951bc3a9c5852fce5fde4e8",
-"tcl__andor_wrap_8cpp.html#af0df722733de9083f4b8190f3f63e2aa"
+"andor_camera_cli_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd",
+"andor_gen_tcl_interfaces_8h.html#ada6fa75a9e03333474ef831fdcaece6c",
+"atmcd_l_xd_8h.html#a54473617918545a694f1fdebbf1ab253",
+"atmcd_l_xd_8h.html#aaad815a0e5e78307bd6e540bd2273bce",
+"ccd_8h.html#a4f57b03187b3508cb92de70524f9aece",
+"detrot_8h.html",
+"globals_func_0x7a.html",
+"picomotor_8tcl.html#a1127950adc1182d91c3e3ed6b2bb794f",
+"struct_s_w_i_g_c_d_a_t_a.html#ae6b964006ee95fdcceea1cc535c2ba42",
+"tcl__andor_wrap_8cpp.html#a23ecf039d651082ffc7582c4f50af780",
+"tcl__andor_wrap_8cpp.html#a8832a9975d8c55754b177829d701b29f",
+"tcl__andor_wrap_8cpp.html#af873eafa712e3a182c4a30abe8ee5eae"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

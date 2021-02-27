@@ -52,8 +52,9 @@ global SCOPE ANDOR_CFG
       region512 {acquisitionmode 512}
       region768 {acquisitionmode 768}
       regionall {acquisitionmode 1024}
+      regiondef {acquisitionmode regiondef}
       manual    {acquisitionmode manual}
-      multiple {continuousmode $SCOPE(exposure) 999999 $id}
+      multiple  {continuousmode $SCOPE(exposure) 999999 $id}
       fullframe {setfullframe}
     }
     if { $op == "regionall" } {set op "fullframe"}
@@ -95,6 +96,29 @@ global SCOPE CONFIG LASTACQ ANDOR_DEF ANDOR_CFG
    set LASTACQ fullframe
    set SCOPE(numseq) 1
    set SCOPE(numframes) 1
+}
+
+## Documented proc \c useDefaultROICenters .
+#  \param[in] rdim roi dimension
+# 
+#  This procedure reconfigures the cameras default center ROI operation
+#
+#  Globals    :  
+#               SCOPE	- Telescope parameters, gui setup
+#		CONFIG - Image geometry configuration
+#		LASTACQ - Type of last image acqusition
+#		ANDOR_DEF - Andor defaults
+#               ACQREGION - Sub-frame region coordinates
+#		ANDOR_SOCKET - Andor camera server socket handles
+#
+proc useDefaultROICenters { rdim } {
+global ANDORS
+  exec xpaset -p ds9red regions deleteall
+  exec xpaset -p ds9blue regions deleteall
+  exec echo "box $ANDORS(red,defaultROICenter) "$rdim $rdim 0" | xpaset ds9red regions
+  exec echo "box $ANDORS(blue,defaultROICenter) "$rdim $rdim 0" | xpaset ds9blue regions
+  debuglog "Adjusting red ROI to default center of $ANDORS(red,defaultROICenter)"
+  debuglog "Adjusting blue ROI to default center of $ANDORS(blue,defaultROICenter)"
 }
 
 
@@ -151,6 +175,9 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   exec xpaset -p ds9red regions system physical
   exec xpaset -p ds9blue regions system physical
   if { $rdim != 1024 } {
+    if { $ACQREGION(useDefaultCenters) } {
+       applyDefaultROICenters $rdim
+    }
     set reg [split [exec xpaget ds9red regions] \n]
     foreach i $reg {
      if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
@@ -657,7 +684,7 @@ set ACQREGION(bxe) 1024
 set ACQREGION(bys) 1
 set ACQREGION(bye) 1024
 
-
+set ACQREGION(useDefaultROICenters) 0
 set ANDOR_CFG(red,VSSpeed) 1
 set ANDOR_CFG(blue,VSSpeed) 1
 set ANDOR_CFG(red,HSSpeed) 1

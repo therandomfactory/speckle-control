@@ -38,6 +38,18 @@
 # images with resolutions at the diffraction limit of the telescope (see Howell et al., 2011). \n
 # Achievable spatial resolutions at WIYN are 39 milliarcseconds (550 nanometers) and 64 milliarcseconds (880 nanometers).\n
 #
+# There are now 3 Speckle Instruments, residing at WIYN (NESSI), Gemini-South (Zorro), and Gemini-North (Alopeke).\n
+#\n
+# Installation\n
+#\n
+#If you are installing from scratch, run the 'install' script.\n
+#This will install any required dependencies, compile the speckle\n 
+#shared libraries, setup the desktop environment, and do a quick\n
+#hardware inventory.\n
+#\n
+#The primary target operating system is Ubuntu. Other Linux flavours may\n
+#require some changes to the 'install' script.\n
+
 
 #\code
 ## Documented proc \c initCameraConfig .

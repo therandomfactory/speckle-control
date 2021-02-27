@@ -12,5 +12,15 @@ The NN-EXPLORE program provides about 50 percent of the observing time on the Ki
 
 NN-EXPLORE Exoplanet & Stellar Speckle Imager at WIYN, was commissioned during the fall of 2016 and is now available for community use. Speckle imaging allows telescopes to achieve diffraction limited imaging performance—that is, collecting images with resolutions equal to that which would be possible if the atmosphere were removed. The technique employs digital cameras capable of reading out frames at a very fast rate, effectively “freezing out” atmospheric seeing. The resulting speckles are correlated and combined in Fourier space to produce reconstructed images with resolutions at the diffraction limit of the telescope (see Howell et al., 2011). Achievable spatial resolutions at WIYN are 39 milliarcseconds (550 nanometers) and 64 milliarcseconds (880 nanometers).
 
-There are now 3 Speckle Instruments, residing at WIYN, Gemini-South and Gemini-North.
+There are now 3 Speckle Instruments, residing at WIYN (NESSI), Gemini-South (Zorro), and Gemini-North (Alopeke).
+
+# Installation
+
+If you are installing from scratch, run the 'install' script.
+This will install any required dependencies, compile the speckle 
+shared libraries, setup the desktop environment, and do a quick
+hardware inventory.
+
+The primary target operating system is Ubuntu. Other Linux flavours may
+require some changes to the 'install' script.
 

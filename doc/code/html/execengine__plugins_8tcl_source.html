@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: execengine_plugins.tcl Source File</title>
+<title>Speckle: temp/execengine_plugins.tcl Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -314,7 +314,7 @@ $(document).ready(function(){initNavTree('execengine__plugins_8tcl_source.html',
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="keyword">proc</span> wiyncmd { cmd } {</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;  <a class="code" href="test_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd" title="debuglog">debuglog</a> &quot;Sending $cmd&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;  <a class="code" href="testgui_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd" title="debuglog">debuglog</a> &quot;Sending $cmd&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="comment"></span>  wiyn tcs &quot;$cmd&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="comment"></span>}<span class="comment"></span></div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment"></span></div>
@@ -358,7 +358,7 @@ $(document).ready(function(){initNavTree('execengine__plugins_8tcl_source.html',
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="keyword">proc</span> finalsetFocus { newf } {</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;   <span class="keyword">set</span> cur [<a class="code" href="header_builder_8tcl.html#aa2362f93a48467b4927992fce9204f0a" title="getFocus">getFocus</a>]<span class="comment"></span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;   <span class="keyword">set</span> cur [<a class="code" href="xpak__header_8tcl.html#aa2362f93a48467b4927992fce9204f0a" title="getFocus">getFocus</a>]<span class="comment"></span></div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="comment"></span>   <span class="keyword">if</span> { [expr abs($cur-$newf)] &gt; 1000} {</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;      <span class="keyword">puts</span> stdout &quot;Max focus adjust is 1000&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment"></span>      <span class="keyword">return</span><span class="comment"></span></div>
@@ -370,7 +370,7 @@ $(document).ready(function(){initNavTree('execengine__plugins_8tcl_source.html',
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment"></span>}<span class="comment"></span></div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="keyword">proc</span> setFocus { newf } {</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;   <span class="keyword">set</span> cur [<a class="code" href="header_builder_8tcl.html#aa2362f93a48467b4927992fce9204f0a" title="getFocus">getFocus</a>]<span class="comment"></span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;   <span class="keyword">set</span> cur [<a class="code" href="xpak__header_8tcl.html#aa2362f93a48467b4927992fce9204f0a" title="getFocus">getFocus</a>]<span class="comment"></span></div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="comment"></span>   <span class="keyword">if</span> { [expr abs($cur-$newf)] &gt; 1000} {</div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;      <span class="keyword">puts</span> stdout &quot;Max focus adjust is 1000&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="comment"></span>      <span class="keyword">return</span><span class="comment"></span></div>
@@ -456,8 +456,8 @@ $(document).ready(function(){initNavTree('execengine__plugins_8tcl_source.html',
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="execengine__plugins_8tcl.html">execengine_plugins.tcl</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:15 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="execengine__plugins_8tcl.html">execengine_plugins.tcl</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:17 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

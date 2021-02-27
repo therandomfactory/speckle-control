@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -110,6 +110,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="globals_func_0x75.html#index_u"><span>u</span></a></li>
       <li><a href="globals_func_0x76.html#index_v"><span>v</span></a></li>
       <li><a href="globals_func_0x77.html#index_w"><span>w</span></a></li>
+      <li><a href="globals_func_0x78.html#index_x"><span>x</span></a></li>
       <li><a href="globals_func_0x79.html#index_y"><span>y</span></a></li>
       <li><a href="globals_func_0x7a.html#index_z"><span>z</span></a></li>
     </ul>
@@ -160,6 +161,18 @@ $(document).ready(function(){initNavTree('globals_func_0x72.html','');});
 : <a class="el" href="ccd_8h.html#a40ccb50764ceda9084fbc8895d443c07">ccd.h</a>
 , <a class="el" href="ccd__tcl_8c.html#a40ccb50764ceda9084fbc8895d443c07">ccd_tcl.c</a>
 </li>
+<li>readWCSpars()
+: <a class="el" href="astrometryv2_8tcl.html#a883f38c73a0d4a5a927335e199d03c43">astrometryv2.tcl</a>
+</li>
+<li>reconnectFilters()
+: <a class="el" href="filter_wheel_8tcl.html#a25e79d546852afb27792e54eba1d9ace">filterWheel.tcl</a>
+</li>
+<li>reconnectTelemetry()
+: <a class="el" href="speckle__gui_8tcl.html#acbe5f380b06bfa3f331c6a83b63448a8">speckle_gui.tcl</a>
+</li>
+<li>reconnectZabers()
+: <a class="el" href="zaber_8tcl.html#a9da22b11f23d115a2023963365aa07b8">zaber.tcl</a>
+</li>
 <li>redisConnect()
 : <a class="el" href="redisquery_8tcl.html#ad096237729c532a90c130ddceea6351d">redisquery.tcl</a>
 </li>
@@ -173,11 +186,10 @@ $(document).ready(function(){initNavTree('globals_func_0x72.html','');});
 : <a class="el" href="redisquery_8tcl.html#a81770bd8ab42bd748bc6ede79ec63c26">redisquery.tcl</a>
 </li>
 <li>redisUpdate()
-: <a class="el" href="andor_camera_cli_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163">andorCameraCli.tcl</a>
-, <a class="el" href="andor_camera_server_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163">andorCameraServer.tcl</a>
-, <a class="el" href="header_builder_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163">headerBuilder.tcl</a>
-, <a class="el" href="redisquery_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163">redisquery.tcl</a>
+: <a class="el" href="redisquery_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163">redisquery.tcl</a>
 , <a class="el" href="speckle__gui_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163">speckle_gui.tcl</a>
+, <a class="el" href="andor_camera_cli_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163">andorCameraCli.tcl</a>
+, <a class="el" href="header_builder_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163">headerBuilder.tcl</a>
 </li>
 <li>refinit()
 : <a class="el" href="ds9refresher_8tcl.html#a6380f1a7c36965fdcac2556ae08e4f66">ds9refresher.tcl</a>
@@ -197,10 +209,10 @@ $(document).ready(function(){initNavTree('globals_func_0x72.html','');});
 <li>resetCamera()
 : <a class="el" href="andor_camera_cli_8tcl.html#a77f50a902bf5f00cf1469a4f6ec81cbc">andorCameraCli.tcl</a>
 , <a class="el" href="andor_camera_server_8tcl.html#a77f50a902bf5f00cf1469a4f6ec81cbc">andorCameraServer.tcl</a>
-, <a class="el" href="test_8tcl.html#a77f50a902bf5f00cf1469a4f6ec81cbc">test.tcl</a>
 </li>
 <li>resetFilterWheel()
-: <a class="el" href="filter_wheel_8tcl.html#aa16dbb18f5b981d2f0155469f350b7c6">filterWheel.tcl</a>
+: <a class="el" href="filter_wheel_server_8tcl.html#aa16dbb18f5b981d2f0155469f350b7c6">filterWheelServer.tcl</a>
+, <a class="el" href="filter_wheel_8tcl.html#aa16dbb18f5b981d2f0155469f350b7c6">filterWheel.tcl</a>
 </li>
 <li>resetSingleAndors()
 : <a class="el" href="andor_8tcl.html#a5e6182bc4715639b5c92545d8e8b5298">andor.tcl</a>
@@ -208,47 +220,11 @@ $(document).ready(function(){initNavTree('globals_func_0x72.html','');});
 <li>restartads9()
 : <a class="el" href="gui2_8tcl.html#a5b99e922099a322e3eb2662226cb00ae">gui2.tcl</a>
 </li>
-<li>root_close()
-: <a class="el" href="fitsio2_8h.html#ac680c77758cba464a632a0c0b94f3521">fitsio2.h</a>
-</li>
-<li>root_create()
-: <a class="el" href="fitsio2_8h.html#a5e0bb941805688a6ae1c8c754a717391">fitsio2.h</a>
-</li>
-<li>root_flush()
-: <a class="el" href="fitsio2_8h.html#a788fb11278644cd17a9d85276cfc4ea6">fitsio2.h</a>
-</li>
-<li>root_getoptions()
-: <a class="el" href="fitsio2_8h.html#ae5105eda9f80b104d044123173a75104">fitsio2.h</a>
-</li>
-<li>root_getversion()
-: <a class="el" href="fitsio2_8h.html#a2ca9e98d5c4e68938c271521a21c2f56">fitsio2.h</a>
-</li>
-<li>root_init()
-: <a class="el" href="fitsio2_8h.html#a1ad2090d474128f8ca73bad685993f94">fitsio2.h</a>
-</li>
-<li>root_open()
-: <a class="el" href="fitsio2_8h.html#a138583bedcb0ce08c9d618fccba40bbb">fitsio2.h</a>
-</li>
-<li>root_read()
-: <a class="el" href="fitsio2_8h.html#afc6a34a9df51eeeaa49aba0892600936">fitsio2.h</a>
-</li>
-<li>root_seek()
-: <a class="el" href="fitsio2_8h.html#a26fb9ffa2d2e9afa132066ac26f7b98f">fitsio2.h</a>
-</li>
-<li>root_setoptions()
-: <a class="el" href="fitsio2_8h.html#a4f8bec3aa65d13eb6a8a9b0d62c7b7ca">fitsio2.h</a>
-</li>
-<li>root_shutdown()
-: <a class="el" href="fitsio2_8h.html#aedafa123f4655b0a79a10a1be731e22a">fitsio2.h</a>
-</li>
-<li>root_size()
-: <a class="el" href="fitsio2_8h.html#ad14f97c5a1d3bf040106d1f2eb63d818">fitsio2.h</a>
-</li>
-<li>root_write()
-: <a class="el" href="fitsio2_8h.html#a5151274c85626b953e842978badcece4">fitsio2.h</a>
-</li>
 <li>rotate()
 : <a class="el" href="derotate_8c.html#a63558b7089b957824b983453c6f0ace0">derotate.c</a>
+</li>
+<li>rotatorCommand()
+: <a class="el" href="rotator_8tcl.html#a0e1b94e01bdc23517d4494b4cb89876f">rotator.tcl</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -256,7 +232,7 @@ $(document).ready(function(){initNavTree('globals_func_0x72.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:16 for Speckle by
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

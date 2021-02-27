@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['_5fdarwin_5fuse_5f64_5fbit_5finode',['_DARWIN_USE_64_BIT_INODE',['../config_8h.html#a41a19566302a3a56b518eb92c8a4cb2b',1,'config.h']]],
   ['_5feprintf',['_eprintf',['../ccd_package_8c.html#aed875f02daf51dd74b41162fa4b0fc52',1,'_eprintf():&#160;ccdPackage.c'],['../guider_package_8c.html#aed875f02daf51dd74b41162fa4b0fc52',1,'_eprintf():&#160;guiderPackage.c'],['../oriel_package_8cpp.html#aed875f02daf51dd74b41162fa4b0fc52',1,'_eprintf():&#160;orielPackage.cpp']]],
   ['_5fwrap_5fabortacquisition',['_wrap_AbortAcquisition',['../tcl__andor_wrap_8cpp.html#ad42924ee75c65cfaae881c6919326bba',1,'tcl_andorWrap.cpp']]],
   ['_5fwrap_5fandorcapabilities_5fulacqmodes_5fget',['_wrap_AndorCapabilities_ulAcqModes_get',['../tcl__andor_wrap_8cpp.html#a407b607647e8d1372db29bb860432601',1,'tcl_andorWrap.cpp']]],

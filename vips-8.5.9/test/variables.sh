@@ -1,5 +1,5 @@
-top_srcdir=/home/nessi/nessi-control/vips-8.5.9
-PYTHON=/usr/bin/python
+top_srcdir=/home/rfactory/speckle-control/vips-8.5.9
+PYTHON=
 # we need a different tmp for each script since make can run tests in parallel
 tmp=$top_srcdir/test/tmp-$$
 test_images=$top_srcdir/test/images

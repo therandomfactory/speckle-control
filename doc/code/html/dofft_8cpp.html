@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: dofft.cpp File Reference</title>
+<title>Speckle: temp/dofft.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -129,7 +129,9 @@ $(document).ready(function(){initNavTree('dofft_8cpp.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a3abecc959cde5e513f242d720e899099"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dofft_8cpp.html#a3abecc959cde5e513f242d720e899099">dofft</a> (int width, int height, int *imageData, int *<a class="el" href="andor__tcl_8c.html#a193b702a3ccbb038fcc474055e118e6d">outputData</a>)</td></tr>
+<tr class="memitem:a070eb98cb814d09e8d3fc56d672e53d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dofft_8cpp.html#a070eb98cb814d09e8d3fc56d672e53d9">im_fwfft</a> (VipsImage *in, VipsImage *out)</td></tr>
+<tr class="separator:a070eb98cb814d09e8d3fc56d672e53d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3abecc959cde5e513f242d720e899099"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dofft_8cpp.html#a3abecc959cde5e513f242d720e899099">dofft</a> (int width, int height, int *imageData, int *<a class="el" href="andor__tcl_8c.html#afc8f49222f5e696fd6309367d7b31e18">outputData</a>)</td></tr>
 <tr class="memdesc:a3abecc959cde5e513f242d720e899099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate FFT of the image data.  <a href="#a3abecc959cde5e513f242d720e899099">More...</a><br/></td></tr>
 <tr class="separator:a3abecc959cde5e513f242d720e899099"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -187,7 +189,33 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="dofft_8cpp_source.html#l00039">39</a> of file <a class="el" href="dofft_8cpp_source.html">dofft.cpp</a>.</p>
+<p>Definition at line <a class="el" href="dofft_8cpp_source.html#l00040">40</a> of file <a class="el" href="dofft_8cpp_source.html">dofft.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a070eb98cb814d09e8d3fc56d672e53d9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int im_fwfft </td>
+          <td>(</td>
+          <td class="paramtype">VipsImage *&#160;</td>
+          <td class="paramname"><em>in</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">VipsImage *&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -196,8 +224,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dofft_8cpp.html">dofft.cpp</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:16 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="dofft_8cpp.html">dofft.cpp</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

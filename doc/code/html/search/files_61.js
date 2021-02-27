@@ -12,5 +12,6 @@ var searchData=
   ['andortelemetry_2etcl',['andorTelemetry.tcl',['../andor_telemetry_8tcl.html',1,'']]],
   ['andorwrapper_2etcl',['andorWrapper.tcl',['../andor_wrapper_8tcl.html',1,'']]],
   ['astrometry_2etcl',['astrometry.tcl',['../astrometry_8tcl.html',1,'']]],
+  ['astrometryv2_2etcl',['astrometryv2.tcl',['../astrometryv2_8tcl.html',1,'']]],
   ['atmcdlxd_2eh',['atmcdLXd.h',['../atmcd_l_xd_8h.html',1,'']]]
 ];

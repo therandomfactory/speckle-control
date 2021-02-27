@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: observe.tcl File Reference</title>
+<title>Speckle: temp/observe.tcl File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -136,6 +136,8 @@ Functions</h2></td></tr>
 <tr class="separator:a0e82d4b7131948c99cd389223d1e8175"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20124efe9c3daa11f90cd58e095a985f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="observe_8tcl.html#a20124efe9c3daa11f90cd58e095a985f">startsequence</a> ?save?</td></tr>
 <tr class="separator:a20124efe9c3daa11f90cd58e095a985f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f4d8c08e4caa40b9d924f73ea3d6878"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="observe_8tcl.html#a8f4d8c08e4caa40b9d924f73ea3d6878">longExpProgress</a> exp</td></tr>
+<tr class="separator:a8f4d8c08e4caa40b9d924f73ea3d6878"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This contains procedures for main observing sequencing. </p>
@@ -193,7 +195,7 @@ Functions</h2></td></tr>
 <p>This procedure reconfigures the cameras for fullframe or ROI operation</p>
 <p>Globals : SCOPE - Telescope parameters, gui setup CONFIG - Image geometry configuration LASTACQ - Type of last image acqusition ANDOR_DEF - Andor defaults ACQREGION - Sub-frame region coordinates ANDOR_SOCKET - Andor camera server socket handles </p>
 
-<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00111">111</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00117">117</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
 
 </div>
 </div>
@@ -210,7 +212,7 @@ Functions</h2></td></tr>
 <p>This routine checks the data rate</p>
 <p>Globals : SCOPE - Telescope parameters, gui setup CONFIG - Image geometry configuration LASTACQ - Type of last image acqusition ANDOR_DEF - Andor defaults ACQREGION - Sub-frame region coordinates ANDOR_CFG - Array of camera settings </p>
 
-<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00263">263</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00278">278</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
 
 </div>
 </div>
@@ -231,7 +233,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Documented proc <code>acquisitionmode</code> . </p>
+<p>Documented proc <code>checkgain</code> . </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">table</td><td>Table of EM gain thresholds</td></tr>
@@ -241,7 +243,29 @@ Functions</h2></td></tr>
 <p>This procedure reconfigures the cameras for fullframe or ROI operation</p>
 <p>Globals : SCOPE - Array of telescope configurations SPECKLE_DIR - Directory path of speckle code INSTRUMENT - Array of instrument configuration data </p>
 
-<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00218">218</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00227">227</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8f4d8c08e4caa40b9d924f73ea3d6878"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">longExpProgress </td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">exp &#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00619">619</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
 
 </div>
 </div>
@@ -262,7 +286,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Documented proc <code>abortsequence</code> . </p>
+<p>Documented proc <code>observe</code> . </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">op</td><td>- Operation specifier </td></tr>
@@ -270,10 +294,10 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>This procedure aborts the current exposure or sequence of exposures. It simply sets the global abort flag and resets the GUI widgets</p>
+<p>This procedure configures the frame size, full or ROI</p>
 <p>Globals : SCOPE - Telescope parameters, gui setup </p>
 
-<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00043">43</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00045">45</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
 
 </div>
 </div>
@@ -290,7 +314,7 @@ Functions</h2></td></tr>
 <p>This routine prepares for a sequence of exposures.</p>
 <p>Globals : SCOPE - Telescope parameters, gui setup ANDOR_DEF - Andor defaults ANDOR_CFG - Array of camera settings SCOPE - Telescope parameters, gui setup DATAQUAL - Array of data quality information INSTRUMENT - Array of instrument configuration data </p>
 
-<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00309">309</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00324">324</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
 
 </div>
 </div>
@@ -314,7 +338,7 @@ Functions</h2></td></tr>
 <p>This procedure reconfigure the cameras for fullframe operation</p>
 <p>Globals : SCOPE - Telescope parameters, gui setup CONFIG - Image geometry configuration LASTACQ - Type of last image acqusition ANDOR_DEF - Andor defaults </p>
 
-<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00072">72</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00078">78</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
 
 </div>
 </div>
@@ -339,9 +363,9 @@ Functions</h2></td></tr>
 <p>This routine manages a sequence of exposures. It updates bias columns<br/>
  specifications in case they have been changed, then it loops thru<br/>
  a set of frames, updating the progress bar.</p>
-<p>Globals : SCOPE - Telescope parameters, gui setup CONFIG - Image geometry configuration LASTACQ - Type of last image acqusition ANDOR_DEF - Andor defaults ACQREGION - Sub-frame region coordinates ANDOR_CFG - Array of camera settings ANDOR_SOCKET - Andor camera server socket handles ANDOR_SHUTTER - Shutter mode names SCOPE - Telescope parameters, gui setup OBSPARS - Default observation parameters FRAME - Frame number in a sequence STATUS - Exposure status DEBUG - Set to 1 for verbose logging TELEMETRY - Array of telemetry for headers and database usage DATAQUAL - Array of data quality information INSTRUMENT - Array of instrument configuration data </p>
+<p>Globals : SCOPE - Telescope parameters, gui setup CONFIG - Image geometry configuration LASTACQ - Type of last image acqusition ANDOR_DEF - Andor defaults ACQREGION - Sub-frame region coordinates ANDOR_CFG - Array of camera settings ANDOR_SOCKET - Andor camera server socket handles ANDOR_SHUTTER - Shutter mode names SCOPE - Telescope parameters, gui setup FWHEELS - Filter data OBSPARS - Default observation parameters STATUS - Exposure status DEBUG - Set to 1 for verbose logging TELEMETRY - Array of telemetry for headers and database usage DATAQUAL - Array of data quality information INSTRUMENT - Array of instrument configuration data </p>
 
-<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00413">413</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00446">446</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
 
 </div>
 </div>
@@ -357,7 +381,7 @@ Functions</h2></td></tr>
 <p>Documented proc <code>updateTemps</code> .</p>
 <p>This routine checks the temperatures </p>
 
-<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00278">278</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
+<p>Definition at line <a class="el" href="observe_8tcl_source.html#l00293">293</a> of file <a class="el" href="observe_8tcl_source.html">observe.tcl</a>.</p>
 
 </div>
 </div>
@@ -366,8 +390,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="observe_8tcl.html">observe.tcl</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:16 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="observe_8tcl.html">observe.tcl</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

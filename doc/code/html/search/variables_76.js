@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['val',['val',['../unionsemun.html#ac6121ecb6d04a024e07e12bd71b94031',1,'semun']]],
-  ['validcode',['validcode',['../struct_f_i_t_sfile.html#a715d05243e90a6a6ba8b3cca665e3fab',1,'FITSfile']]],
   ['vbin',['vbin',['../structandor__image.html#ae22039924c7f325220b217c47debc510',1,'andor_image']]],
   ['vend',['vend',['../structandor__image.html#a49398a3608443243ee232fac78a21a7e',1,'andor_image']]],
   ['verbose',['verbose',['../andor__tcl_8h.html#ab3f078684998b83967d507d0f453f454',1,'andor_tcl.h']]],

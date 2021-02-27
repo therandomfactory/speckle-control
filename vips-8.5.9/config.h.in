@@ -3,6 +3,12 @@
 /* define to open non-text files in binary mode */
 #undef BINARY_OPEN
 
+/* define to enable load with libMagick */
+#undef ENABLE_MAGICKLOAD
+
+/* define to enable save with libMagick */
+#undef ENABLE_MAGICKSAVE
+
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
 
@@ -11,6 +17,12 @@
 
 /* Domain for glib logging messages. */
 #undef G_LOG_DOMAIN
+
+/* Define to 1 if you have the `AcquireExceptionInfo' function. */
+#undef HAVE_ACQUIREEXCEPTIONINFO
+
+/* Define to 1 if you have the `AcquireImage' function. */
+#undef HAVE_ACQUIREIMAGE
 
 /* define to build analyze support. */
 #undef HAVE_ANALYZE
@@ -21,14 +33,34 @@
 /* Define to 1 if you have the `atexit' function. */
 #undef HAVE_ATEXIT
 
+/* define if your glib has g_base64_encode(). */
+#undef HAVE_BASE64_ENCODE
+
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
+
+/* Define to 1 if you have the `BlobToStringInfo' function. */
+#undef HAVE_BLOBTOSTRINGINFO
 
 /* have cbrt() in libm. */
 #undef HAVE_CBRT
 
 /* define if you have cfitsio installed. */
 #undef HAVE_CFITSIO
+
+/* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
+/* define if your glib has checked multiply. */
+#undef HAVE_CHECKED_MUL
+
+/* define if your Magick has CMYColorspace. */
+#undef HAVE_CMYCOLORSPACE
 
 /* define if your glib has g_cond_init(). */
 #undef HAVE_COND_INIT
@@ -70,6 +102,9 @@
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
 
+/* define if your GetImageMagick() takes three arguments. */
+#undef HAVE_GETIMAGEMAGICK3
+
 /* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
 
@@ -97,11 +132,51 @@
 /* define if your libgsf supports zip64. */
 #undef HAVE_GSF_ZIP64
 
+/* define if your glib has g_str_to_ascii(). */
+#undef HAVE_G_STR_TO_ASCII
+
 /* define if your glib has g_win32_get_command_line(). */
 #undef HAVE_G_WIN32_GET_COMMAND_LINE
 
+/* define if you have heif_image_handle_get_raw_color_profile. */
+#undef HAVE_HEIF_COLOR_PROFILE
+
+/* define if you have heif_context_add_exif_metadata. */
+#undef HAVE_HEIF_CONTEXT_ADD_EXIF_METADATA
+
+/* define if you have heif_context_set_primary_image. */
+#undef HAVE_HEIF_CONTEXT_SET_PRIMARY_IMAGE
+
+/* define if your libheif has decode support. */
+#undef HAVE_HEIF_DECODER
+
+/* define if your libheif has encode support. */
+#undef HAVE_HEIF_ENCODER
+
+/* define if you have heif_encoding_options_alloc. */
+#undef HAVE_HEIF_ENCODING_OPTIONS_ALLOC
+
+/* define if you have heif_image_handle_get_ispe_width. */
+#undef HAVE_HEIF_IMAGE_HANDLE_GET_ISPE_WIDTH
+
+/* Define to 1 if you have the `heif_image_handle_get_raw_color_profile'
+   function. */
+#undef HAVE_HEIF_IMAGE_HANDLE_GET_RAW_COLOR_PROFILE
+
 /* have hypot() in libm. */
 #undef HAVE_HYPOT
+
+/* define if you have imagequant installed. */
+#undef HAVE_IMAGEQUANT
+
+/* define if you have ImagesToBlob. */
+#undef HAVE_IMAGESTOBLOB
+
+/* define if you have ImportImagePixels. */
+#undef HAVE_IMPORTIMAGEPIXELS
+
+/* Define to 1 if you have the `InheritException' function. */
+#undef HAVE_INHERITEXCEPTION
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -109,7 +184,7 @@
 /* Define to 1 if you have the <io.h> header file. */
 #undef HAVE_IO_H
 
-/* Define if you have jpeg libraries and header files. */
+/* define if you have libjpeg installed. */
 #undef HAVE_JPEG
 
 /* Define to 1 if you have the `jpeg_c_bool_param_supported' function. */
@@ -118,20 +193,14 @@
 /* define if your libjpeg has extension parameters. */
 #undef HAVE_JPEG_EXT_PARAMS
 
-/* define if you have lcms installed. */
-#undef HAVE_LCMS
-
 /* define if you have lcms2 installed. */
 #undef HAVE_LCMS2
 
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
-/* define if you have libwebp installed. */
+/* define if you have libwebp/libwebpmux/libwebpdemux installed. */
 #undef HAVE_LIBWEBP
-
-/* define if you have libwebpmux installed. */
-#undef HAVE_LIBWEBPMUX
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
@@ -139,8 +208,8 @@
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
 
-/* define if you have libMagick installed. */
-#undef HAVE_MAGICK
+/* define if you have libMagick6 installed. */
+#undef HAVE_MAGICK6
 
 /* define if you have libMagick7 installed. */
 #undef HAVE_MAGICK7
@@ -181,6 +250,9 @@
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 #undef HAVE_NDIR_H
 
+/* Define if you have nifti libraries and header files. */
+#undef HAVE_NIFTI
+
 /* define if your magick has ImageInfo.number_scenes. */
 #undef HAVE_NUMBER_SCENES
 
@@ -202,8 +274,14 @@
 /* define if you have pangoft2 installed. */
 #undef HAVE_PANGOFT2
 
+/* Define if you have pdfium libraries and header files. */
+#undef HAVE_PDFIUM
+
 /* define if you have libpng installed. */
 #undef HAVE_PNG
+
+/* Define to 1 if you have the `png_set_chunk_malloc_max' function. */
+#undef HAVE_PNG_SET_CHUNK_MALLOC_MAX
 
 /* define if you have poppler-glib >= 0.16.0 and cairo >= 1.2 installed. */
 #undef HAVE_POPPLER
@@ -213,6 +291,9 @@
 
 /* define if your glib has G_PRIVATE_INIT(). */
 #undef HAVE_PRIVATE_INIT
+
+/* have pthread_setattr_default_np() in pthread. */
+#undef HAVE_PTHREAD_DEFAULT_NP
 
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV
@@ -232,14 +313,23 @@
 /* Define to 1 if you have the `ResetImageAttributeIterator' function. */
 #undef HAVE_RESETIMAGEATTRIBUTEITERATOR
 
+/* Define to 1 if you have the `ResetImageProfileIterator' function. */
+#undef HAVE_RESETIMAGEPROFILEITERATOR
+
 /* Define to 1 if you have the `ResetImagePropertyIterator' function. */
 #undef HAVE_RESETIMAGEPROPERTYITERATOR
 
 /* define if you have librsvg-2.0 >= 2.34.0 and cairo >= 1.2 installed. */
 #undef HAVE_RSVG
 
+/* Define to 1 if you have the `SetImageExtent' function. */
+#undef HAVE_SETIMAGEEXTENT
+
 /* Define to 1 if you have the `SetImageOption' function. */
 #undef HAVE_SETIMAGEOPTION
+
+/* Define to 1 if you have the `SetImageProperty' function. */
+#undef HAVE_SETIMAGEPROPERTY
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -320,6 +410,15 @@
 
 /* define if your glib has g_value_get_schar(). */
 #undef HAVE_VALUE_GET_SCHAR
+
+/* Define to 1 if the system has the `vector_size' variable attribute */
+#undef HAVE_VAR_ATTRIBUTE_VECTOR_SIZE
+
+/* define if your C++ can mix vector and scalar arithmetic */
+#undef HAVE_VECTOR_ARITH
+
+/* define if your C++ can shuffle vectors */
+#undef HAVE_VECTOR_SHUFFLE
 
 /* Define to 1 if you have the `vprintf' function. */
 #undef HAVE_VPRINTF

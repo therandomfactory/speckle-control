@@ -656,6 +656,14 @@ place .lowlevel.bemgain -x 254 -y 98
 set INSTRUMENT(red,emgain) 0
 set INSTRUMENT(blue,emgain) 0
 
+
+label .lowlevel.ts -text "Timestamps" -bg gray
+place .lowlevel.ts -x 290 -y 200
+checkbutton .lowlevel.gpstrigger -bg gray  -text "Use GPS Trigger" -variable ANDOR_CFG(GPSTrigger)  -highlightthickness 0
+place .lowlevel.gpstrigger -x 270 -y 220
+
+
+
 label .lowlevel.input -text "INPUT" -bg white
 place .lowlevel.input -x 280 -y 270
 set INSTRUMENT(clone) 0

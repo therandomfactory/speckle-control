@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# Installer/Updater for the Speckle Instrument drivers and GUI
+#
+who=$(id -u)
+if [ $who -ne 0 ]; then
+  echo ""
+  echo "-----------------------------------------------------------"
+  echo "Speckle Install/Upgrade must be run as root/sudo"
+  echo "-----------------------------------------------------------"
+  echo ""
+  exit
+fi
+
+
+echo ""
+echo "-------------------------------------------------------------"
+echo "Installing/Upgrading Andor Linux support"
+echo "-------------------------------------------------------------"
+echo ""
+cd $HOME/speckle-control/andor
+wget http://www.randomfactory.com/speckle/andor.tgz
+tar xzf andor.tgz
+mv andor andor-driver
+cd andor-driver
+./install_andor
+
+cd ../andor
+rm -fr andorTclInit.so
+./buildlib
+if [ ! -f andorTclInit.so ]; then 
+  echo ""
+  echo "-----------------------------------------------------------"
+  echo "Failed to build andorTclInit.so using andor/buildlib"
+  echo "-----------------------------------------------------------"
+  echo ""
+  exit
+fi
+mv andorTclInit.so ../lib/.
+
+
+echo "Test environment and do an inventory of connected hardware"
+./setDevicePermissions
+./startspeckle2 test
+export INVENTORY_EXIT=1
+$SPECKLE_DIR/gui-scripts/inventory.tcl
+unset INVENTORY_EXIT
+
+echo ""
+echo "-------------------------------------------------------------"
+echo "If this is a new Installation, please update the Andor Camera"
+echo "and Filter Wheel serial numbers in the appropriate site"
+echo "specific andorsConfiguration files."
+echo "Details can be found in the Programmers Guide"
+echo "-------------------------------------------------------------"
+echo ""
+
+

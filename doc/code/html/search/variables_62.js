@@ -9,10 +9,5 @@ var searchData=
   ['bias_5frend',['bias_rend',['../ccd__tcl_8c.html#ac8cc67d94ba5f1618608822c35ce4b0a',1,'ccd_tcl.c']]],
   ['bias_5frstart',['bias_rstart',['../ccd__tcl_8c.html#a726cd70cd6e0d05e9b0774329a7bcdc1',1,'ccd_tcl.c']]],
   ['bias_5fstart',['bias_start',['../ccd__tcl_8c.html#a2cb27649197ca32b330d47c7762648c3',1,'ccd_tcl.c']]],
-  ['bitpix',['bitpix',['../struct_pixel_filter.html#a95dfe3a2d950b0f4d769ad002ff05470',1,'PixelFilter']]],
-  ['blank',['blank',['../struct_pixel_filter.html#a05855896303f3c561e5b126301b0a82d',1,'PixelFilter']]],
-  ['brows',['brows',['../ccd__tcl_8c.html#aa639d08a6d397071840385afa84f84ed',1,'ccd_tcl.c']]],
-  ['buf',['buf',['../unionsemun.html#ac6b6428d07d4147fd2cc698b53555bed',1,'semun']]],
-  ['bufrecnum',['bufrecnum',['../struct_f_i_t_sfile.html#a11a4f089b13a2094847af06f6971367b',1,'FITSfile']]],
-  ['bytepos',['bytepos',['../struct_f_i_t_sfile.html#a31328a04ea1d6cd9c44014c34b4c6fed',1,'FITSfile']]]
+  ['brows',['brows',['../ccd__tcl_8c.html#aa639d08a6d397071840385afa84f84ed',1,'ccd_tcl.c']]]
 ];

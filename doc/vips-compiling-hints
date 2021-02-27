@@ -1,6 +1,6 @@
 The VIPS package can be recompiled using the GNU standard
 
-./configure --prefix=some-installation-directory --without-python
+./configure --prefix=$HOME/speckle-control --without-python
 make install
 
 
@@ -14,4 +14,11 @@ autoconf
 
 then try the ./confgure again.
 
+As a final resort you can also do
+
+make AUTOCONF=: AUTOHEADER=: AUTOMAKE=: ACLOCAL=:
+make install AUTOCONF=: AUTOHEADER=: AUTOMAKE=: ACLOCAL=:
+./configure --prefix=$HOME/speckle-control
+make 
+make install
 

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo "Copying files..."
+cd $HOME/speckle-control/doc/code
+rm -fr temp html
+mkdir temp
+cp $HOME/speckle-control/*/*.tcl temp/.
+cp $HOME/speckle-control/andor/*.cpp temp/.
+cp $HOME/speckle-control/andor/*.c temp/.
+cp $HOME/speckle-control/andor/*.h temp/.
+cp $HOME/speckle-control/ccd/*.c temp/.
+cp $HOME/speckle-control/ccd/*.h temp/.
+cp $HOME/speckle-control/guider/*.c temp/.
+cp $HOME/speckle-control/guider/*.h temp/.
+cp $HOME/speckle-control/oriel/*.cpp temp/.
+cp $HOME/speckle-control/oriel/*.h temp/.
+echo "Rebuilding html documentation"
+doxygen specklecode
+rm -fr temp
+

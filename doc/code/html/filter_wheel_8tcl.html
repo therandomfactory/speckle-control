@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: filterWheel.tcl File Reference</title>
+<title>Speckle: temp/filterWheel.tcl File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -140,6 +140,16 @@ Functions</h2></td></tr>
 <tr class="separator:a8d30c70cc5c6f7d7232f61aa08f5bd60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a205ec0a5080653b86009e14ba8c89e5b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filter_wheel_8tcl.html#a205ec0a5080653b86009e14ba8c89e5b">checkAutoFilter</a> arm</td></tr>
 <tr class="separator:a205ec0a5080653b86009e14ba8c89e5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25e79d546852afb27792e54eba1d9ace"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filter_wheel_8tcl.html#a25e79d546852afb27792e54eba1d9ace">reconnectFilters</a></td></tr>
+<tr class="separator:a25e79d546852afb27792e54eba1d9ace"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8ebc738a49dc4fb08f71d13b4f2f913"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filter_wheel_8tcl.html#ad8ebc738a49dc4fb08f71d13b4f2f913">filterEmccdGain</a> arm n em</td></tr>
+<tr class="separator:ad8ebc738a49dc4fb08f71d13b4f2f913"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f5054f96744167f24eb30312d7383ef"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filter_wheel_8tcl.html#a6f5054f96744167f24eb30312d7383ef">mimicMode</a> a b c</td></tr>
+<tr class="separator:a6f5054f96744167f24eb30312d7383ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1909594ca920763e89f967a50ebb7f24"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filter_wheel_8tcl.html#a1909594ca920763e89f967a50ebb7f24">showStatus</a> m</td></tr>
+<tr class="separator:a1909594ca920763e89f967a50ebb7f24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d4c30bc3536850055069079dc238fea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filter_wheel_8tcl.html#a2d4c30bc3536850055069079dc238fea">debuglog</a> m</td></tr>
+<tr class="separator:a2d4c30bc3536850055069079dc238fea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Filter wheel control scripts. </p>
@@ -173,7 +183,29 @@ Functions</h2></td></tr>
 <p>Documented proc <code>checkAutoFilter</code> .</p>
 <p>Returns sequence for automatic filter cycling </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00268">268</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00279">279</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2d4c30bc3536850055069079dc238fea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">debuglog </td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">m &#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00338">338</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -204,7 +236,31 @@ Functions</h2></td></tr>
 <p>Log filter wheel configurations</p>
 <p>Globals : FWHEELS - Array of filter wheel configuration and settings </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00075">75</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00081">81</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad8ebc738a49dc4fb08f71d13b4f2f913"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">filterEmccdGain </td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">arm n em &#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Documented proc <code>filterEmccdGain</code> .</p>
+<p>Returns sequence for automatic filter cycling </p>
+
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00316">316</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -220,7 +276,7 @@ Functions</h2></td></tr>
 <p>Documented proc <code>filterWheelHelp</code> .</p>
 <p>Print help menu for optional implementation as a service </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00165">165</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00171">171</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -237,7 +293,7 @@ Functions</h2></td></tr>
 <p>Lookup filter wheels by serial number</p>
 <p>Globals : FWSERIAL - Filter wheel serial numbers </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00144">144</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00150">150</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -261,7 +317,7 @@ Functions</h2></td></tr>
 <p>Documented proc <code>fwService</code> .</p>
 <p>Command parser stub for optional implementation as a service </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00192">192</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00198">198</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -312,7 +368,45 @@ Functions</h2></td></tr>
 <p>Log filter wheel configurations</p>
 <p>Globals : FLOG - File handle of open log file </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00062">62</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00068">68</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6f5054f96744167f24eb30312d7383ef"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">mimicMode </td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">a b c &#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00336">336</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a25e79d546852afb27792e54eba1d9ace"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">reconnectFilters </td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Documented proc <code>reconnectFilters</code> .</p>
+<p>Reconnect to the filter wheels </p>
+
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00294">294</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -342,7 +436,7 @@ Functions</h2></td></tr>
 </dl>
 <p>Reset filter wheel </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00220">220</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00226">226</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -376,7 +470,7 @@ Functions</h2></td></tr>
  FWHEELS - Array of filter wheel configuration and settings<br/>
  SCOPE - Array of telescope configuration </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00044">44</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00047">47</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -408,7 +502,7 @@ Functions</h2></td></tr>
 <p>Move filter to selected position</p>
 <p>Globals : FWHEELS - Array of filter wheel configuration and settings </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00096">96</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00102">102</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -439,7 +533,29 @@ Functions</h2></td></tr>
 </dl>
 <p>Call low level code to move filter to selected position </p>
 
-<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00236">236</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00244">244</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1909594ca920763e89f967a50ebb7f24"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">showStatus </td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">m &#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="filter_wheel_8tcl_source.html#l00337">337</a> of file <a class="el" href="filter_wheel_8tcl_source.html">filterWheel.tcl</a>.</p>
 
 </div>
 </div>
@@ -448,8 +564,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="filter_wheel_8tcl.html">filterWheel.tcl</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:16 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="filter_wheel_8tcl.html">filterWheel.tcl</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:18 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

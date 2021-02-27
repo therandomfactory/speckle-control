@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: camera_init.tcl Source File</title>
+<title>Speckle: temp/camera_init.tcl Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -165,7 +165,7 @@ $(document).ready(function(){initNavTree('camera__init_8tcl_source.html','');});
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">#     set camera $CAMERAS($id)</span></div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment"></span><span class="comment">#     $camera $cooler 2</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment"></span><span class="comment">     </span><span class="keyword">if</span> { $SCOPE(telescope) == &quot;GEMINI&quot;} {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <a class="code" href="test_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd" title="debuglog">debuglog</a> &quot;Moving Gemini mechanisms to stowed positions&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <a class="code" href="testgui_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd" title="debuglog">debuglog</a> &quot;Moving Gemini mechanisms to stowed positions&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment"></span>        <a class="code" href="picomotor_8tcl.html#a0a1116fda7ebb74286ce037e442b760e" title="picosOutPosition">picosOutPosition</a><span class="comment"></span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment"></span>        <a class="code" href="zaber_8tcl.html#aab0cb5485a176cfcbe9fb86765bad195" title="zaberGoto">zaberGoto</a> focus stow<span class="comment"></span></div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment"></span>        <a class="code" href="zaber_8tcl.html#aab0cb5485a176cfcbe9fb86765bad195" title="zaberGoto">zaberGoto</a> pickoff stow<span class="comment"></span></div>
@@ -190,33 +190,32 @@ $(document).ready(function(){initNavTree('camera__init_8tcl_source.html','');});
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(camera) &quot;Andor iXon Ultra&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(observer) &quot;&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(target) test<span class="comment"></span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(imagetype) OBJECT<span class="comment"></span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(exposure) 1.0<span class="comment"></span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(ra) 00:00:00.00<span class="comment"></span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(dec) +00:00:00.00<span class="comment"></span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(equinox) 2000.0<span class="comment"></span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(secz) 0.0<span class="comment"></span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(filterpos) 0<span class="comment"></span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(filtername) none<span class="comment"></span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(shutter) 1<span class="comment"></span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment"></span><span class="keyword">set</span> now [<span class="keyword">split</span> [<span class="keyword">exec</span>  date -u +%Y-%m-%d,%T] ,]<span class="comment"></span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(readout-delay) 999<span class="comment"></span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(obsdate) [<span class="keyword">exec</span> date -u +%Y-%m-%dT%H:%M:%S.0]<span class="comment"></span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(obstime) [<span class="keyword">lindex</span> $now 1]<span class="comment"></span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;source $SPECKLE_DIR/andor/andor.tcl<span class="comment"></span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment">####</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment"></span><span class="comment">####For use with internal andor server version</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="comment"></span><span class="comment">####source $SPECKLE_DIR/andor/andorWrapper.tcl</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(exposure) 1.0<span class="comment"></span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(ra) 00:00:00.00<span class="comment"></span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(dec) +00:00:00.00<span class="comment"></span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(equinox) 2000.0<span class="comment"></span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(secz) 0.0<span class="comment"></span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(filterpos) 0<span class="comment"></span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(filtername) none<span class="comment"></span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(shutter) 1<span class="comment"></span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment"></span><span class="keyword">set</span> now [<span class="keyword">split</span> [<span class="keyword">exec</span>  date -u +%Y-%m-%d,%T] ,]<span class="comment"></span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(readout-delay) 999<span class="comment"></span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(obsdate) [<span class="keyword">exec</span> date -u +%Y-%m-%dT%H:%M:%S.0]<span class="comment"></span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment"></span><span class="keyword">set</span> SCOPE(timeobs) [<span class="keyword">lindex</span> $now 1]<span class="comment"></span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;source $SPECKLE_DIR/andor/andor.tcl<span class="comment"></span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="comment">####</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment"></span><span class="comment">####For use with internal andor server version</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment"></span><span class="comment">####source $SPECKLE_DIR/andor/andorWrapper.tcl</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="comment"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="camera__init_8tcl.html">camera_init.tcl</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:15 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="camera__init_8tcl.html">camera_init.tcl</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:17 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

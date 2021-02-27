@@ -8,6 +8,11 @@ export PATH=${SPECKLE_DIR}/bin:${PATH}
 export LD_LIBRARY_PATH=${SPECKLE_DIR}/lib:${LD_LIBRARY_PATH}
 export SPECKLE_DATADIR=$HOME/data
 export XPA_METHOD=local
+if [ "$#" -ne 0 ]; then
+if [ $1 == "test" ]; then 
+  exit
+fi
+fi
 pkill -9 wish
 xpans &
 ds9red -geometry +1200+0 &

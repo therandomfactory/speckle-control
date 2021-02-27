@@ -42,7 +42,7 @@ GUIINC          = /usr/include
 CFLAGS 		+= -pipe -g -D$(MACHINE)  -DLINUX -Wall  -I/usr/include/tcl -I$(NESSI_DIR)/include
 
 
-CPPFLAGS	= -I/usr/local/include -I$(INCDIR) -I/usr/include/tcl -DVER=\"$(V).$(MV)\"
+CPPFLAGS	= -I$(HOME)/speckle-control/include -I/usr/local/include -I$(INCDIR) -I/usr/include/tcl -DVER=\"$(V).$(MV)\"
 
 INCLUDES =	ccd.h
 

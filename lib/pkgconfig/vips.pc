@@ -1,12 +1,12 @@
-prefix=/home/nessi/nessi-control
+prefix=/home/rfactory/speckle-control
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
 Name: vips
 Description: Image processing library
-Version: 8.5.9
-Requires.private:  glib-2.0 gmodule-2.0 gobject-2.0 fftw3 zlib pangoft2 libpng
+Version: 8.8.2
+Requires.private:  glib-2.0 gmodule-2.0 gobject-2.0 fftw3 MagickCore zlib pangoft2 libtiff-4 libpng libjpeg libexif
 Requires: gobject-2.0
 Libs: -L${libdir} -lvips 
 Libs.private: 

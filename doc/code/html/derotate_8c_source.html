@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Speckle: derotate.c Source File</title>
+<title>Speckle: temp/derotate.c Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="dssi.gif"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Speckle
-   &#160;<span id="projectnumber">Nov 2018</span>
+   &#160;<span id="projectnumber">Feb 2021</span>
    </div>
    <div id="projectbrief">Drivers and GUI for NASA Speckle project</div>
   </td>
@@ -152,7 +152,7 @@ $(document).ready(function(){initNavTree('derotate_8c_source.html','');});
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;IMPORT <span class="keywordtype">int</span> msgSetData <a class="code" href="derotate_8c.html#a52dcbd323c471ebd50496e709566b329">P_</a>((<span class="keyword">struct</span> s_msg *pmsg, <span class="keywordtype">int</span> slot, msg_t x));  </div>
 <div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="derotate_8c.html#a690b4554f993e4468f856dbe84703048">   43</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="derotate_8c.html#a690b4554f993e4468f856dbe84703048">fTheta</a> = 0.0;</div>
 <div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="derotate_8c.html#a9c3ea6bd4f7ce6af53e81c22ed631675">   44</a></span>&#160;IMPORT FILE *<a class="code" href="derotate_8c.html#a9c3ea6bd4f7ce6af53e81c22ed631675">dlog</a>; </div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="derotate_8c.html#ae3249b419f83c9d6023859758fa0fdae">   45</a></span>&#160;<span class="keywordtype">int</span>    <a class="code" href="derotate_8c.html#ae3249b419f83c9d6023859758fa0fdae">Rotflag</a> = <a class="code" href="fitsio_8h.html#aa93f0eb578d23995850d61f7d61c55c1">FALSE</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="derotate_8c.html#ae3249b419f83c9d6023859758fa0fdae">   45</a></span>&#160;<span class="keywordtype">int</span>    <a class="code" href="derotate_8c.html#ae3249b419f83c9d6023859758fa0fdae">Rotflag</a> = FALSE;</div>
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="derotate_8c.html#a21b8c4224c16982ff3cc25fb48f69058">   46</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structrot_stats.html">rotStats</a> <a class="code" href="derotate_8c.html#a21b8c4224c16982ff3cc25fb48f69058">RotData</a>;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keywordtype">void</span></div>
@@ -237,7 +237,7 @@ $(document).ready(function(){initNavTree('derotate_8c_source.html','');});
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    Centroids.<a class="code" href="structplate__coords.html#a1e479be60f9af6b4a0506b8c45260084">x</a> *= STEPSPERARCSEC;</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    Centroids.<a class="code" href="structplate__coords.html#a45182638eb747916449675107cf51980">y</a> *= STEPSPERARCSEC;</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    </div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    nMatch = <a class="code" href="fitsio_8h.html#aa93f0eb578d23995850d61f7d61c55c1">FALSE</a>;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    nMatch = FALSE;</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    </div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="comment">/*</span></div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="comment">    ** find the FOP in the data file</span></div>
@@ -245,7 +245,7 @@ $(document).ready(function(){initNavTree('derotate_8c_source.html','');});
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="comment">    */</span></div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordflow">while</span>(!feof(pHydraFile)){</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;      </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;      nMatch = <a class="code" href="fitsio_8h.html#aa93f0eb578d23995850d61f7d61c55c1">FALSE</a>;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;      nMatch = FALSE;</div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;      fgets(szBuffer, 90, pHydraFile);</div>
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;      nParams = sscanf(szBuffer, <span class="stringliteral">&quot;%s %lf %lf %lf %lf %lf %lf %lf&quot;</span>,</div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;               &amp;szName[0], &amp;fTemp[0], &amp;fTemp[1], &amp;fTemp[2],</div>
@@ -259,7 +259,7 @@ $(document).ready(function(){initNavTree('derotate_8c_source.html','');});
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;      <span class="keywordflow">if</span> (strstr(szName, szNameMap[nFop])){</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        Hydra.<a class="code" href="structplate__coords.html#a1e479be60f9af6b4a0506b8c45260084">x</a> = fTemp[0];</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        Hydra.<a class="code" href="structplate__coords.html#a45182638eb747916449675107cf51980">y</a> = fTemp[1];</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        nMatch = <a class="code" href="fitsio_8h.html#aa8cecfc5c5c054d2875c03e77b7be15d">TRUE</a>;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        nMatch = TRUE;</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      }</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      </div>
@@ -274,7 +274,7 @@ $(document).ready(function(){initNavTree('derotate_8c_source.html','');});
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;      Centroids.<a class="code" href="structplate__coords.html#a1e479be60f9af6b4a0506b8c45260084">x</a> = Hydra.<a class="code" href="structplate__coords.html#a1e479be60f9af6b4a0506b8c45260084">x</a> + Centroids.<a class="code" href="structplate__coords.html#a1e479be60f9af6b4a0506b8c45260084">x</a>;</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;      Centroids.<a class="code" href="structplate__coords.html#a45182638eb747916449675107cf51980">y</a> = Hydra.<a class="code" href="structplate__coords.html#a45182638eb747916449675107cf51980">y</a> + Centroids.<a class="code" href="structplate__coords.html#a45182638eb747916449675107cf51980">y</a>;      </div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;      <a class="code" href="derotate_8c.html#a3c2577f695631bd3246f32c60ff8ffda">addRotationPt</a>(&amp;<a class="code" href="derotate_8c.html#a21b8c4224c16982ff3cc25fb48f69058">RotData</a>, FopId(pFop), &amp;Hydra, &amp;Centroids);</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;      nMatch = <a class="code" href="fitsio_8h.html#aa93f0eb578d23995850d61f7d61c55c1">FALSE</a>;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;      nMatch = FALSE;</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    }</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;      }</div>
@@ -1112,7 +1112,6 @@ $(document).ready(function(){initNavTree('derotate_8c_source.html','');});
 <div class="ttc" id="structrot_pair_html_a426e974f8504e94ffae8ead92e8815db"><div class="ttname"><a href="structrot_pair.html#a426e974f8504e94ffae8ead92e8815db">rotPair::nextPair</a></div><div class="ttdeci">struct rotPair * nextPair</div><div class="ttdef"><b>Definition:</b> <a href="detrot_8h_source.html#l00028">detrot.h:28</a></div></div>
 <div class="ttc" id="derotate_8c_html_a4621ee3e7f9faf9b9647586f8449edf8"><div class="ttname"><a href="derotate_8c.html#a4621ee3e7f9faf9b9647586f8449edf8">freeRotationPt</a></div><div class="ttdeci">struct rotPoint * freeRotationPt(struct rotPoint *thePoint, int flag)</div><div class="ttdef"><b>Definition:</b> <a href="derotate_8c_source.html#l00771">derotate.c:771</a></div></div>
 <div class="ttc" id="structplate__coords_html_a45182638eb747916449675107cf51980"><div class="ttname"><a href="structplate__coords.html#a45182638eb747916449675107cf51980">plate_coords::y</a></div><div class="ttdeci">double y</div><div class="ttdef"><b>Definition:</b> <a href="detrot_8h_source.html#l00011">detrot.h:11</a></div></div>
-<div class="ttc" id="fitsio_8h_html_aa8cecfc5c5c054d2875c03e77b7be15d"><div class="ttname"><a href="fitsio_8h.html#aa8cecfc5c5c054d2875c03e77b7be15d">TRUE</a></div><div class="ttdeci">#define TRUE</div><div class="ttdef"><b>Definition:</b> <a href="fitsio_8h_source.html#l00270">fitsio.h:270</a></div></div>
 <div class="ttc" id="structrot_point_html_a3037a5823fee4c79acac73e10676316d"><div class="ttname"><a href="structrot_point.html#a3037a5823fee4c79acac73e10676316d">rotPoint::measLoc</a></div><div class="ttdeci">struct aPoint measLoc</div><div class="ttdef"><b>Definition:</b> <a href="detrot_8h_source.html#l00024">detrot.h:24</a></div></div>
 <div class="ttc" id="derotate_8c_html_aec693a5626060a63969a96a959ad4f40"><div class="ttname"><a href="derotate_8c.html#aec693a5626060a63969a96a959ad4f40">allocRotationPt</a></div><div class="ttdeci">struct rotPoint * allocRotationPt()</div><div class="ttdef"><b>Definition:</b> <a href="derotate_8c_source.html#l00732">derotate.c:732</a></div></div>
 <div class="ttc" id="derotate_8c_html_ae3249b419f83c9d6023859758fa0fdae"><div class="ttname"><a href="derotate_8c.html#ae3249b419f83c9d6023859758fa0fdae">Rotflag</a></div><div class="ttdeci">int Rotflag</div><div class="ttdef"><b>Definition:</b> <a href="derotate_8c_source.html#l00045">derotate.c:45</a></div></div>
@@ -1159,7 +1158,6 @@ $(document).ready(function(){initNavTree('derotate_8c_source.html','');});
 <div class="ttc" id="guider_8h_html_ad97b00e74876279d82b542d8487ca837"><div class="ttname"><a href="guider_8h.html#ad97b00e74876279d82b542d8487ca837">GUIDEFOP</a></div><div class="ttdeci">#define GUIDEFOP</div><div class="ttdef"><b>Definition:</b> <a href="guider_8h_source.html#l00014">guider.h:14</a></div></div>
 <div class="ttc" id="derotate_8c_html_ae79fb1a640f77865cbec80fa4793ab08"><div class="ttname"><a href="derotate_8c.html#ae79fb1a640f77865cbec80fa4793ab08">IpsSysManager</a></div><div class="ttdeci">IMPORT SysManager IpsSysManager</div><div class="ttdef"><b>Definition:</b> <a href="derotate_8c_source.html#l00038">derotate.c:38</a></div></div>
 <div class="ttc" id="derotate_8c_html_aa94831fbc461e436f1ad17e02e9d39b4"><div class="ttname"><a href="derotate_8c.html#aa94831fbc461e436f1ad17e02e9d39b4">nDetrotMonitor</a></div><div class="ttdeci">IMPORT int nDetrotMonitor</div><div class="ttdef"><b>Definition:</b> <a href="derotate_8c_source.html#l00040">derotate.c:40</a></div></div>
-<div class="ttc" id="fitsio_8h_html_aa93f0eb578d23995850d61f7d61c55c1"><div class="ttname"><a href="fitsio_8h.html#aa93f0eb578d23995850d61f7d61c55c1">FALSE</a></div><div class="ttdeci">#define FALSE</div><div class="ttdef"><b>Definition:</b> <a href="fitsio_8h_source.html#l00274">fitsio.h:274</a></div></div>
 <div class="ttc" id="structrot_stats_html_ab8451f898a9451172ae9dfab0b30ef62"><div class="ttname"><a href="structrot_stats.html#ab8451f898a9451172ae9dfab0b30ef62">rotStats::sumWeights</a></div><div class="ttdeci">double sumWeights</div><div class="ttdef"><b>Definition:</b> <a href="detrot_8h_source.html#l00042">detrot.h:42</a></div></div>
 <div class="ttc" id="structrot_pair_html_ab50cff79f2af17499e80ea0a7fbb50fc"><div class="ttname"><a href="structrot_pair.html#ab50cff79f2af17499e80ea0a7fbb50fc">rotPair::rotAngle</a></div><div class="ttdeci">double rotAngle</div><div class="ttdef"><b>Definition:</b> <a href="detrot_8h_source.html#l00033">detrot.h:33</a></div></div>
 <div class="ttc" id="structrot_point_html_a4147a9134bfd601f314e02c8779b57a8"><div class="ttname"><a href="structrot_point.html#a4147a9134bfd601f314e02c8779b57a8">rotPoint::id</a></div><div class="ttdeci">int id</div><div class="ttdef"><b>Definition:</b> <a href="detrot_8h_source.html#l00021">detrot.h:21</a></div></div>
@@ -1168,8 +1166,8 @@ $(document).ready(function(){initNavTree('derotate_8c_source.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="derotate_8c.html">derotate.c</a></li>
-    <li class="footer">Generated on Sat Nov 24 2018 16:47:15 for Speckle by
+    <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="derotate_8c.html">derotate.c</a></li>
+    <li class="footer">Generated on Thu Feb 25 2021 12:22:17 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

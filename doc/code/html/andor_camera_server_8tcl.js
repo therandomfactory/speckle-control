@@ -15,7 +15,6 @@ var andor_camera_server_8tcl =
     [ "forceROI", "andor_camera_server_8tcl.html#a3f45024dff2a21ba8c2318aab5372b6c", null ],
     [ "locateStar", "andor_camera_server_8tcl.html#a63b53fa76af863cfa90e752a3108ccc9", null ],
     [ "printreadoutcfgs", "andor_camera_server_8tcl.html#a2e5137ef6ac8a82e7b4c172bca6b741a", null ],
-    [ "redisUpdate", "andor_camera_server_8tcl.html#a4f7005fbdf898cea65e0dfcfa39e8163", null ],
     [ "resetCamera", "andor_camera_server_8tcl.html#a77f50a902bf5f00cf1469a4f6ec81cbc", null ],
     [ "selectROI", "andor_camera_server_8tcl.html#ad3dd55ea8da4b2d52bb5d55a5df422d7", null ],
     [ "setutc", "andor_camera_server_8tcl.html#aabb1ac1bc5723958509793c09e5a1a4b", null ],

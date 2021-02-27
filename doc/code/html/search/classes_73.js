@@ -1,9 +1,6 @@
 var searchData=
 [
   ['screentext',['SCREENTEXT',['../struct_s_c_r_e_e_n_t_e_x_t.html',1,'']]],
-  ['semun',['semun',['../unionsemun.html',1,'']]],
-  ['shared_5fgtabstruct',['SHARED_GTABstruct',['../struct_s_h_a_r_e_d___g_t_a_bstruct.html',1,'']]],
-  ['shared_5fltabstruct',['SHARED_LTABstruct',['../struct_s_h_a_r_e_d___l_t_a_bstruct.html',1,'']]],
   ['shmcontrolregisters',['shmControlRegisters',['../structshm_control_registers.html',1,'']]],
   ['swig_5fattribute',['swig_attribute',['../structswig__attribute.html',1,'']]],
   ['swig_5fcast_5finfo',['swig_cast_info',['../structswig__cast__info.html',1,'']]],

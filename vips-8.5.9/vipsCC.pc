@@ -1,4 +1,4 @@
-prefix=/home/nessi/nessi-control
+prefix=/home/rfactory/speckle-control
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

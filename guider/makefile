@@ -30,7 +30,7 @@ TOBJ =	$(TSRC:%.c=%.o)
 # -R$(DEVHOME):$(GWCHOME)/lib -lsocket -lnsl
 # If you don't have TkPixmap tk leave out Xpm
 XPMLIBS = -lXpm 
-LDLIBS += -L$(NESSI_DIR)/lib -lccd -lX11 -lm 
+LDLIBS += -L$(HOME)/speckle-control/lib -lccd -lX11 -lm 
 
 .KEEP_STATE:
 CC =	gcc
@@ -41,7 +41,7 @@ PRIVATEINCDIR	= $(DEVHOME)
 CFLAGS 		+= -pipe  -g -D$(MACHINE)  -DLINUX -Wall  -I$(TCLSRC) -I$(TKSRC)     
 
 
-CPPFLAGS	= -I/usr/local/include -I$(INCDIR) -DVER=\"$(V).$(MV)\"
+CPPFLAGS	= -I$(HOME)/speckle-control/include -I/usr/local/include -I$(INCDIR) -DVER=\"$(V).$(MV)\"
 
 INCLUDES =	
 

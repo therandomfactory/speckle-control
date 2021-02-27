@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['p',['p',['../struct_s_h_a_r_e_d___l_t_a_bstruct.html#a088554f35e75dc7cd4cd5805d6abb445',1,'SHARED_LTABstruct']]],
   ['pairname',['pairName',['../structrot_pair.html#a44a6e5a6e6d09e1fdd1f2bc54f307bd3',1,'rotPair']]],
-  ['path',['path',['../struct_pixel_filter.html#abe91d3da0379f2f5c3e4b723451e9a3c',1,'PixelFilter']]],
   ['ph',['pH',['../guider__tcl_8c.html#aa016b8a28711fe7f9c6d7617748df886',1,'guider_tcl.c']]],
   ['pixels',['pixels',['../struct_c_c_d___f_r_a_m_e.html#a746d1d67fb5ffca51fe6e43738bc5cb6',1,'CCD_FRAME']]],
   ['pjunk',['pjunk',['../guider__tcl_8c.html#a92738c8e4e6e3e8a1bee5603af2f4e4e',1,'guider_tcl.c']]],

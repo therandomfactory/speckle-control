@@ -8,6 +8,7 @@ var andor_camera_cli_8tcl =
     [ "cAndorSetProperty", "andor_camera_cli_8tcl.html#a83e40efa7125a85477c5893ce300ad41", null ],
     [ "configReadout", "andor_camera_cli_8tcl.html#aa6c74851b57388fbeb6042530eb2f661", null ],
     [ "configureFrame", "andor_camera_cli_8tcl.html#aee6e8d1ea4845dedbd70ead348d094dd", null ],
+    [ "connectads9", "andor_camera_cli_8tcl.html#acdb3582b0d03e32b1b06bcd27524a2f4", null ],
     [ "debuglog", "andor_camera_cli_8tcl.html#a9c3a5c90bb7560ff34f55f34f15537dd", null ],
     [ "doService", "andor_camera_cli_8tcl.html#a7f479a218abdc6945e130af27530bfdd", null ],
     [ "forceROI", "andor_camera_cli_8tcl.html#a3f45024dff2a21ba8c2318aab5372b6c", null ],
@@ -20,5 +21,6 @@ var andor_camera_cli_8tcl =
     [ "showstatus", "andor_camera_cli_8tcl.html#a3831ea5bf6a460373c6543a0a7ddb4c9", null ],
     [ "shutDown", "andor_camera_cli_8tcl.html#a09f85c1d186fd0c81a67e42fd75998de", null ],
     [ "testreadoutcfgs", "andor_camera_cli_8tcl.html#a30fa408fd872d3394716c75a813c862a", null ],
-    [ "updateDatabase", "andor_camera_cli_8tcl.html#a84f7684bdf1fe62380276ed0d3f1e821", null ]
+    [ "updateDatabase", "andor_camera_cli_8tcl.html#a84f7684bdf1fe62380276ed0d3f1e821", null ],
+    [ "warmUpCamera", "andor_camera_cli_8tcl.html#a1bc9dea471816c740384f1d14c94aec2", null ]
 ];

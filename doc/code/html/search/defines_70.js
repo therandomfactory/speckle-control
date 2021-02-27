@@ -1,20 +1,5 @@
 var searchData=
 [
-  ['package',['PACKAGE',['../config_8h.html#aca8570fb706c81df371b7f9bc454ae03',1,'config.h']]],
-  ['package_5fbugreport',['PACKAGE_BUGREPORT',['../config_8h.html#a1d1d2d7f8d2f95b376954d649ab03233',1,'config.h']]],
-  ['package_5fname',['PACKAGE_NAME',['../config_8h.html#a1c0439e4355794c09b64274849eb0279',1,'config.h']]],
-  ['package_5fstring',['PACKAGE_STRING',['../config_8h.html#ac73e6f903c16eca7710f92e36e1c6fbf',1,'config.h']]],
-  ['package_5ftarname',['PACKAGE_TARNAME',['../config_8h.html#af415af6bfede0e8d5453708afe68651c',1,'config.h']]],
-  ['package_5furl',['PACKAGE_URL',['../config_8h.html#a5c93853116d5a50307b6744f147840aa',1,'config.h']]],
-  ['package_5fversion',['PACKAGE_VERSION',['../config_8h.html#aa326a05d5e30f9e9a4bb0b4469d5d0c0',1,'config.h']]],
-  ['parse_5fbad_5fcol',['PARSE_BAD_COL',['../fitsio_8h.html#a5f0d3ec29dd55a8021550fb5dbadb5d6',1,'fitsio.h']]],
-  ['parse_5fbad_5foutput',['PARSE_BAD_OUTPUT',['../fitsio_8h.html#ae820a886354eb8451bed322db7f345ac',1,'fitsio.h']]],
-  ['parse_5fbad_5ftype',['PARSE_BAD_TYPE',['../fitsio_8h.html#a708f53fbc320965a87ed9faee43d6ffe',1,'fitsio.h']]],
-  ['parse_5flrg_5fvector',['PARSE_LRG_VECTOR',['../fitsio_8h.html#a6b2cdf3fdbfab0d3c772023c5bae7958',1,'fitsio.h']]],
-  ['parse_5fno_5foutput',['PARSE_NO_OUTPUT',['../fitsio_8h.html#a7f00ebcffd6361ae38d911b6dcc747df',1,'fitsio.h']]],
-  ['parse_5fsyntax_5ferr',['PARSE_SYNTAX_ERR',['../fitsio_8h.html#ac04a49dae868c46ca0a631ff3a90389c',1,'fitsio.h']]],
   ['pi',['PI',['../ccd__astro_8c.html#a598a3330b3c21701223ee0ca14316eca',1,'ccd_astro.c']]],
-  ['pixmult',['PIXMULT',['../andor__tcl_8h.html#ab84a6addb95442787c3cd951d054dc2e',1,'andor_tcl.h']]],
-  ['plio_5f1',['PLIO_1',['../fitsio_8h.html#ac7a21ac88bb2ef0ccbf5ba4a59a6626b',1,'fitsio.h']]],
-  ['prepend_5fprimary',['PREPEND_PRIMARY',['../fitsio_8h.html#a24fe208e24705273518f73fd7f5e8f54',1,'fitsio.h']]]
+  ['pixmult',['PIXMULT',['../andor__tcl_8h.html#ab84a6addb95442787c3cd951d054dc2e',1,'andor_tcl.h']]]
 ];
