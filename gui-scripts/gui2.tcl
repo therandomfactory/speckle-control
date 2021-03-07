@@ -422,7 +422,7 @@ menu .mbar.help.m
 #.mbar.temp.m add command -label "Plot averaged temps" -command {set RAWTEMP 0}
 #.mbar.temp.m add command -label "Plot raw temps" -command {set RAWTEMP 1}
 .mbar.tools.m add command -label "Engineering" -command "speckleGuiMode engineeringGui"
-.mbar.help.m add command -label "Users Guide" -command {exec firefox file://$SPECKLE_DIR/doc/user-guide.html &}
+.mbar.help.m add command -label "Users Guide" -command {exec firefox file://$SPECKLE_DIR/doc/user-guide/user-guide.html &}
 .mbar.help.m add command -label "Code Documentation" -command {exec firefox file://$SPECKLE_DIR/doc/code/html/index.html &}
 .mbar.tools.m add command -label "Observing" -command "speckleGuiMode observingGui"
 .mbar.tools.m add command -label "Filter Selection" -command "wm deiconify .filters"
