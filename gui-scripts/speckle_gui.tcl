@@ -659,7 +659,7 @@ set INSTRUMENT(blue,emgain) 0
 
 label .lowlevel.ts -text "Timestamps" -bg gray
 place .lowlevel.ts -x 290 -y 200
-checkbutton .lowlevel.gpstrigger -bg gray  -text "Use GPS Trigger" -variable ANDOR_CFG(GPSTrigger)  -highlightthickness 0
+checkbutton .lowlevel.gpstrigger -bg gray  -text "N/A GPS Trigger" -variable ANDOR_CFG(GPSTrigger)  -highlightthickness 0
 place .lowlevel.gpstrigger -x 270 -y 220
 
 

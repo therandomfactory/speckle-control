@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=checkUpdates
+Comment=Check github for new updates and optionally install them"
+Exec=/home/speckle/speckle-control/checkUpdates
+Icon=/home/speckle/speckle-control/gui-scripts/speckle-icon.gif
+Path=
+Terminal=true
+StartupNotify=false

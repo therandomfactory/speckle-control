@@ -16,7 +16,15 @@ if [ "$status" == "Already up-to-date." ]; then
   echo ""
   echo "-----------------------------------------------------------"
 else
-  ./install
+  echo "-----------------------------------------------------------"
+  echo ""
+  echo "     Proceed with update (yes/no) ?"
+  echo ""
+  echo "-----------------------------------------------------------"
+  read proceed
+  if [ "$proceed" -eq "yes" ]; then   
+    ./install
+  fi
 fi
 
 

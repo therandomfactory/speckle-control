@@ -16,11 +16,32 @@ There are now 3 Speckle Instruments, residing at WIYN (NESSI), Gemini-South (Zor
 
 # Installation
 
-If you are installing from scratch, run the 'install' script.
+If you are installing from scratch, first 
+
+cd $HOME
+git clone https://github.com/therandomfactory/speckle-control
+cd speckle-control
+
+and then run the 'install' script or click the desktop icon.
+
 This will install any required dependencies, compile the speckle 
 shared libraries, setup the desktop environment, and do a quick
 hardware inventory.
 
 The primary target operating system is Ubuntu. Other Linux flavours may
 require some changes to the 'install' script.
+
+To check for and optionally install updates, either run the "checkUpdate"
+script or click the desktop icon.
+
+To run in simulation mode with no hardware, type
+
+. simulationMode
+. startspeckle2
+
+and 
+
+unset SPECKLE_SIM
+
+to cancel it.
 

@@ -1,3 +1,5 @@
-
-export SPECKLE_SIM="filter,telemetry,picomotor,zaber"
+#!/bin/sh
+export SPECKLE_SIM="filter,telemetry,picomotor,power,zaber"
+echo "Speckle simulation mode enabled"
+echo "unset SPECKLE_SIM to cancel it"
 
