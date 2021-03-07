@@ -1,2 +1,0 @@
-set REFRESHER 0
-
