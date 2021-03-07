@@ -266,8 +266,8 @@ $(document).ready(function(){initNavTree('header_specials_8tcl_source.html','');
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="comment"></span><span class="comment"># Process generic dms header item</span></div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="comment"></span><span class="comment">#</span></div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="comment"></span><span class="keyword">proc</span> catchdms { value } {</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;   <span class="keyword">set</span> value [<span class="keyword">expr</span> $value*180./3.14159]<span class="comment"></span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment"></span>   <span class="keyword">set</span> sign &quot;&quot;<span class="comment"></span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="comment">#   set value [expr $value*180./3.14159]</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment"></span><span class="comment">   </span><span class="keyword">set</span> sign &quot;&quot;<span class="comment"></span></div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="comment"></span>   <span class="keyword">if</span> { $value &lt; 0.0} {<span class="keyword">set</span> sign &quot;-&quot;}<span class="comment"></span></div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment"></span>   <span class="keyword">set</span> value [<span class="keyword">expr</span> abs($value)]<span class="comment"></span></div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="comment"></span>   <span class="keyword">set</span> d [<span class="keyword">expr</span> int($value)]<span class="comment"></span></div>
@@ -382,7 +382,7 @@ $(document).ready(function(){initNavTree('header_specials_8tcl_source.html','');
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_28e1bb8382970ac72e8ae3b23df4a891.html">temp</a></li><li class="navelem"><a class="el" href="header_specials_8tcl.html">headerSpecials.tcl</a></li>
-    <li class="footer">Generated on Thu Feb 25 2021 12:22:17 for Speckle by
+    <li class="footer">Generated on Sun Mar 7 2021 14:37:27 for Speckle by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

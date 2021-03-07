@@ -9,5 +9,6 @@ var observe_8tcl =
     [ "prepsequence", "observe_8tcl.html#a0e82d4b7131948c99cd389223d1e8175", null ],
     [ "setfullframe", "observe_8tcl.html#a82312d2e279f0ee377c8086cf08431a1", null ],
     [ "startsequence", "observe_8tcl.html#a20124efe9c3daa11f90cd58e095a985f", null ],
-    [ "updateTemps", "observe_8tcl.html#a2222c7f8f9323eac0edd46de63b1fa31", null ]
+    [ "updateTemps", "observe_8tcl.html#a2222c7f8f9323eac0edd46de63b1fa31", null ],
+    [ "useDefaultROICenters", "observe_8tcl.html#aac986c7b3bff9369ea0dd40fe5e307ab", null ]
 ];

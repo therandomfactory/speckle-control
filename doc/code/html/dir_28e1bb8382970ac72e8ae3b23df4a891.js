@@ -67,6 +67,8 @@ var dir_28e1bb8382970ac72e8ae3b23df4a891 =
     [ "plotcontour.tcl", "plotcontour_8tcl.html", "plotcontour_8tcl" ],
     [ "plotpriv.tcl", "plotpriv_8tcl.html", "plotpriv_8tcl" ],
     [ "postproc.tcl", "postproc_8tcl.html", "postproc_8tcl" ],
+    [ "powercontrol.tcl", "powercontrol_8tcl.html", "powercontrol_8tcl" ],
+    [ "powerControl.tcl", "power_control_8tcl.html", "power_control_8tcl" ],
     [ "redisquery.tcl", "redisquery_8tcl.html", "redisquery_8tcl" ],
     [ "rotator.tcl", "rotator_8tcl.html", "rotator_8tcl" ],
     [ "scaling.tcl", "scaling_8tcl.html", "scaling_8tcl" ],

@@ -25,6 +25,8 @@ var searchData=
   ['postprocessdataaveraging',['PostProcessDataAveraging',['../atmcd_l_xd_8h.html#a7631a15e60105d910ba731618978db30',1,'atmcdLXd.h']]],
   ['postprocessnoisefilter',['PostProcessNoiseFilter',['../atmcd_l_xd_8h.html#a5bd374e44774d1def3b361317b29ebd4',1,'atmcdLXd.h']]],
   ['postprocessphotoncounting',['PostProcessPhotonCounting',['../atmcd_l_xd_8h.html#ad96ea303f27bd6aca0db7bab9c9d4925',1,'atmcdLXd.h']]],
+  ['powercyclehardware',['powerCycleHardware',['../powercontrol_8tcl.html#a1cc74ef0ae362ffe564a4c0d8f55ebb7',1,'powerCycleHardwarewhat:&#160;powercontrol.tcl'],['../power_control_8tcl.html#a1cc74ef0ae362ffe564a4c0d8f55ebb7',1,'powerCycleHardwarewhat:&#160;powerControl.tcl']]],
+  ['powerportswitch',['powerPortSwitch',['../powercontrol_8tcl.html#adc9d93c7d0992a06d2f586217d2899a9',1,'powerPortSwitchport state:&#160;powercontrol.tcl'],['../power_control_8tcl.html#adc9d93c7d0992a06d2f586217d2899a9',1,'powerPortSwitchport state:&#160;powerControl.tcl']]],
   ['precess',['precess',['../ccd__astro_8c.html#aae1165f6e4eb1d6d3292e28b1f8640f6',1,'ccd_astro.c']]],
   ['prepareacquisition',['PrepareAcquisition',['../atmcd_l_xd_8h.html#a0d8f4c9fad95a4b773526f7b0930833d',1,'atmcdLXd.h']]],
   ['prepsequence',['prepsequence',['../observe_8tcl.html#a0e82d4b7131948c99cd389223d1e8175',1,'observe.tcl']]],

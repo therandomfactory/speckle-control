@@ -4,6 +4,9 @@
 #  hardware and software
 #
 export INSTRUMENT zorro
+pkill -9 wish
+pkill -9 ds9red
+pkill -9 ds9blue
 tclsh $HOME/speckle-control/gui-scripts/powerControl.tcl cleanRestart
 $HOME/speckle-control/setDevicePermissions
 $HOME/speckle-control/startspeckle2

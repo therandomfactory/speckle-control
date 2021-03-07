@@ -6,5 +6,6 @@ var searchData=
   ['plotchart_2etcl',['plotchart.tcl',['../plotchart_8tcl.html',1,'']]],
   ['plotcontour_2etcl',['plotcontour.tcl',['../plotcontour_8tcl.html',1,'']]],
   ['plotpriv_2etcl',['plotpriv.tcl',['../plotpriv_8tcl.html',1,'']]],
-  ['postproc_2etcl',['postproc.tcl',['../postproc_8tcl.html',1,'']]]
+  ['postproc_2etcl',['postproc.tcl',['../postproc_8tcl.html',1,'']]],
+  ['powercontrol_2etcl',['powerControl.tcl',['../power_control_8tcl.html',1,'(Global Namespace)'],['../powercontrol_8tcl.html',1,'(Global Namespace)']]]
 ];

@@ -10,6 +10,7 @@ var searchData=
   ['updatemimic',['updateMimic',['../mimic_8tcl.html#a89e4182bb3aca229637503c7cd8e2fb5',1,'mimic.tcl']]],
   ['updateredistelemetry',['updateRedisTelemetry',['../gui2_8tcl.html#a7711b420411e95f7d7be30fcb912d969',1,'updateRedisTelemetry?mode??obs?:&#160;gui2.tcl'],['../redisquery_8tcl.html#ab24d504f0afc8233cab6d68d933a7a62',1,'updateRedisTelemetryitem value:&#160;redisquery.tcl']]],
   ['updatetemps',['updateTemps',['../observe_8tcl.html#a2222c7f8f9323eac0edd46de63b1fa31',1,'observe.tcl']]],
+  ['usedefaultroicenters',['useDefaultROICenters',['../observe_8tcl.html#aac986c7b3bff9369ea0dd40fe5e307ab',1,'observe.tcl']]],
   ['ushortarray_5fcast',['ushortArray_cast',['../tcl__andor_wrap_8cpp.html#a7ecdbee9a1ca4f0e8fd3a00b168b6ec6',1,'tcl_andorWrap.cpp']]],
   ['ushortarray_5ffrompointer',['ushortArray_frompointer',['../tcl__andor_wrap_8cpp.html#afb1ef142b55ecb5c252e6eb6508a7295',1,'tcl_andorWrap.cpp']]],
   ['ushortarray_5fgetitem',['ushortArray_getitem',['../tcl__andor_wrap_8cpp.html#a5818474ab51ccec7c9677a2f0f7e0aea',1,'tcl_andorWrap.cpp']]],

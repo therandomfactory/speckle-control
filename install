@@ -16,7 +16,7 @@ sudo apt-get -y install tk tk-dev tcl tcl-dev tcl-fitstcl make g++ automake auto
 	bwidget build-essential libexpat1-dev libjpeg-dev libpng-dev \
 	libwebp-dev libgif-dev libexif-dev imagemagick libmagick++-dev saods9 \
 	libtiff5-dev libjpeg-dev libjpeg62-turbo-dev libgsf-1-dev libfftw3-bin libfftw3-dev \
-        libusb-1.0-0 libusb-1.0-0-dev
+        libusb-1.0-0 libusb-1.0-0-dev qfits-tools qfitsview topcat
 
 export PKG_CONFIG_PATH=$HOME/speckle-control/lib/pkgconfig
 mkdir -p bin

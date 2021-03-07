@@ -187,8 +187,8 @@ var NAVTREEINDEX7 =
 "mimic_8tcl.html#a6d46e5010ab065717c347c55e908f84d":[3,0,0,52,0],
 "mimic_8tcl.html#a89e4182bb3aca229637503c7cd8e2fb5":[3,0,0,52,2],
 "mimic_8tcl_source.html":[3,0,0,52],
-"namespace_plotchart.html":[2,0,0],
 "namespace_plotchart.html":[1,0,0],
+"namespace_plotchart.html":[2,0,0],
 "namespacemembers.html":[1,1,0],
 "namespacemembers_func.html":[1,1,1],
 "namespaces.html":[1,0],
@@ -229,6 +229,7 @@ var NAVTREEINDEX7 =
 "observe_8tcl.html#a82312d2e279f0ee377c8086cf08431a1":[3,0,0,55,7],
 "observe_8tcl.html#a8f4d8c08e4caa40b9d924f73ea3d6878":[3,0,0,55,4],
 "observe_8tcl.html#a8feeff862ae8758c4b761d5f920ec3f8":[3,0,0,55,2],
+"observe_8tcl.html#aac986c7b3bff9369ea0dd40fe5e307ab":[3,0,0,55,10],
 "observe_8tcl.html#ab7abf3e949169e33d734a2351ef164f6":[3,0,0,55,5],
 "observe_8tcl.html#af5c63ef7286830263baf4e085391d971":[3,0,0,55,0],
 "observe_8tcl_source.html":[3,0,0,55],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "oriel_package_8cpp_source.html":[3,0,0,57],
 "pages.html":[],
 "picomotor_8tcl.html":[3,0,0,58],
-"picomotor_8tcl.html#a067bf879b88d070c5cbd76b095f33d2a":[3,0,0,58,14],
-"picomotor_8tcl.html#a0a1116fda7ebb74286ce037e442b760e":[3,0,0,58,12]
+"picomotor_8tcl.html#a067bf879b88d070c5cbd76b095f33d2a":[3,0,0,58,14]
 };

@@ -29,6 +29,7 @@ var searchData=
   ['usb_5fframes_5fper_5fsecond',['usb_frames_per_second',['../structandor__setup.html#a06532318a5833690d1a6cb26def93f88',1,'andor_setup']]],
   ['usb_5frunning',['usb_running',['../structandor__setup.html#a0c7cdebb49ed8a22f66e4bbbca10e336',1,'andor_setup']]],
   ['usbpermit_2etcl',['usbpermit.tcl',['../usbpermit_8tcl.html',1,'']]],
+  ['usedefaultroicenters',['useDefaultROICenters',['../observe_8tcl.html#aac986c7b3bff9369ea0dd40fe5e307ab',1,'observe.tcl']]],
   ['ushortarray',['ushortArray',['../tcl__andor_wrap_8cpp.html#ab000199934affa432bf9a49f6d800fc6',1,'tcl_andorWrap.cpp']]],
   ['ushortarray_5fcast',['ushortArray_cast',['../tcl__andor_wrap_8cpp.html#a7ecdbee9a1ca4f0e8fd3a00b168b6ec6',1,'tcl_andorWrap.cpp']]],
   ['ushortarray_5ffrompointer',['ushortArray_frompointer',['../tcl__andor_wrap_8cpp.html#afb1ef142b55ecb5c252e6eb6508a7295',1,'tcl_andorWrap.cpp']]],

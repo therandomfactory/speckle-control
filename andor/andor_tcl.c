@@ -131,7 +131,7 @@ void copyline (int *tobuf, int *frombuf, int count, int offset);
 void create_fits_header(fitsfile *fptr);
 
 /** 
- * \brief Store iamge data to FITS file
+ * \brief Store image data to FITS file
  * \param cameraId Andor camera number , 0 or 1
  * \param filename Name of FITS file
  * \param iexp Number of frame (for Kinetics acquisition)
@@ -157,7 +157,7 @@ int cAndorDisplaySingle(int cameraId, int ifft);
 
 
 /** 
- * \brief Store iamge data to FITS file, support ROI and binning
+ * \brief Store image data to FITS file, support ROI and binning
  * \param cameraId Andor camera number , 0 or 1
  * \param filename Name of FITS file
  * \param iexp Number of frame (for Kinetics acquisition)
