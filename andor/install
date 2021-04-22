@@ -16,7 +16,7 @@ sudo apt-get -y install tk tk-dev tcl tcl-dev tcl-fitstcl make g++ automake auto
 	bwidget build-essential libexpat1-dev libjpeg-dev libpng-dev \
 	libwebp-dev libgif-dev libexif-dev imagemagick libmagick++-dev saods9 \
 	libtiff5-dev libjpeg-dev libjpeg8-dev libgsf-1-dev libfftw3-bin libfftw3-dev \
-        libusb-1.0-0 libusb-1.0-0-dev qfits-tools qfitsview topcat
+        libusb-1.0-0 libusb-1.0-0-dev qfits-tools qfitsview topcat libpangoft2-1.0-0
 
 export PKG_CONFIG_PATH=$HOME/speckle-control/lib/pkgconfig
 mkdir -p bin
@@ -28,33 +28,6 @@ mv libccd_linux.so ../lib/libccd.so
 cd ../guider
 make
 mv libguider_linux.so ../lib/libguider.so
-
-
-echo ""
-echo "-------------------------------------------------------------"
-echo "Installing/Upgrading Andor Linux support"
-echo "-------------------------------------------------------------"
-echo ""
-cd ../andor
-wget http://www.randomfactory.com/speckle/andor.tgz
-tar xzf andor.tgz
-mv andor andor-driver
-cd andor-driver
-./install_andor
-
-echo "Building shared libraries"
-cd ../../oriel
-rm -f liboriel.so
-./buildlib
-if [ ! -f liboriel.so ]; then 
-  echo ""
-  echo "-----------------------------------------------------------"
-  echo "Failed to build liboriel.so using oriel/buildlib"
-  echo "-----------------------------------------------------------"
-  echo ""
-  exit
-fi
-mv liboriel.so ../lib/.
 
 # 
 # vips may need
@@ -75,6 +48,46 @@ if [! -f $HOME/speckle-control/lib/libvips.so ]; then
   exit
 fi
 make clean
+
+echo ""
+echo "-------------------------------------------------------------"
+echo "Installing/Upgrading Andor Linux support"
+echo "-------------------------------------------------------------"
+echo ""
+cd ../andor
+wget http://www.randomfactory.com/speckle/andor.tgz
+tar xzf andor.tgz
+mv andor andor-driver
+cd andor-driver
+./install_andor
+cd ..
+rm -fr andorTclInit.so
+./buildlib
+if [ ! -f andorTclInit.so ]; then 
+  echo ""
+  echo "-----------------------------------------------------------"
+  echo "Failed to build andorTclInit.so using andor/buildlib"
+  echo "-----------------------------------------------------------"
+  echo ""
+  exit
+fi
+mv andorTclInit.so ../lib/.
+mv andor.tgz ../andor-driver.tgz
+
+echo "Building shared libraries"
+cd ../oriel
+rm -f liboriel.so
+./buildlib
+if [ ! -f liboriel.so ]; then 
+  echo ""
+  echo "-----------------------------------------------------------"
+  echo "Failed to build liboriel.so using oriel/buildlib"
+  echo "-----------------------------------------------------------"
+  echo ""
+  exit
+fi
+mv liboriel.so ../lib/.
+
 
 cd ../andor
 rm -fr andorTclInit.so
