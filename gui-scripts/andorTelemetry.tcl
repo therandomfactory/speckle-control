@@ -56,7 +56,7 @@ global ANDOR_CFG CAMSTATUS TELEMETRY SPECKLE_DIR SCOPE ANDOR_ROI CAM ANDOR_ARM
    set TELEMETRY(speckle.andor.roi) "[expr round($ANDOR_ROI(xs))] ,[expr round($ANDOR_ROI(xe))] ,[expr round($ANDOR_ROI(ys))], [expr round($ANDOR_ROI(ye))]"
    set TELEMETRY(speckle.andor.vbin) $ANDOR_CFG(binning)
    set TELEMETRY(speckle.andor.datatype) $ANDOR_CFG($arm,fitsbits)
-   set dll [string range [file tail [glob $SPECKLE_DIR/lib/libUSBI2C.so.*.0]] 13 end]
+   set dll [string range [file tail [glob /usr/local/lib/libUSBI2C.so.*.0]] 13 end]
    set TELEMETRY(speckle.andor.sw_version) $dll
    set TELEMETRY(speckle.andor.exposure_total) [expr $ANDOR_CFG($arm,NumberKinetics) * $ANDOR_CFG($CAM,TExposure) * $ANDOR_CFG($arm,NumberAccumulations)]
    set TELEMETRY(speckle.andor.em_gain) $ANDOR_CFG($arm,EMCCDGain)
@@ -149,8 +149,7 @@ set TELEMETRY(speckle.andor.roi) "1,1024,1,1024"
 set TELEMETRY(speckle.andor.vbin) $ANDOR_CFG(red,vbin)
 set TELEMETRY(speckle.scope.datatype) 32
 set TELEMETRY(speckle.andor.datatype) long
-set dll [string range [file tail [glob $env(SPECKLE_DIR)/lib/libUSBI2C.so.*.0]] 13 end]
-set TELEMETRY(speckle.andor.sw_version) $dll
+set TELEMETRY(speckle.andor.sw_version) unknown
 set TELEMETRY(speckle.andor.exposure_total) 1.0
 set TELEMETRY(speckle.andor.em_gain) 0
 set TELEMETRY(speckle.andor.vertical_speed)  0

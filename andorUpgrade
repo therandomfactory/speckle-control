@@ -12,6 +12,8 @@ if [ $who -ne 0 ]; then
   exit
 fi
 
+export SPECKLE_DIR=${HOME}/speckle-control
+
 if [ ! -f lib/libvips.so ]; then 
   echo ""
   echo "-------------------------------------------------------------"
@@ -38,14 +40,17 @@ echo "-------------------------------------------------------------"
 echo "Installing/Upgrading Andor Linux support"
 echo "-------------------------------------------------------------"
 echo ""
+cd $HOME/speckle-control/lib
+exec rm -fr libandor* libUSBI2C* libshamrockcif*
 cd $HOME/speckle-control/andor
+exec rm -fr andor.tgz andor-driver
 wget http://www.randomfactory.com/speckle/andor.tgz
 tar xzf andor.tgz
 mv andor andor-driver
 cd andor-driver
-./install_andor
+./install_andor >& /tmp/andor-buildlib.log
 
-cd ../andor
+cd ..
 rm -fr andorTclInit.so
 ./buildlib
 if [ ! -f andorTclInit.so ]; then 
