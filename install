@@ -58,11 +58,13 @@ echo "Installing/Upgrading Andor Linux support"
 echo "-------------------------------------------------------------"
 echo ""
 cd ../andor
+exec rm -fr andor.tgz andor-driver
 wget http://www.randomfactory.com/speckle/andor.tgz
 tar xzf andor.tgz
 mv andor andor-driver
 cd andor-driver
-./install_andor
+./install_andor >& /tmp/andor-buildlib.log
+
 cd ..
 rm -fr andorTclInit.so
 ./buildlib
