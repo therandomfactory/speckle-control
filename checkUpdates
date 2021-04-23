@@ -1,13 +1,6 @@
 #!/bin/sh
 
-cd $HOME
-  echo "-----------------------------------------------------------"
-  echo ""
-  echo "     Backing up current installation"
-  echo ""
-  echo "-----------------------------------------------------------"
-tar czf ../speckle-control.backup.tgz speckle-control
-cd speckle-control
+cd $HOME/speckle-control
 status=`git pull`
 if [ "$status" == "Already up-to-date." ]; then
   echo "-----------------------------------------------------------"
@@ -16,6 +9,12 @@ if [ "$status" == "Already up-to-date." ]; then
   echo ""
   echo "-----------------------------------------------------------"
 else
+  echo "-----------------------------------------------------------"
+  echo ""
+  echo "     Backing up current installation"
+  echo ""
+  echo "-----------------------------------------------------------"
+  tar czf ../speckle-control.backup.tgz speckle-control
   echo "-----------------------------------------------------------"
   echo ""
   echo "     Proceed with update (yes/no) ?"
