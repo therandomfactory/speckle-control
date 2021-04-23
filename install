@@ -16,7 +16,7 @@ sudo apt-get -y install tk tk-dev tcl tcl-dev tcl-fitstcl make g++ automake auto
 	bwidget build-essential libexpat1-dev libjpeg-dev libpng-dev \
 	libwebp-dev libgif-dev libexif-dev imagemagick libmagick++-dev saods9 \
 	libtiff5-dev libjpeg-dev libjpeg8-dev libgsf-1-dev libfftw3-bin libfftw3-dev \
-        libusb-1.0-0 libusb-1.0-0-dev qfits-tools qfitsview topcat
+        libusb-1.0-0 libusb-1.0-0-dev qfits-tools qfitsview topcat libpangoft2-1.0-0
 
 export PKG_CONFIG_PATH=$HOME/speckle-control/lib/pkgconfig
 mkdir -p bin
@@ -29,6 +29,28 @@ cd ../guider
 make
 mv libguider_linux.so ../lib/libguider.so
 
+# 
+# vips may need
+#
+# make AUTOCONF=: AUTOHEADER=: AUTOMAKE=: ACLOCAL=:
+# make install AUTOCONF=: AUTOHEADER=: AUTOMAKE=: ACLOCAL=:
+#
+if [ ! -f lib/libvips.so ]; then 
+if [ ! -f lib/libvips.so ]; then 
+  cd ../vips-8.5.9
+  ./configure --prefix=$HOME/speckle-control
+  make 
+  make install
+  if [! -f $HOME/speckle-control/lib/libvips.so ]; then
+    echo ""
+    echo "-----------------------------------------------------------"
+    echo "Failed to build libvips.so using vips-8.5.9 sources"
+    echo "-----------------------------------------------------------"
+    echo ""
+    exit
+  fi
+  make clean
+fi
 
 echo ""
 echo "-------------------------------------------------------------"
@@ -41,9 +63,22 @@ tar xzf andor.tgz
 mv andor andor-driver
 cd andor-driver
 ./install_andor
+cd ..
+rm -fr andorTclInit.so
+./buildlib
+if [ ! -f andorTclInit.so ]; then 
+  echo ""
+  echo "-----------------------------------------------------------"
+  echo "Failed to build andorTclInit.so using andor/buildlib"
+  echo "-----------------------------------------------------------"
+  echo ""
+  exit
+fi
+mv andorTclInit.so ../lib/.
+mv andor.tgz ../andor-driver.tgz
 
 echo "Building shared libraries"
-cd ../../oriel
+cd ../oriel
 rm -f liboriel.so
 ./buildlib
 if [ ! -f liboriel.so ]; then 
@@ -56,25 +91,6 @@ if [ ! -f liboriel.so ]; then
 fi
 mv liboriel.so ../lib/.
 
-# 
-# vips may need
-#
-# make AUTOCONF=: AUTOHEADER=: AUTOMAKE=: ACLOCAL=:
-# make install AUTOCONF=: AUTOHEADER=: AUTOMAKE=: ACLOCAL=:
-#
-cd ../vips-8.5.9
-./configure --prefix=$HOME/speckle-control
-make 
-make install
-if [! -f $HOME/speckle-control/lib/libvips.so ]; then
-  echo ""
-  echo "-----------------------------------------------------------"
-  echo "Failed to build libvips.so using vips-8.5.9 sources"
-  echo "-----------------------------------------------------------"
-  echo ""
-  exit
-fi
-make clean
 
 cd ../andor
 rm -fr andorTclInit.so

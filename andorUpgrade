@@ -12,6 +12,26 @@ if [ $who -ne 0 ]; then
   exit
 fi
 
+if [ ! -f lib/libvips.so ]; then 
+  echo ""
+  echo "-------------------------------------------------------------"
+  echo "Building pre-requsite libvips.so"
+  echo "-------------------------------------------------------------"
+  echo ""
+  cd vips-8.5.9
+  ./configure --prefix=$HOME/speckle-control
+  make 
+  make install
+  if [! -f $HOME/speckle-control/lib/libvips.so ]; then
+    echo ""
+    echo "-----------------------------------------------------------"
+    echo "Failed to build libvips.so using vips-8.5.9 sources"
+    echo "-----------------------------------------------------------"
+    echo ""
+    exit
+  fi
+  make clean
+fi
 
 echo ""
 echo "-------------------------------------------------------------"
@@ -37,7 +57,7 @@ if [ ! -f andorTclInit.so ]; then
   exit
 fi
 mv andorTclInit.so ../lib/.
-
+cd ..
 
 echo "Test environment and do an inventory of connected hardware"
 ./setDevicePermissions
