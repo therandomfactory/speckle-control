@@ -420,7 +420,7 @@ global TELEMETRY CACHETELEMETRY
 # Initialize WIYN telemetry
 #
 proc initWIYNTelemetry { {method mpg} } {
-global TELEMETRY SPECKLE_DIR SPKTELEM env
+global TELEMETRY SPECKLE_DIR SPKTELEM REDIS env
    set SPKTELEM(sim) 0
    if { [info exists env(SPECKLE_SIM)] } {
      set simdev [split $env(SPECKLE_SIM) ,]

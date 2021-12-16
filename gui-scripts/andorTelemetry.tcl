@@ -169,6 +169,6 @@ set TELEMETRY(tcs.weather.rawcc) 0
 set TELEMETRY(tcs.weather.rawwv) 0
 set TELEMETRY(tcs.weather.rawbg) 0
 set SCOPE(numexp) 1
-
+set ANDOR_CFG(emccdhorizontalspeeds) "30.0 20.0 10.0 1.0"
 
 

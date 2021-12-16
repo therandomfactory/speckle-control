@@ -1040,9 +1040,9 @@ place .lowlevel.hzupd -x 870 -y 193
 button .main.mzwide -text "wide"    -command "positionZabers fullframe" -bg gray -width 4
 button .main.mzspek -text "speckle" -command "positionZabers roi" -bg gray -width 4
 button .main.mzhome -text "home"    -command "homeZabers" -bg gray -width 4
-place .main.mzwide -x 706 -y 286
-place .main.mzspek -x 756 -y 286
-place .main.mzhome -x 840 -y 256
+place .main.mzwide -x 712 -y 286
+place .main.mzspek -x 776 -y 286
+place .main.mzhome -x 840 -y 286
 
 if { $SCOPE(telescope) == "GEMINI" } {
   .mbar.tools.m add command -label "zaber focus extend" -command "zaberGoto focus extend"
@@ -1085,8 +1085,8 @@ if { $env(TELESCOPE) == "WIYN" } {
    source $SPECKLE_DIR/gui-scripts/headerBuilder.tcl
    button .main.nessiactive -width 10 -height 2 -text "NESSI active" -bg gray -fg black -relief raised -command "nessistate active"
    button .main.nessiinactive -width 10 -height 2 -text "NOT in use" -bg red -fg black -relief raised -command "nessistate inactive"
-   place .main.nessiactive -x 820 -y 200
-   place .main.nessiinactive -x 820 -y 270
+   place .main.nessiactive -x 700 -y 200
+   place .main.nessiinactive -x 810 -y 200
    nessistate inactive
 
 } else {

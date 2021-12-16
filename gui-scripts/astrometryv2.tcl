@@ -213,5 +213,13 @@ set ANDOR_CFG(binning) 1
 set ANDOR_CFG(frame) fullframe
 set TELEMETRY(speckle.andor.inputzaber) wide
 
+# Default the WCSPARS so we can run with no zabers
+set WCSPARS(CRVAL1)   RA
+set WCSPARS(CRVAL2)   DEC
+set WCSPARS(CDELT1)   2.258333333333333e-5
+set WCSPARS(CDELT2)   2.258333333333333e-5
+set WCSPARS(CROTA2)   0.0
+set WCSPARS(DELTARA)  0.0
+set WCSPARS(DELTADEC) 0.0
 
 
