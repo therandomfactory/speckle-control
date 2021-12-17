@@ -139,7 +139,7 @@ global ANDORS
 #		ANDOR_SOCKET - Andor camera server socket handles
 #
 proc  acquisitionmode { rdim } {
-global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
+global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG INSTRUMENT
   puts stdout "rdim == $rdim"
   updateRedisTelemetry mode acquiring
   if { $rdim != "manual"} {
@@ -163,14 +163,18 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
   if { $rdim == "manual" } {
     set it [tk_dialog .d "Edit regions" "Move the regions in the\n image display tool then click OK" {} -1 "OK"]
   } else {
-    set resr [commandAndor red "setroi $rdim"]
-    set SCOPE(red,bias) [expr int([lindex $resr 2])]
-    set SCOPE(red,peak) [expr int([lindex $resr 3])]
-    set resb [commandAndor blue "setroi $rdim"]
-    set SCOPE(blue,bias) [expr int([lindex $resb 2])]
-    set SCOPE(blue,peak) [expr int([lindex $resb 3])]
-    mimicMode red roi [set rdim]x[set rdim]
-    mimicMode blue roi [set rdim]x[set rdim]
+    if { $INSTRUMENT(red) } {
+      set resr [commandAndor red "setroi $rdim"]
+      set SCOPE(red,bias) [expr int([lindex $resr 2])]
+      set SCOPE(red,peak) [expr int([lindex $resr 3])]
+      mimicMode red roi [set rdim]x[set rdim]
+    }
+    if { $INSTRUMENT(blue) } {
+      set resb [commandAndor blue "setroi $rdim"]
+      set SCOPE(blue,bias) [expr int([lindex $resb 2])]
+      set SCOPE(blue,peak) [expr int([lindex $resb 3])]
+      mimicMode blue roi [set rdim]x[set rdim]
+    }
   }
   exec xpaset -p ds9red regions system physical
   exec xpaset -p ds9blue regions system physical
@@ -178,27 +182,31 @@ global ACQREGION CONFIG LASTACQ SCOPE ANDOR_SOCKET ANDOR_CFG
     if { $ACQREGION(useDefaultCenters) } {
        applyDefaultROICenters $rdim
     }
-    set reg [split [exec xpaget ds9red regions] \n]
-    foreach i $reg {
-     if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
-        set r [lrange [split $i ",()"] 1 4]
-        set ACQREGION(rxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
-        set ACQREGION(rys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
-        set ACQREGION(rxe) [expr $ACQREGION(rxs) + [lindex $r 2] -1]
-        set ACQREGION(rye) [expr $ACQREGION(rys) + [lindex $r 3] -1]
-        puts stdout "selected red region $r"
-     }
+    if { $INSTRUMENT(red) } {
+      set reg [split [exec xpaget ds9red regions] \n]
+      foreach i $reg {
+       if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
+         set r [lrange [split $i ",()"] 1 4]
+         set ACQREGION(rxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
+         set ACQREGION(rys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
+         set ACQREGION(rxe) [expr $ACQREGION(rxs) + [lindex $r 2] -1]
+         set ACQREGION(rye) [expr $ACQREGION(rys) + [lindex $r 3] -1]
+         puts stdout "selected red region $r"
+       }
+      }
     }
-    set reg [split [exec xpaget ds9blue regions] \n]
-    foreach i $reg {
-     if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
-        set r [lrange [split $i ",()"] 1 4]
-        set ACQREGION(bxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
-        set ACQREGION(bys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
-        set ACQREGION(bxe) [expr $ACQREGION(bxs) + [lindex $r 2] -1]
-        set ACQREGION(bye) [expr $ACQREGION(bys) + [lindex $r 3] -1]
-        puts stdout "selected blue region $r"
-     }
+    if { $INSTRUMENT(blue) } {
+      set reg [split [exec xpaget ds9blue regions] \n]
+      foreach i $reg {
+       if { [string range $i 0 8] == "image;box" || [string range $i 0 2] == "box" } {
+         set r [lrange [split $i ",()"] 1 4]
+         set ACQREGION(bxs) [expr int([lindex $r 0] - [lindex $r 2]/2)]
+         set ACQREGION(bys) [expr int([lindex $r 1] - [lindex $r 3]/2)]
+         set ACQREGION(bxe) [expr $ACQREGION(bxs) + [lindex $r 2] -1]
+         set ACQREGION(bye) [expr $ACQREGION(bys) + [lindex $r 3] -1]
+         puts stdout "selected blue region $r"
+       }
+      }
     }
     if { $rdim == "manual" } {
       commandAndor red "forceroi $ACQREGION(rxs) $ACQREGION(rxe) $ACQREGION(rys) $ACQREGION(rye)"

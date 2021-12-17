@@ -379,7 +379,7 @@ global ANDOR_CFG
 #		CAMSTATUS - Array of camera statuses for GUI display
 #
 proc cameraStatuses { } {
-global CAMSTATUS ANDOR_CFG
+global CAMSTATUS ANDOR_CFG env
   foreach cam "red blue" {
     set camstatus [commandAndor $cam status]
     if { $camstatus != 0 } {
@@ -395,7 +395,9 @@ global CAMSTATUS ANDOR_CFG
     }
   }
   syncgui
-  wm deiconify .camerastatus
+  if { $env(TELESCOPE) != "WIYN" } {
+    wm deiconify .camerastatus
+  }
 }
 
 

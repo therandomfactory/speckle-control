@@ -13,6 +13,9 @@ foreach d $inventory {
    if { [lrange $d 6 end] == "Future Technology Devices International, Ltd FT232 USB-Serial (UART) IC" } {
      incr nzaber 1
    }
+   if { [lrange $d 6 end] == "Future Technology Devices International, Ltd FT232 Serial (UART) IC" } {
+     incr nzaber 1
+   }
 }
 
 puts stdout "Found $nandor Andor cameras"
