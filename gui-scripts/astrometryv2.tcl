@@ -191,7 +191,7 @@ global env WCSPARS
       WIYN_NA_speckle        { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.speckle.wiyn }
       GEMINI_north_wide      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.geminiN }
       GEMINI_south_wide      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.geminiS }
-      WIYN_NA_fullframe      { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.wiyn }
+      WIYN_NA_wide           { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.wide.wiyn }
     }
     set fin [open $wcspars r]
     while { [gets $fin rec] > -1 } {
