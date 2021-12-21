@@ -79,10 +79,12 @@ global CALS CATALOGS SCOPE env
 #               SCOPE -	Telescope parameters, gui setup
 #
 proc setutc { {id 0} } {
-global SCOPE CAMSTATUS
+global SCOPE CAMSTATUS TELEMETRY
   set now [split [exec  date -u +%Y-%m-%d,%T.%U] ,]
   set SCOPE(obsdate) [lindex $now 0]
   set SCOPE(timeobs) [lindex $now 1]
+  set TELEMETRY(speckle.scope.obsdate) [lindex $now 0]
+  set TELEMETRY(speckle.scope.timeobs) [lindex $now 1]
 }
 
 
