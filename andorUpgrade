@@ -2,38 +2,7 @@
 #
 # Installer/Updater for the Speckle Instrument drivers and GUI
 #
-who=$(id -u)
-if [ $who -ne 0 ]; then
-  echo ""
-  echo "-----------------------------------------------------------"
-  echo "Speckle Install/Upgrade must be run as root/sudo"
-  echo "-----------------------------------------------------------"
-  echo ""
-  exit
-fi
-
 export SPECKLE_DIR=${HOME}/speckle-control
-
-if [ ! -f lib/libvips.so ]; then 
-  echo ""
-  echo "-------------------------------------------------------------"
-  echo "Building pre-requsite libvips.so"
-  echo "-------------------------------------------------------------"
-  echo ""
-  cd vips-8.5.9
-  ./configure --prefix=$HOME/speckle-control
-  make 
-  make install
-  if [! -f $HOME/speckle-control/lib/libvips.so ]; then
-    echo ""
-    echo "-----------------------------------------------------------"
-    echo "Failed to build libvips.so using vips-8.5.9 sources"
-    echo "-----------------------------------------------------------"
-    echo ""
-    exit
-  fi
-  make clean
-fi
 
 echo ""
 echo "-------------------------------------------------------------"
@@ -48,7 +17,7 @@ wget http://www.randomfactory.com/speckle/andor.tgz
 tar xzf andor.tgz
 mv andor andor-driver
 cd andor-driver
-./install_andor >& /tmp/andor-buildlib.log
+sudo ./install_andor
 
 cd ..
 rm -fr andorTclInit.so
