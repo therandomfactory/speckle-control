@@ -18,9 +18,11 @@ There are now 3 Speckle Instruments, residing at WIYN (NESSI), Gemini-South (Zor
 
 If you are installing from scratch, first 
 
+```
 cd $HOME
 git clone https://github.com/therandomfactory/speckle-control
 cd speckle-control
+```
 
 and then run the 'install' script or click the desktop icon.
 
