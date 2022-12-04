@@ -1,5 +1,5 @@
 #!/bin/sh
-gcc -c -g -fPIC -I../include GenOneLinuxUSB.cpp -fpermissive
-gcc -c -g -fPIC -I../include orielPackage.cpp -fpermissive
-gcc -c -fPIC -g -I../include oriel_tcl.cpp -fpermissive
-gcc -g -fPIC -shared -o liboriel.so GenOneLinuxUSB.o oriel_tcl.o orielPackage.o -L../lib -I. -I../include ../lib/libusb-1.0.so.0 -lstdc++ -fpermissive
+gcc -c -g -fPIC -I../include -I/usr/include/tcl GenOneLinuxUSB.cpp -fpermissive
+gcc -c -g -fPIC -I../include -I/usr/include/tcl orielPackage.cpp -fpermissive
+gcc -c -fPIC -g -I../include -I/usr/include/tcl oriel_tcl.cpp -fpermissive
+gcc -g -fPIC -shared -o liboriel.so GenOneLinuxUSB.o oriel_tcl.o orielPackage.o -L../lib -I. -I../include -lstdc++ -fpermissive
