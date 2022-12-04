@@ -123,14 +123,10 @@ cp startspeckle2 $HOME/Desktop/SpeckleGUI.desktop
 cp setDevicePermissions $HOME/Desktop/SpecklePermissions.desktop
 cp SAO*.desktop $HOME/Desktop/.
 
-chown -R $USER $HOME/Desktop
-chgrp -R $USER  $HOME/Desktop
-chown -R $USER $HOME/speckle-control
-chgrp -R $USER  $HOME/speckle-control
 
 echo "Testing environment and doing an inventory of connected hardware"
-./startspeckle2 test
 sudo ./setDevicePermissions
+./startspeckle2 test
 export INVENTORY_EXIT=1
 $SPECKLE_DIR/gui-scripts/inventory.tcl
 unset INVENTORY_EXIT
