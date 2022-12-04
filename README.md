@@ -36,8 +36,10 @@ script or click the desktop icon.
 
 To run in simulation mode with no hardware, type
 
-```. simulationMode
-. startspeckle2```
+```
+. simulationMode
+. startspeckle2
+```
 
 and 
 
