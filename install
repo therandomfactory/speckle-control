@@ -2,15 +2,6 @@
 #
 # Installer/Updater for the Speckle Instrument drivers and GUI
 #
-who=$(id -u)
-if [ $who -ne 0 ]; then
-  echo ""
-  echo "-----------------------------------------------------------"
-  echo "Speckle Install/Upgrade must be run as root/sudo"
-  echo "-----------------------------------------------------------"
-  echo ""
-  exit
-fi
 
 echo ""
 echo "-------------------------------------------------------------"
@@ -19,7 +10,7 @@ echo "-------------------------------------------------------------"
 echo ""
 
 
-apt-get -y install tk tk-dev tcl tcl-dev tcl-fitstcl make g++ automake autogen autoconf \
+sudo apt-get -y install tk tk-dev tcl tcl-dev tcl-fitstcl make g++ automake autogen autoconf \
 	libcfitsio-bin libcfitsio-dev wcslib-dev pkg-config libglib2.0-dev \
 	gnuplot default-mysql-client default-mysql-server mysqltcl xpa-tools zlib1g zlib1g-dev \
 	bwidget build-essential libexpat1-dev libjpeg-dev libpng-dev libvips libvips-dev \
@@ -51,7 +42,7 @@ wget http://www.randomfactory.com/speckle/andor.tgz
 tar xzf andor.tgz
 mv andor andor-driver
 cd andor-driver
-./install_andor
+sudo ./install_andor
 
 cd ..
 rm -fr andorTclInit.so
@@ -139,7 +130,7 @@ chgrp -R $USER  $HOME/speckle-control
 
 echo "Testing environment and doing an inventory of connected hardware"
 ./startspeckle2 test
-./setDevicePermissions
+sudo ./setDevicePermissions
 export INVENTORY_EXIT=1
 $SPECKLE_DIR/gui-scripts/inventory.tcl
 unset INVENTORY_EXIT

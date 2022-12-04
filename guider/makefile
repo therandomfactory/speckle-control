@@ -41,7 +41,7 @@ PRIVATEINCDIR	= $(DEVHOME)
 CFLAGS 		+= -pipe  -g -D$(MACHINE)  -DLINUX -Wall  -I$(TCLSRC) -I$(TKSRC)     
 
 
-CPPFLAGS	= -I$(HOME)/speckle-control/include -I/usr/local/include -I$(INCDIR) -DVER=\"$(V).$(MV)\"
+CPPFLAGS	= -I$(HOME)/speckle-control/include -I/usr/local/include -I/usr/include/tcl -I$(INCDIR) -DVER=\"$(V).$(MV)\"
 
 INCLUDES =	
 
