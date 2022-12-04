@@ -7,11 +7,11 @@
 #g++ -g -shared -o andorWrap.so tcl_andorWrap.o andorGenTclInterfaces.o andorCreateTclCmds.o -L/usr/local/lib -landor -lUSBI2C
 #
 
-gcc -g -c -fPIC ccd_astro.c -fpic -DLINUX -DWall -g -I./include -I../include -I../include/tcl
-gcc -g -c -fPIC andorCreateTclCmds.c -fpic -DLINUX -DWall -g -I./include  -I../include -I../include/tcl
-gcc -g -c -fPIC andorGenTclInterfaces.c -fpic -DLINUX -DWall -g -I./include  -I../include -I../include/tcl
-gcc -g -c -fPIC andor_tcl.c -fpic -DLINUX -DWall -g -I./include   -I../include -I../include/tcl $(pkg-config --cflags vips)
-g++ -g -c -fPIC dofft.cpp -fpic -DLINUX -DWall -g -I./include   -I../include -I../include/tcl $(pkg-config --cflags vips)
+gcc -g -c -fPIC ccd_astro.c -fpic -DLINUX -DWall -g -I./include -I../include -I/usr/include/tcl
+gcc -g -c -fPIC andorCreateTclCmds.c -fpic -DLINUX -DWall -g -I./include  -I../include -I/usr/include/tcl
+gcc -g -c -fPIC andorGenTclInterfaces.c -fpic -DLINUX -DWall -g -I./include  -I../include -I/usr/include/tcl
+gcc -g -c -fPIC andor_tcl.c -fpic -DLINUX -DWall -g -I./include   -I../include -I/usr/include/tcl $(pkg-config --cflags vips)
+g++ -g -c -fPIC dofft.cpp -fpic -DLINUX -DWall -g -I./include   -I../include -I/usr/include/tcl $(pkg-config --cflags vips)
 g++ -g -shared -o andorTclInit.so ccd_astro.o andor_tcl.o andorGenTclInterfaces.o andorCreateTclCmds.o dofft.o -lcfitsio -L../lib /usr/local/lib/libandor.so.2 /usr/local/lib/libUSBI2C.so.2
 
 # uncomment local build on misc developer host
