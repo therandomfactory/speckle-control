@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "where" | gdb $1 $2 > /tmp/gdbdump.$2
+

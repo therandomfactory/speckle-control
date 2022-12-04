@@ -1,8 +1,0 @@
-matlab.lo: matlab.c /usr/include/stdc-predef.h ../../config.h \
- ../../libvips/include/vips/intl.h
-
-/usr/include/stdc-predef.h:
-
-../../config.h:
-
-../../libvips/include/vips/intl.h:

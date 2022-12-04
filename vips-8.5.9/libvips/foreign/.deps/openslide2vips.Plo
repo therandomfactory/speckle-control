@@ -1,8 +1,0 @@
-openslide2vips.lo: openslide2vips.c /usr/include/stdc-predef.h \
- ../../config.h ../../libvips/include/vips/intl.h
-
-/usr/include/stdc-predef.h:
-
-../../config.h:
-
-../../libvips/include/vips/intl.h:

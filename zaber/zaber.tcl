@@ -143,7 +143,9 @@ global ZABERS ZPROPERTIES env
    if { $env(TELESCOPE) == "WIYN" } {
     puts $fd "Property		A	B	input"
     foreach p [split $ZPROPERTIES \n] {
-       puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)"
+       catch {
+         puts $fd "[format %-20s $p]	$ZABERS(A,$p)	$ZABERS(B,$p)	$ZABERS(input,$p)"
+       }
      }
    }
    if { $env(TELESCOPE) == "GEMINI" } {
