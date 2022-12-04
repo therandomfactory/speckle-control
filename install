@@ -125,7 +125,7 @@ cp SAO*.desktop $HOME/Desktop/.
 
 
 echo "Testing environment and doing an inventory of connected hardware"
-sudo ./setDevicePermissions
+./setDevicePermissions
 ./startspeckle2 test
 export INVENTORY_EXIT=1
 $SPECKLE_DIR/gui-scripts/inventory.tcl
