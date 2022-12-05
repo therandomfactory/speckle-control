@@ -104,19 +104,19 @@ if [ ! -f startspeckle2 ]; then
     cp startspeckle2.geminiS startspeckle2
     cp cleanRestart.geminiS cleanRestart
     cp powerbar.desktop.geminiS $HOME/Desktop/powerbar.desktop
-    cp cleanRestart.desktop $HOME/Desktop/cleanRestart.desktop
+    cp cleanRestart $HOME/Desktop/cleanRestart.desktop
   fi
   if [ $type -eq 2 ]; then 
     cp startspeckle2.geminiN startspeckle2
     cp cleanRestart.geminiN cleanRestart
     cp powerbar.desktop.geminiN $HOME/Desktop/powerbar.desktop
-    cp cleanRestart.desktop $HOME/Desktop/cleanRestart.desktop
+    cp cleanRestart $HOME/Desktop/cleanRestart.desktop
   fi
   if [ $type -eq 3 ]; then 
     cp startspeckle2.wiyn startspeckle2
     cp cleanRestart.wiyn cleanRestart
     cp powerbar.desktop.wiyn $HOME/Desktop/powerbar.desktop
-    cp cleanRestart.desktop $HOME/Desktop/cleanRestart.desktop
+    cp cleanRestart $HOME/Desktop/cleanRestart.desktop
   fi
 fi
 cp startspeckle2 $HOME/Desktop/SpeckleGUI.desktop
