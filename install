@@ -87,6 +87,7 @@ fi
 mv andorTclInit.so ../lib/.
 
 cd ..
+mkdir -p $HOME/Desktop
 if [ ! -f startspeckle2 ]; then
   echo ""
   echo "-----------------------------------------------------------"
