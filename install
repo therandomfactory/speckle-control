@@ -9,11 +9,11 @@ echo "Installing dependencies"
 echo "-------------------------------------------------------------"
 echo ""
 
-
+sudo apt remove -y libvips*
 sudo apt-get -y install tk tk-dev tcl tcl-dev tcl-fitstcl make g++ automake autogen autoconf \
 	libcfitsio-bin libcfitsio-dev wcslib-dev pkg-config libglib2.0-dev \
 	gnuplot default-mysql-client default-mysql-server mysqltcl xpa-tools zlib1g zlib1g-dev \
-	bwidget build-essential libexpat1-dev libjpeg-dev libpng-dev libvips libvips-dev \
+	bwidget build-essential libexpat1-dev libjpeg-dev libpng-dev \
 	libwebp-dev libgif-dev libexif-dev imagemagick libmagick++-dev saods9 xterm \
 	libtiff5-dev libjpeg-dev libjpeg8-dev libgsf-1-dev libfftw3-bin libfftw3-dev \
         libusb-1.0-0 libusb-1.0-0-dev qfits-tools qfitsview topcat libpangoft2-1.0-0 wget
