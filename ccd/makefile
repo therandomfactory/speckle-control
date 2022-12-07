@@ -30,7 +30,7 @@ TOBJ =	$(TSRC:%.c=%.o)
 # -R$(DEVHOME):$(GWCHOME)/lib -lsocket -lnsl
 # If you don't have TkPixmap tk leave out Xpm
 XPMLIBS = -lXpm 
-LDLIBS +=  -ltk $(XPMLIBS) -ltcl -lX11 -lcfitsio -lwcs -lm 
+LDLIBS += -ltcl -lX11 -lcfitsio -lwcs -lm 
 
 .KEEP_STATE:
 CC =	gcc
@@ -61,7 +61,7 @@ STATICLIBDIR=Static
 SHAREDLIBDIR=Shared
 
 CONFIGPIC		= -fPIC
-CONFIGSHAREDLIBLD	= g++ -shared -o $@ $?
+CONFIGSHAREDLIBLD	= g++ -shared -o $@ $? $(LDLIBS)
 
 SHAREDLIB		= $(LIBDIR)/$(LNAME)_$(M).so.$(V).$(MV)
 CONFIGTARGETS		= $(SHAREDLIB)
