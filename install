@@ -48,7 +48,6 @@ if [ ! -f lib/libvips.so ]; then
     echo ""
     exit
   fi
-  make clean
 fi
 
 
