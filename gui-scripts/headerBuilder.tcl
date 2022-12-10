@@ -531,7 +531,7 @@ if { [info exists env(TELESCOPE)] } {
 }
 
 set SPECKLE_DIR $env(SPECKLE_DIR)
-load $SPECKLE_DIR/lib/libfitstcl.so
+load /usr/lib/tcltk/x86_64-linux-gnu/fitsTcl/libfitstcl.so
 ###load /usr/local/gui/lib/libxtcs.so
 if { $env(TELESCOPE) == "WIYN" } {
   set SCOPE(instrument) "NESSI"
