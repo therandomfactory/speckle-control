@@ -2,7 +2,7 @@
 *.log
 *.o
 *.so
-lib*
+lib*.so.*
 *.a
 *.tgz
 

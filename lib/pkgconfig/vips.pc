@@ -1,0 +1,14 @@
+prefix=/home/rfactory/speckle-control
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: vips
+Description: Image processing library
+Version: 8.8.2
+Requires.private:  glib-2.0 gmodule-2.0 gobject-2.0 libgsf-1 fftw3 MagickCore orc-0.4 lcms2 OpenEXR libheif poppler-glib cairo zlib openslide matio cfitsio libwebp libwebpmux libwebpdemux pangoft2 libtiff-4 libpng imagequant libjpeg libexif
+Requires: gobject-2.0
+Libs: -L${libdir} -lvips 
+Libs.private: 
+Cflags: -I${includedir}
+

@@ -1,4 +1,4 @@
-top_srcdir=/home/rfactory/speckle-control-42571afe9e00ab162d9af56ffc528ebd37bf0500/vips-8.5.9
+top_srcdir=/home/rfactory/speckle-control/vips-8.5.9
 PYTHON=
 # we need a different tmp for each script since make can run tests in parallel
 tmp=$top_srcdir/test/tmp-$$
