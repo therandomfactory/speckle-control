@@ -37,8 +37,8 @@ cp libguider_linux.so ../lib/libguider.so
 #
 if [ ! -f lib/libvips.so ]; then 
   cd ../vips-8.5.9
-  ./configure --prefix=$HOME/speckle-control --without-rsvg --enable-introspection=no
-  make CPPFLAGS="$(pkg-config --cflags glib-2.0)"
+  ./configure --prefix=$HOME/speckle-control --without-rsvg --enable-introspection=no --enable-shared=yes
+  make CPPFLAGS="$(pkg-config --cflags glib-2.0) --std=c++14"
   make install
   if [! -f $HOME/speckle-control/lib/libvips.so ]; then
     echo ""
