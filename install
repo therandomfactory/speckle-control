@@ -35,20 +35,20 @@ cp libguider_linux.so ../lib/libguider.so
 # make AUTOCONF=: AUTOHEADER=: AUTOMAKE=: ACLOCAL=:
 # make install AUTOCONF=: AUTOHEADER=: AUTOMAKE=: ACLOCAL=:
 #
-if [ ! -f lib/libvips.so ]; then 
-  cd ../vips-8.5.9
-  ./configure --prefix=$HOME/speckle-control --without-rsvg --enable-introspection=no --enable-shared=yes
-  make CPPFLAGS="$(pkg-config --cflags glib-2.0) --std=c++14"
-  make install
-  if [! -f $HOME/speckle-control/lib/libvips.so ]; then
-    echo ""
-    echo "-----------------------------------------------------------"
-    echo "Failed to build libvips.so using vips-8.5.9 sources"
-    echo "-----------------------------------------------------------"
-    echo ""
-    exit
-  fi
-fi
+#if [ ! -f lib/libvips.so ]; then 
+#  cd ../vips-8.5.9
+#  ./configure --prefix=$HOME/speckle-control --without-rsvg --enable-introspection=no --enable-shared=yes
+#  make CPPFLAGS="$(pkg-config --cflags glib-2.0) --std=c++14"
+#  make install
+#  if [! -f $HOME/speckle-control/lib/libvips.so ]; then
+#    echo ""
+#    echo "-----------------------------------------------------------"
+#    echo "Failed to build libvips.so using vips-8.5.9 sources"
+#    echo "-----------------------------------------------------------"
+#    echo ""
+#    exit
+#  fi
+#fi
 
 
 echo ""

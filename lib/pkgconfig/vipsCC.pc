@@ -3,8 +3,8 @@ exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
-Name: vips-cpp
-Description: C++ API for vips8 image processing library
+Name: vipsCC
+Description: deprecated C++ API for vips image processing library
 Version: 8.5.9
-Requires: vips gobject-2.0
-Libs: -L${libdir} -lvips-cpp
+Requires: vips = 8.5.9
+Libs: -L${libdir} -lvipsCC

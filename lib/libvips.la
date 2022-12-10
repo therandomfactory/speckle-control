@@ -8,7 +8,7 @@
 dlname='libvips.so.42'
 
 # Names of this library.
-library_names='libvips.so.42.11.1 libvips.so.42 libvips.so'
+library_names='libvips.so.42.7.8 libvips.so.42 libvips.so'
 
 # The name of the static archive.
 old_library='libvips.a'
@@ -17,15 +17,15 @@ old_library='libvips.a'
 inherited_linker_flags=' -pthread -fopenmp'
 
 # Libraries that this one depends upon.
-dependency_libs=' -lheif /usr/lib/x86_64-linux-gnu/libMagickCore-6.Q16.la -lpng16 -limagequant -ltiff -ljpeg -lgmodule-2.0 -lexpat -lpangoft2-1.0 -lpango-1.0 -lharfbuzz -lfontconfig -lfreetype -lgsf-1 -lxml2 -lfftw3 -lorc-0.4 -llcms2 -lgif -lpoppler-glib -lgobject-2.0 -lglib-2.0 -lcairo -lIlmImf-2_5 -lImath-2_5 -lHalf-2_5 -lIex-2_5 -lIexMath-2_5 -lIlmThread-2_5 -lopenslide -lcfitsio -lpthread -lwebpmux -lwebpdemux -lwebp -L/usr/lib/x86_64-linux-gnu/hdf5/serial/lib -lmatio -lhdf5 -lz -lexif'
+dependency_libs=' /usr/lib/x86_64-linux-gnu/libMagickCore-6.Q16.la -lpng16 -ltiff -ljpeg -lgmodule-2.0 -lexpat -lpangoft2-1.0 -lpango-1.0 -lharfbuzz -lfontconfig -lfreetype -lgsf-1 -lxml2 -lfftw3 -lorc-0.4 -llcms2 -lgif -lpoppler-glib -lgobject-2.0 -lglib-2.0 -lcairo -lIlmImf-2_5 -lImath-2_5 -lHalf-2_5 -lIex-2_5 -lIexMath-2_5 -lIlmThread-2_5 -lopenslide -lcfitsio -lpthread -lwebpmux -lwebp -L/usr/lib/x86_64-linux-gnu/hdf5/serial/lib -lmatio -lhdf5 -lz -lexif'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
 
 # Version information for libvips.
-current=53
-age=11
-revision=1
+current=49
+age=7
+revision=8
 
 # Is this an already installed library?
 installed=yes
