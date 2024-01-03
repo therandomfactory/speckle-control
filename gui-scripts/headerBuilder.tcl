@@ -519,7 +519,7 @@ set PDEBUG 0
 set STREAMS ""
 set TELEMETRY(tcs.telescope.ra) 12:00:00
 set TELEMETRY(tcs.telescope.dec) 00:00:00
-set SPECKLEHDRLOG [open /tmp/$env(USER)_headerInfo.log a]
+set SPECKLEHDRLOG [open /tmp/speckle_headerInfo.log a]
 puts $SPECKLEHDRLOG "Startup at [exec date]"
 set SEQNUM 1
 

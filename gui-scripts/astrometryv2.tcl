@@ -183,7 +183,14 @@ global PI
 proc readWCSpars { arm mode } {
 global env WCSPARS
   if { $mode != "wide" && $mode != "speckle" } {
-     debuglog "WARNING: input zaber position unknown, using previous WCSPARS"
+     debuglog "WARNING: input zaber position unknown, using default WCSPARS"
+     set WCSPARS(CRVAL1)   RA
+     set WCSPARS(CRVAL2)   DEC
+     set WCSPARS(CDELT1)   2.258333333333333e-5
+     set WCSPARS(CDELT2)   2.258333333333333e-5
+     set WCSPARS(CROTA2)   0.0
+     set WCSPARS(DELTARA)  0.0
+     set WCSPARS(DELTADEC) 0.0
   } else {
     switch $env(TELESCOPE)_$env(GEMINISITE)_$mode {
       GEMINI_north_speckle   { set wcspars $env(SPECKLE_DIR)/wcsPars.$arm.speckle.geminiN }

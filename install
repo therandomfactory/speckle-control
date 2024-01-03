@@ -21,9 +21,9 @@ sudo apt-get -y install tk tk-dev tcl tcl-dev tcl-fitstcl make g++ automake auto
 export SPECKLE_DIR=$HOME/speckle-control
 export PKG_CONFIG_PATH=$HOME/speckle-control/lib/pkgconfig
 mkdir -p bin
-cp /usr/bin/ds9 $HOME/speckle-control/bin/ds9red
-cp /usr/bin/ds9 $HOME/speckle-control/bin/ds9blue
-cd ccd
+cd lib
+ln -s /usr/lib/tcltk/x86_64-linux-gnu/fitsTcl/libfitstcl.so libfitstcl.so
+cd ../ccd
 make
 cp libccd_linux.so.1.0 ../lib/libccd.so
 cd ../guider

@@ -33,9 +33,7 @@ int main(int argc, char **argv)
   wheelA.write_cmd("FILT?\n");
   status=wheelA.read_result(result,count);
   printf("result of FILT? is %d, %s\n",status,result);
-  delete (GenOneLinuxUSB *)&wheelA;
-
-  sleep(100);
+ 
 
 }
 

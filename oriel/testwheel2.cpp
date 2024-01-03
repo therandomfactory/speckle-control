@@ -33,7 +33,6 @@ int main(int argc, char **argv)
   wheelA.write_cmd("NEXT\n");
   status=wheelA.read_result(result,count);
   printf("result of NEXT is %d, %s\n",status,result);
-  delete (GenOneLinuxUSB *)&wheelA;
 
 }
 
